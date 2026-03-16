@@ -1032,99 +1032,6 @@
   .footer-top { flex-direction: column; }
   #cursor, #cursor-ring { display: none; }
   *, *::before, *::after { cursor: auto !important; }
-
-  /* Hero — padding ajustado para topnav 54px + margem */
-  .hero { padding: 96px 0 72px !important; min-height: auto !important; }
-  .hero-headline { font-size: clamp(40px, 12vw, 64px); }
-  .hero-sub { font-size: 16px; margin-bottom: 32px; }
-  .hero-actions { flex-direction: column; align-items: flex-start; gap: 12px; }
-  .btn-primary { width: 100%; justify-content: center; }
-  .hero-stats { margin-top: 48px; padding-top: 32px; flex-wrap: wrap; gap: 20px; }
-
-  /* Features */
-  .features-section { padding: 80px 0; }
-  .section-header { margin-bottom: 48px; }
-  .feature-card { padding: 24px 20px; }
-
-  /* How */
-  .how-section { padding: 80px 0; }
-  .how-diagram { padding: 24px; }
-
-  /* Categorias */
-  .categories-section { padding: 80px 0; }
-  .categories-grid { grid-template-columns: 1fr; gap: 12px; }
-  .cat-featured { grid-column: span 1 !important; }
-
-  /* Pricing */
-  .pricing-section { padding: 80px 0; }
-  .pricing-grid { max-width: 100%; }
-  .plan-card { padding: 28px 24px; }
-
-  /* CTA */
-  .cta-section { padding: 80px 0; }
-  .cta-title { font-size: clamp(32px, 9vw, 52px); }
-  .cta-input-wrap {
-    flex-direction: column;
-    border-radius: var(--radius-md);
-    overflow: visible;
-    background: transparent;
-    border: none;
-    gap: 10px;
-    max-width: 100%;
-  }
-  .cta-input {
-    border: 1px solid var(--border-md);
-    border-radius: var(--radius-md);
-    background: var(--surface);
-    width: 100%;
-  }
-  .cta-submit {
-    border-radius: var(--radius-md);
-    width: 100%;
-    padding: 14px;
-    font-size: 14px;
-  }
-
-  /* Footer */
-  .footer-links-groups { gap: 32px; }
-
-  /* Quick access bar — esconder no mobile pois já existe bottom tab nav */
-  .quick-access-bar { display: none !important; }
-
-  /* Onboarding — ajuste de padding no mobile */
-  .onboarding-box { padding: 28px 20px; }
-  .ob-options { grid-template-columns: 1fr; }
-
-  /* Search modal mobile — já tratado no themes.css via .search-overlay
-     mas o duplicado no index.html precisa de override */
-  .search-modal-overlay { padding-top: 60px; padding-left: 12px; padding-right: 12px; }
-  .search-modal-box { max-width: 100%; border-radius: 12px; }
-  .sm-footer { display: none; }
-}
-
-@media (max-width: 480px) {
-  .hero { padding: 80px 0 60px !important; }
-  .hero-headline { font-size: clamp(36px, 11vw, 52px); }
-  .hero-eyebrow { font-size: 10px; letter-spacing: 1.5px; }
-  .section-title { font-size: clamp(28px, 8vw, 40px); }
-  .features-grid { grid-template-columns: 1fr; }
-  .categories-grid { grid-template-columns: 1fr; }
-  .how-step { gap: 16px; }
-  .footer { padding: 40px 0 24px; }
-  .footer-brand { max-width: 100%; }
-
-  /* Search modal mobile pequeno — bottom sheet */
-  .search-modal-overlay {
-    padding-top: 0;
-    align-items: flex-end;
-  }
-  .search-modal-box {
-    border-radius: 20px 20px 0 0;
-    max-height: 85vh;
-    display: flex;
-    flex-direction: column;
-  }
-  .sm-results { flex: 1; max-height: none; overflow-y: auto; }
 }
 
 /* ══════════════════════════════════════
@@ -1560,8 +1467,21 @@ a.category-card { cursor: pointer; }
 .qa-btn.pro-btn:hover { background: rgba(255,215,100,0.16); }
 
 @media (max-width: 900px) {
-  .quick-access-bar { display: none !important; }
-  body { padding-bottom: 0; }
+  .quick-access-bar {
+    left: unset; top: unset; right: unset; bottom: 0;
+    transform: none;
+    flex-direction: row;
+    width: 100%;
+    border-radius: 0;
+    border-left: none; border-right: none; border-bottom: none;
+    padding: 8px 16px;
+    justify-content: space-around;
+    border-top: 1px solid rgba(255,255,255,0.12);
+  }
+  .qa-btn { flex: 1; justify-content: center; }
+  .qa-btn .qa-tooltip { display: none; }
+  body { padding-bottom: 72px; }
+}
 
 /* ══ ONBOARDING MODAL ══ */
 .onboarding-overlay {
@@ -1734,3 +1654,6 @@ footer, .footer { background: var(--bg-layer1, #141414) !important; border-color
 .footer-brand-desc { color: var(--text-3) !important; }
 .footer-links-title { color: var(--text-2) !important; }
 .footer-copy { color: var(--text-4) !important; }
+
+/* appended mobile fixes */
+.onboarding-overlay, .search-modal-overlay { -webkit-overflow-scrolling: touch; overflow:auto; }

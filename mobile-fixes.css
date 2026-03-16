@@ -1,0 +1,28 @@
+/* Mobile & cross-browser fixes - added by assistant */
+html, body, #farpa-layout {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+@media (max-width: 768px) {
+  #cursor, #cursor-ring { display: none !important; }
+}
+@media (max-width: 900px) {
+  .farpa-sidebar { transform: translateX(-100%); transition: transform 0.28s ease; left:0; }
+  .farpa-sidebar.open { transform: translateX(0); }
+  .farpa-topnav { position: fixed; top:0; left:0; right:0; z-index:80; backdrop-filter: blur(8px); }
+  #farpa-layout > .container, .container { padding-top: 68px; }
+  .nav-search-btn .search-text { display: none; }
+  .nav-search-kbd { display: none; }
+  .nav-lang .lang-btn { font-size: 18px; padding: 6px; margin-left: 6px; }
+}
+.onboarding-overlay, .search-modal-overlay, #farpa-search {
+  -webkit-overflow-scrolling: touch;
+  overflow: auto;
+  overscroll-behavior: contain;
+  z-index: 9999;
+}
+@media (max-width: 600px) {
+  .nav.scrolled, .farpa-topnav { backdrop-filter: none; background: rgba(10,10,10,0.92); }
+}
+button, .sb-item, .nav-lang .lang-btn { min-height: 40px; min-width: 40px; touch-action: manipulation; }
+.full-viewport { min-height: -webkit-fill-available; min-height: 100vh; }

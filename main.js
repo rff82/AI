@@ -9,10 +9,7 @@
   let mouseX = 0, mouseY = 0;
   let ringX = 0, ringY = 0;
 
-  // Desabilitar cursor em dispositivos touch
-  const isTouch = window.matchMedia('(pointer: coarse)').matches;
-
-  if (cursor && cursorRing && window.innerWidth > 768 && !isTouch) {
+  if (cursor && cursorRing && window.innerWidth > 768 && !('ontouchstart' in window)) {
     document.addEventListener('mousemove', (e) => {
       mouseX = e.clientX;
       mouseY = e.clientY;
@@ -34,9 +31,6 @@
       el.addEventListener('mouseenter', () => cursor.classList.add('hovering'));
       el.addEventListener('mouseleave', () => cursor.classList.remove('hovering'));
     });
-  } else if (cursor) {
-    cursor.style.display = 'none';
-    if (cursorRing) cursorRing.style.display = 'none';
   }
 
   /* ── Nav scroll ── */
@@ -64,11 +58,9 @@
 
   /* ── Ticker duplicar conteúdo ── */
   const tickerTrack = document.querySelector('.ticker-track');
-  if (tickerTrack && !tickerTrack.dataset.duplicated) {
+  if (tickerTrack) {
     const clone = tickerTrack.cloneNode(true);
-    clone.setAttribute('aria-hidden', 'true');
     tickerTrack.parentElement.appendChild(clone);
-    tickerTrack.dataset.duplicated = '1';
   }
 
   /* ── Animação das barras de progresso (mockup) ── */
@@ -170,7 +162,7 @@
   /* ── Parallax sutil no hero ── */
   const heroGlow = document.querySelector('.hero-glow');
   const heroGrid = document.querySelector('.hero-grid');
-  if (heroGlow && window.innerWidth > 768) {
+  if (heroGlow && window.innerWidth > 768 && !('ontouchstart' in window)) {
     window.addEventListener('scroll', () => {
       const y = window.scrollY;
       if (heroGlow)  heroGlow.style.transform  = `translateX(-50%) translateY(${y * 0.15}px)`;

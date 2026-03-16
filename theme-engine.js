@@ -103,10 +103,10 @@
         <span class="sb-logo-name">farpa<span class="ai">.ai</span></span>
       </a>
 
-      <div class="sb-section sb-section-main">
+      <div class="sb-section">
         <div class="sb-section-label">Navegar</div>
         ${navItems.map(item => `
-          <a href="${item.href}" class="sb-item ${activePage === item.id ? 'active' : ''}" data-page="${item.id}">
+          <a href="${item.href}" class="sb-item ${activePage === item.id ? 'active' : ''}">
             ${item.icon}
             <span class="sb-item-text">${item.label}</span>
             ${item.live ? '<span class="sb-live"></span>' : ''}
@@ -173,6 +173,10 @@
 
     nav.innerHTML = `
       <div class="nav-breadcrumb">${bcHtml}</div>
+
+      <button class="nav-hamburger" id="nav-hamburger" aria-label="Abrir menu" title="Menu" onclick="(function(){const sb=document.getElementById('farpa-sidebar');if(sb){sb.classList.toggle('open');}})()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
       <div class="nav-right">
         <button class="nav-search-btn" onclick="window.farpaSearch.open()" title="Buscar (Ctrl+K)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
@@ -341,3 +345,6 @@
   // Aplicar tema imediatamente (antes do DOMContentLoaded)
   init();
 })();
+
+// Close sidebar when clicking outside on mobile
+document.addEventListener('click', function(e){try{const sb=document.getElementById('farpa-sidebar');const hb=document.getElementById('nav-hamburger');if(!sb) return; if(window.innerWidth>900) return; if(sb.classList.contains('open')){ const inside = sb.contains(e.target) || (hb && hb.contains(e.target)); if(!inside) sb.classList.remove('open'); }}catch(e){ } }, {passive:true});
