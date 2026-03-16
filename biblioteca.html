@@ -200,14 +200,16 @@ h1,h2,h3,h4, .module-title, .lab-title,
 /* Barra de acesso rápido — escondida inicialmente */
 #quick-bar { opacity: 0; transition: opacity 0.3s; }
 </style>
-  <link rel="stylesheet" href="themes.css">
-  <script src="theme-engine.js"></script>
 </head>
 <body>
-<div id="farpa-layout">
-<main class="farpa-content" id="farpa-main">
-
-
+<nav class="nav">
+  <div class="nav-brand">
+    <svg viewBox="0 0 56 56" fill="none"><polygon points="28,4 44,18 36,28 48,44 28,52 8,44 20,28 12,18" fill="none" stroke="#00ff88" stroke-width="1.5" stroke-linejoin="round"/><polygon points="28,12 38,22 32,28 40,40 28,46 16,40 24,28 18,22" fill="rgba(0,255,136,0.08)" stroke="#00ff88" stroke-width="0.8" stroke-linejoin="round"/><circle cx="28" cy="28" r="2.5" fill="#00ff88"/></svg>
+    <span class="nav-brand-name">farpa<span class="ai">.ai</span></span>
+  </div>
+  <span class="nav-section">Biblioteca · IA Generativa</span>
+  <a href="index.html" class="nav-back"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>Voltar</a>
+</nav>
 
 <div class="page-hero">
   <div class="hero-grid-bg"></div>
@@ -468,24 +470,18 @@ renderAll();
 setTimeout(()=>{const f=document.querySelector('.module-card');if(f)f.classList.add('open');},100);
 </script>
 
-
-
-  </main>
+<!-- Barra de acesso rápido -->
+<div style="position:fixed;left:20px;top:50%;transform:translateY(-50%);z-index:90;display:flex;flex-direction:column;gap:6px;background:rgba(20,20,20,0.92);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:10px 8px;opacity:0;transition:opacity 0.3s;" id="quick-bar">
+  <a href="index.html" style="width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:transparent;border:1px solid transparent;cursor:pointer;transition:all 0.18s;text-decoration:none;position:relative;" title="Home" onmouseover="this.style.background='rgba(255,255,255,0.06)'" onmouseout="this.style.background='transparent'"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f0f0ef" stroke-width="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></a>
+  <a href="biblioteca.html" style="width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:transparent;border:1px solid transparent;cursor:pointer;transition:all 0.18s;text-decoration:none;" title="Biblioteca" onmouseover="this.style.background='rgba(181,122,255,0.1)'" onmouseout="this.style.background='transparent'"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#b57aff" stroke-width="1.8"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></a>
+  <a href="mercados.html" style="width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:transparent;border:1px solid transparent;cursor:pointer;transition:all 0.18s;text-decoration:none;" title="Mercados" onmouseover="this.style.background='rgba(0,255,136,0.1)'" onmouseout="this.style.background='transparent'"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00ff88" stroke-width="1.8"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></a>
+  <a href="labs.html" style="width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:transparent;border:1px solid transparent;cursor:pointer;transition:all 0.18s;text-decoration:none;" title="Labs" onmouseover="this.style.background='rgba(0,229,255,0.1)'" onmouseout="this.style.background='transparent'"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00e5ff" stroke-width="1.8"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18"/></svg></a>
+  <div style="height:1px;background:rgba(255,255,255,0.1);margin:2px 0;"></div>
+  <a href="pro.html" style="width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:rgba(255,215,100,0.08);border:1px solid rgba(255,215,100,0.2);cursor:pointer;transition:all 0.18s;text-decoration:none;" title="Pro" onmouseover="this.style.background='rgba(255,215,100,0.16)'" onmouseout="this.style.background='rgba(255,215,100,0.08)'"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffd764" stroke-width="1.8"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></a>
 </div>
-
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-  var layout = document.getElementById('farpa-layout');
-  if (!layout) return;
-  var sidebar = window.farpaSidebar.build('biblioteca');
-  layout.insertBefore(sidebar, layout.firstChild);
-  var topnav = window.farpaTopnav.build([{label:'farpa.ai',href:'index.html'},{label:'Biblioteca de IA'}]);
-  layout.insertBefore(topnav, sidebar.nextSibling);
-  var t = localStorage.getItem('farpa_theme');
-  if (t) document.documentElement.setAttribute('data-theme', t);
-  var lang = localStorage.getItem('farpa_lang') || 'pt';
-  document.querySelectorAll('.lang-btn').forEach(function(b) { b.classList.toggle('active', b.id === 'lang-' + lang); });
-});
+window.addEventListener('scroll',()=>{const b=document.getElementById('quick-bar');if(b)b.style.opacity=window.scrollY>150?'1':'0';},{passive:true});
 </script>
+
 </body>
 </html>

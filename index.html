@@ -13,10 +13,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;700;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="tokens.css">
-  <link rel="stylesheet" href="themes.css">
   <link rel="stylesheet" href="landing.css">
-  <!-- Theme engine carrega antes do body para evitar flash -->
-  <script src="theme-engine.js"></script>
 </head>
 <body>
 
@@ -30,11 +27,47 @@
 <!-- ═══════════════════════════════════
      NAVEGAÇÃO
 ════════════════════════════════════ -->
-<!-- Sidebar + topnav injetados pelo theme-engine.js -->
-<div id="farpa-layout">
-  <!-- Sidebar aqui via JS -->
-  <!-- Topnav aqui via JS -->
-  <main class="farpa-content" id="farpa-main">
+<nav class="nav">
+  <div class="container">
+    <div class="nav-inner">
+      <a href="#" class="nav-logo">
+        <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="28,4 44,18 36,28 48,44 28,52 8,44 20,28 12,18" fill="none" stroke="#00ff88" stroke-width="1.5" stroke-linejoin="round"/>
+          <polygon points="28,12 38,22 32,28 40,40 28,46 16,40 24,28 18,22" fill="rgba(0,255,136,0.08)" stroke="#00ff88" stroke-width="0.8" stroke-linejoin="round"/>
+          <circle cx="28" cy="28" r="2.5" fill="#00ff88"/>
+          <line x1="28" y1="4" x2="28" y2="12" stroke="#00e5ff" stroke-width="0.8" opacity="0.6"/>
+          <line x1="44" y1="18" x2="38" y2="22" stroke="#00e5ff" stroke-width="0.8" opacity="0.6"/>
+        </svg>
+        <span class="nav-logo-text">farpa<span class="ai">.ai</span></span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="biblioteca.html" data-i18n="nav_biblioteca">Biblioteca</a></li>
+        <li><a href="labs.html" data-i18n="nav_labs">Labs ✦</a></li>
+        <li><a href="mercados.html" data-i18n="nav_mercados">Mercados</a></li>
+        <li>
+          <button class="nav-search-btn" onclick="openSearch()" title="Buscar (Ctrl+K)" aria-label="Buscar">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <span class="nav-search-hint">Ctrl+K</span>
+          </button>
+        </li>
+        <li class="lang-switcher">
+          <button class="lang-btn active" onclick="setLang('pt')" title="Português">🇧🇷</button>
+          <button class="lang-btn" onclick="setLang('en')" title="English">🇺🇸</button>
+          <button class="lang-btn" onclick="setLang('zh')" title="中文">🇨🇳</button>
+          <button class="lang-btn" onclick="setLang('de')" title="Deutsch">🇩🇪</button>
+        </li>
+        <li><a href="pro.html" class="nav-cta nav-pro-cta">Pro ✦</a></li>
+      </ul>
+
+      <button class="nav-mobile-toggle" aria-label="Menu">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</nav>
 
 <!-- ═══════════════════════════════════
      HERO
@@ -943,26 +976,5 @@ document.addEventListener('keydown', e => {
 });
 </script>
 
-  
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  const layout = document.getElementById('farpa-layout');
-  // Injetar sidebar
-  const sidebar = window.farpaSidebar.build('home');
-  layout.insertBefore(sidebar, layout.firstChild);
-  // Injetar topnav
-  const topnav = window.farpaTopnav.build([{label:'farpa.ai',href:'index.html'},{label:'Início'}]);
-  layout.insertBefore(topnav, sidebar.nextSibling);
-  // Aplicar tema salvo
-  const t = localStorage.getItem('farpa_theme');
-  if (t) document.documentElement.setAttribute('data-theme', t);
-  // Marcar lang ativo
-  const lang = localStorage.getItem('farpa_lang') || 'pt';
-  document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.id === 'lang-' + lang));
-});
-</script>
-
-  </main><!-- /farpa-content -->
-</div><!-- /farpa-layout -->
 </body>
 </html>
