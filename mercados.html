@@ -627,7 +627,13 @@ a { color: inherit; text-decoration: none; }
     <span class="quick-label">Populares:</span>
   </div>
 
-  <!-- Dashboard grid -->
+<!-- Banner de aviso de proxy (oculto por padrão) -->
+<div id="proxy-banner" style="display:none;background:rgba(255,184,0,0.10);border:1px solid rgba(255,184,0,0.3);border-radius:10px;padding:12px 18px;margin-bottom:20px;font-family:'DM Mono',monospace;font-size:11px;color:#ffb800;letter-spacing:0.5px;display:flex;align-items:center;gap:10px;">
+  <span style="font-size:16px;">⚠</span>
+  <span id="proxy-banner-msg">Proxy CORS bloqueado. Tentando fonte alternativa...</span>
+</div>
+
+<!-- Dashboard grid -->
   <div class="dashboard" id="dashboard">
     <div class="empty-state">
       <div class="empty-icon">📊</div>
@@ -839,17 +845,105 @@ async function loadDefaultAssets(market) {
   }
 }
 
-/* ── Fetch Yahoo Finance via proxy CORS ── */
+/* ══════════════════════════════════════
+   CAMADA DE DADOS — proxies em cascata
+   1. allorigins.win  (mais confiável)
+   2. api.allorigins.win/raw
+   3. thingproxy.freeboard.io
+   Cripto: CoinGecko direto (CORS liberado)
+══════════════════════════════════════ */
+
+const YAHOO_BASE_V8  = 'https://query1.finance.yahoo.com/v8/finance/chart/';
+const YAHOO_BASE_V7  = 'https://query2.finance.yahoo.com/v7/finance/quote?symbols=';
+
+const CORS_PROXIES = [
+  (u) => `https://api.allorigins.win/get?url=${encodeURIComponent(u)}`,
+  (u) => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
+  (u) => `https://thingproxy.freeboard.io/fetch/${u}`,
+];
+
+async function fetchWithProxy(targetUrl) {
+  let lastErr;
+  let proxyIdx = 0;
+  for (const proxyFn of CORS_PROXIES) {
+    proxyIdx++;
+    try {
+      const proxyUrl = proxyFn(targetUrl);
+      const r = await fetch(proxyUrl, { signal: AbortSignal.timeout(8000) });
+      if (!r.ok) { lastErr = new Error(`HTTP ${r.status}`); continue; }
+      const text = await r.text();
+      let jsonStr = text;
+      try {
+        const wrapper = JSON.parse(text);
+        if (wrapper.contents) jsonStr = wrapper.contents;
+      } catch {}
+      hideBanner();
+      return JSON.parse(jsonStr);
+    } catch (e) {
+      lastErr = e;
+      showBanner(`Proxy ${proxyIdx}/${CORS_PROXIES.length} falhou. Tentando próximo...`);
+    }
+  }
+  showBanner('Todos os proxies falharam. Verifique sua conexão ou tente novamente em instantes.', true);
+  throw lastErr || new Error('Todos os proxies falharam');
+}
+
+function showBanner(msg, isError = false) {
+  const b = document.getElementById('proxy-banner');
+  const m = document.getElementById('proxy-banner-msg');
+  if (!b || !m) return;
+  m.textContent = msg;
+  b.style.display = 'flex';
+  b.style.borderColor = isError ? 'rgba(255,59,59,0.4)' : 'rgba(255,184,0,0.3)';
+  b.style.background  = isError ? 'rgba(255,59,59,0.08)' : 'rgba(255,184,0,0.08)';
+  b.style.color       = isError ? '#ff3b3b' : '#ffb800';
+}
+
+function hideBanner() {
+  const b = document.getElementById('proxy-banner');
+  if (b) b.style.display = 'none';
+}
+
+/* ── Fetch Yahoo Finance (B3 + NYSE) ── */
 async function fetchYahoo(ticker) {
-  // Usa corsproxy.io para contornar CORS no browser
-  const base = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(ticker)}?interval=1d&range=5d`;
-  const url = `https://corsproxy.io/?${encodeURIComponent(base)}`;
-  const r = await fetch(url, { headers: { 'Accept': 'application/json' } });
-  if (!r.ok) throw new Error(`HTTP ${r.status}`);
-  const data = await r.json();
+  const url = `${YAHOO_BASE_V8}${encodeURIComponent(ticker)}?interval=1d&range=5d&includePrePost=false`;
+  const data = await fetchWithProxy(url);
   const result = data?.chart?.result?.[0];
-  if (!result) throw new Error('Sem dados');
+  if (!result) throw new Error('Sem dados para ' + ticker);
   return result;
+}
+
+/* ── Fetch CoinGecko (cripto — CORS liberado) ── */
+const COINGECKO_IDS = {
+  'BTC-USD':'bitcoin','ETH-USD':'ethereum','BNB-USD':'binancecoin',
+  'SOL-USD':'solana','XRP-USD':'ripple','ADA-USD':'cardano',
+  'DOGE-USD':'dogecoin','AVAX-USD':'avalanche-2','DOT-USD':'polkadot',
+  'MATIC-USD':'matic-network','LTC-USD':'litecoin','LINK-USD':'chainlink',
+  'UNI-USD':'uniswap','ATOM-USD':'cosmos','TRX-USD':'tron',
+};
+
+async function fetchCoinGecko(ticker) {
+  const id = COINGECKO_IDS[ticker];
+  if (!id) throw new Error('Cripto não mapeada: ' + ticker);
+  const url = `https://api.coingecko.com/api/v3/coins/${id}?localization=false&tickers=false&community_data=false&developer_data=false`;
+  const r = await fetch(url, { signal: AbortSignal.timeout(8000) });
+  if (!r.ok) throw new Error(`CoinGecko HTTP ${r.status}`);
+  return r.json();
+}
+
+function parseCoinGecko(data) {
+  const m = data.market_data;
+  const price     = m.current_price.usd ?? 0;
+  const prev      = price - (m.price_change_24h ?? 0);
+  const change    = m.price_change_24h ?? 0;
+  const changePct = m.price_change_percentage_24h ?? 0;
+  const high      = m.high_24h.usd ?? price;
+  const low       = m.low_24h.usd ?? price;
+  const vol       = m.total_volume.usd ?? 0;
+  const name      = data.name ?? data.symbol?.toUpperCase();
+  // Sparkline se disponível
+  const sparkline = data.market_data?.sparkline_7d?.price?.slice(-20) ?? [];
+  return { price, prev, change, changePct, currency:'USD', name, high, low, vol, sparkline };
 }
 
 /* ── Parseia resultado Yahoo ── */
@@ -872,17 +966,25 @@ function parseYahoo(result) {
   return { price, prev, change, changePct, currency, name, high, low, vol, sparkline };
 }
 
-/* ── Renderiza ou atualiza card ── */
+/* ── Fetch + render com roteamento por mercado ── */
 async function fetchAndRenderAsset(ticker, label) {
   try {
-    const result = await fetchYahoo(ticker);
-    const d = parseYahoo(result);
+    let d;
+    if (currentMarket === 'crypto' || ticker.endsWith('-USD')) {
+      // CoinGecko para cripto
+      const raw = await fetchCoinGecko(ticker);
+      d = parseCoinGecko(raw);
+    } else {
+      // Yahoo Finance para B3 e NYSE
+      const result = await fetchYahoo(ticker);
+      d = parseYahoo(result);
+    }
     activeAssets[ticker] = d;
     renderCard(ticker, label, d);
     updateLastUpdate();
   } catch(e) {
     removeCard(ticker);
-    toast(`Não foi possível carregar ${label}: ${e.message}`, 'error');
+    toast(`Não foi possível carregar ${label} — ${e.message}`, 'error');
   }
 }
 
@@ -1012,15 +1114,21 @@ function renderEmptyState() {
 function startAutoRefresh() {
   if (refreshTimer) clearInterval(refreshTimer);
   refreshTimer = setInterval(async () => {
-    for (const [ticker] of Object.entries(activeAssets)) {
+    for (const ticker of Object.keys(activeAssets)) {
       try {
-        const result = await fetchYahoo(ticker);
-        const d = parseYahoo(result);
+        let d;
         const label = ticker.replace('.SA','').replace('-USD','');
+        if (ticker.endsWith('-USD')) {
+          const raw = await fetchCoinGecko(ticker);
+          d = parseCoinGecko(raw);
+        } else {
+          const result = await fetchYahoo(ticker);
+          d = parseYahoo(result);
+        }
         activeAssets[ticker] = d;
         renderCard(ticker, label, d);
       } catch {}
-      await sleep(200);
+      await sleep(300);
     }
     updateLastUpdate();
   }, 60000);
