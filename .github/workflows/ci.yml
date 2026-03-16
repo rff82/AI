@@ -1,0 +1,33 @@
+name: CI/CD Pipeline for Farpa.ai
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install HTMLProofer
+        run: npm install -g htmlproofer
+
+      - name: Validate HTML
+        run: htmlproofer ./ --disable-external --check-html --check-img-http --allow-hash-href
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: 'rff82-ai'
+          directory: './'
+          branch: 'main'
