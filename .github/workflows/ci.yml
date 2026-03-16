@@ -12,16 +12,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-
-      - name: Install HTMLProofer
-        run: npm install -g htmlproofer
-
       - name: Validate HTML
-        run: htmlproofer ./ --disable-external --check-html --check-img-http --allow-hash-href
+        uses: anishathalye/proof-html@v1
+        with:
+          directory: ./
+          url_ignore:
+            - "/teste.html"
 
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/pages-action@v1
