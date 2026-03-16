@@ -9,7 +9,10 @@
   let mouseX = 0, mouseY = 0;
   let ringX = 0, ringY = 0;
 
-  if (cursor && cursorRing && window.innerWidth > 768) {
+  // Desabilitar cursor em dispositivos touch
+  const isTouch = window.matchMedia('(pointer: coarse)').matches;
+
+  if (cursor && cursorRing && window.innerWidth > 768 && !isTouch) {
     document.addEventListener('mousemove', (e) => {
       mouseX = e.clientX;
       mouseY = e.clientY;
@@ -31,6 +34,9 @@
       el.addEventListener('mouseenter', () => cursor.classList.add('hovering'));
       el.addEventListener('mouseleave', () => cursor.classList.remove('hovering'));
     });
+  } else if (cursor) {
+    cursor.style.display = 'none';
+    if (cursorRing) cursorRing.style.display = 'none';
   }
 
   /* ── Nav scroll ── */
@@ -58,9 +64,11 @@
 
   /* ── Ticker duplicar conteúdo ── */
   const tickerTrack = document.querySelector('.ticker-track');
-  if (tickerTrack) {
+  if (tickerTrack && !tickerTrack.dataset.duplicated) {
     const clone = tickerTrack.cloneNode(true);
+    clone.setAttribute('aria-hidden', 'true');
     tickerTrack.parentElement.appendChild(clone);
+    tickerTrack.dataset.duplicated = '1';
   }
 
   /* ── Animação das barras de progresso (mockup) ── */

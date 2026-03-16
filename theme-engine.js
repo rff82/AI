@@ -103,10 +103,10 @@
         <span class="sb-logo-name">farpa<span class="ai">.ai</span></span>
       </a>
 
-      <div class="sb-section">
+      <div class="sb-section sb-section-main">
         <div class="sb-section-label">Navegar</div>
         ${navItems.map(item => `
-          <a href="${item.href}" class="sb-item ${activePage === item.id ? 'active' : ''}">
+          <a href="${item.href}" class="sb-item ${activePage === item.id ? 'active' : ''}" data-page="${item.id}">
             ${item.icon}
             <span class="sb-item-text">${item.label}</span>
             ${item.live ? '<span class="sb-live"></span>' : ''}
