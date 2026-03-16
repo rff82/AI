@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>farpa.ai — Biblioteca · IA Generativa Aplicada</title>
+<meta name="description" content="8 módulos sobre IA Generativa — glossários, referências públicas e análises exclusivas Pro.">
+<link rel="icon" type="image/svg+xml" href="farpa-icon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;700;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--void:#0a0a0a;--g1:#141414;--g2:#1e1e1e;--g3:#252525;--g4:#2e2e2e;--border:rgba(255,255,255,0.07);--border-md:rgba(255,255,255,0.13);--border-hi:rgba(255,255,255,0.22);--farpa:#00ff88;--corte:#00e5ff;--urgente:#ff3b3b;--warn:#ffb800;--purple:#b57aff;--t1:#f0f0ef;--t2:rgba(240,240,239,0.60);--t3:rgba(240,240,239,0.36);--font:'Space Grotesk',sans-serif;--mono:'DM Mono',monospace;--r-sm:6px;--r-md:10px;--r-lg:14px;--r-xl:20px;--r-pill:999px;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--void);color:var(--t1);font-family:var(--font);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;}
+a{color:inherit;text-decoration:none;}
+.nav{position:sticky;top:0;z-index:50;background:rgba(10,10,10,0.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 32px;height:56px;display:flex;align-items:center;justify-content:space-between;}
+.nav-brand{display:flex;align-items:center;gap:10px;}
+.nav-brand svg{width:26px;height:26px;}
+.nav-brand-name{font-size:18px;font-weight:900;letter-spacing:-0.8px;}
+.nav-brand-name .ai{color:var(--farpa);font-weight:300;}
+.nav-section{font-family:var(--mono);font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--t3);}
+.nav-back{font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--t3);display:flex;align-items:center;gap:6px;transition:color 0.2s;}
+.nav-back:hover{color:var(--t1);}
+.page-hero{position:relative;overflow:hidden;padding:64px 32px 56px;border-bottom:1px solid var(--border);max-width:1280px;margin:0 auto;}
+.hero-grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(0,255,136,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,136,0.03) 1px,transparent 1px);background-size:48px 48px;mask-image:radial-gradient(ellipse 80% 100% at 60% 0%,black 20%,transparent 80%);}
+.page-hero::before{content:'';position:absolute;top:-40%;left:40%;width:500px;height:400px;background:radial-gradient(ellipse,rgba(0,255,136,0.05) 0%,rgba(181,122,255,0.04) 40%,transparent 70%);pointer-events:none;}
+.hero-eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--farpa);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.hero-eyebrow-dot{width:6px;height:6px;border-radius:50%;background:var(--farpa);animation:pulse 2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+.page-title{font-size:clamp(32px,5vw,52px);font-weight:900;letter-spacing:-0.04em;line-height:1;margin-bottom:16px;position:relative;z-index:1;}
+.page-title span{background:linear-gradient(90deg,var(--farpa),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.page-sub{font-size:16px;color:var(--t2);max-width:560px;line-height:1.65;position:relative;z-index:1;margin-bottom:32px;}
+.lib-stats{display:flex;gap:32px;flex-wrap:wrap;position:relative;z-index:1;}
+.lib-stat-num{font-size:24px;font-weight:900;letter-spacing:-1px;color:var(--farpa);}
+.lib-stat-label{font-family:var(--mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--t3);margin-top:2px;}
+.lib-stat-divider{width:1px;background:var(--border);align-self:stretch;}
+.page-body{max-width:1280px;margin:0 auto;padding:36px 32px 80px;display:grid;grid-template-columns:260px 1fr;gap:32px;align-items:start;}
+@media(max-width:900px){.page-body{grid-template-columns:1fr;}.sidebar{display:none;}}
+.sidebar{position:sticky;top:72px;display:flex;flex-direction:column;gap:8px;}
+.sidebar-title{font-family:var(--mono);font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--t3);margin-bottom:8px;padding:0 4px;}
+.sidebar-cat{display:flex;align-items:center;gap:10px;padding:9px 14px;border-radius:var(--r-md);border:1px solid transparent;background:transparent;color:var(--t2);font-family:var(--font);font-size:13px;cursor:pointer;transition:all 0.15s;text-align:left;width:100%;}
+.sidebar-cat:hover{background:var(--g2);border-color:var(--border);color:var(--t1);}
+.sidebar-cat.active{background:var(--g2);border-color:var(--farpa);color:var(--t1);}
+.sidebar-cat .cat-icon{font-size:15px;flex-shrink:0;}
+.sidebar-cat .cat-count{margin-left:auto;font-family:var(--mono);font-size:10px;color:var(--t3);}
+.sidebar-cat.active .cat-count{color:var(--farpa);}
+.sidebar-divider{height:1px;background:var(--border);margin:8px 0;}
+.sidebar-glossary{background:var(--g2);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px;margin-top:4px;}
+.sidebar-gloss-label{font-family:var(--mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--corte);margin-bottom:10px;}
+.gloss-search{width:100%;background:var(--g3);border:1px solid var(--border-md);border-radius:var(--r-sm);padding:7px 10px;color:var(--t1);font-family:var(--mono);font-size:11px;outline:none;transition:border-color 0.18s;}
+.gloss-search:focus{border-color:var(--corte);}
+.gloss-search::placeholder{color:var(--t3);}
+.gloss-list{margin-top:10px;display:flex;flex-direction:column;gap:6px;max-height:260px;overflow-y:auto;scrollbar-width:none;}
+.gloss-list::-webkit-scrollbar{display:none;}
+.gloss-item{padding:8px 10px;background:var(--g3);border-radius:var(--r-sm);display:none;}
+.gloss-item.visible{display:block;}
+.gloss-term{font-family:var(--mono);font-size:10px;font-weight:500;color:var(--corte);margin-bottom:3px;}
+.gloss-def{font-size:11px;color:var(--t3);line-height:1.5;}
+.sidebar-plan{background:linear-gradient(135deg,var(--g2),#1a1628);border:1px solid rgba(181,122,255,0.2);border-radius:var(--r-lg);padding:16px;margin-top:4px;}
+.sidebar-plan-label{font-family:var(--mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--purple);margin-bottom:10px;}
+.sidebar-plan-title{font-size:14px;font-weight:700;margin-bottom:6px;}
+.sidebar-plan-sub{font-size:12px;color:var(--t3);line-height:1.5;margin-bottom:14px;}
+.sidebar-plan-btn{display:block;width:100%;text-align:center;background:var(--farpa);color:var(--void);font-family:var(--font);font-size:12px;font-weight:700;padding:9px;border-radius:var(--r-sm);border:none;cursor:pointer;transition:opacity 0.15s;}
+.sidebar-plan-btn:hover{opacity:0.88;}
+.content-toolbar{display:flex;gap:10px;margin-bottom:28px;flex-wrap:wrap;align-items:center;}
+.search-wrap{flex:1;min-width:200px;position:relative;}
+.search-wrap svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:var(--t3);pointer-events:none;}
+.search-input{width:100%;background:var(--g2);border:1px solid var(--border-md);border-radius:var(--r-md);padding:10px 12px 10px 36px;color:var(--t1);font-family:var(--font);font-size:13px;outline:none;transition:border-color 0.18s,box-shadow 0.18s;}
+.search-input::placeholder{color:var(--t3);}
+.search-input:focus{border-color:var(--farpa);box-shadow:0 0 0 3px rgba(0,255,136,0.08);}
+.sort-select{background:var(--g2);border:1px solid var(--border-md);border-radius:var(--r-md);padding:10px 14px;color:var(--t2);font-family:var(--mono);font-size:11px;letter-spacing:1px;outline:none;cursor:pointer;}
+.results-count{font-family:var(--mono);font-size:10px;color:var(--t3);letter-spacing:1px;white-space:nowrap;align-self:center;}
+.modules-list{display:flex;flex-direction:column;gap:14px;}
+.module-card{background:var(--g2);border:1px solid var(--border);border-radius:var(--r-xl);overflow:hidden;transition:border-color 0.2s,transform 0.2s,box-shadow 0.2s;}
+.module-card:hover{border-color:var(--border-md);transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,0.35);}
+.module-header{padding:20px 24px 0;display:flex;align-items:flex-start;gap:16px;cursor:pointer;}
+.module-num{font-family:var(--mono);font-size:10px;letter-spacing:2px;color:var(--t3);min-width:28px;padding-top:3px;flex-shrink:0;}
+.module-header-content{flex:1;}
+.module-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;}
+.tag{font-family:var(--mono);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;padding:2px 8px;border-radius:var(--r-pill);border:1px solid;}
+.tag-farpa{color:var(--farpa);border-color:rgba(0,255,136,0.25);background:rgba(0,255,136,0.07);}
+.tag-corte{color:var(--corte);border-color:rgba(0,229,255,0.25);background:rgba(0,229,255,0.07);}
+.tag-purple{color:var(--purple);border-color:rgba(181,122,255,0.25);background:rgba(181,122,255,0.07);}
+.tag-warn{color:var(--warn);border-color:rgba(255,184,0,0.25);background:rgba(255,184,0,0.07);}
+.tag-urgente{color:var(--urgente);border-color:rgba(255,59,59,0.25);background:rgba(255,59,59,0.07);}
+.tag-muted{color:var(--t3);border-color:var(--border);}
+.module-title{font-size:17px;font-weight:700;letter-spacing:-0.3px;line-height:1.3;margin-bottom:4px;}
+.module-subtitle{font-size:13px;color:var(--t3);font-family:var(--mono);letter-spacing:0.3px;}
+.module-toggle{width:28px;height:28px;border-radius:50%;background:var(--g3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background 0.15s,border-color 0.15s;margin-top:2px;}
+.module-card.open .module-toggle{background:rgba(0,255,136,0.1);border-color:var(--farpa);}
+.module-toggle svg{width:12px;height:12px;color:var(--t3);transition:transform 0.25s;}
+.module-card.open .module-toggle svg{transform:rotate(180deg);color:var(--farpa);}
+.module-body{max-height:0;overflow:hidden;transition:max-height 0.4s ease;}
+.module-card.open .module-body{max-height:1400px;}
+.module-body-inner{padding:16px 24px 24px 68px;display:flex;flex-direction:column;gap:18px;}
+.module-summary{font-size:14px;color:var(--t2);line-height:1.75;border-left:2px solid var(--farpa);padding-left:14px;}
+.module-objectives{display:flex;flex-direction:column;gap:6px;}
+.objectives-label{font-family:var(--mono);font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--t3);margin-bottom:4px;}
+.obj-item{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--t2);line-height:1.55;}
+.obj-dot{width:5px;height:5px;border-radius:50%;background:var(--farpa);flex-shrink:0;margin-top:6px;}
+.gloss-inline-label{font-family:var(--mono);font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--corte);margin-bottom:8px;}
+.gloss-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:8px;}
+.gloss-card{background:var(--g3);border:1px solid var(--border);border-radius:var(--r-md);padding:10px 12px;}
+.gloss-card-term{font-family:var(--mono);font-size:10px;font-weight:500;color:var(--corte);margin-bottom:4px;letter-spacing:0.5px;}
+.gloss-card-def{font-size:12px;color:var(--t3);line-height:1.55;}
+.refs-label{font-family:var(--mono);font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--t3);margin-bottom:8px;}
+.ref-item{display:flex;align-items:center;gap:10px;background:var(--g3);border:1px solid var(--border);border-radius:var(--r-md);padding:10px 14px;transition:border-color 0.15s;margin-bottom:8px;}
+.ref-item:hover{border-color:var(--border-md);}
+.ref-item:last-child{margin-bottom:0;}
+.ref-icon{font-size:14px;flex-shrink:0;}
+.ref-content{flex:1;min-width:0;}
+.ref-title{font-size:12px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.ref-source{font-family:var(--mono);font-size:9px;color:var(--t3);letter-spacing:1px;margin-top:2px;}
+.ref-link{font-family:var(--mono);font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--farpa);border:1px solid rgba(0,255,136,0.2);background:rgba(0,255,136,0.07);padding:4px 10px;border-radius:var(--r-pill);white-space:nowrap;transition:background 0.15s;}
+.ref-link:hover{background:rgba(0,255,136,0.14);}
+.module-pro-block{position:relative;border-radius:var(--r-lg);overflow:hidden;border:1px solid rgba(181,122,255,0.2);}
+.module-pro-blur{filter:blur(4px);pointer-events:none;user-select:none;background:linear-gradient(135deg,#1a1628,#1a1f28);padding:16px 18px;font-size:13px;color:var(--t2);line-height:1.7;}
+.module-pro-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;padding:20px;background:rgba(10,10,10,0.72);backdrop-filter:blur(2px);}
+.module-pro-badge{font-family:var(--mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--purple);border:1px solid rgba(181,122,255,0.3);background:rgba(181,122,255,0.08);padding:3px 12px;border-radius:var(--r-pill);}
+.module-pro-text{font-size:13px;font-weight:700;color:var(--t1);}
+.module-pro-sub{font-size:12px;color:var(--t3);max-width:240px;line-height:1.5;}
+.module-pro-btn{background:var(--farpa);color:var(--void);font-family:var(--font);font-size:12px;font-weight:700;padding:8px 20px;border-radius:var(--r-sm);border:none;cursor:pointer;transition:opacity 0.15s;margin-top:4px;}
+.module-pro-btn:hover{opacity:0.88;}
+.module-footer{padding:12px 24px 16px 68px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;border-top:1px solid var(--border);}
+.module-difficulty{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:10px;color:var(--t3);letter-spacing:1px;}
+.difficulty-dots{display:flex;gap:3px;}
+.difficulty-dot{width:6px;height:6px;border-radius:50%;background:var(--border-md);}
+.difficulty-dot.filled{background:var(--farpa);}
+.difficulty-dot.filled.mid{background:var(--warn);}
+.difficulty-dot.filled.hard{background:var(--urgente);}
+.module-duration{font-family:var(--mono);font-size:10px;color:var(--t3);letter-spacing:1px;margin-left:auto;}
+.upgrade-banner{background:linear-gradient(135deg,#1a1628,#111b28);border:1px solid rgba(181,122,255,0.25);border-radius:var(--r-xl);padding:28px 32px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-bottom:14px;}
+.upgrade-banner-eyebrow{font-family:var(--mono);font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--purple);margin-bottom:6px;}
+.upgrade-banner-title{font-size:18px;font-weight:700;letter-spacing:-0.3px;margin-bottom:6px;}
+.upgrade-banner-sub{font-size:13px;color:var(--t3);line-height:1.5;max-width:480px;}
+.upgrade-banner-btn{background:var(--farpa);color:var(--void);font-family:var(--font);font-size:13px;font-weight:700;padding:12px 24px;border-radius:var(--r-md);border:none;cursor:pointer;transition:all 0.15s;white-space:nowrap;flex-shrink:0;}
+.upgrade-banner-btn:hover{opacity:0.88;box-shadow:0 0 28px rgba(0,255,136,0.2);}
+.no-results{text-align:center;padding:64px 24px;border:1px dashed var(--border-md);border-radius:var(--r-xl);display:none;}
+.no-results.show{display:block;}
+.no-results-icon{font-size:36px;margin-bottom:12px;opacity:0.4;}
+.no-results-title{font-size:16px;font-weight:700;color:var(--t2);margin-bottom:6px;}
+.no-results-sub{font-size:13px;color:var(--t3);}
+.grad-divider{height:1px;background:linear-gradient(90deg,transparent,var(--farpa),var(--purple),transparent);opacity:0.2;border:none;margin:0;}
+@media(max-width:640px){.nav{padding:0 16px;}.nav-section{display:none;}.page-hero{padding:40px 16px 36px;}.page-body{padding:20px 16px 60px;}.module-body-inner{padding-left:20px;}.module-footer{padding-left:20px;}.upgrade-banner{flex-direction:column;}}
+</style>
+
+<style>
+/* Contraste máximo global — farpa.ai v2 */
+:root {
+  --t1: #f0f0ef;
+  --t2: rgba(240,240,239,0.88);
+  --t3: rgba(240,240,239,0.72);
+}
+body { color: #f0f0ef; }
+p, li, td, th, label, span:not([class*="tag"]):not([class*="badge"]):not([class*="pill"]):not([class*="btn"]) { color: inherit; }
+.module-summary, .module-subtitle, .lab-desc, .cat-desc,
+.gloss-card-def, .gloss-def, .analysis-text,
+.obj-item span, .compare-item, .feat-desc,
+.test-text, .feed-title, .how-step-content p,
+.feature-card p, .plan-feature, .section-sub,
+.hero-sub, .page-sub, .sidebar-plan-sub,
+.upgrade-banner-sub, .how-output-text,
+.ref-source, .news-card-title a,
+.sentiment-detail, .sidebar-gloss-label,
+.libs-sub, .lib-hero-sub, .labs-sub,
+.labs-note, .final-cta-sub, .footer-brand-desc {
+  color: rgba(240,240,239,0.88) !important;
+}
+.module-num, .cat-count, .module-duration,
+.results-count, .nav-section, .nav-back,
+.ticker-item, .how-step-num, .card-meta,
+.mockup-card-sources, .feed-sources,
+.footer-copy, .footer-farpa-tag,
+.hero-stat-label, .lib-stat-label,
+.labs-note, .label, .cta-note,
+.sm-result-cat, .ob-skip, .sm-kbd,
+.sm-footer span, .gloss-search::placeholder,
+.search-input::placeholder, .sm-input::placeholder,
+.cta-input::placeholder, .input-field::placeholder,
+.card-ticker, .plan-period,
+.compare-period, .test-role,
+.footer-pro-copy, .footer-pro-links a,
+.analysis-ref, .feed-sources, .card-duration {
+  color: rgba(240,240,239,0.72) !important;
+}
+/* Links sempre legíveis */
+.footer-links-list a, .footer-pro-links a, .nav-back,
+.nav-links a, .nav-section {
+  color: rgba(240,240,239,0.82) !important;
+}
+.footer-links-list a:hover, .nav-links a:hover, .nav-back:hover { color: #f0f0ef !important; }
+/* Títulos sempre brancos plenos */
+h1,h2,h3,h4, .module-title, .lab-title,
+.feat-title, .feed-title, .compare-plan-name,
+.card-name, .cat-name, .hero-headline,
+.page-title, .labs-title, .section-title {
+  color: #f0f0ef !important;
+}
+/* Barra de acesso rápido — escondida inicialmente */
+#quick-bar { opacity: 0; transition: opacity 0.3s; }
+</style>
+</head>
+<body>
+<nav class="nav">
+  <div class="nav-brand">
+    <svg viewBox="0 0 56 56" fill="none"><polygon points="28,4 44,18 36,28 48,44 28,52 8,44 20,28 12,18" fill="none" stroke="#00ff88" stroke-width="1.5" stroke-linejoin="round"/><polygon points="28,12 38,22 32,28 40,40 28,46 16,40 24,28 18,22" fill="rgba(0,255,136,0.08)" stroke="#00ff88" stroke-width="0.8" stroke-linejoin="round"/><circle cx="28" cy="28" r="2.5" fill="#00ff88"/></svg>
+    <span class="nav-brand-name">farpa<span class="ai">.ai</span></span>
+  </div>
+  <span class="nav-section">Biblioteca · IA Generativa</span>
+  <a href="index.html" class="nav-back"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>Voltar</a>
+</nav>
+
+<div class="page-hero">
+  <div class="hero-grid-bg"></div>
+  <div class="hero-eyebrow"><span class="hero-eyebrow-dot"></span>Curadoria de conhecimento</div>
+  <h1 class="page-title">Biblioteca de <span>IA Generativa</span></h1>
+  <p class="page-sub">Curadoria aprofundada sobre IA generativa — glossário com 50+ termos, referências públicas creditadas com autores e fontes, e análises exclusivas no plano Pro.</p>
+  <div class="lib-stats">
+    <div><div class="lib-stat-num">8</div><div class="lib-stat-label">módulos</div></div>
+    <div class="lib-stat-divider"></div>
+    <div><div class="lib-stat-num">50+</div><div class="lib-stat-label">termos no glossário</div></div>
+    <div class="lib-stat-divider"></div>
+    <div><div class="lib-stat-num">5</div><div class="lib-stat-label">gratuitos</div></div>
+    <div class="lib-stat-divider"></div>
+    <div><div class="lib-stat-num">3</div><div class="lib-stat-label">exclusivos Pro</div></div>
+  </div>
+</div>
+<hr class="grad-divider">
+
+<div class="page-body">
+  <aside class="sidebar">
+    <div class="sidebar-title">Filtrar por tema</div>
+    <button class="sidebar-cat active" onclick="filterCat('all',this)"><span class="cat-icon">🗂️</span>Todos os módulos<span class="cat-count">8</span></button>
+    <button class="sidebar-cat" onclick="filterCat('fundamentos',this)"><span class="cat-icon">🧠</span>Fundamentos<span class="cat-count">2</span></button>
+    <button class="sidebar-cat" onclick="filterCat('modelos',this)"><span class="cat-icon">⚙️</span>Modelos &amp; Técnicas<span class="cat-count">3</span></button>
+    <button class="sidebar-cat" onclick="filterCat('aplicacoes',this)"><span class="cat-icon">🚀</span>Aplicações Práticas<span class="cat-count">2</span></button>
+    <button class="sidebar-cat" onclick="filterCat('etica',this)"><span class="cat-icon">⚖️</span>Ética &amp; Governança<span class="cat-count">1</span></button>
+    <button class="sidebar-cat" onclick="filterCat('economia',this)"><span class="cat-icon">📈</span>Economia &amp; Futuro<span class="cat-count">1</span></button>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-glossary">
+      <div class="sidebar-gloss-label">Buscar no glossário</div>
+      <input class="gloss-search" type="text" placeholder="Ex: LLM, RAG, embedding..." id="gloss-search-input" oninput="filterGlossary(this.value)">
+      <div class="gloss-list" id="gloss-list"></div>
+    </div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-plan">
+      <div class="sidebar-plan-label">Plano Pro</div>
+      <div class="sidebar-plan-title">Análises aprofundadas</div>
+      <div class="sidebar-plan-sub">Notas completas, código funcional e referências complementares curadas módulo a módulo.</div>
+      <button class="sidebar-plan-btn" onclick="scrollToUpgrade()">Assinar o Pro</button>
+    </div>
+  </aside>
+
+  <main>
+    <div class="content-toolbar">
+      <div class="search-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input class="search-input" id="search" type="text" placeholder="Buscar módulo, conceito ou termo..." oninput="handleSearch(this.value)">
+      </div>
+      <select class="sort-select" onchange="handleSort(this.value)">
+        <option value="num">Ordem do curso</option>
+        <option value="az">A → Z</option>
+        <option value="dificuldade">Dificuldade</option>
+      </select>
+      <span class="results-count" id="results-count">8 módulos</span>
+    </div>
+    <div class="upgrade-banner" id="upgrade-banner" style="display:none;">
+      <div><div class="upgrade-banner-eyebrow">Plano Pro</div><div class="upgrade-banner-title">Análises exclusivas disponíveis</div><div class="upgrade-banner-sub">Implementações práticas, notas aprofundadas e referências complementares curadas para cada módulo.</div></div>
+      <button class="upgrade-banner-btn" id="upgrade-btn"><a href="pro.html" style="color:var(--void)">Ver plano Pro →</a></button>
+    </div>
+    <div class="modules-list" id="modules-list"></div>
+    <div class="no-results" id="no-results"><div class="no-results-icon">🔍</div><div class="no-results-title">Nenhum módulo encontrado</div><div class="no-results-sub">Tente outros termos ou remova os filtros.</div></div>
+  </main>
+</div>
+
+<script>
+const GLOSSARY_ALL=[
+  {term:'LLM (Large Language Model)',def:'Modelos de ML projetados para entender e gerar texto similar ao humano. Ex: GPT-3, GPT-4.',mod:1},
+  {term:'Machine Learning',def:'Ramo da IA que treina algoritmos para aprender padrões de dados sem programação explícita.',mod:1},
+  {term:'Transformer Architecture',def:'Modelo de deep learning que usa mecanismos de autoatenção para processar dados sequenciais eficientemente.',mod:1},
+  {term:'Backpropagation',def:'Algoritmo de otimização para treinar redes neurais calculando gradientes da função de perda.',mod:1},
+  {term:'Embeddings',def:'Representação matemática de objetos em espaço vetorial capturando relações semânticas.',mod:1},
+  {term:'Encoder',def:'Componente que processa dados de entrada e os transforma em representação interna.',mod:1},
+  {term:'Decoder',def:'Componente que gera sequência de saída baseado nas informações codificadas.',mod:1},
+  {term:'GANs (Redes Generativas Adversariais)',def:'Duas redes (geradora e discriminadora) treinadas simultaneamente para gerar dados realistas.',mod:1},
+  {term:'Stable Diffusion',def:'Modelos generativos que refinam ruído aleatório para produzir imagens de alta qualidade.',mod:1},
+  {term:'GPT',def:'Transformer pré-treinado generativo — modelo baseado em Transformer para geração de texto coerente.',mod:1},
+  {term:'GPU',def:'Processador especializado usado para acelerar cargas de trabalho de machine learning.',mod:1},
+  {term:'TPU',def:'Tensor Processing Unit — ASICs criados pelo Google para acelerar workloads de ML.',mod:1},
+  {term:'Tokens',def:'Unidade de dado que representa um elemento de sequência. Um token pode ser um caractere ou uma palavra.',mod:1},
+  {term:'VAE (Variational Autoencoder)',def:'Modelo generativo que aprende a codificar dados e criar novas amostras.',mod:1},
+  {term:'RLHF',def:'Aprendizado por reforço com feedback humano — técnica para alinhar modelos com preferências humanas.',mod:2},
+  {term:'Camadas de rede neural',def:'Entrada, camadas ocultas (onde a computação ocorre) e camada de saída.',mod:2},
+  {term:'Espaço de embedding',def:'Espaço que contém vetores de palavras onde palavras similares são agrupadas espacialmente.',mod:2},
+  {term:'Prompt do sistema',def:'Fornece instruções sobre a tarefa geral para a qual o LLM está sendo usado.',mod:2},
+  {term:'Prompt do usuário',def:'Fornece instruções específicas para o LLM realizar a tarefa solicitada.',mod:2},
+  {term:'Agente do LLM',def:'Combina LLM com módulos externos (ferramentas, memória, planejamento) para respostas mais precisas.',mod:2},
+  {term:'Fine-tuning (Ajuste fino)',def:'Treinamento adicional em dataset específico para melhorar desempenho em tarefa particular.',mod:3},
+  {term:'RAG (Geração Aumentada por Recuperação)',def:'Recupera informações externas antes de gerar resposta para melhorar precisão e atualidade.',mod:3},
+  {term:'Evals (Avaliações)',def:'Processo de testar modelos contra critérios/benchmarks para avaliar capacidades e identificar melhorias.',mod:3},
+  {term:'Lock-in',def:'Dependência de um fornecedor específico que torna custoso mudar para outro.',mod:3},
+  {term:'Agentic Reasoning',def:'Sistemas de IA que tomam decisões autônomas, planejam ações múltiplas e adaptam-se sem intervenção constante.',mod:4},
+  {term:'Contextual Awareness',def:'Capacidade da IA de interpretar e adaptar respostas baseadas no contexto situacional completo.',mod:4},
+  {term:'Overfitting',def:'Problema onde o modelo aprende os dados de treino demais, incluindo ruído, e falha em generalizar.',mod:4},
+  {term:'Misinformation',def:'Informação falsa ou enganosa, independente de ser compartilhada intencionalmente ou não.',mod:4},
+  {term:'Memória paramétrica',def:'Conhecimento armazenado nos parâmetros (pesos) do LLM durante o treinamento.',mod:5},
+  {term:'Memória não paramétrica',def:'Memória externa que não depende dos parâmetros do modelo — dados recuperáveis dinamicamente.',mod:5},
+  {term:'Reflexão (Reflection)',def:'Técnica onde o LLM auto-avalia seus resultados e ajusta parâmetros para melhorar precisão.',mod:5},
+  {term:'Prompt Flow',def:'Ferramenta da Microsoft para criar aplicações LLM de alta qualidade — da prototipagem ao deploy.',mod:5},
+  {term:'AutoGPT',def:'Agente de IA que executa tarefas autonomamente, gerando e avaliando seus próprios prompts iterativamente.',mod:6},
+  {term:'LangChain',def:'Framework para desenvolver aplicativos com LLMs, conectando-os a fontes de dados e ferramentas externas.',mod:6},
+  {term:'Contexto externo do LLM',def:'Memória externa permanente que o LLM pode editar e pesquisar, além da janela de contexto.',mod:6},
+  {term:'Pesquisa semântica',def:'Busca que usa significado e contexto das palavras em vez de apenas correspondência de palavras-chave.',mod:7},
+  {term:'ReAct',def:'Framework que combina raciocínio e ação intercalados nos LLMs para melhorar conclusão de tarefas.',mod:7},
+  {term:'Plugins',def:'Aplicações prontas que estendem a funcionalidade dos LLMs para interagir com ferramentas e datasets.',mod:7},
+  {term:'Raciocínio agêntico',def:'Capacidade da IA de perceber, raciocinar, planejar e agir de forma autônoma em ambientes complexos.',mod:8},
+  {term:'SaaS',def:'Software as a Service — modelo de entrega de software via internet por provedor terceirizado.',mod:8},
+  {term:'Open source',def:'Software com código-fonte disponível publicamente para uso, modificação e distribuição.',mod:8},
+  {term:'Aplicativos verticais',def:'Apps projetados para setores de nicho com público restrito e necessidades específicas.',mod:8},
+  {term:'Aplicativos horizontais',def:'Apps para ampla gama de indústrias, mercado-alvo abrangente e multi-setorial.',mod:8},
+];
+
+const MODULES=[
+  {id:1,num:'01',cat:'fundamentos',title:'Fundamentos de IA Generativa — Da origem aos LLMs',subtitle:'Evolução histórica, arquitetura de LLMs e aplicações em organizações',tags:[{l:'Fundamentos',c:'tag-farpa'},{l:'LLM',c:'tag-corte'}],diff:1,dur:'~30 min',pro:false,
+  summary:'A IA generativa representa uma mudança de paradigma: de manipulação passiva de dados para análise ativa e geração de outputs. O impacto na produtividade é profundo — menos recursos, menos tempo, menor custo. Machine Learning é a tecnologia fundacional dos LLMs: sem ele, não existiria a capacidade de entender e gerar linguagem humana. O pipeline de ML envolve coleta de dados, processamento (transformação, manipulação, carregamento), treinamento, avaliação e predição. O workflow integrado GenAI conecta ciclos de Data, Gen-AI, Dev, Ops e Biz em loop contínuo.',
+  objs:['Descrever os marcos no desenvolvimento da IA, da origem às tecnologias modernas','Explicar o funcionamento e arquitetura dos LLMs, incluindo processo de treinamento e geração de texto','Examinar aplicações de ML e augmentação por IA em diferentes indústrias e disciplinas'],
+  glossMods:[1],
+  refs:[{i:'📄',t:'Attention Is All You Need — Vaswani et al.',s:'arXiv 2017 · PDF gratuito',u:'https://arxiv.org/abs/1706.03762'},{i:'📺',t:'Intro to Large Language Models — Andrej Karpathy',s:'YouTube · 1 hora · Gratuito',u:'https://www.youtube.com/watch?v=zjkBMFhNj_g'},{i:'🌐',t:'Introducing ChatGPT — OpenAI',s:'OpenAI Blog · Acesso gratuito',u:'https://openai.com/blog/chatgpt'},{i:'📊',t:'The State of AI in 2023 — McKinsey',s:'McKinsey & Company · Gratuito',u:'https://www.mckinsey.com/capabilities/quantumblack/our-insights/the-state-of-ai-in-2023'}],
+  proTxt:'Análise comparativa dos 3 paradigmas de IA (simbólica, conexionista, estatística), linha do tempo dos invernos e booms, diagrama do ciclo GenAI/Dev/Ops/Biz aplicado, e mapa dos laboratórios de fronteira com suas abordagens filosóficas.'},
+
+  {id:2,num:'02',cat:'fundamentos',title:'Como os LLMs Pensam — Embeddings, Camadas e Prompts',subtitle:'Como os modelos processam linguagem, representam conhecimento e respondem a instruções',tags:[{l:'Fundamentos',c:'tag-farpa'},{l:'Prompt',c:'tag-corte'}],diff:2,dur:'~40 min',pro:false,
+  summary:'LLMs processam linguagem em 3 camadas: entrada, camadas ocultas (toda computação) e saída. Embeddings representam palavras em espaço vetorial — palavras similares ficam próximas. RLHF (Aprendizado por Reforço com Feedback Humano) alinha o modelo às preferências humanas. Prompt de sistema define o contexto geral; prompt de usuário define a tarefa específica. O espaço de embedding agrupa conceitos relacionados — a partir daí surgem relações como "Rei - Homem + Mulher = Rainha".',
+  objs:['Compreender as 3 camadas de redes neurais e seu papel no processamento','Entender embeddings e por que representações vetoriais capturam semântica','Aplicar técnicas de prompt engineering: system prompt, user prompt e aprendizagem no contexto','Entender como RLHF alinha LLMs às preferências humanas'],
+  glossMods:[2],
+  refs:[{i:'📄',t:'King – man + woman = Queen: Computational Linguistics',s:'MIT Technology Review · Gratuito',u:'https://www.technologyreview.com/'},{i:'🌐',t:'Playground Interativo de Redes Neurais',s:'TensorFlow · Ferramenta gratuita',u:'https://playground.tensorflow.org/'},{i:'📺',t:'But What Is a Neural Network? — 3Blue1Brown',s:'YouTube · Série gratuita',u:'https://www.youtube.com/watch?v=aircAruvnKk'},{i:'🌐',t:'Better Language Models — OpenAI',s:'OpenAI Blog · Gratuito',u:'https://openai.com/research/'}],
+  proTxt:'Implementação de embeddings do zero em Python com NumPy, análise visual do espaço de embedding para português, técnicas avançadas de prompt (chain-of-thought, few-shot, zero-shot) com exemplos, e benchmark comparativo de modelos por tipo de tarefa.'},
+
+  {id:3,num:'03',cat:'modelos',title:'Personalização e Recuperação — Fine-tuning e RAG na Prática',subtitle:'Quando e como personalizar modelos — do ajuste fino ao sistema RAG completo',tags:[{l:'Modelos',c:'tag-corte'},{l:'RAG',c:'tag-farpa'}],diff:3,dur:'~50 min',pro:false,
+  summary:'Fine-tuning treina um modelo base em dataset específico para melhorar desempenho em tarefa particular. RAG (Geração Aumentada por Recuperação) vai além: recupera informações de fontes externas antes de gerar resposta, melhorando precisão e atualidade. O pipeline RAG inclui: documentos → chunking → chunk embedding → vector DB → query embedding → retriever → LLM → output. Evals testam modelos contra benchmarks padronizados. Lock-in é o risco de dependência excessiva de um único provedor.',
+  objs:['Distinguir entre fine-tuning e RAG e quando aplicar cada abordagem','Entender o pipeline completo de um sistema RAG: chunking, embedding, vector DB, retrieval','Aplicar frameworks de Evals para medir qualidade de respostas','Identificar riscos de lock-in e estratégias de mitigação'],
+  glossMods:[3],
+  refs:[{i:'📄',t:'Retrieval-Augmented Generation for NLP — Lewis et al.',s:'Meta AI · arXiv 2020 · Gratuito',u:'https://arxiv.org/abs/2005.11401'},{i:'🌐',t:'Hugging Face Course — Fine-tuning LLMs',s:'Hugging Face · 100% gratuito',u:'https://huggingface.co/learn/nlp-course/'},{i:'📄',t:'Getting Started with OpenAI Evals — Ziv & Anadkat',s:'OpenAI · Gratuito',u:'https://openai.com/research/'},{i:'🌐',t:'LangChain — RAG Documentation',s:'LangChain Docs · Acesso gratuito',u:'https://python.langchain.com/'}],
+  proTxt:'Pipeline RAG completo em Python com LangChain e ChromaDB, análise comparativa de estratégias de chunking (tamanho, overlap, semântico), implementação de dense vs sparse retrieval, e framework de avaliação automatizada com RAGAS.'},
+
+  {id:4,num:'04',cat:'etica',title:'IA Responsável — Viés, Riscos e Estruturas de Governança',subtitle:'Riscos reais, frameworks de maturidade tecnológica e regulação em evolução',tags:[{l:'Ética',c:'tag-urgente'},{l:'Governança',c:'tag-warn'}],diff:2,dur:'~45 min',pro:false,
+  summary:'À medida que a IA generativa se torna norma, surgem desafios críticos: conteúdo sintético realista, desinformação, viés algorítmico e privacidade. O método científico aplicado à IA exige ciclos contínuos de observação → hipótese → experimento → análise → conclusão → novas observações. O Technology Readiness Level (TRL 1-9) avalia maturidade tecnológica da pesquisa básica (TRL1) ao deploy completo (TRL9). DevOps para IA integra desenvolvimento e operações em loop infinito contínuo.',
+  objs:['Descrever riscos, oportunidades e desafios éticos da IA generativa em escala global','Aplicar o framework TRL para avaliar maturidade de tecnologias de IA','Usar o método científico como base para avaliação responsável de sistemas','Aplicar frameworks éticos para mitigar riscos em contextos organizacionais'],
+  glossMods:[4],
+  refs:[{i:'📄',t:'Gender Shades — Intersectional Accuracy in Commercial AI',s:'Buolamwini & Gebru · MIT Media Lab · Gratuito',u:'http://proceedings.mlr.press/v81/buolamwini18a.html'},{i:'🌐',t:'EU AI Act — Texto completo',s:'Parlamento Europeu · Acesso público',u:'https://artificialintelligenceact.eu/'},{i:'🌐',t:'AI Ethics Framework — IBM',s:'IBM · Acesso gratuito',u:'https://www.ibm.com/artificial-intelligence/ethics'},{i:'📄',t:'On the Dangers of Stochastic Parrots — Bender et al.',s:'ACM FAccT 2021 · Gratuito',u:'https://dl.acm.org/doi/10.1145/3442188.3445922'}],
+  proTxt:'Framework prático de auditoria de viés em datasets e modelos, análise do EU AI Act por categoria de risco com implicações para empresas brasileiras, comparação de ferramentas de explicabilidade (SHAP, LIME) com código funcional, e template de política de uso responsável de IA.'},
+
+  {id:5,num:'05',cat:'aplicacoes',title:'Agentes e Memória — Sistemas LLM Avançados com RAG',subtitle:'Capacidades robustas vs emergentes, arquitetura de agentes e tipos de memória',tags:[{l:'Aplicações',c:'tag-purple'},{l:'Agentes',c:'tag-farpa'}],diff:3,dur:'~55 min',pro:false,
+  summary:'Capacidades de IA dividem-se em robustas e estáveis (uso de ferramentas, reflexão) e emergentes (planejamento, raciocínio multi-agente). Um assistente IA combina LLM + Codex + RAG/contexto + Funções externas em arquitetura unificada. Memória paramétrica é o conhecimento nos pesos do modelo; memória não-paramétrica é externa e dinâmica. Workflow de reflexão: (1) Usuário envia request → (2) Resposta inicial + crítica + busca → (3) Execução de ferramentas → (4) Revisor itera N vezes → (5) Resposta final.',
+  objs:['Diferenciar capacidades robustas de emergentes em sistemas de IA','Entender a arquitetura de um assistente IA: LLM + Codex + RAG + Funções','Compreender a diferença entre memória paramétrica e não-paramétrica','Projetar pipelines RAG com dense retrieval e vector databases'],
+  glossMods:[5],
+  refs:[{i:'📄',t:'What\'s Next for AI Agentic Workflows — Andrew Ng',s:'Sequoia Capital · YouTube gratuito',u:'https://www.youtube.com/'},{i:'🌐',t:'LangChain — Reflection Agents Documentation',s:'LangChain Docs · Gratuito',u:'https://python.langchain.com/'},{i:'💻',t:'Figure Status Update — OpenAI Speech-to-Speech',s:'Figure AI · YouTube gratuito',u:'https://www.youtube.com/'},{i:'🌐',t:'Hugging Face — Function Call Traces',s:'Hugging Face · Gratuito',u:'https://huggingface.co/'}],
+  proTxt:'Implementação completa de workflow de reflexão com LangChain, construção de RAG com ChromaDB e ada-002, análise de quando usar memória paramétrica vs RAG, e arquitetura de agente multi-ferramenta com chamadas de API reais.'},
+
+  {id:6,num:'06',cat:'aplicacoes',title:'LLMs como Plataformas — Memória, LangChain e Contexto Infinito',subtitle:'Arquitetura de memória em SOs e sua analogia com LLMs — contexto ilimitado na prática',tags:[{l:'Aplicações',c:'tag-purple'},{l:'Avançado',c:'tag-warn'},{l:'Pro',c:'tag-urgente'}],diff:4,dur:'~60 min',pro:true,
+  summary:'Sistemas operacionais organizam memória hierarquicamente (registradores SRAM 1 ciclo → Cache DRAM 15-25 ciclos → RAM 100 ciclos) para otimizar velocidade. LLMs podem adotar arquitetura similar: contexto principal limitado + contexto externo ilimitado. LangChain encadeia LLM + Memória + Prompt + Agente em fluxo unificado para chatbots, consulta de dados, APIs e análise de código. MemGPT propõe tratar LLMs como sistemas operacionais completos com gerenciamento de memória real.',
+  objs:['Entender a hierarquia de memória de SOs e sua analogia com LLMs','Construir chatbots com respostas diferenciadas para developers e usuários','Usar LangChain para conectar LLMs a bancos de dados e APIs externas','Implementar recall_storage para memória de longo prazo em conversas'],
+  glossMods:[6],
+  refs:[{i:'📄',t:'MemGPT: Towards LLMs as Operating Systems',s:'Packer et al. · arXiv 2024 · Gratuito',u:'https://arxiv.org/abs/2310.08560'},{i:'💻',t:'LangChain Crash Course — Johntango',s:'GitHub · Código aberto',u:'https://github.com/'},{i:'📺',t:'MemGPT — Teaching LLMs Memory Management',s:'Vertex Ventures · YouTube gratuito',u:'https://www.youtube.com/'},{i:'📄',t:'At the Intersection of LLMs and Kernels — Frye',s:'GitHub Research · Gratuito',u:'https://github.com/'}],
+  proTxt:'Implementação de MemGPT-like com Python e LangChain, arquitetura de chatbot com dois modos (dev/user), integração com SQL via agente, sistema de recall_storage para memória persistente, e análise de performance de estratégias de compressão de contexto.'},
+
+  {id:7,num:'07',cat:'modelos',title:'Engenharia de LLMs — Vetores, ReAct e o Futuro do Trabalho',subtitle:'Representações vetoriais, raciocínio e ação intercalados e impacto no mercado',tags:[{l:'Modelos',c:'tag-corte'},{l:'Agentes',c:'tag-farpa'},{l:'Pro',c:'tag-urgente'}],diff:4,dur:'~60 min',pro:true,
+  summary:'LLMs convertem texto em embeddings vetoriais em espaço multidimensional — clusters de cores representam grupos semânticos. Similaridade semântica = proximidade espacial. LangChain combina LLM + Memória + Prompt + Agente em FINAL CHAIN para chatbots, summarização, consulta de dados tabulares, interação com APIs e compreensão de código. O framework ReAct intercala raciocínio e ação para melhorar conclusão de tarefas. O impacto no mercado de trabalho é real: reskilling é imperativo, mas IA também cria novas funções.',
+  objs:['Visualizar e interpretar representações de embedding vetorial em espaço 3D','Implementar o framework ReAct para agentes que raciocinam e agem','Usar plugins para estender funcionalidades dos LLMs','Analisar o impacto da IA no futuro das profissões com dados do WEF 2025'],
+  glossMods:[7],
+  refs:[{i:'📄',t:'ReAct: Synergizing Reasoning and Acting in LLMs',s:'Yao et al. · arXiv 2023 · Gratuito',u:'https://arxiv.org/abs/2210.03629'},{i:'📄',t:'The Future of Jobs Report 2025 — WEF',s:'World Economic Forum · Gratuito',u:'https://www.weforum.org/reports/'},{i:'📄',t:'Introducing Text and Code Embeddings — OpenAI',s:'Neelakantan et al. · Gratuito',u:'https://openai.com/research/text-and-code-embeddings'},{i:'📄',t:'How to Reskill Your Workforce in the Age of AI',s:'Harvard Business Review · Gratuito',u:'https://hbr.org/'}],
+  proTxt:'Visualização 3D interativa de embeddings com Plotly, implementação de agente ReAct do zero em Python, criação de plugin customizado, análise quantitativa do impacto por função profissional com dados WEF 2025, e roadmap de adaptação de carreira para a era da IA.'},
+
+  {id:8,num:'08',cat:'economia',title:'Ecossistema e Estratégia — O Mercado Global de IA',subtitle:'Players do ecossistema, comparação de modelos e framework de maturidade de dados',tags:[{l:'Economia',c:'tag-warn'},{l:'Estratégia',c:'tag-muted'},{l:'Pro',c:'tag-urgente'}],diff:3,dur:'~55 min',pro:true,
+  summary:'O ecossistema de IA organiza-se em 5 camadas: Apps, Developer, Data, Security e Infrastructure — em cloud, mobile e IA. ChatGPT lidera aplicações; NVIDIA domina infraestrutura de IA. Benchmarks (MMLU, GSM8K, HumanEval) mostram Claude 3 Opus liderando em raciocínio. A pirâmide de maturidade de dados vai de coleta básica (O que aconteceu?) até IA/deep learning (Qual é a melhor coisa a acontecer?). Raciocínio agêntico representa a shift de IA passiva para sistemas proativos e autônomos.',
+  objs:['Mapear os principais players do ecossistema de IA em cloud, mobile e IA','Comparar modelos LLM usando benchmarks padronizados (MMLU, GSM8K, HumanEval, BIG-Bench)','Aplicar o framework de maturidade de dados para posicionar a organização','Desenvolver estratégia de integração de IA para escalar operações'],
+  glossMods:[8],
+  refs:[{i:'📊',t:'AI Index Report 2024 — Stanford HAI',s:'Stanford University · Gratuito',u:'https://aiindex.stanford.edu/report/'},{i:'📄',t:'Generative AI\'s Act Two — Sequoia Capital',s:'Sequoia · Gratuito',u:'https://www.sequoiacap.com/'},{i:'📊',t:'The AI Hierarchy of Needs — Rogati',s:'HackerNoon · Gratuito',u:'https://hackernoon.com/the-ai-hierarchy-of-needs'},{i:'📄',t:'16 Changes to How Enterprises Build GenAI — a16z',s:'Andreessen Horowitz · Gratuito',u:'https://a16z.com/'}],
+  proTxt:'Análise competitiva Claude vs GPT vs Gemini vs Llama com benchmarks atualizados, framework de decisão build vs buy vs fine-tune, template de roadmap de maturidade de dados para PMEs brasileiras, e modelo financeiro de ROI para iniciativas de IA com benchmarks setoriais.'},
+];
+
+let currentCat='all',currentSearch='',currentSort='num';
+
+function renderAll(){
+  let data=[...MODULES];
+  if(currentCat!=='all') data=data.filter(m=>m.cat===currentCat);
+  if(currentSearch.trim()){
+    const q=currentSearch.toLowerCase();
+    data=data.filter(m=>m.title.toLowerCase().includes(q)||m.subtitle.toLowerCase().includes(q)||m.summary.toLowerCase().includes(q)||m.tags.some(t=>t.l.toLowerCase().includes(q))||m.objs.some(o=>o.toLowerCase().includes(q)));
+  }
+  if(currentSort==='az') data.sort((a,b)=>a.title.localeCompare(b.title,'pt'));
+  else if(currentSort==='dificuldade') data.sort((a,b)=>a.diff-b.diff);
+  else data.sort((a,b)=>a.id-b.id);
+
+  const list=document.getElementById('modules-list');
+  const noRes=document.getElementById('no-results');
+  const banner=document.getElementById('upgrade-banner');
+  document.getElementById('results-count').textContent=`${data.length} módulo${data.length!==1?'s':''}`;
+  if(!data.length){list.innerHTML='';noRes.classList.add('show');banner.style.display='none';return;}
+  noRes.classList.remove('show');
+  banner.style.display=data.some(m=>m.pro)?'flex':'none';
+  list.innerHTML=data.map(renderCard).join('');
+}
+
+function renderCard(m){
+  const tags=m.tags.map(t=>`<span class="tag ${t.c}">${t.l}</span>`).join('');
+  const dots=[1,2,3,4].map(i=>{
+    if(i>m.diff) return '<div class="difficulty-dot"></div>';
+    const cls=m.diff<=2?'filled':m.diff===3?'filled mid':'filled hard';
+    return `<div class="difficulty-dot ${cls}"></div>`;
+  }).join('');
+  const objHTML=m.objs.map(o=>`<div class="obj-item"><div class="obj-dot"></div><span>${o}</span></div>`).join('');
+  const mGloss=GLOSSARY_ALL.filter(g=>m.glossMods.includes(g.mod)).slice(0,8);
+  const glossHTML=mGloss.length?`<div><div class="gloss-inline-label">Glossário do módulo (${mGloss.length} termos principais)</div><div class="gloss-grid">${mGloss.map(g=>`<div class="gloss-card"><div class="gloss-card-term">${g.term}</div><div class="gloss-card-def">${g.def}</div></div>`).join('')}</div></div>`:'';
+  const refsHTML=`<div><div class="refs-label">Referências públicas creditadas</div>${m.refs.map(r=>`<div class="ref-item"><span class="ref-icon">${r.i}</span><div class="ref-content"><div class="ref-title">${r.t}</div><div class="ref-source">${r.s}</div></div><a class="ref-link" href="${r.u}" target="_blank" rel="noopener">Acessar</a></div>`).join('')}</div>`;
+  const proHTML=m.pro?`<div class="module-pro-block"><div class="module-pro-blur">${m.proTxt}</div><div class="module-pro-overlay"><div class="module-pro-badge">Exclusivo Pro</div><div class="module-pro-text">Análise aprofundada + implementações</div><div class="module-pro-sub">Notas completas, código funcional e referências complementares curadas.</div><button class="module-pro-btn" onclick="scrollToUpgrade()">Desbloquear acesso</button></div></div>`:'';
+  return `<div class="module-card" id="module-${m.id}" data-cat="${m.cat}">
+    <div class="module-header" onclick="toggleCard(${m.id})">
+      <div class="module-num">${m.num}</div>
+      <div class="module-header-content"><div class="module-tags">${tags}</div><div class="module-title">${m.title}</div><div class="module-subtitle">${m.subtitle}</div></div>
+      <div class="module-toggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg></div>
+    </div>
+    <div class="module-body"><div class="module-body-inner">
+      <div class="module-summary">${m.summary}</div>
+      <div class="module-objectives"><div class="objectives-label">Objetivos de aprendizado</div>${objHTML}</div>
+      ${glossHTML}${refsHTML}${proHTML}
+    </div></div>
+    <div class="module-footer"><div class="module-difficulty"><div class="difficulty-dots">${dots}</div>Dificuldade</div><div class="module-duration">⏱ ${m.dur}</div></div>
+  </div>`;
+}
+
+function buildGlossary(){
+  document.getElementById('gloss-list').innerHTML=GLOSSARY_ALL.map((g,i)=>`<div class="gloss-item" id="gi-${i}"><div class="gloss-term">${g.term}</div><div class="gloss-def">${g.def}</div></div>`).join('');
+}
+
+function filterGlossary(val){
+  const q=val.trim().toLowerCase();
+  document.querySelectorAll('.gloss-item').forEach(el=>{
+    const t=el.querySelector('.gloss-term').textContent.toLowerCase();
+    const d=el.querySelector('.gloss-def').textContent.toLowerCase();
+    el.classList.toggle('visible',q.length>=2&&(t.includes(q)||d.includes(q)));
+  });
+}
+
+function toggleCard(id){
+  const card=document.getElementById(`module-${id}`);
+  if(!card) return;
+  const wasOpen=card.classList.contains('open');
+  document.querySelectorAll('.module-card.open').forEach(c=>c.classList.remove('open'));
+  if(!wasOpen) card.classList.add('open');
+}
+
+function filterCat(cat,btn){
+  currentCat=cat;
+  document.querySelectorAll('.sidebar-cat').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderAll();
+}
+
+function handleSearch(v){currentSearch=v;renderAll();}
+function handleSort(v){currentSort=v;renderAll();}
+
+function scrollToUpgrade(){
+  const btn=document.getElementById('upgrade-btn');
+  if(btn){btn.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(()=>btn.style.boxShadow='0 0 32px rgba(0,255,136,0.4)',400);setTimeout(()=>btn.style.boxShadow='',2000);}
+}
+
+buildGlossary();
+renderAll();
+setTimeout(()=>{const f=document.querySelector('.module-card');if(f)f.classList.add('open');},100);
+</script>
+
+<!-- Barra de acesso rápido -->
+<div style="position:fixed;left:20px;top:50%;transform:translateY(-50%);z-index:90;display:flex;flex-direction:column;gap:6px;background:rgba(20,20,20,0.92);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:10px 8px;opacity:0;transition:opacity 0.3s;" id="quick-bar">
+  <a href="index.html" style="width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:transparent;border:1px solid transparent;cursor:pointer;transition:all 0.18s;text-decoration:none;position:relative;" title="Home" onmouseover="this.style.background='rgba(255,255,255,0.06)'" onmouseout="this.style.background='transparent'"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f0f0ef" stroke-width="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></a>
+  <a href="biblioteca.html" style="width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:transparent;border:1px solid transparent;cursor:pointer;transition:all 0.18s;text-decoration:none;" title="Biblioteca" onmouseover="this.style.background='rgba(181,122,255,0.1)'" onmouseout="this.style.background='transparent'"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#b57aff" stroke-width="1.8"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></a>
+  <a href="mercados.html" style="width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:transparent;border:1px solid transparent;cursor:pointer;transition:all 0.18s;text-decoration:none;" title="Mercados" onmouseover="this.style.background='rgba(0,255,136,0.1)'" onmouseout="this.style.background='transparent'"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00ff88" stroke-width="1.8"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></a>
+  <a href="labs.html" style="width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:transparent;border:1px solid transparent;cursor:pointer;transition:all 0.18s;text-decoration:none;" title="Labs" onmouseover="this.style.background='rgba(0,229,255,0.1)'" onmouseout="this.style.background='transparent'"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00e5ff" stroke-width="1.8"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18"/></svg></a>
+  <div style="height:1px;background:rgba(255,255,255,0.1);margin:2px 0;"></div>
+  <a href="pro.html" style="width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:rgba(255,215,100,0.08);border:1px solid rgba(255,215,100,0.2);cursor:pointer;transition:all 0.18s;text-decoration:none;" title="Pro" onmouseover="this.style.background='rgba(255,215,100,0.16)'" onmouseout="this.style.background='rgba(255,215,100,0.08)'"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffd764" stroke-width="1.8"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></a>
+</div>
+<script>
+window.addEventListener('scroll',()=>{const b=document.getElementById('quick-bar');if(b)b.style.opacity=window.scrollY>150?'1':'0';},{passive:true});
+</script>
+
+</body>
+</html>

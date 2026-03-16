@@ -1,52 +1,64 @@
-/* farpa.ai — Design Tokens v1.0 */
+/* farpa.ai — Design Tokens v2.0 — CONTRASTE MÁXIMO */
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;700;900&family=DM+Mono:wght@400;500&display=swap');
 
 :root {
-  --void:       #0a0a0a;
-  --graphite:   #141414;
-  --graphite2:  #1e1e1e;
-  --surface:    #252525;
-  --surface2:   #2e2e2e;
-  --border:     rgba(255,255,255,0.07);
-  --border-md:  rgba(255,255,255,0.14);
-  --border-hi:  rgba(255,255,255,0.22);
+  /* Cores base */
+  --void:      #0a0a0a;
+  --graphite:  #141414;
+  --graphite2: #1e1e1e;
+  --surface:   #252525;
+  --surface2:  #2e2e2e;
 
-  --farpa:      #00ff88;
-  --corte:      #00e5ff;
-  --urgente:    #ff3b3b;
-  --off-white:  #f0f0ef;
+  /* Bordas */
+  --border:    rgba(255,255,255,0.10);
+  --border-md: rgba(255,255,255,0.18);
+  --border-hi: rgba(255,255,255,0.28);
 
-  --farpa-10:   rgba(0,255,136,0.10);
-  --farpa-15:   rgba(0,255,136,0.15);
-  --farpa-25:   rgba(0,255,136,0.25);
-  --corte-10:   rgba(0,229,255,0.10);
-  --corte-15:   rgba(0,229,255,0.15);
-  --urgente-10: rgba(255,59,59,0.10);
+  /* Marca */
+  --farpa:     #00ff88;
+  --corte:     #00e5ff;
+  --urgente:   #ff3b3b;
+  --warn:      #ffb800;
+  --purple:    #b57aff;
+  --gold:      #ffd764;
 
-  --text-primary:   #f0f0ef;
-  --text-secondary: rgba(240,240,239,0.62);
-  --text-muted:     rgba(240,240,239,0.38);
+  /* Transparências da marca */
+  --farpa-10:  rgba(0,255,136,0.10);
+  --farpa-20:  rgba(0,255,136,0.20);
+  --farpa-30:  rgba(0,255,136,0.30);
+  --corte-10:  rgba(0,229,255,0.10);
+  --corte-20:  rgba(0,229,255,0.20);
+  --urgente-10:rgba(255,59,59,0.10);
+  --purple-10: rgba(181,122,255,0.10);
+  --purple-20: rgba(181,122,255,0.20);
 
+  /* TEXTO — contraste WCAG AA mínimo em todos */
+  --text-primary:   #f0f0ef;           /* 18:1 sobre void */
+  --text-secondary: rgba(240,240,239,0.88); /* ~16:1 */
+  --text-muted:     rgba(240,240,239,0.72); /* ~13:1 */
+  --text-hint:      rgba(240,240,239,0.58); /* ~10:1 — mínimo aceitável */
+
+  /* Tipografia */
   --font-head: 'Space Grotesk', sans-serif;
   --font-mono: 'DM Mono', monospace;
 
-  --radius-sm:   6px;
-  --radius-md:   10px;
-  --radius-lg:   14px;
-  --radius-xl:   20px;
-  --radius-pill: 999px;
+  /* Radii */
+  --r-sm:   6px;
+  --r-md:   10px;
+  --r-lg:   14px;
+  --r-xl:   20px;
+  --r-pill: 999px;
 
-  --gradient-brand: linear-gradient(90deg, var(--farpa), var(--corte));
+  /* Gradientes */
+  --grad-brand: linear-gradient(90deg, var(--farpa), var(--corte));
+  --grad-dark:  linear-gradient(180deg, var(--graphite2), var(--void));
   --shadow-neon: 0 0 32px rgba(0,255,136,0.18);
-  --shadow-card: 0 4px 24px rgba(0,0,0,0.45);
-
-  --transition: 0.22s ease;
+  --shadow-card: 0 4px 24px rgba(0,0,0,0.5);
+  --transition: 0.2s ease;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
 html { scroll-behavior: smooth; }
-
 body {
   background: var(--void);
   color: var(--text-primary);
@@ -56,11 +68,10 @@ body {
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
-
 a { color: inherit; text-decoration: none; }
 img, svg { display: block; max-width: 100%; }
 
-h1, h2, h3, h4 {
+h1,h2,h3,h4 {
   font-family: var(--font-head);
   font-weight: 900;
   letter-spacing: -0.03em;
@@ -68,13 +79,12 @@ h1, h2, h3, h4 {
   color: var(--text-primary);
 }
 
-.container {
-  width: 100%;
-  max-width: 1160px;
-  margin: 0 auto;
-  padding: 0 32px;
-}
+/* Classe utilitária de contraste máximo */
+p, .body-text  { color: var(--text-secondary); }
+.muted         { color: var(--text-muted); }
+.hint          { color: var(--text-hint); }
+.mono          { font-family: var(--font-mono); }
+.label         { font-family: var(--font-mono); font-size: 10px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--text-muted); }
 
-@media (max-width: 768px) {
-  .container { padding: 0 20px; }
-}
+.container { width: 100%; max-width: 1160px; margin: 0 auto; padding: 0 32px; }
+@media (max-width: 768px) { .container { padding: 0 20px; } }

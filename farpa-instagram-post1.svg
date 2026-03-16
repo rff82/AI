@@ -1,0 +1,88 @@
+<svg viewBox="0 0 1080 1080" width="1080" height="1080" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="pg1" cx="70%" cy="25%" r="50%">
+      <stop offset="0%" stop-color="#0d1f14"/>
+      <stop offset="100%" stop-color="#060a07"/>
+    </radialGradient>
+    <radialGradient id="pg2" cx="70%" cy="25%" r="45%">
+      <stop offset="0%" stop-color="#00ff88" stop-opacity="0.14"/>
+      <stop offset="100%" stop-color="#00ff88" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="pg3" cx="15%" cy="80%" r="40%">
+      <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="#00e5ff" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="pl1" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="transparent"/>
+      <stop offset="35%" stop-color="#00ff88" stop-opacity="0.5"/>
+      <stop offset="65%" stop-color="#00e5ff" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="transparent"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Fundo -->
+  <rect width="1080" height="1080" fill="url(#pg1)"/>
+  <rect width="1080" height="1080" fill="url(#pg2)"/>
+  <rect width="1080" height="1080" fill="url(#pg3)"/>
+
+  <!-- Grid -->
+  <line x1="0" y1="216" x2="1080" y2="216" stroke="#00ff88" stroke-width="0.6" stroke-opacity="0.12"/>
+  <line x1="0" y1="432" x2="1080" y2="432" stroke="#00ff88" stroke-width="0.6" stroke-opacity="0.12"/>
+  <line x1="0" y1="648" x2="1080" y2="648" stroke="#00ff88" stroke-width="0.6" stroke-opacity="0.12"/>
+  <line x1="0" y1="864" x2="1080" y2="864" stroke="#00ff88" stroke-width="0.6" stroke-opacity="0.12"/>
+  <line x1="216" y1="0" x2="216" y2="1080" stroke="#00ff88" stroke-width="0.6" stroke-opacity="0.12"/>
+  <line x1="432" y1="0" x2="432" y2="1080" stroke="#00ff88" stroke-width="0.6" stroke-opacity="0.12"/>
+  <line x1="648" y1="0" x2="648" y2="1080" stroke="#00ff88" stroke-width="0.6" stroke-opacity="0.12"/>
+  <line x1="864" y1="0" x2="864" y2="1080" stroke="#00ff88" stroke-width="0.6" stroke-opacity="0.12"/>
+
+  <!-- Ícone decorativo canto superior direito -->
+  <g transform="translate(940,100) scale(2.4)" opacity="0.15">
+    <polygon points="0,-38 22,-18 14,-2 28,16 0,28 -28,16 -14,-2 -22,-18" fill="none" stroke="#00ff88" stroke-width="1.5" stroke-linejoin="round"/>
+    <polygon points="0,-24 14,-12 8,-2 18,12 0,20 -18,12 -8,-2 -14,-12" fill="#00ff88" stroke-width="0" opacity="0.2"/>
+    <circle cx="0" cy="0" r="4" fill="#00ff88"/>
+  </g>
+
+  <!-- Linha decorativa topo -->
+  <rect x="80" y="108" width="920" height="1.5" fill="url(#pl1)"/>
+
+  <!-- Badge -->
+  <rect x="80" y="132" width="240" height="44" rx="22" fill="rgba(0,255,136,0.1)" stroke="#00ff88" stroke-width="1.2" stroke-opacity="0.4"/>
+  <text x="200" y="160" text-anchor="middle" font-family="'DM Mono',monospace" font-size="17" letter-spacing="3" fill="#00ff88">CHEGAMOS</text>
+
+  <!-- Headline — grande, branco, máximo contraste -->
+  <text x="80" y="310" font-family="'Space Grotesk',Arial Black,sans-serif" font-size="140" font-weight="900" letter-spacing="-7" fill="#f0f0ef">A notícia</text>
+  <text x="80" y="452" font-family="'Space Grotesk',Arial Black,sans-serif" font-size="140" font-weight="900" letter-spacing="-7" fill="#00ff88">que importa.</text>
+  <text x="80" y="578" font-family="'Space Grotesk',Arial,sans-serif" font-size="140" font-weight="300" letter-spacing="-7" fill="rgba(240,240,239,0.5)">sem o ruído.</text>
+
+  <!-- Linha divisória -->
+  <rect x="80" y="616" width="920" height="1.5" fill="url(#pl1)" opacity="0.4"/>
+
+  <!-- Descrição — texto claro e grande -->
+  <text x="80" y="666" font-family="'Space Grotesk',Arial,sans-serif" font-size="30" fill="#f0f0ef" font-weight="400">Curadoria de IA, notícias e ferramentas interativas.</text>
+  <text x="80" y="706" font-family="'Space Grotesk',Arial,sans-serif" font-size="30" fill="rgba(240,240,239,0.88)" font-weight="400">8 módulos de IA · Mercados ao vivo · Demos grátis.</text>
+
+  <!-- Pills de features -->
+  <rect x="80" y="742" width="260" height="52" rx="26" fill="rgba(0,255,136,0.1)" stroke="#00ff88" stroke-width="1.2" stroke-opacity="0.35"/>
+  <text x="210" y="773" text-anchor="middle" font-family="'DM Mono',monospace" font-size="18" letter-spacing="1.5" fill="#00ff88">Notícias ao vivo</text>
+
+  <rect x="356" y="742" width="260" height="52" rx="26" fill="rgba(0,229,255,0.1)" stroke="#00e5ff" stroke-width="1.2" stroke-opacity="0.35"/>
+  <text x="486" y="773" text-anchor="middle" font-family="'DM Mono',monospace" font-size="18" letter-spacing="1.5" fill="#00e5ff">Biblioteca de IA</text>
+
+  <rect x="632" y="742" width="180" height="52" rx="26" fill="rgba(181,122,255,0.1)" stroke="#b57aff" stroke-width="1.2" stroke-opacity="0.35"/>
+  <text x="722" y="773" text-anchor="middle" font-family="'DM Mono',monospace" font-size="18" letter-spacing="1" fill="#b57aff">Labs ⚗</text>
+
+  <!-- CTA button -->
+  <rect x="80" y="824" width="380" height="72" rx="36" fill="#00ff88"/>
+  <text x="270" y="867" text-anchor="middle" font-family="'Space Grotesk',Arial Black,sans-serif" font-size="25" font-weight="900" fill="#050a07">farpa.ai — acesse grátis</text>
+
+  <!-- Logo bottom right -->
+  <g transform="translate(940,952) scale(1.6)">
+    <polygon points="0,-26 16,-13 10,-2 20,11 0,20 -20,11 -10,-2 -16,-13" fill="none" stroke="#00ff88" stroke-width="1.5" stroke-linejoin="round"/>
+    <polygon points="0,-17 10,-8 6,-2 12,8 0,14 -12,8 -6,-2 -10,-8" fill="rgba(0,255,136,0.1)" stroke-width="0"/>
+    <circle cx="0" cy="0" r="2.8" fill="#00ff88"/>
+  </g>
+  <text x="875" y="988" text-anchor="middle" font-family="'Space Grotesk',Arial Black,sans-serif" font-size="26" font-weight="900" letter-spacing="-1" fill="#f0f0ef">farpa<tspan fill="#00ff88" font-weight="300">.ai</tspan></text>
+
+  <!-- Linha decorativa bottom -->
+  <rect x="80" y="1022" width="920" height="1.5" fill="url(#pl1)" opacity="0.3"/>
+</svg>
