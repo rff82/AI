@@ -1,565 +1,626 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Farpa.ai - Portal Educativo de IA para Executivos. Compreenda os fundamentos, dados, infraestrutura e maturidade em IA.">
-    <meta name="keywords" content="IA, Inteligência Artificial, Educação, Executivos, LLM, RAG, Transformação Digital">
-    <title>Farpa.ai - Portal Educativo de IA</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --primary: #0ea5e9;
-            --primary-dark: #0284c7;
-            --secondary: #8b5cf6;
-            --accent: #ec4899;
-            --bg-dark: #0f172a;
-            --bg-darker: #020617;
-            --bg-light: #1e293b;
-            --text-primary: #f1f5f9;
-            --text-secondary: #cbd5e1;
-            --border: #334155;
-            --success: #10b981;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-            background: linear-gradient(135deg, var(--bg-darker) 0%, var(--bg-dark) 100%);
-            color: var(--text-primary);
-            line-height: 1.6;
-        }
-
-        /* Navigation */
-        nav {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            background: rgba(15, 23, 42, 0.95);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--border);
-            z-index: 1000;
-            padding: 1rem 2rem;
-        }
-
-        nav .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        nav ul {
-            display: flex;
-            list-style: none;
-            gap: 2rem;
-        }
-
-        nav a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 0.95rem;
-            transition: color 0.3s ease;
-            position: relative;
-        }
-
-        nav a:hover {
-            color: var(--primary);
-        }
-
-        nav a::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: var(--primary);
-            transition: width 0.3s ease;
-        }
-
-        nav a:hover::after {
-            width: 100%;
-        }
-
-        /* Hero Section */
-        .hero {
-            margin-top: 80px;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 2rem;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -20%;
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, rgba(14, 165, 233, 0.15) 0%, transparent 70%);
-            border-radius: 50%;
-            animation: float 6s ease-in-out infinite;
-        }
-
-        .hero::after {
-            content: '';
-            position: absolute;
-            bottom: -30%;
-            left: -10%;
-            width: 500px;
-            height: 500px;
-            background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, transparent 70%);
-            border-radius: 50%;
-            animation: float 8s ease-in-out infinite reverse;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(30px); }
-        }
-
-        .hero-content {
-            max-width: 900px;
-            text-align: center;
-            position: relative;
-            z-index: 10;
-        }
-
-        .hero h1 {
-            font-size: clamp(2.5rem, 8vw, 4.5rem);
-            font-weight: 800;
-            margin-bottom: 1.5rem;
-            line-height: 1.1;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, var(--accent) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .hero p {
-            font-size: 1.25rem;
-            color: var(--text-secondary);
-            margin-bottom: 2rem;
-            max-width: 700px;
-            margin-left: auto;
-            margin-right: auto;
-            line-height: 1.8;
-        }
-
-        .cta-buttons {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-bottom: 3rem;
-        }
-
-        .btn {
-            padding: 1rem 2rem;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            border: none;
-            cursor: pointer;
-            display: inline-block;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: white;
-            box-shadow: 0 10px 30px rgba(14, 165, 233, 0.3);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 40px rgba(14, 165, 233, 0.4);
-        }
-
-        .btn-secondary {
-            background: transparent;
-            color: var(--primary);
-            border: 2px solid var(--primary);
-        }
-
-        .btn-secondary:hover {
-            background: rgba(14, 165, 233, 0.1);
-            transform: translateY(-2px);
-        }
-
-        /* Learning Paths */
-        .learning-paths {
-            padding: 6rem 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .section-title {
-            font-size: clamp(2rem, 5vw, 3.5rem);
-            font-weight: 800;
-            margin-bottom: 1rem;
-            text-align: center;
-        }
-
-        .section-subtitle {
-            text-align: center;
-            color: var(--text-secondary);
-            font-size: 1.1rem;
-            margin-bottom: 4rem;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .paths-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 2rem;
-        }
-
-        .path-card {
-            background: linear-gradient(135deg, rgba(30, 41, 59, 0.5) 0%, rgba(51, 65, 85, 0.3) 100%);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 2rem;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .path-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
-            transform: scaleX(0);
-            transform-origin: left;
-            transition: transform 0.3s ease;
-        }
-
-        .path-card:hover {
-            border-color: var(--primary);
-            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(51, 65, 85, 0.5) 100%);
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(14, 165, 233, 0.15);
-        }
-
-        .path-card:hover::before {
-            transform: scaleX(1);
-        }
-
-        .path-number {
-            font-size: 3rem;
-            font-weight: 700;
-            color: var(--primary);
-            opacity: 0.3;
-            margin-bottom: 1rem;
-        }
-
-        .path-card h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            color: var(--text-primary);
-        }
-
-        .path-card p {
-            color: var(--text-secondary);
-            line-height: 1.7;
-            flex-grow: 1;
-            margin-bottom: 1.5rem;
-        }
-
-        .path-link {
-            color: var(--primary);
-            text-decoration: none;
-            font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: gap 0.3s ease;
-        }
-
-        .path-link:hover {
-            gap: 1rem;
-        }
-
-        /* Featured Image Section */
-        .featured-image {
-            padding: 4rem 2rem;
-            text-align: center;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .featured-image img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 12px;
-            box-shadow: 0 20px 60px rgba(14, 165, 233, 0.2);
-        }
-
-        /* Footer */
-        footer {
-            background: rgba(2, 6, 23, 0.8);
-            border-top: 1px solid var(--border);
-            padding: 3rem 2rem;
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-        }
-
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        .footer-section h4 {
-            color: var(--text-primary);
-            margin-bottom: 1rem;
-        }
-
-        .footer-section ul {
-            list-style: none;
-        }
-
-        .footer-section a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            transition: color 0.3s ease;
-            display: block;
-            margin-bottom: 0.5rem;
-        }
-
-        .footer-section a:hover {
-            color: var(--primary);
-        }
-
-        .footer-bottom {
-            text-align: center;
-            border-top: 1px solid var(--border);
-            padding-top: 2rem;
-        }
-
-        /* Animations */
-        @keyframes slideInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .path-card {
-            animation: slideInUp 0.6s ease forwards;
-        }
-
-        .path-card:nth-child(1) { animation-delay: 0.1s; }
-        .path-card:nth-child(2) { animation-delay: 0.2s; }
-        .path-card:nth-child(3) { animation-delay: 0.3s; }
-        .path-card:nth-child(4) { animation-delay: 0.4s; }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            nav ul {
-                gap: 1rem;
-                font-size: 0.85rem;
-            }
-
-            .hero {
-                margin-top: 60px;
-            }
-
-            .cta-buttons {
-                flex-direction: column;
-            }
-
-            .btn {
-                width: 100%;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="farpa.ai — Curadoria inteligente de notícias e análise de insights em tempo real para quem não tem tempo de perder com o superficial.">
+  <meta property="og:title" content="farpa.ai — Notícias que cortam, insights que ficam">
+  <meta property="og:description" content="Curadoria inteligente de notícias e análise de insights em tempo real.">
+  <meta property="og:type" content="website">
+  <title>farpa.ai — Notícias que cortam, insights que ficam</title>
+  <link rel="icon" type="image/svg+xml" href="farpa-icon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;700;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="landing.css">
 </head>
 <body>
-    <!-- Navigation -->
-    <nav>
-        <div class="container">
-            <div class="logo">🚀 Farpa.ai</div>
-            <ul>
-                <li><a href="#trilhas">Trilhas de Aprendizado</a></li>
-                <li><a href="#recursos">Recursos</a></li>
-                <li><a href="#contato">Contato</a></li>
-            </ul>
+
+<!-- Cursor personalizado -->
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- Grain overlay -->
+<div id="grain"></div>
+
+<!-- ═══════════════════════════════════
+     NAVEGAÇÃO
+════════════════════════════════════ -->
+<nav class="nav">
+  <div class="container">
+    <div class="nav-inner">
+      <a href="#" class="nav-logo">
+        <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="28,4 44,18 36,28 48,44 28,52 8,44 20,28 12,18" fill="none" stroke="#00ff88" stroke-width="1.5" stroke-linejoin="round"/>
+          <polygon points="28,12 38,22 32,28 40,40 28,46 16,40 24,28 18,22" fill="rgba(0,255,136,0.08)" stroke="#00ff88" stroke-width="0.8" stroke-linejoin="round"/>
+          <circle cx="28" cy="28" r="2.5" fill="#00ff88"/>
+          <line x1="28" y1="4" x2="28" y2="12" stroke="#00e5ff" stroke-width="0.8" opacity="0.6"/>
+          <line x1="44" y1="18" x2="38" y2="22" stroke="#00e5ff" stroke-width="0.8" opacity="0.6"/>
+        </svg>
+        <span class="nav-logo-text">farpa<span class="ai">.ai</span></span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="#features">Recursos</a></li>
+        <li><a href="#how">Como funciona</a></li>
+        <li><a href="#categories">Categorias</a></li>
+        <li><a href="#pricing">Planos</a></li>
+        <li><a href="#waitlist" class="nav-cta">Acesso antecipado</a></li>
+      </ul>
+
+      <button class="nav-mobile-toggle" aria-label="Menu">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════
+     HERO
+════════════════════════════════════ -->
+<section class="hero" id="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-eyebrow">
+        <span class="hero-eyebrow-dot"></span>
+        Curadoria com inteligência artificial
+      </div>
+
+      <h1 class="hero-headline">
+        A notícia<br>
+        <span class="line-accent">que importa</span><br>
+        sem o ruído.
+      </h1>
+
+      <p class="hero-sub">
+        O farpa.ai monitora centenas de fontes, extrai os fragmentos que realmente cortam e entrega insights acionáveis antes que o mercado perceba.
+      </p>
+
+      <div class="hero-actions">
+        <a href="#waitlist" class="btn-primary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          Quero acesso antecipado
+        </a>
+        <a href="#how" class="btn-ghost">
+          Ver como funciona
+        </a>
+      </div>
+
+      <div class="hero-stats">
+        <div>
+          <div class="hero-stat-num" data-count="1200" data-suffix="+">1.200+</div>
+          <div class="hero-stat-label">fontes monitoradas</div>
         </div>
-    </nav>
-
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-content">
-            <h1>Inteligência Artificial para Executivos</h1>
-            <p>Um portal educativo para compreender os fundamentos, aplicações e estratégias de transformação com IA. Sem jargão técnico. Apenas conhecimento estratégico.</p>
-            
-            <div class="cta-buttons">
-                <a href="#trilhas" class="btn btn-primary">Explorar Trilhas</a>
-                <a href="#recursos" class="btn btn-secondary">Ver Recursos</a>
-            </div>
+        <div class="hero-stat-divider"></div>
+        <div>
+          <div class="hero-stat-num" data-count="98" data-suffix="%">98%</div>
+          <div class="hero-stat-label">precisão nos insights</div>
         </div>
-    </section>
-
-    <!-- Learning Paths Section -->
-    <section class="learning-paths" id="trilhas">
-        <h2 class="section-title">Trilhas de Aprendizado</h2>
-        <p class="section-subtitle">Escolha seu caminho e aprofunde-se nos temas que mais importam para sua organização</p>
-        
-        <div class="paths-grid">
-            <div class="path-card">
-                <div class="path-number">01</div>
-                <h3>Fundamentos de IA</h3>
-                <p>Compreenda os pilares da Inteligência Artificial Generativa: Transformers, LLMs, espaço latente e como os modelos aprendem a partir de dados.</p>
-                <a href="fundamentos.html" class="path-link">Acessar Trilha →</a>
-            </div>
-
-            <div class="path-card">
-                <div class="path-number">02</div>
-                <h3>Dados & Democratização</h3>
-                <p>Descubra como transformar dados em insights sem barreiras técnicas. RAG, embeddings e a revolução do acesso a informações em linguagem natural.</p>
-                <a href="dados.html" class="path-link">Acessar Trilha →</a>
-            </div>
-
-            <div class="path-card">
-                <div class="path-number">03</div>
-                <h3>Infraestrutura & Escala</h3>
-                <p>Explore os requisitos de infraestrutura para implementar IA em escala: GPUs, TPUs, cloud computing e otimização de custos operacionais.</p>
-                <a href="infraestrutura.html" class="path-link">Acessar Trilha →</a>
-            </div>
-
-            <div class="path-card">
-                <div class="path-number">04</div>
-                <h3>Maturidade Organizacional</h3>
-                <p>Entenda os 5 estágios de maturidade em IA: de consciência inicial até inovação contínua. Evite armadilhas e acelere sua transformação.</p>
-                <a href="maturidade.html" class="path-link">Acessar Trilha →</a>
-            </div>
+        <div class="hero-stat-divider"></div>
+        <div>
+          <div class="hero-stat-num" data-count="4.2">4.2x</div>
+          <div class="hero-stat-label">mais rápido que o mercado</div>
         </div>
-    </section>
+      </div>
+    </div>
 
-    <!-- Featured Image -->
-    <section class="featured-image">
-        <img src="assets/hero-ai.png" alt="Inteligência Artificial - Rede Neural Conceitual">
-    </section>
-
-    <!-- Footer -->
-    <footer id="contato">
-        <div class="footer-content">
-            <div class="footer-section">
-                <h4>Sobre Farpa.ai</h4>
-                <ul>
-                    <li><a href="#">Sobre o Portal</a></li>
-                    <li><a href="#">Metodologia</a></li>
-                    <li><a href="#">Autores</a></li>
-                </ul>
+    <!-- Mockup flutuante -->
+    <div class="hero-visual">
+      <div class="hero-mockup">
+        <div class="mockup-bar">
+          <div class="mockup-dot"></div>
+          <div class="mockup-dot"></div>
+          <div class="mockup-dot"></div>
+          <div class="mockup-url">farpa.ai / feed</div>
+        </div>
+        <div class="mockup-cards">
+          <div class="mockup-card">
+            <div class="mockup-card-tag">análise · ia</div>
+            <div class="mockup-card-title">Regulação de LLMs avança na União Europeia com prazo de 90 dias</div>
+            <div class="mockup-card-meta">
+              <span class="mockup-card-sources">18 fontes</span>
+              <div class="mockup-bar-wrap"><div class="mockup-bar-fill" data-width="92%" style="width:0"></div></div>
             </div>
-
-            <div class="footer-section">
-                <h4>Trilhas</h4>
-                <ul>
-                    <li><a href="fundamentos.html">Fundamentos de IA</a></li>
-                    <li><a href="dados.html">Dados & Democratização</a></li>
-                    <li><a href="infraestrutura.html">Infraestrutura & Escala</a></li>
-                    <li><a href="maturidade.html">Maturidade Organizacional</a></li>
-                </ul>
+          </div>
+          <div class="mockup-card">
+            <div class="mockup-card-tag urgente">urgente · mercado</div>
+            <div class="mockup-card-title">Dólar rompe resistência chave após dado do Fed</div>
+            <div class="mockup-card-meta">
+              <span class="mockup-card-sources">9 fontes</span>
+              <div class="mockup-bar-wrap"><div class="mockup-bar-fill" data-width="79%" style="width:0"></div></div>
             </div>
-
-            <div class="footer-section">
-                <h4>Recursos</h4>
-                <ul>
-                    <li><a href="#">Glossário</a></li>
-                    <li><a href="#">Referências</a></li>
-                    <li><a href="#">Estudos de Caso</a></li>
-                </ul>
+          </div>
+          <div class="mockup-card">
+            <div class="mockup-card-tag corte">tendência · tech</div>
+            <div class="mockup-card-title">Startups de edge computing recebem US$ 2bi em rodada</div>
+            <div class="mockup-card-meta">
+              <span class="mockup-card-sources">24 fontes</span>
+              <div class="mockup-bar-wrap"><div class="mockup-bar-fill" data-width="88%" style="width:0"></div></div>
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-            <div class="footer-section">
-                <h4>Contato</h4>
-                <ul>
-                    <li><a href="mailto:contato@farpa.ai">contato@farpa.ai</a></li>
-                    <li><a href="#">LinkedIn</a></li>
-                    <li><a href="#">Twitter</a></li>
-                </ul>
-            </div>
+<!-- ═══════════════════════════════════
+     TICKER
+════════════════════════════════════ -->
+<div class="ticker-section">
+  <div class="ticker-track">
+    <span class="ticker-item"><span class="ticker-dot">▸</span>INTELIGÊNCIA ARTIFICIAL</span>
+    <span class="ticker-item"><span class="ticker-dot">▸</span>POLÍTICA ECONÔMICA</span>
+    <span class="ticker-item"><span class="ticker-dot">▸</span>MERCADOS GLOBAIS</span>
+    <span class="ticker-item"><span class="ticker-dot">▸</span>GEOPOLÍTICA</span>
+    <span class="ticker-item"><span class="ticker-dot">▸</span>STARTUPS & VENTURE</span>
+    <span class="ticker-item"><span class="ticker-dot">▸</span>ENERGIA & CLIMA</span>
+    <span class="ticker-item"><span class="ticker-dot">▸</span>REGULAÇÃO & COMPLIANCE</span>
+    <span class="ticker-item"><span class="ticker-dot">▸</span>SAÚDE & BIOTECH</span>
+    <span class="ticker-item"><span class="ticker-dot">▸</span>DEFESA & SEGURANÇA</span>
+    <span class="ticker-item"><span class="ticker-dot">▸</span>CRIPTOMOEDAS & WEB3</span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     FEATURES
+════════════════════════════════════ -->
+<section class="features-section" id="features">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-eyebrow">Recursos</div>
+      <h2 class="section-title">Inteligência que vai fundo.</h2>
+      <p class="section-sub">O farpa.ai não resume notícias — ele identifica as farpas: os fragmentos afiados de informação que outros deixam passar.</p>
+    </div>
+
+    <div class="features-grid">
+      <div class="feature-card featured reveal">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#00ff88" stroke-width="1.8">
+            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+            <path d="M11 8v6M8 11h6" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h3>Monitoramento em tempo real</h3>
+        <p>Mais de 1.200 fontes verificadas monitoradas continuamente. Jornais, agências, newsletters, relatórios setoriais e sinais de mercado.</p>
+        <span class="feature-badge">Ao vivo</span>
+      </div>
+
+      <div class="feature-card reveal">
+        <div class="feature-icon corte-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#00e5ff" stroke-width="1.8">
+            <path d="M9.663 17h4.673M12 3v1m6.364 1.636-.707.707M21 12h-1M4 12H3m3.343-5.657-.707-.707m2.828 9.9a5 5 0 1 1 7.072 0l-.548.547A3.374 3.374 0 0 0 14 18.469V19a2 2 0 1 1-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h3>Análise por IA própria</h3>
+        <p>Nosso modelo identifica padrões, correlações e tendências que não aparecem no headline. Contexto que faz diferença na decisão.</p>
+      </div>
+
+      <div class="feature-card reveal">
+        <div class="feature-icon urgente-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#ff3b3b" stroke-width="1.8">
+            <path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h3>Alertas de urgência</h3>
+        <p>Quando algo realmente importa, você sabe primeiro. Alertas calibrados por relevância, sem spam, sem falsos positivos.</p>
+      </div>
+
+      <div class="feature-card reveal">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#00ff88" stroke-width="1.8">
+            <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+            <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
+          </svg>
+        </div>
+        <h3>Feed personalizado</h3>
+        <p>O algoritmo aprende com seu comportamento. Com o tempo, o seu farpa.ai se torna uma extensão da sua cognição.</p>
+      </div>
+
+      <div class="feature-card reveal">
+        <div class="feature-icon corte-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#00e5ff" stroke-width="1.8">
+            <path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h3>Relatórios de tendência</h3>
+        <p>Sínteses semanais e diárias organizadas por setor. Distribua para o seu time com um clique.</p>
+      </div>
+
+      <div class="feature-card reveal">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#00ff88" stroke-width="1.8">
+            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h3>API & Integrações</h3>
+        <p>Conecte ao Slack, Notion, e-mail ou acesse via API. O farpa.ai entra no seu fluxo de trabalho, não o contrário.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════
+     COMO FUNCIONA
+════════════════════════════════════ -->
+<section class="how-section" id="how">
+  <div class="container">
+    <div class="how-grid">
+      <div>
+        <div class="section-header reveal" style="margin-bottom:48px;">
+          <div class="section-eyebrow">Como funciona</div>
+          <h2 class="section-title">Do ruído ao insight em segundos.</h2>
+          <p class="section-sub">Três etapas simples que acontecem automaticamente, em tempo real.</p>
         </div>
 
-        <div class="footer-bottom">
-            <p>&copy; 2026 Farpa.ai - Portal Educativo de IA. Todos os direitos reservados.</p>
+        <div class="how-steps">
+          <div class="how-step reveal">
+            <div class="how-step-num">01</div>
+            <div class="how-step-content">
+              <h4>Captação contínua</h4>
+              <p>Monitoramos mais de 1.200 fontes — nacionais, internacionais, especializadas e de nicho — 24 horas por dia.</p>
+            </div>
+          </div>
+          <div class="how-step reveal">
+            <div class="how-step-num">02</div>
+            <div class="how-step-content">
+              <h4>Análise e filtragem por IA</h4>
+              <p>Nosso modelo lê, cruza e avalia cada peça de informação. Descarta o ruído. Pontua a relevância. Identifica conexões não óbvias.</p>
+            </div>
+          </div>
+          <div class="how-step reveal">
+            <div class="how-step-num">03</div>
+            <div class="how-step-content">
+              <h4>Entrega do fragmento essencial</h4>
+              <p>Você recebe somente o que importa — com contexto, fontes e nível de urgência claramente indicados.</p>
+            </div>
+          </div>
+          <div class="how-step reveal">
+            <div class="how-step-num">04</div>
+            <div class="how-step-content">
+              <h4>Aprende com você</h4>
+              <p>O algoritmo evolui com base no que você lê, ignora e compartilha. Quanto mais usa, mais preciso fica.</p>
+            </div>
+          </div>
         </div>
-    </footer>
+      </div>
 
-    <script>
-        // Smooth scroll for navigation links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth' });
-                }
-            });
-        });
+      <div class="how-visual reveal">
+        <div class="how-diagram">
+          <div class="how-diagram-glow"></div>
+          <p style="font-family:var(--font-mono);font-size:9px;letter-spacing:2.5px;color:var(--text-muted);text-transform:uppercase;margin-bottom:16px;">Fontes ativas agora</p>
+          <div class="how-source-list">
+            <div class="how-source"><div class="how-source-dot"></div>Reuters Brasil · FT · Bloomberg</div>
+            <div class="how-source"><div class="how-source-dot c"></div>Valor Econômico · Exame · InfoMoney</div>
+            <div class="how-source"><div class="how-source-dot r"></div>Wired · MIT Tech Review · The Verge</div>
+            <div class="how-source"><div class="how-source-dot"></div>+ 1.197 outras fontes verificadas</div>
+          </div>
 
-        // Add scroll animation to elements
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
+          <div class="how-arrow">
+            <div class="how-arrow-line"></div>
+            <span class="how-arrow-icon">⬇</span>
+            <span style="font-size:10px;">Análise em andamento</span>
+            <div class="how-arrow-line" style="background:linear-gradient(90deg,var(--farpa),transparent)"></div>
+          </div>
 
-        const observer = new IntersectionObserver(function(entries) {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
-                }
-            });
-        }, observerOptions);
+          <div class="how-output">
+            <div class="how-output-tag">insight gerado agora</div>
+            <div class="how-output-text">Reguladores da UE e dos EUA convergem em posição sobre modelos de fronteira — janela de 60 dias para compliance</div>
+            <div class="how-output-meta">
+              <span class="how-output-pill f">alta relevância</span>
+              <span class="how-output-pill c">14 fontes</span>
+              <span class="how-output-pill f">2min atrás</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-        document.querySelectorAll('.path-card').forEach(el => {
-            el.style.opacity = '0';
-            el.style.transform = 'translateY(20px)';
-            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-            observer.observe(el);
-        });
-    </script>
+<!-- ═══════════════════════════════════
+     CATEGORIAS
+════════════════════════════════════ -->
+<section class="categories-section" id="categories">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-eyebrow">Categorias</div>
+      <h2 class="section-title">Cobrimos o que importa.</h2>
+      <p class="section-sub">De mercados financeiros a geopolítica, do agro à biotech. Você escolhe onde focar.</p>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="categories-scroll reveal">
+      <div class="category-card active">
+        <span class="category-icon">⚡</span>
+        <div class="category-name">Inteligência Artificial</div>
+        <div class="category-count">247 fontes</div>
+        <div class="category-bar"><div class="category-bar-fill" style="width:94%"></div></div>
+      </div>
+      <div class="category-card">
+        <span class="category-icon">📈</span>
+        <div class="category-name">Mercados & Finanças</div>
+        <div class="category-count">318 fontes</div>
+        <div class="category-bar"><div class="category-bar-fill" style="width:100%"></div></div>
+      </div>
+      <div class="category-card">
+        <span class="category-icon">🌎</span>
+        <div class="category-name">Geopolítica</div>
+        <div class="category-count">189 fontes</div>
+        <div class="category-bar"><div class="category-bar-fill" style="width:75%"></div></div>
+      </div>
+      <div class="category-card">
+        <span class="category-icon">🚀</span>
+        <div class="category-name">Startups & Venture</div>
+        <div class="category-count">156 fontes</div>
+        <div class="category-bar"><div class="category-bar-fill" style="width:62%"></div></div>
+      </div>
+      <div class="category-card">
+        <span class="category-icon">🧬</span>
+        <div class="category-name">Saúde & Biotech</div>
+        <div class="category-count">134 fontes</div>
+        <div class="category-bar"><div class="category-bar-fill" style="width:53%"></div></div>
+      </div>
+      <div class="category-card">
+        <span class="category-icon">⚖️</span>
+        <div class="category-name">Regulação & Direito</div>
+        <div class="category-count">98 fontes</div>
+        <div class="category-bar"><div class="category-bar-fill" style="width:39%"></div></div>
+      </div>
+      <div class="category-card">
+        <span class="category-icon">🌱</span>
+        <div class="category-name">Energia & Clima</div>
+        <div class="category-count">112 fontes</div>
+        <div class="category-bar"><div class="category-bar-fill" style="width:44%"></div></div>
+      </div>
+      <div class="category-card">
+        <span class="category-icon">🛡️</span>
+        <div class="category-name">Defesa & Segurança</div>
+        <div class="category-count">87 fontes</div>
+        <div class="category-bar"><div class="category-bar-fill" style="width:35%"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════
+     PLANOS
+════════════════════════════════════ -->
+<section class="pricing-section" id="pricing">
+  <div class="container">
+    <div class="section-header reveal" style="text-align:center;max-width:100%;margin-bottom:0;">
+      <div class="section-eyebrow">Planos</div>
+      <h2 class="section-title">Simples. Direto. Sem surpresa.</h2>
+      <p class="section-sub" style="margin:0 auto;">Comece grátis. Evolua quando precisar.</p>
+    </div>
+
+    <div class="pricing-grid">
+      <!-- Grátis -->
+      <div class="plan-card reveal">
+        <div class="plan-name">Grátis</div>
+        <div class="plan-price"><sup>R$</sup>0</div>
+        <div class="plan-period">Para sempre</div>
+        <div class="plan-divider"></div>
+        <div class="plan-features">
+          <div class="plan-feature">
+            <div class="plan-feature-check">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m20 6-11 11-5-5"/></svg>
+            </div>
+            Até 3 categorias monitoradas
+          </div>
+          <div class="plan-feature">
+            <div class="plan-feature-check">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m20 6-11 11-5-5"/></svg>
+            </div>
+            20 insights por dia
+          </div>
+          <div class="plan-feature">
+            <div class="plan-feature-check">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m20 6-11 11-5-5"/></svg>
+            </div>
+            Digest semanal por e-mail
+          </div>
+          <div class="plan-feature">
+            <div class="plan-feature-check">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m20 6-11 11-5-5"/></svg>
+            </div>
+            Alertas com 15min de delay
+          </div>
+        </div>
+        <a href="#waitlist" class="plan-btn plan-btn-ghost">Começar grátis</a>
+      </div>
+
+      <!-- Pro (destaque) -->
+      <div class="plan-card featured reveal">
+        <div class="plan-badge">Mais popular</div>
+        <div class="plan-name">Pro</div>
+        <div class="plan-price"><sup>R$</sup>97</div>
+        <div class="plan-period">/mês · cancele quando quiser</div>
+        <div class="plan-divider"></div>
+        <div class="plan-features">
+          <div class="plan-feature">
+            <div class="plan-feature-check">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m20 6-11 11-5-5"/></svg>
+            </div>
+            Categorias ilimitadas
+          </div>
+          <div class="plan-feature">
+            <div class="plan-feature-check">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m20 6-11 11-5-5"/></svg>
+            </div>
+            Insights ilimitados em tempo real
+          </div>
+          <div class="plan-feature">
+            <div class="plan-feature-check">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m20 6-11 11-5-5"/></svg>
+            </div>
+            Alertas instantâneos
+          </div>
+          <div class="plan-feature">
+            <div class="plan-feature-check">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m20 6-11 11-5-5"/></svg>
+            </div>
+            Relatórios diários e semanais
+          </div>
+          <div class="plan-feature">
+            <div class="plan-feature-check">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m20 6-11 11-5-5"/></svg>
+            </div>
+            Integração Slack & Notion
+          </div>
+          <div class="plan-feature">
+            <div class="plan-feature-check">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m20 6-11 11-5-5"/></svg>
+            </div>
+            Histórico de 90 dias
+          </div>
+        </div>
+        <a href="#waitlist" class="plan-btn plan-btn-primary">Garantir acesso antecipado</a>
+      </div>
+
+      <!-- Teams -->
+      <div class="plan-card reveal">
+        <div class="plan-name">Teams</div>
+        <div class="plan-price"><sup>R$</sup>390</div>
+        <div class="plan-period">/mês · até 10 usuários</div>
+        <div class="plan-divider"></div>
+        <div class="plan-features">
+          <div class="plan-feature">
+            <div class="plan-feature-check">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m20 6-11 11-5-5"/></svg>
+            </div>
+            Tudo do Pro
+          </div>
+          <div class="plan-feature">
+            <div class="plan-feature-check">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m20 6-11 11-5-5"/></svg>
+            </div>
+            Dashboard colaborativo
+          </div>
+          <div class="plan-feature">
+            <div class="plan-feature-check">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m20 6-11 11-5-5"/></svg>
+            </div>
+            API com 10.000 req/mês
+          </div>
+          <div class="plan-feature">
+            <div class="plan-feature-check">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m20 6-11 11-5-5"/></svg>
+            </div>
+            Fontes personalizadas
+          </div>
+          <div class="plan-feature">
+            <div class="plan-feature-check">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m20 6-11 11-5-5"/></svg>
+            </div>
+            Histórico ilimitado
+          </div>
+          <div class="plan-feature">
+            <div class="plan-feature-check">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m20 6-11 11-5-5"/></svg>
+            </div>
+            Suporte prioritário
+          </div>
+        </div>
+        <a href="#waitlist" class="plan-btn plan-btn-ghost">Falar com a equipe</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════
+     CTA / WAITLIST
+════════════════════════════════════ -->
+<section class="cta-section" id="waitlist">
+  <div class="cta-glow"></div>
+  <div class="container" style="position:relative;z-index:2;">
+    <div class="cta-eyebrow reveal">Acesso antecipado</div>
+    <h2 class="cta-title reveal">Seja o primeiro<br>a cortar.</h2>
+    <p class="cta-sub reveal">Lista de espera aberta. Os primeiros 500 inscritos ganham o plano Pro grátis por 3 meses.</p>
+
+    <form id="waitlist-form" class="reveal">
+      <div class="cta-input-wrap">
+        <input class="cta-input" type="email" placeholder="seu@email.com" required autocomplete="email">
+        <button type="submit" class="cta-submit">Entrar</button>
+      </div>
+    </form>
+
+    <p class="cta-note reveal">Sem spam · Cancele quando quiser · Dados protegidos</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════
+     FOOTER
+════════════════════════════════════ -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="footer-brand-name">farpa<span class="ai">.ai</span></div>
+        <p class="footer-brand-desc">Curadoria inteligente de notícias e análise de insights em tempo real para quem não tem tempo a perder.</p>
+        <div class="footer-social">
+          <a href="#" class="footer-social-btn" aria-label="Twitter/X">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.74l7.73-8.835L1.254 2.25H8.08l4.259 5.63 5.905-5.63zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          </a>
+          <a href="#" class="footer-social-btn" aria-label="LinkedIn">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          </a>
+          <a href="#" class="footer-social-btn" aria-label="Instagram">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+              <rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="footer-links-groups">
+        <div class="footer-links-group">
+          <div class="footer-links-title">Produto</div>
+          <ul class="footer-links-list">
+            <li><a href="#features">Recursos</a></li>
+            <li><a href="#how">Como funciona</a></li>
+            <li><a href="#categories">Categorias</a></li>
+            <li><a href="#pricing">Planos</a></li>
+            <li><a href="#">API</a></li>
+          </ul>
+        </div>
+        <div class="footer-links-group">
+          <div class="footer-links-title">Empresa</div>
+          <ul class="footer-links-list">
+            <li><a href="#">Sobre nós</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">Imprensa</a></li>
+            <li><a href="#">Carreiras</a></li>
+            <li><a href="#">Contato</a></li>
+          </ul>
+        </div>
+        <div class="footer-links-group">
+          <div class="footer-links-title">Legal</div>
+          <ul class="footer-links-list">
+            <li><a href="#">Termos de uso</a></li>
+            <li><a href="#">Privacidade</a></li>
+            <li><a href="#">Cookies</a></li>
+            <li><a href="#">LGPD</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2025 farpa.ai · Todos os direitos reservados</div>
+      <div class="footer-farpa-tag">notícias que cortam · insights que ficam</div>
+    </div>
+  </div>
+</footer>
+
+<script src="main.js"></script>
 </body>
 </html>

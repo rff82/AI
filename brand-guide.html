@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>farpa.ai — Brand Identity Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;700;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --void: #0a0a0a;
+    --graphite: #141414;
+    --graphite2: #1e1e1e;
+    --surface: #252525;
+    --border: rgba(255,255,255,0.08);
+    --border-md: rgba(255,255,255,0.15);
+    --farpa: #00ff88;
+    --corte: #00e5ff;
+    --urgente: #ff3b3b;
+    --off-white: #f0f0ef;
+    --muted: rgba(240,240,239,0.42);
+    --font-head: 'Space Grotesk', 'Arial Black', sans-serif;
+    --font-mono: 'DM Mono', 'Courier New', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--void);
+    color: var(--off-white);
+    font-family: var(--font-head);
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 0 80px;
+  }
+
+  /* ── Header ── */
+  .brand-header {
+    position: relative;
+    overflow: hidden;
+    padding: 80px 48px 64px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .brand-header::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    width: 500px; height: 500px;
+    background: radial-gradient(ellipse, rgba(0,255,136,0.06) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  .brand-logo-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+  .brand-icon { width: 64px; height: 64px; }
+  .brand-wordmark {
+    font-size: 56px;
+    font-weight: 900;
+    letter-spacing: -3px;
+    line-height: 1;
+  }
+  .brand-wordmark .ai {
+    color: var(--farpa);
+    font-weight: 300;
+    letter-spacing: -1px;
+  }
+  .brand-tagline {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 3.5px;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+  .brand-version {
+    margin-top: 32px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 2px;
+  }
+
+  /* ── Sections ── */
+  .section {
+    padding: 48px 48px 40px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-title {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 32px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* ── Palette ── */
+  .palette { display: flex; gap: 12px; flex-wrap: wrap; }
+  .swatch {
+    flex: 1;
+    min-width: 90px;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .swatch-color { height: 72px; }
+  .swatch-info { padding: 10px 12px; background: var(--graphite2); }
+  .swatch-name { font-size: 11px; font-weight: 700; color: var(--off-white); }
+  .swatch-hex  { font-family: var(--font-mono); font-size: 10px; color: var(--muted); margin-top: 3px; }
+  .swatch-use  { font-size: 9px; color: var(--muted); margin-top: 4px; line-height: 1.4; }
+
+  /* ── Logo variants ── */
+  .logo-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .logo-variant {
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    padding: 32px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+  }
+  .logo-variant .var-label {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .var-dark  { background: #0a0a0a; }
+  .var-light { background: #f0f0ef; }
+  .var-light .var-label { color: rgba(0,0,0,0.35); }
+  .var-neon  { background: #00ff88; }
+  .var-neon .var-label  { color: rgba(0,0,0,0.45); }
+  .var-neutral { background: var(--graphite2); }
+
+  /* ── Icon grid ── */
+  .icon-grid-section {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+  .icon-box {
+    background: var(--graphite2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+  .icon-box-label {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    text-align: center;
+    text-transform: uppercase;
+  }
+
+  /* ── Typography ── */
+  .type-rows { display: flex; flex-direction: column; gap: 0; }
+  .type-row {
+    display: flex;
+    align-items: baseline;
+    gap: 24px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .type-row:last-child { border-bottom: none; }
+  .type-meta { min-width: 90px; flex-shrink: 0; }
+  .type-meta-name { font-family: var(--font-mono); font-size: 10px; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; }
+  .type-meta-info { font-family: var(--font-mono); font-size: 9px; color: var(--muted); margin-top: 4px; opacity: 0.6; }
+  .t-h1 { font-size: 44px; font-weight: 900; letter-spacing: -2px; line-height: 1; }
+  .t-h2 { font-size: 28px; font-weight: 900; letter-spacing: -1px; }
+  .t-h3 { font-size: 20px; font-weight: 700; letter-spacing: -0.3px; }
+  .t-body { font-size: 15px; font-weight: 400; color: var(--muted); line-height: 1.65; max-width: 460px; }
+  .t-mono { font-family: var(--font-mono); font-size: 13px; color: var(--farpa); }
+  .t-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); }
+
+  /* ── Components ── */
+  .comp-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }
+
+  .btn { display: inline-flex; align-items: center; padding: 10px 20px; border-radius: 8px; font-family: var(--font-head); font-size: 13px; font-weight: 700; cursor: pointer; border: 1px solid transparent; text-decoration: none; }
+  .btn-primary { background: var(--farpa); color: var(--void); }
+  .btn-ghost   { background: transparent; color: var(--off-white); border-color: var(--border-md); }
+  .btn-danger  { background: var(--urgente); color: white; }
+
+  .pill { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 999px; font-family: var(--font-mono); font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; border: 1px solid; }
+  .pill-f { color: var(--farpa); border-color: rgba(0,255,136,0.3); background: rgba(0,255,136,0.08); }
+  .pill-c { color: var(--corte); border-color: rgba(0,229,255,0.3); background: rgba(0,229,255,0.08); }
+  .pill-r { color: var(--urgente); border-color: rgba(255,59,59,0.3); background: rgba(255,59,59,0.08); }
+  .pill-m { color: var(--muted); border-color: var(--border); }
+
+  .input-demo { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 9px 14px; color: var(--off-white); font-family: var(--font-head); font-size: 13px; outline: none; width: 220px; }
+
+  .card-demo {
+    background: var(--graphite2); border: 1px solid var(--border);
+    border-radius: 12px; padding: 16px; max-width: 260px;
+  }
+  .card-demo-tag { font-family: var(--font-mono); font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--farpa); margin-bottom: 8px; }
+  .card-demo-title { font-size: 14px; font-weight: 700; line-height: 1.3; margin-bottom: 6px; }
+  .card-demo-meta { font-family: var(--font-mono); font-size: 10px; color: var(--muted); }
+  .card-demo-bar { height: 2px; background: var(--surface); border-radius: 2px; margin-top: 12px; }
+  .card-demo-fill { height: 100%; background: linear-gradient(90deg, var(--farpa), var(--corte)); border-radius: 2px; width: 88%; }
+
+  /* ── Spacing ── */
+  .spacing-row { display: flex; align-items: flex-end; gap: 16px; flex-wrap: wrap; }
+  .space-box { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .space-vis { background: var(--farpa); border-radius: 3px; width: 32px; opacity: 0.7; }
+  .space-val { font-family: var(--font-mono); font-size: 9px; color: var(--muted); letter-spacing: 1px; }
+
+  /* ── Footer ── */
+  .brand-footer {
+    padding: 40px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--border);
+  }
+  .brand-footer-text { font-family: var(--font-mono); font-size: 10px; color: var(--muted); letter-spacing: 1.5px; }
+
+  /* ── Divider accent ── */
+  .divider-brand { height: 1px; background: linear-gradient(90deg, transparent, var(--farpa), var(--corte), transparent); opacity: 0.25; border: none; margin: 0; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════
+     HEADER / CAPA
+════════════════════════════════════════ -->
+<header class="brand-header">
+  <div class="brand-logo-wrap">
+    <svg class="brand-icon" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="28,4 44,18 36,28 48,44 28,52 8,44 20,28 12,18" fill="none" stroke="#00ff88" stroke-width="1.5" stroke-linejoin="round"/>
+      <polygon points="28,12 38,22 32,28 40,40 28,46 16,40 24,28 18,22" fill="rgba(0,255,136,0.08)" stroke="#00ff88" stroke-width="0.8" stroke-linejoin="round"/>
+      <circle cx="28" cy="28" r="2.5" fill="#00ff88"/>
+      <line x1="28" y1="4" x2="28" y2="12" stroke="#00e5ff" stroke-width="0.8" opacity="0.6"/>
+      <line x1="44" y1="18" x2="38" y2="22" stroke="#00e5ff" stroke-width="0.8" opacity="0.6"/>
+      <line x1="48" y1="44" x2="40" y2="40" stroke="#00e5ff" stroke-width="0.8" opacity="0.6"/>
+      <line x1="8" y1="44" x2="16" y2="40" stroke="#00e5ff" stroke-width="0.8" opacity="0.6"/>
+      <line x1="12" y1="18" x2="18" y2="22" stroke="#00e5ff" stroke-width="0.8" opacity="0.6"/>
+    </svg>
+    <div class="brand-wordmark">farpa<span class="ai">.ai</span></div>
+  </div>
+  <div class="brand-tagline">notícias que cortam · insights que ficam</div>
+  <div class="brand-version">Brand Identity Guide — v1.0 · 2025</div>
+</header>
+
+<hr class="divider-brand">
+
+<!-- ══════════════════════════════════════
+     1. LOGOTIPO
+════════════════════════════════════════ -->
+<section class="section">
+  <div class="section-title">01 · Logotipo — variações</div>
+  <div class="logo-grid">
+
+    <!-- Dark (principal) -->
+    <div class="logo-variant var-dark">
+      <svg width="200" viewBox="0 0 320 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <g transform="translate(16,12)">
+          <polygon points="28,4 44,18 36,28 48,44 28,52 8,44 20,28 12,18" fill="none" stroke="#00ff88" stroke-width="1.5" stroke-linejoin="round"/>
+          <polygon points="28,12 38,22 32,28 40,40 28,46 16,40 24,28 18,22" fill="rgba(0,255,136,0.08)" stroke="#00ff88" stroke-width="0.8" stroke-linejoin="round"/>
+          <circle cx="28" cy="28" r="2.5" fill="#00ff88"/>
+        </g>
+        <text x="84" y="50" font-family="'Space Grotesk','Arial Black',sans-serif" font-size="38" font-weight="900" letter-spacing="-2" fill="#f0f0ef">farpa</text>
+        <text x="222" y="50" font-family="'Space Grotesk','Arial',sans-serif" font-size="38" font-weight="300" letter-spacing="-1" fill="#00ff88">.ai</text>
+      </svg>
+      <div class="var-label">Principal — fundo escuro</div>
+    </div>
+
+    <!-- Light -->
+    <div class="logo-variant var-light">
+      <svg width="200" viewBox="0 0 320 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <g transform="translate(16,12)">
+          <polygon points="28,4 44,18 36,28 48,44 28,52 8,44 20,28 12,18" fill="none" stroke="#0a0a0a" stroke-width="1.5" stroke-linejoin="round"/>
+          <polygon points="28,12 38,22 32,28 40,40 28,46 16,40 24,28 18,22" fill="rgba(0,0,0,0.06)" stroke="#0a0a0a" stroke-width="0.8" stroke-linejoin="round"/>
+          <circle cx="28" cy="28" r="2.5" fill="#0a0a0a"/>
+        </g>
+        <text x="84" y="50" font-family="'Space Grotesk','Arial Black',sans-serif" font-size="38" font-weight="900" letter-spacing="-2" fill="#0a0a0a">farpa</text>
+        <text x="222" y="50" font-family="'Space Grotesk','Arial',sans-serif" font-size="38" font-weight="300" letter-spacing="-1" fill="#141414">.ai</text>
+      </svg>
+      <div class="var-label">Claro</div>
+    </div>
+
+    <!-- Neon -->
+    <div class="logo-variant var-neon">
+      <svg width="200" viewBox="0 0 320 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <g transform="translate(16,12)">
+          <polygon points="28,4 44,18 36,28 48,44 28,52 8,44 20,28 12,18" fill="none" stroke="#0a0a0a" stroke-width="1.5" stroke-linejoin="round"/>
+          <polygon points="28,12 38,22 32,28 40,40 28,46 16,40 24,28 18,22" fill="rgba(0,0,0,0.1)" stroke="#0a0a0a" stroke-width="0.8" stroke-linejoin="round"/>
+          <circle cx="28" cy="28" r="2.5" fill="#0a0a0a"/>
+        </g>
+        <text x="84" y="50" font-family="'Space Grotesk','Arial Black',sans-serif" font-size="38" font-weight="900" letter-spacing="-2" fill="#0a0a0a">farpa</text>
+        <text x="222" y="50" font-family="'Space Grotesk','Arial',sans-serif" font-size="38" font-weight="300" letter-spacing="-1" fill="#0a0a0a">.ai</text>
+      </svg>
+      <div class="var-label">Invertido — fundo neon</div>
+    </div>
+
+    <!-- Icon only -->
+    <div class="logo-variant var-neutral">
+      <svg width="72" height="72" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="56" height="56" fill="#0a0a0a" rx="12"/>
+        <polygon points="28,4 44,18 36,28 48,44 28,52 8,44 20,28 12,18" fill="none" stroke="#00ff88" stroke-width="1.5" stroke-linejoin="round"/>
+        <polygon points="28,12 38,22 32,28 40,40 28,46 16,40 24,28 18,22" fill="rgba(0,255,136,0.1)" stroke="#00ff88" stroke-width="0.8" stroke-linejoin="round"/>
+        <circle cx="28" cy="28" r="2.5" fill="#00ff88"/>
+        <line x1="28" y1="4" x2="28" y2="12" stroke="#00e5ff" stroke-width="0.8" opacity="0.7"/>
+        <line x1="44" y1="18" x2="38" y2="22" stroke="#00e5ff" stroke-width="0.8" opacity="0.7"/>
+      </svg>
+      <div class="var-label">Ícone — favicon / app</div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider-brand">
+
+<!-- ══════════════════════════════════════
+     2. PALETA
+════════════════════════════════════════ -->
+<section class="section">
+  <div class="section-title">02 · Paleta de cores</div>
+  <div class="palette">
+    <div class="swatch">
+      <div class="swatch-color" style="background:#0a0a0a;border:1px solid rgba(255,255,255,0.12);"></div>
+      <div class="swatch-info"><div class="swatch-name">Void</div><div class="swatch-hex">#0a0a0a</div><div class="swatch-use">Background principal</div></div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#1e1e1e;"></div>
+      <div class="swatch-info"><div class="swatch-name">Grafite</div><div class="swatch-hex">#1e1e1e</div><div class="swatch-use">Cards e superfícies</div></div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#252525;"></div>
+      <div class="swatch-info"><div class="swatch-name">Surface</div><div class="swatch-hex">#252525</div><div class="swatch-use">Inputs e elevações</div></div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#00ff88;"></div>
+      <div class="swatch-info"><div class="swatch-name">Farpa</div><div class="swatch-hex">#00ff88</div><div class="swatch-use">Cor primária — ação</div></div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#00e5ff;"></div>
+      <div class="swatch-info"><div class="swatch-name">Corte</div><div class="swatch-hex">#00e5ff</div><div class="swatch-use">Cor secundária</div></div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#ff3b3b;"></div>
+      <div class="swatch-info"><div class="swatch-name">Urgente</div><div class="swatch-hex">#ff3b3b</div><div class="swatch-use">Alertas e breaking</div></div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#f0f0ef;border:1px solid rgba(0,0,0,0.1);"></div>
+      <div class="swatch-info"><div class="swatch-name">Off-white</div><div class="swatch-hex">#f0f0ef</div><div class="swatch-use">Texto principal</div></div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider-brand">
+
+<!-- ══════════════════════════════════════
+     3. TIPOGRAFIA
+════════════════════════════════════════ -->
+<section class="section">
+  <div class="section-title">03 · Tipografia</div>
+  <div class="type-rows">
+    <div class="type-row">
+      <div class="type-meta"><div class="type-meta-name">Display</div><div class="type-meta-info">900 · -2px</div></div>
+      <div class="t-h1">A verdade em fragmentos</div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><div class="type-meta-name">H2</div><div class="type-meta-info">900 · -1px</div></div>
+      <div class="t-h2">Insights que cortam o ruído</div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><div class="type-meta-name">H3</div><div class="type-meta-info">700 · 20px</div></div>
+      <div class="t-h3">Curadoria inteligente de notícias</div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><div class="type-meta-name">Body</div><div class="type-meta-info">400 · 15px</div></div>
+      <div class="t-body">Curadoria inteligente de notícias e análise de tendências para quem não tem tempo de perder com o superficial.</div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><div class="type-meta-name">Mono</div><div class="type-meta-info">DM Mono · 13px</div></div>
+      <div class="t-mono">farpa://insights.ai/trending</div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><div class="type-meta-name">Label</div><div class="type-meta-info">Mono · 10px · 3ls</div></div>
+      <div class="t-label">Categoria · Seção · Tag</div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider-brand">
+
+<!-- ══════════════════════════════════════
+     4. COMPONENTES
+════════════════════════════════════════ -->
+<section class="section">
+  <div class="section-title">04 · Componentes</div>
+
+  <p style="font-family:var(--font-mono);font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:16px;">Botões</p>
+  <div class="comp-row" style="margin-bottom:32px;">
+    <button class="btn btn-primary">Explorar insights</button>
+    <button class="btn btn-ghost">Ver mais</button>
+    <button class="btn btn-danger">Urgente</button>
+  </div>
+
+  <p style="font-family:var(--font-mono);font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:16px;">Pills / Tags</p>
+  <div class="comp-row" style="margin-bottom:32px;">
+    <span class="pill pill-f">análise</span>
+    <span class="pill pill-c">curadoria</span>
+    <span class="pill pill-r">urgente</span>
+    <span class="pill pill-m">tecnologia</span>
+    <span class="pill pill-m">política</span>
+  </div>
+
+  <p style="font-family:var(--font-mono);font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:16px;">Input</p>
+  <div class="comp-row" style="margin-bottom:32px;">
+    <input class="input-demo" type="text" placeholder="Buscar tópicos...">
+  </div>
+
+  <p style="font-family:var(--font-mono);font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:16px;">Card de conteúdo</p>
+  <div class="comp-row">
+    <div class="card-demo">
+      <div class="card-demo-tag">análise · ia</div>
+      <div class="card-demo-title">O que a Big Tech não quer que você saiba sobre LLMs</div>
+      <div class="card-demo-meta">14 fontes · relevância 94%</div>
+      <div class="card-demo-bar"><div class="card-demo-fill"></div></div>
+    </div>
+    <div class="card-demo">
+      <div class="card-demo-tag">urgente · política</div>
+      <div class="card-demo-title">Decisão regulatória muda o jogo em 48h</div>
+      <div class="card-demo-meta">7 fontes · relevância 87%</div>
+      <div class="card-demo-bar"><div class="card-demo-fill" style="width:87%"></div></div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider-brand">
+
+<!-- ══════════════════════════════════════
+     5. ESPAÇAMENTO
+════════════════════════════════════════ -->
+<section class="section">
+  <div class="section-title">05 · Espaçamento</div>
+  <div class="spacing-row">
+    <div class="space-box"><div class="space-vis" style="height:4px;"></div><div class="space-val">4px</div></div>
+    <div class="space-box"><div class="space-vis" style="height:8px;"></div><div class="space-val">8px</div></div>
+    <div class="space-box"><div class="space-vis" style="height:12px;"></div><div class="space-val">12px</div></div>
+    <div class="space-box"><div class="space-vis" style="height:16px;"></div><div class="space-val">16px</div></div>
+    <div class="space-box"><div class="space-vis" style="height:20px;"></div><div class="space-val">20px</div></div>
+    <div class="space-box"><div class="space-vis" style="height:24px;"></div><div class="space-val">24px</div></div>
+    <div class="space-box"><div class="space-vis" style="height:32px;"></div><div class="space-val">32px</div></div>
+    <div class="space-box"><div class="space-vis" style="height:40px;"></div><div class="space-val">40px</div></div>
+    <div class="space-box"><div class="space-vis" style="height:48px;"></div><div class="space-val">48px</div></div>
+    <div class="space-box"><div class="space-vis" style="height:64px;"></div><div class="space-val">64px</div></div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     FOOTER
+════════════════════════════════════════ -->
+<footer class="brand-footer">
+  <div class="brand-footer-text">FARPA.AI · BRAND IDENTITY GUIDE · V1.0</div>
+  <div class="brand-footer-text" style="color: rgba(0,255,136,0.5);">2025</div>
+</footer>
+
+</body>
+</html>
