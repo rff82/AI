@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Contato Farpa.ai - Conecte-se com especialistas em IA para sua estratégia.">
+    <title>Contato - Farpa.ai</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #0ea5e9;
+            --primary-dark: #0284c7;
+            --secondary: #8b5cf6;
+            --accent: #ec4899;
+            --bg-dark: #0f172a;
+            --bg-darker: #020617;
+            --bg-light: #1e293b;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --border: #334155;
+            --success: #10b981;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, var(--bg-darker) 0%, var(--bg-dark) 100%);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+            padding: 1rem 2rem;
+        }
+
+        nav .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .back-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: var(--secondary);
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 120px 2rem 2rem;
+        }
+
+        .page-title {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 3rem;
+        }
+
+        /* Form Section */
+        .form-section {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.5) 0%, rgba(51, 65, 85, 0.3) 100%);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .form-section h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(15, 23, 42, 0.8);
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            width: 100%;
+            box-shadow: 0 10px 30px rgba(14, 165, 233, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(14, 165, 233, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            margin-top: 1rem;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(14, 165, 233, 0.1);
+        }
+
+        /* Success Message */
+        .success-message {
+            display: none;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid var(--success);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            color: var(--success);
+        }
+
+        .success-message.show {
+            display: block;
+            animation: slideInUp 0.3s ease;
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(2, 6, 23, 0.8);
+            border-top: 1px solid var(--border);
+            padding: 2rem;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Animations */
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 100px 1rem 1rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="container">
+            <div class="logo">🚀 Farpa.ai</div>
+            <a href="index.html" class="back-link">← Voltar para Home</a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <h1 class="page-title">Conecte-se com Especialistas em IA</h1>
+        <p class="page-subtitle">Preencha o formulário abaixo para agendar uma conversa estratégica e explorar como a IA pode transformar sua organização.</p>
+
+        <!-- Contact Form -->
+        <div class="form-section">
+            <h2>Agende Sua Conversa Estratégica</h2>
+            
+            <div class="success-message" id="successMessage">
+                ✓ Obrigado! Sua solicitação foi recebida. Entraremos em contato em breve para agendar sua conversa.
+            </div>
+
+            <form id="contactForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="name">Nome Completo</label>
+                        <input type="text" id="name" name="name" required placeholder="Seu nome">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email Corporativo</label>
+                        <input type="email" id="email" name="email" required placeholder="seu@empresa.com">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="company">Empresa</label>
+                        <input type="text" id="company" name="company" required placeholder="Nome da sua organização">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="role">Cargo</label>
+                        <input type="text" id="role" name="role" placeholder="Seu cargo na empresa">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="interest">Principal Desafio em IA</label>
+                    <select id="interest" name="interest" required>
+                        <option value="">Selecione uma opção</option>
+                        <option value="estrategia">Definição de Estratégia de IA</option>
+                        <option value="implementacao">Implementação de Soluções de IA</option>
+                        <option value="governanca">Governança e Ética em IA</option>
+                        <option value="otimizacao">Otimização de Custos em IA</option>
+                        <option value="treinamento">Treinamento de Equipes em IA</option>
+                        <option value="outro">Outro (especificar na mensagem)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="message">Sua Mensagem</label>
+                    <textarea id="message" name="message" placeholder="Descreva brevemente seu desafio ou interesse..."></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Agendar Conversa</button>
+            </form>
+        </div>
+
+        <div style="text-align: center; margin-bottom: 3rem;">
+            <a href="index.html" class="btn btn-secondary">← Voltar para Home</a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 Farpa.ai - Portal Educativo de IA. Todos os direitos reservados.</p>
+    </footer>
+
+    <script>
+        // Form submission handler
+        const form = document.getElementById('contactForm');
+        const successMessage = document.getElementById('successMessage');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Collect form data
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                company: document.getElementById('company').value,
+                role: document.getElementById('role').value,
+                interest: document.getElementById('interest').value,
+                message: document.getElementById('message').value,
+                timestamp: new Date().toISOString()
+            };
+
+            // Log form data (in production, this would be sent to a server)
+            console.log('Form submitted:', formData);
+
+            // Show success message
+            successMessage.classList.add('show');
+
+            // Reset form
+            form.reset();
+
+            // Hide success message after 5 seconds
+            setTimeout(() => {
+                successMessage.classList.remove('show');
+            }, 5000);
+        });
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

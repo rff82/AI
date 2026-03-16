@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Farpa.ai - Chief AI Strategist: Transformação Digital através de Inteligência Artificial Generativa">
-    <meta name="keywords" content="IA, Inteligência Artificial, Transformação Digital, LLM, ChatGPT, RAG">
-    <title>Farpa.ai - Chief AI Strategist</title>
+    <meta name="description" content="Farpa.ai - Portal Educativo de IA para Executivos. Compreenda os fundamentos, dados, infraestrutura e maturidade em IA.">
+    <meta name="keywords" content="IA, Inteligência Artificial, Educação, Executivos, LLM, RAG, Transformação Digital">
+    <title>Farpa.ai - Portal Educativo de IA</title>
     <style>
         * {
             margin: 0;
@@ -25,8 +25,6 @@
             --text-secondary: #cbd5e1;
             --border: #334155;
             --success: #10b981;
-            --warning: #f59e0b;
-            --error: #ef4444;
         }
 
         html {
@@ -34,11 +32,10 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
             background: linear-gradient(135deg, var(--bg-darker) 0%, var(--bg-dark) 100%);
             color: var(--text-primary);
             line-height: 1.6;
-            overflow-x: hidden;
         }
 
         /* Navigation */
@@ -68,7 +65,6 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            letter-spacing: -0.5px;
         }
 
         nav ul {
@@ -215,35 +211,8 @@
             transform: translateY(-2px);
         }
 
-        /* Stats Section */
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-
-        .stat {
-            text-align: center;
-        }
-
-        .stat-number {
-            font-size: 2.5rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .stat-label {
-            color: var(--text-secondary);
-            margin-top: 0.5rem;
-            font-size: 0.95rem;
-        }
-
-        /* Features Section */
-        .features {
+        /* Learning Paths */
+        .learning-paths {
             padding: 6rem 2rem;
             max-width: 1200px;
             margin: 0 auto;
@@ -266,13 +235,13 @@
             margin-right: auto;
         }
 
-        .features-grid {
+        .paths-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 2rem;
         }
 
-        .feature-card {
+        .path-card {
             background: linear-gradient(135deg, rgba(30, 41, 59, 0.5) 0%, rgba(51, 65, 85, 0.3) 100%);
             border: 1px solid var(--border);
             border-radius: 12px;
@@ -280,9 +249,11 @@
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
 
-        .feature-card::before {
+        .path-card::before {
             content: '';
             position: absolute;
             top: 0;
@@ -295,132 +266,65 @@
             transition: transform 0.3s ease;
         }
 
-        .feature-card:hover {
+        .path-card:hover {
             border-color: var(--primary);
             background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(51, 65, 85, 0.5) 100%);
             transform: translateY(-5px);
             box-shadow: 0 20px 40px rgba(14, 165, 233, 0.15);
         }
 
-        .feature-card:hover::before {
+        .path-card:hover::before {
             transform: scaleX(1);
         }
 
-        .feature-icon {
-            font-size: 2.5rem;
+        .path-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--primary);
+            opacity: 0.3;
             margin-bottom: 1rem;
         }
 
-        .feature-card h3 {
-            font-size: 1.3rem;
+        .path-card h3 {
+            font-size: 1.5rem;
             margin-bottom: 1rem;
             color: var(--text-primary);
         }
 
-        .feature-card p {
+        .path-card p {
             color: var(--text-secondary);
             line-height: 1.7;
-        }
-
-        /* Roadmap Section */
-        .roadmap {
-            padding: 6rem 2rem;
-            background: linear-gradient(135deg, rgba(14, 165, 233, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%);
-            border-top: 1px solid var(--border);
-            border-bottom: 1px solid var(--border);
-        }
-
-        .roadmap-container {
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-
-        .roadmap-timeline {
-            position: relative;
-            padding: 2rem 0;
-        }
-
-        .roadmap-timeline::before {
-            content: '';
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 2px;
-            height: 100%;
-            background: linear-gradient(180deg, var(--primary) 0%, var(--secondary) 100%);
-        }
-
-        .timeline-item {
-            margin-bottom: 3rem;
-            position: relative;
-        }
-
-        .timeline-item:nth-child(odd) {
-            margin-left: 0;
-            margin-right: 50%;
-            text-align: right;
-            padding-right: 3rem;
-        }
-
-        .timeline-item:nth-child(even) {
-            margin-left: 50%;
-            margin-right: 0;
-            text-align: left;
-            padding-left: 3rem;
-        }
-
-        .timeline-dot {
-            position: absolute;
-            width: 16px;
-            height: 16px;
-            background: var(--primary);
-            border: 4px solid var(--bg-dark);
-            border-radius: 50%;
-            left: 50%;
-            transform: translateX(-50%);
-            top: 0;
-            z-index: 10;
-        }
-
-        .timeline-content {
-            background: rgba(30, 41, 59, 0.5);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 1.5rem;
-        }
-
-        .timeline-content h4 {
-            color: var(--primary);
-            margin-bottom: 0.5rem;
-            font-size: 1.1rem;
-        }
-
-        .timeline-content p {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-        }
-
-        /* CTA Section */
-        .cta-section {
-            padding: 6rem 2rem;
-            text-align: center;
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        .cta-section h2 {
-            font-size: clamp(2rem, 5vw, 3rem);
+            flex-grow: 1;
             margin-bottom: 1.5rem;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
         }
 
-        .cta-section p {
-            font-size: 1.1rem;
-            color: var(--text-secondary);
-            margin-bottom: 2rem;
+        .path-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: gap 0.3s ease;
+        }
+
+        .path-link:hover {
+            gap: 1rem;
+        }
+
+        /* Featured Image Section */
+        .featured-image {
+            padding: 4rem 2rem;
+            text-align: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .featured-image img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(14, 165, 233, 0.2);
         }
 
         /* Footer */
@@ -468,42 +372,6 @@
             padding-top: 2rem;
         }
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            nav ul {
-                gap: 1rem;
-                font-size: 0.85rem;
-            }
-
-            .hero {
-                margin-top: 60px;
-            }
-
-            .roadmap-timeline::before {
-                left: 0;
-            }
-
-            .timeline-item:nth-child(odd),
-            .timeline-item:nth-child(even) {
-                margin-left: 0;
-                margin-right: 0;
-                text-align: left;
-                padding-left: 3rem;
-            }
-
-            .timeline-dot {
-                left: 0;
-            }
-
-            .cta-buttons {
-                flex-direction: column;
-            }
-
-            .btn {
-                width: 100%;
-            }
-        }
-
         /* Animations */
         @keyframes slideInUp {
             from {
@@ -516,16 +384,34 @@
             }
         }
 
-        .feature-card {
+        .path-card {
             animation: slideInUp 0.6s ease forwards;
         }
 
-        .feature-card:nth-child(1) { animation-delay: 0.1s; }
-        .feature-card:nth-child(2) { animation-delay: 0.2s; }
-        .feature-card:nth-child(3) { animation-delay: 0.3s; }
-        .feature-card:nth-child(4) { animation-delay: 0.4s; }
-        .feature-card:nth-child(5) { animation-delay: 0.5s; }
-        .feature-card:nth-child(6) { animation-delay: 0.6s; }
+        .path-card:nth-child(1) { animation-delay: 0.1s; }
+        .path-card:nth-child(2) { animation-delay: 0.2s; }
+        .path-card:nth-child(3) { animation-delay: 0.3s; }
+        .path-card:nth-child(4) { animation-delay: 0.4s; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            nav ul {
+                gap: 1rem;
+                font-size: 0.85rem;
+            }
+
+            .hero {
+                margin-top: 60px;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
@@ -534,10 +420,9 @@
         <div class="container">
             <div class="logo">🚀 Farpa.ai</div>
             <ul>
-                <li><a href="#features">Recursos</a></li>
-                <li><a href="#roadmap">Roadmap</a></li>
-                <li><a href="#cta">Contato</a></li>
-                <li><a href="teste.html">Demo</a></li>
+                <li><a href="#trilhas">Trilhas de Aprendizado</a></li>
+                <li><a href="#recursos">Recursos</a></li>
+                <li><a href="#contato">Contato</a></li>
             </ul>
         </div>
     </nav>
@@ -545,162 +430,85 @@
     <!-- Hero Section -->
     <section class="hero">
         <div class="hero-content">
-            <h1>Chief AI Strategist</h1>
-            <p>Transforme sua organização com Inteligência Artificial Generativa. Da infraestrutura ao valor de negócio, desbloqueie o potencial exponencial da IA.</p>
+            <h1>Inteligência Artificial para Executivos</h1>
+            <p>Um portal educativo para compreender os fundamentos, aplicações e estratégias de transformação com IA. Sem jargão técnico. Apenas conhecimento estratégico.</p>
             
             <div class="cta-buttons">
-                <a href="#features" class="btn btn-primary">Explorar Recursos</a>
-                <a href="teste.html" class="btn btn-secondary">Ver Demo</a>
-            </div>
-
-            <div class="stats">
-                <div class="stat">
-                    <div class="stat-number">79.8%</div>
-                    <div class="stat-label">CAGR até 2030</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-number">50%</div>
-                    <div class="stat-label">Tarefas Automatizadas</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-number">24/7</div>
-                    <div class="stat-label">Suporte Contínuo</div>
-                </div>
+                <a href="#trilhas" class="btn btn-primary">Explorar Trilhas</a>
+                <a href="#recursos" class="btn btn-secondary">Ver Recursos</a>
             </div>
         </div>
     </section>
 
-    <!-- Features Section -->
-    <section class="features" id="features">
-        <h2 class="section-title">Pilares da Transformação</h2>
-        <p class="section-subtitle">Entenda os fundamentos que redefinem a produtividade organizacional</p>
+    <!-- Learning Paths Section -->
+    <section class="learning-paths" id="trilhas">
+        <h2 class="section-title">Trilhas de Aprendizado</h2>
+        <p class="section-subtitle">Escolha seu caminho e aprofunde-se nos temas que mais importam para sua organização</p>
         
-        <div class="features-grid">
-            <div class="feature-card">
-                <div class="feature-icon">🧠</div>
-                <h3>LLMs & Transformers</h3>
-                <p>Compreenda a arquitetura neural que alimenta a IA generativa moderna. De GANs a Modelos de Difusão.</p>
+        <div class="paths-grid">
+            <div class="path-card">
+                <div class="path-number">01</div>
+                <h3>Fundamentos de IA</h3>
+                <p>Compreenda os pilares da Inteligência Artificial Generativa: Transformers, LLMs, espaço latente e como os modelos aprendem a partir de dados.</p>
+                <a href="fundamentos.html" class="path-link">Acessar Trilha →</a>
             </div>
 
-            <div class="feature-card">
-                <div class="feature-icon">📊</div>
-                <h3>Democratização de Dados</h3>
-                <p>Transforme SQL em linguagem natural. Capacite 90% da força de trabalho a extrair insights em segundos.</p>
+            <div class="path-card">
+                <div class="path-number">02</div>
+                <h3>Dados & Democratização</h3>
+                <p>Descubra como transformar dados em insights sem barreiras técnicas. RAG, embeddings e a revolução do acesso a informações em linguagem natural.</p>
+                <a href="dados.html" class="path-link">Acessar Trilha →</a>
             </div>
 
-            <div class="feature-card">
-                <div class="feature-icon">☁️</div>
-                <h3>Infraestrutura Cloud</h3>
-                <p>Escale computação sem investimentos bilionários. GPUs, TPUs e orquestração de modelos.</p>
+            <div class="path-card">
+                <div class="path-number">03</div>
+                <h3>Infraestrutura & Escala</h3>
+                <p>Explore os requisitos de infraestrutura para implementar IA em escala: GPUs, TPUs, cloud computing e otimização de custos operacionais.</p>
+                <a href="infraestrutura.html" class="path-link">Acessar Trilha →</a>
             </div>
 
-            <div class="feature-card">
-                <div class="feature-icon">🎯</div>
-                <h3>RAG & Agentes</h3>
-                <p>Implementar Retrieval-Augmented Generation para privacidade de dados e eliminação de alucinações.</p>
-            </div>
-
-            <div class="feature-card">
-                <div class="feature-icon">🔐</div>
-                <h3>Governança & Ética</h3>
-                <p>Inovação responsável com LGPD, transparência e combate ao preconceito algorítmico.</p>
-            </div>
-
-            <div class="feature-card">
-                <div class="feature-icon">🚀</div>
-                <h3>Vetores de Valor</h3>
-                <p>Amplificar, Reimaginar e Automatizar: atendimento, RH, vendas e educação financeira.</p>
+            <div class="path-card">
+                <div class="path-number">04</div>
+                <h3>Maturidade Organizacional</h3>
+                <p>Entenda os 5 estágios de maturidade em IA: de consciência inicial até inovação contínua. Evite armadilhas e acelere sua transformação.</p>
+                <a href="maturidade.html" class="path-link">Acessar Trilha →</a>
             </div>
         </div>
     </section>
 
-    <!-- Roadmap Section -->
-    <section class="roadmap" id="roadmap">
-        <div class="roadmap-container">
-            <h2 class="section-title">Ciclo de Maturidade em IA</h2>
-            <p class="section-subtitle">Cinco estágios críticos para transformação organizacional</p>
-            
-            <div class="roadmap-timeline">
-                <div class="timeline-item">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-content">
-                        <h4>1. Conscientização Inicial</h4>
-                        <p>Percepção da necessidade de mudança e reconhecimento do potencial da IA.</p>
-                    </div>
-                </div>
-
-                <div class="timeline-item">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-content">
-                        <h4>2. Descoberta</h4>
-                        <p>Identificação de casos de uso e exploração de oportunidades estratégicas.</p>
-                    </div>
-                </div>
-
-                <div class="timeline-item">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-content">
-                        <h4>3. Aquisição</h4>
-                        <p>Validação de ROI, orçamento, equipe e infraestrutura necessária.</p>
-                    </div>
-                </div>
-
-                <div class="timeline-item">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-content">
-                        <h4>4. Integração</h4>
-                        <p>Implementação nos fluxos de trabalho existentes e escala operacional.</p>
-                    </div>
-                </div>
-
-                <div class="timeline-item">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-content">
-                        <h4>5. Abandono (Risco)</h4>
-                        <p>Evite a obsolescência com planejamento robusto e suporte contínuo.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- CTA Section -->
-    <section class="cta-section" id="cta">
-        <h2>Pronto para Transformar Sua Organização?</h2>
-        <p>A velocidade organizacional é o único fosso sustentável na era da IA. Comece sua jornada hoje.</p>
-        <div class="cta-buttons">
-            <a href="teste.html" class="btn btn-primary">Agendar Consulta</a>
-            <a href="#features" class="btn btn-secondary">Saiba Mais</a>
-        </div>
+    <!-- Featured Image -->
+    <section class="featured-image">
+        <img src="assets/hero-ai.png" alt="Inteligência Artificial - Rede Neural Conceitual">
     </section>
 
     <!-- Footer -->
-    <footer>
+    <footer id="contato">
         <div class="footer-content">
             <div class="footer-section">
-                <h4>Sobre</h4>
+                <h4>Sobre Farpa.ai</h4>
                 <ul>
-                    <li><a href="#">Sobre Farpa.ai</a></li>
-                    <li><a href="#">Nossa Missão</a></li>
-                    <li><a href="#">Blog</a></li>
+                    <li><a href="#">Sobre o Portal</a></li>
+                    <li><a href="#">Metodologia</a></li>
+                    <li><a href="#">Autores</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h4>Trilhas</h4>
+                <ul>
+                    <li><a href="fundamentos.html">Fundamentos de IA</a></li>
+                    <li><a href="dados.html">Dados & Democratização</a></li>
+                    <li><a href="infraestrutura.html">Infraestrutura & Escala</a></li>
+                    <li><a href="maturidade.html">Maturidade Organizacional</a></li>
                 </ul>
             </div>
 
             <div class="footer-section">
                 <h4>Recursos</h4>
                 <ul>
-                    <li><a href="#">Documentação</a></li>
-                    <li><a href="#">API Reference</a></li>
-                    <li><a href="#">Guias</a></li>
-                </ul>
-            </div>
-
-            <div class="footer-section">
-                <h4>Legal</h4>
-                <ul>
-                    <li><a href="#">Privacidade</a></li>
-                    <li><a href="#">Termos de Serviço</a></li>
-                    <li><a href="#">LGPD</a></li>
+                    <li><a href="#">Glossário</a></li>
+                    <li><a href="#">Referências</a></li>
+                    <li><a href="#">Estudos de Caso</a></li>
                 </ul>
             </div>
 
@@ -708,14 +516,14 @@
                 <h4>Contato</h4>
                 <ul>
                     <li><a href="mailto:contato@farpa.ai">contato@farpa.ai</a></li>
-                    <li><a href="#">Twitter</a></li>
                     <li><a href="#">LinkedIn</a></li>
+                    <li><a href="#">Twitter</a></li>
                 </ul>
             </div>
         </div>
 
         <div class="footer-bottom">
-            <p>&copy; 2026 Farpa.ai - Chief AI Strategist. Todos os direitos reservados.</p>
+            <p>&copy; 2026 Farpa.ai - Portal Educativo de IA. Todos os direitos reservados.</p>
         </div>
     </footer>
 
@@ -746,7 +554,7 @@
             });
         }, observerOptions);
 
-        document.querySelectorAll('.feature-card, .timeline-item').forEach(el => {
+        document.querySelectorAll('.path-card').forEach(el => {
             el.style.opacity = '0';
             el.style.transform = 'translateY(20px)';
             el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';

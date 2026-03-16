@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Maturidade Organizacional - Os 5 estágios de transformação com IA">
+    <title>Maturidade Organizacional - Farpa.ai</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #0ea5e9;
+            --primary-dark: #0284c7;
+            --secondary: #8b5cf6;
+            --accent: #ec4899;
+            --bg-dark: #0f172a;
+            --bg-darker: #020617;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --border: #334155;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, var(--bg-darker) 0%, var(--bg-dark) 100%);
+            color: var(--text-primary);
+            line-height: 1.8;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+            padding: 1rem 2rem;
+        }
+
+        nav .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .back-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: var(--secondary);
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 120px 2rem 2rem;
+        }
+
+        .breadcrumb {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+        }
+
+        .breadcrumb a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .page-title {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 3rem;
+        }
+
+        .content-section {
+            margin-bottom: 4rem;
+        }
+
+        .content-section h2 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+        }
+
+        .content-section h3 {
+            font-size: 1.3rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .content-section p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            line-height: 1.9;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+            border-left: 4px solid var(--primary);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .highlight-box strong {
+            color: var(--primary);
+        }
+
+        .stage-card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.5) 0%, rgba(51, 65, 85, 0.3) 100%);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stage-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+        }
+
+        .stage-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            opacity: 0.3;
+            margin-bottom: 1rem;
+        }
+
+        .stage-card h3 {
+            margin-top: 0;
+        }
+
+        .stage-details {
+            margin-top: 1.5rem;
+        }
+
+        .stage-details p {
+            margin-bottom: 1rem;
+        }
+
+        .stage-details strong {
+            color: var(--primary);
+        }
+
+        .key-points {
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .key-points h4 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+
+        .key-points ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .key-points li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .key-points li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .featured-image {
+            margin: 3rem 0;
+            text-align: center;
+        }
+
+        .featured-image img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(14, 165, 233, 0.2);
+        }
+
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .nav-btn {
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .nav-btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+        }
+
+        .nav-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(14, 165, 233, 0.3);
+        }
+
+        .nav-btn-secondary {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .nav-btn-secondary:hover {
+            background: rgba(14, 165, 233, 0.1);
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(2, 6, 23, 0.8);
+            border-top: 1px solid var(--border);
+            padding: 2rem;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 4rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 100px 1rem 1rem;
+            }
+
+            .navigation-buttons {
+                flex-direction: column;
+            }
+
+            .nav-btn {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="container">
+            <div class="logo">🚀 Farpa.ai</div>
+            <a href="index.html" class="back-link">← Voltar para Home</a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="index.html">Home</a> / Maturidade Organizacional
+        </div>
+
+        <h1 class="page-title">Maturidade Organizacional em IA</h1>
+        <p class="page-subtitle">Entenda os 5 estágios de transformação com IA e como evitar armadilhas comuns</p>
+
+        <!-- Introduction -->
+        <div class="content-section">
+            <h2>O Ciclo de Maturidade</h2>
+            <p>Toda organização passa por um ciclo de maturidade ao adotar IA. Compreender esse ciclo é crítico para evitar desperdício de recursos e acelerar o time-to-value.</p>
+
+            <div class="highlight-box">
+                <strong>Insight estratégico:</strong> 70% das iniciativas de IA falham não por falta de tecnologia, mas por falta de alinhamento organizacional, governança e expectativas realistas.
+            </div>
+        </div>
+
+        <!-- Featured Image -->
+        <div class="featured-image">
+            <img src="assets/ai-maturity.png" alt="AI Maturity Roadmap">
+        </div>
+
+        <!-- Stage 1 -->
+        <div class="stage-card">
+            <div class="stage-number">01</div>
+            <h3>Consciência Inicial</h3>
+            <div class="stage-details">
+                <p><strong>Duração típica:</strong> 1-3 meses</p>
+                <p><strong>Característica:</strong> Percepção de que IA é relevante para o negócio. Primeiros experimentos, muita curiosidade, pouca clareza.</p>
+
+                <div class="key-points">
+                    <h4>O que acontece nesta fase:</h4>
+                    <ul>
+                        <li>Executivos exploram ChatGPT, Claude, Gemini</li>
+                        <li>Primeiros pilotos informais (sem governança)</li>
+                        <li>Entusiasmo alto, ROI ainda não mensurado</li>
+                        <li>Equipes começam a questionar como IA afeta seus trabalhos</li>
+                    </ul>
+                </div>
+
+                <div class="key-points">
+                    <h4>Armadilhas comuns:</h4>
+                    <ul>
+                        <li>Esperar que IA resolva tudo magicamente</li>
+                        <li>Negligenciar segurança e privacidade</li>
+                        <li>Não envolver stakeholders certos</li>
+                    </ul>
+                </div>
+
+                <p><strong>Próximo passo:</strong> Definir 2-3 casos de uso prioritários com potencial de ROI claro.</p>
+            </div>
+        </div>
+
+        <!-- Stage 2 -->
+        <div class="stage-card">
+            <div class="stage-number">02</div>
+            <h3>Descoberta</h3>
+            <div class="stage-details">
+                <p><strong>Duração típica:</strong> 2-4 meses</p>
+                <p><strong>Característica:</strong> Identificação sistemática de casos de uso. Prototipagem rápida. Primeiras métricas de impacto.</p>
+
+                <div class="key-points">
+                    <h4>O que acontece nesta fase:</h4>
+                    <ul>
+                        <li>Workshops de ideação com áreas de negócio</li>
+                        <li>Prototipagem rápida com APIs (OpenAI, Anthropic)</li>
+                        <li>Primeiras estimativas de ROI (redução de tempo, aumento de qualidade)</li>
+                        <li>Estruturação de equipes (data scientists, engineers, product managers)</li>
+                    </ul>
+                </div>
+
+                <div class="key-points">
+                    <h4>Casos de uso típicos:</h4>
+                    <ul>
+                        <li>Atendimento ao cliente (chatbots, sumarização)</li>
+                        <li>RH (análise de CVs, recomendações)</li>
+                        <li>Vendas (lead scoring, email personalization)</li>
+                        <li>Operações (automação de processos, análise de dados)</li>
+                    </ul>
+                </div>
+
+                <p><strong>Próximo passo:</strong> Validar ROI de 1-2 casos de uso e preparar orçamento para produção.</p>
+            </div>
+        </div>
+
+        <!-- Stage 3 -->
+        <div class="stage-card">
+            <div class="stage-number">03</div>
+            <h3>Aquisição</h3>
+            <div class="stage-details">
+                <p><strong>Duração típica:</strong> 2-6 meses</p>
+                <p><strong>Característica:</strong> Aprovação de orçamento. Construção de infraestrutura. Primeiros sistemas em produção.</p>
+
+                <div class="key-points">
+                    <h4>O que acontece nesta fase:</h4>
+                    <ul>
+                        <li>Aprovação de capex/opex para infraestrutura</li>
+                        <li>Decisão: APIs vs self-hosted vs híbrido</li>
+                        <li>Implementação de governança (acesso, auditoria, compliance)</li>
+                        <li>Treinamento de equipes em ferramentas e best practices</li>
+                        <li>Primeiros sistemas em produção com monitoramento</li>
+                    </ul>
+                </div>
+
+                <div class="key-points">
+                    <h4>Investimentos típicos:</h4>
+                    <ul>
+                        <li>Infraestrutura: $50-200k</li>
+                        <li>Ferramentas (MLOps, vector databases): $20-50k/ano</li>
+                        <li>Pessoal: 2-5 FTEs especializados</li>
+                    </ul>
+                </div>
+
+                <p><strong>Próximo passo:</strong> Operacionalizar sistemas e medir impacto real em produção.</p>
+            </div>
+        </div>
+
+        <!-- Stage 4 -->
+        <div class="stage-card">
+            <div class="stage-number">04</div>
+            <h3>Integração</h3>
+            <div class="stage-details">
+                <p><strong>Duração típica:</strong> 3-12 meses</p>
+                <p><strong>Característica:</strong> Escala operacional. Múltiplos casos de uso em produção. Otimização contínua.</p>
+
+                <div class="key-points">
+                    <h4>O que acontece nesta fase:</h4>
+                    <ul>
+                        <li>Escalabilidade: de 1-2 casos para 5-10 casos de uso</li>
+                        <li>Otimização de custos: migração para self-hosted se necessário</li>
+                        <li>Integração com sistemas legados (ERP, CRM, etc)</li>
+                        <li>Cultura: IA deixa de ser "projeto especial" e vira rotina</li>
+                        <li>Métricas de impacto claras e comunicadas</li>
+                    </ul>
+                </div>
+
+                <div class="key-points">
+                    <h4>Indicadores de sucesso:</h4>
+                    <ul>
+                        <li>20-40% de aumento de produtividade em áreas-chave</li>
+                        <li>ROI positivo em 6-12 meses</li>
+                        <li>Adoção de 50%+ da força de trabalho</li>
+                    </ul>
+                </div>
+
+                <p><strong>Próximo passo:</strong> Consolidar aprendizados e preparar para inovação contínua.</p>
+            </div>
+        </div>
+
+        <!-- Stage 5 -->
+        <div class="stage-card">
+            <div class="stage-number">05</div>
+            <h3>Inovação Contínua</h3>
+            <div class="stage-details">
+                <p><strong>Duração típica:</strong> Indefinida (estado desejado)</p>
+                <p><strong>Característica:</strong> IA é parte da cultura. Inovação contínua. Vantagem competitiva sustentável.</p>
+
+                <div class="key-points">
+                    <h4>O que acontece nesta fase:</h4>
+                    <ul>
+                        <li>IA é integrada em praticamente todos os processos</li>
+                        <li>Equipes multidisciplinares trabalham em inovação</li>
+                        <li>Modelos internos customizados para seu domínio</li>
+                        <li>Feedback loops contínuos: dados → modelos → insights</li>
+                        <li>Organização é resiliente a mudanças tecnológicas</li>
+                    </ul>
+                </div>
+
+                <div class="key-points">
+                    <h4>Risco de abandono:</h4>
+                    <ul>
+                        <li>Falta de investimento contínuo em R&D</li>
+                        <li>Perda de talentos especializados</li>
+                        <li>Complacência com tecnologia desatualizada</li>
+                        <li>Concorrentes inovam mais rápido</li>
+                    </ul>
+                </div>
+
+                <p><strong>Estratégia:</strong> Manter orçamento dedicado a inovação (10-15% do orçamento de IA).</p>
+            </div>
+        </div>
+
+        <!-- Key Takeaways -->
+        <div class="content-section">
+            <h2>Lições-Chave para Executivos</h2>
+            <div class="key-points">
+                <h4>1. Não pule estágios</h4>
+                <ul>
+                    <li>Tentar ir direto de Consciência para Integração causa falhas. Respeite o ciclo.</li>
+                </ul>
+            </div>
+
+            <div class="key-points">
+                <h4>2. Alinhamento é tudo</h4>
+                <ul>
+                    <li>Tecnologia é 20%. Organização, processos e pessoas são 80%.</li>
+                </ul>
+            </div>
+
+            <div class="key-points">
+                <h4>3. Comece pequeno, escale rápido</h4>
+                <ul>
+                    <li>Pilotos rápidos (4-8 semanas) com ROI claro antes de grandes investimentos.</li>
+                </ul>
+            </div>
+
+            <div class="key-points">
+                <h4>4. Governança desde o início</h4>
+                <ul>
+                    <li>Não é burocracia; é proteção. Implementar controles cedo evita problemas depois.</li>
+                </ul>
+            </div>
+
+            <div class="key-points">
+                <h4>5. Velocidade organizacional é o diferencial</h4>
+                <ul>
+                    <li>Não é quem tem a melhor IA; é quem consegue implementar mais rápido.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="navigation-buttons">
+            <a href="infraestrutura.html" class="nav-btn nav-btn-secondary">← Anterior</a>
+            <a href="index.html" class="nav-btn nav-btn-primary">Voltar para Home →</a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 Farpa.ai - Portal Educativo de IA. Todos os direitos reservados.</p>
+    </footer>
+
+    <script>
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

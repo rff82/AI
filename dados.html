@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Dados & Democratização - RAG, Embeddings e acesso democratizado a informações">
+    <title>Dados & Democratização - Farpa.ai</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #0ea5e9;
+            --primary-dark: #0284c7;
+            --secondary: #8b5cf6;
+            --accent: #ec4899;
+            --bg-dark: #0f172a;
+            --bg-darker: #020617;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --border: #334155;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, var(--bg-darker) 0%, var(--bg-dark) 100%);
+            color: var(--text-primary);
+            line-height: 1.8;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+            padding: 1rem 2rem;
+        }
+
+        nav .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .back-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: var(--secondary);
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 120px 2rem 2rem;
+        }
+
+        .breadcrumb {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+        }
+
+        .breadcrumb a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .page-title {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 3rem;
+        }
+
+        .content-section {
+            margin-bottom: 4rem;
+        }
+
+        .content-section h2 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+        }
+
+        .content-section h3 {
+            font-size: 1.3rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .content-section p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            line-height: 1.9;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+            border-left: 4px solid var(--primary);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .highlight-box strong {
+            color: var(--primary);
+        }
+
+        .key-points {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .key-points h4 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .key-points ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .key-points li {
+            padding: 0.75rem 0;
+            padding-left: 2rem;
+            position: relative;
+            color: var(--text-secondary);
+        }
+
+        .key-points li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .featured-image {
+            margin: 3rem 0;
+            text-align: center;
+        }
+
+        .featured-image img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(14, 165, 233, 0.2);
+        }
+
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .nav-btn {
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .nav-btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+        }
+
+        .nav-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(14, 165, 233, 0.3);
+        }
+
+        .nav-btn-secondary {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .nav-btn-secondary:hover {
+            background: rgba(14, 165, 233, 0.1);
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(2, 6, 23, 0.8);
+            border-top: 1px solid var(--border);
+            padding: 2rem;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 4rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 100px 1rem 1rem;
+            }
+
+            .navigation-buttons {
+                flex-direction: column;
+            }
+
+            .nav-btn {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="container">
+            <div class="logo">🚀 Farpa.ai</div>
+            <a href="index.html" class="back-link">← Voltar para Home</a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="index.html">Home</a> / Dados & Democratização
+        </div>
+
+        <h1 class="page-title">Dados & Democratização</h1>
+        <p class="page-subtitle">Transforme dados em insights sem barreiras técnicas. RAG, embeddings e a revolução do acesso democratizado a informações</p>
+
+        <!-- Section 1: O Problema do Conhecimento Corporativo -->
+        <div class="content-section">
+            <h2>O Problema: Conhecimento Aprisionado</h2>
+            <p>A maioria das organizações possui um ativo valioso que está subutilizado: seus dados. Documentos, relatórios, planilhas e bases de dados contêm conhecimento estratégico, mas apenas uma pequena fração da força de trabalho consegue acessá-lo eficientemente.</p>
+
+            <div class="highlight-box">
+                <strong>Realidade corporativa:</strong> 90% dos colaboradores não conseguem extrair insights de dados sem ajuda de analistas. Isso cria gargalos, reduz velocidade organizacional e deixa oportunidades no chão.
+            </div>
+
+            <h3>Três Barreiras Tradicionais</h3>
+            <div class="key-points">
+                <h4>Barreiras de Acesso</h4>
+                <ul>
+                    <li><strong>Técnica:</strong> SQL, Python, BI tools — conhecimento especializado</li>
+                    <li><strong>Organizacional:</strong> Permissões, governança, silos de dados</li>
+                    <li><strong>Cognitiva:</strong> Dados brutos não contam histórias; precisam de interpretação</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Section 2: RAG -->
+        <div class="content-section">
+            <h2>RAG: Retrieval-Augmented Generation</h2>
+            <p>RAG é a técnica que permite que modelos de IA trabalhem com seus dados proprietários sem necessidade de retreinamento. É o "cheat code" para IA corporativa.</p>
+
+            <h3>Como Funciona RAG?</h3>
+            <p>RAG combina dois processos:</p>
+            <div class="key-points">
+                <h4>Os Dois Pilares do RAG</h4>
+                <ul>
+                    <li><strong>Retrieval (Recuperação):</strong> Buscar documentos relevantes de uma base de dados usando embeddings</li>
+                    <li><strong>Augmented Generation:</strong> Passar esses documentos como contexto para o LLM gerar uma resposta fundamentada</li>
+                </ul>
+            </div>
+
+            <div class="highlight-box">
+                <strong>Vantagem estratégica:</strong> RAG elimina alucinações (respostas inventadas). O modelo só pode responder baseado no contexto que você forneceu. Perfeito para compliance, LGPD e governança.
+            </div>
+
+            <h3>Arquitetura Típica de RAG</h3>
+            <p>1. Seus documentos são convertidos em embeddings e armazenados em um banco de dados vetorial (Pinecone, Weaviate, Milvus)</p>
+            <p>2. Quando um usuário faz uma pergunta, ela também é convertida em embedding</p>
+            <p>3. O sistema busca os documentos mais similares (usando distância no espaço latente)</p>
+            <p>4. Esses documentos são passados como contexto para o LLM, que gera uma resposta fundamentada</p>
+        </div>
+
+        <!-- Section 3: Democratização -->
+        <div class="content-section">
+            <h2>Democratização de Dados: Linguagem Natural</h2>
+            <p>A grande revolução é simples: perguntar em português. Sem SQL. Sem código.</p>
+
+            <h3>Casos de Uso Imediatos</h3>
+            <div class="key-points">
+                <h4>Aplicações Práticas</h4>
+                <ul>
+                    <li><strong>RH:</strong> "Quantos colaboradores temos em São Paulo com mais de 5 anos de empresa?"</li>
+                    <li><strong>Vendas:</strong> "Qual foi o ticket médio por região no Q3?"</li>
+                    <li><strong>Operações:</strong> "Quais são os 10 fornecedores com maior tempo de entrega?"</li>
+                    <li><strong>Executivos:</strong> "Qual é a tendência de churn por segmento?"</li>
+                </ul>
+            </div>
+
+            <p>Cada uma dessas perguntas, que hoje requer um analista, pode ser respondida instantaneamente por um sistema de IA com RAG.</p>
+        </div>
+
+        <!-- Section 4: Embeddings -->
+        <div class="content-section">
+            <h2>Embeddings: O Coração da Busca Semântica</h2>
+            <p>Embeddings são vetores que representam o significado de um texto. Diferente de buscas por palavra-chave (que procuram strings exatas), embeddings entendem <strong>significado</strong>.</p>
+
+            <h3>Exemplo Prático</h3>
+            <p>Se você buscar por "carro", uma busca por palavra-chave não encontrará "automóvel". Mas com embeddings, encontrará, porque ambos têm significado similar no espaço latente.</p>
+
+            <div class="highlight-box">
+                <strong>Implicação para negócios:</strong> Busca semântica melhora a experiência do usuário e a relevância dos resultados. Reduz o tempo para encontrar informações críticas.
+            </div>
+        </div>
+
+        <!-- Section 5: Governança de Dados -->
+        <div class="content-section">
+            <h2>Governança & Privacidade em IA</h2>
+            <p>Democratização não significa anarquia. RAG permite governança rigorosa:</p>
+            <div class="key-points">
+                <h4>Controles de Governança</h4>
+                <ul>
+                    <li><strong>Acesso Granular:</strong> Cada usuário só vê dados que tem permissão</li>
+                    <li><strong>Auditoria:</strong> Rastreie quem perguntou o quê e quando</li>
+                    <li><strong>Retenção:</strong> Dados sensíveis podem ser automaticamente removidos após período</li>
+                    <li><strong>Compliance:</strong> LGPD, GDPR, HIPAA — tudo implementável</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Featured Image -->
+        <div class="featured-image">
+            <img src="assets/rag-concept.png" alt="RAG - Retrieval-Augmented Generation">
+        </div>
+
+        <!-- Navigation -->
+        <div class="navigation-buttons">
+            <a href="fundamentos.html" class="nav-btn nav-btn-secondary">← Anterior</a>
+            <a href="infraestrutura.html" class="nav-btn nav-btn-primary">Próxima: Infraestrutura →</a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 Farpa.ai - Portal Educativo de IA. Todos os direitos reservados.</p>
+    </footer>
+
+    <script>
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

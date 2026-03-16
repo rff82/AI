@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Fundamentos de IA - Compreenda Transformers, LLMs e como os modelos aprendem">
+    <title>Fundamentos de IA - Farpa.ai</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #0ea5e9;
+            --primary-dark: #0284c7;
+            --secondary: #8b5cf6;
+            --accent: #ec4899;
+            --bg-dark: #0f172a;
+            --bg-darker: #020617;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --border: #334155;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, var(--bg-darker) 0%, var(--bg-dark) 100%);
+            color: var(--text-primary);
+            line-height: 1.8;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+            padding: 1rem 2rem;
+        }
+
+        nav .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .back-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: var(--secondary);
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 120px 2rem 2rem;
+        }
+
+        .breadcrumb {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+        }
+
+        .breadcrumb a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .page-title {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 3rem;
+        }
+
+        .content-section {
+            margin-bottom: 4rem;
+        }
+
+        .content-section h2 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+        }
+
+        .content-section h3 {
+            font-size: 1.3rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .content-section p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            line-height: 1.9;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+            border-left: 4px solid var(--primary);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .highlight-box strong {
+            color: var(--primary);
+        }
+
+        .key-points {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .key-points h4 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .key-points ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .key-points li {
+            padding: 0.75rem 0;
+            padding-left: 2rem;
+            position: relative;
+            color: var(--text-secondary);
+        }
+
+        .key-points li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .featured-image {
+            margin: 3rem 0;
+            text-align: center;
+        }
+
+        .featured-image img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(14, 165, 233, 0.2);
+        }
+
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .nav-btn {
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .nav-btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+        }
+
+        .nav-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(14, 165, 233, 0.3);
+        }
+
+        .nav-btn-secondary {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .nav-btn-secondary:hover {
+            background: rgba(14, 165, 233, 0.1);
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(2, 6, 23, 0.8);
+            border-top: 1px solid var(--border);
+            padding: 2rem;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 4rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 100px 1rem 1rem;
+            }
+
+            .navigation-buttons {
+                flex-direction: column;
+            }
+
+            .nav-btn {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="container">
+            <div class="logo">🚀 Farpa.ai</div>
+            <a href="index.html" class="back-link">← Voltar para Home</a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="index.html">Home</a> / Fundamentos de IA
+        </div>
+
+        <h1 class="page-title">Fundamentos de IA</h1>
+        <p class="page-subtitle">Compreenda os pilares técnicos e conceituais que alimentam a Inteligência Artificial Generativa moderna</p>
+
+        <!-- Section 1: O que é IA Generativa -->
+        <div class="content-section">
+            <h2>O que é Inteligência Artificial Generativa?</h2>
+            <p>A Inteligência Artificial Generativa é um tipo de IA capaz de criar novo conteúdo — texto, imagens, código, vídeo — baseado em padrões aprendidos de dados históricos. Diferente de sistemas tradicionais que apenas classificam ou predizem, modelos generativos conseguem <strong>gerar</strong> informações originais.</p>
+            
+            <div class="highlight-box">
+                <strong>Ponto-chave para executivos:</strong> A IA Generativa não é apenas uma ferramenta de automação; é uma tecnologia que amplia a capacidade cognitiva de suas equipes. Pode aumentar produtividade em 20-40% em tarefas de conhecimento.
+            </div>
+
+            <h3>Por que agora?</h3>
+            <p>Três fatores convergiram nos últimos 5 anos:</p>
+            <div class="key-points">
+                <h4>Convergência Tecnológica</h4>
+                <ul>
+                    <li><strong>Dados em escala:</strong> Bilhões de documentos, imagens e vídeos disponíveis na internet</li>
+                    <li><strong>Poder computacional:</strong> GPUs e TPUs tornaram o treinamento viável economicamente</li>
+                    <li><strong>Algoritmos:</strong> Transformers (2017) revolucionaram a forma como modelos processam linguagem</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Section 2: Transformers -->
+        <div class="content-section">
+            <h2>Transformers: A Arquitetura Revolucionária</h2>
+            <p>O Transformer é a arquitetura neural que alimenta praticamente todos os modelos de IA generativa modernos (ChatGPT, Claude, Gemini). Publicado em 2017 no paper "Attention is All You Need", ele introduziu o mecanismo de <strong>atenção</strong>.</p>
+
+            <h3>Como funciona a Atenção?</h3>
+            <p>Imagine que você está lendo um texto e precisa entender o significado de uma palavra. Você não lê toda a frase de uma vez; você <strong>foca</strong> (presta atenção) nas palavras mais relevantes para aquela palavra específica. O mecanismo de atenção faz exatamente isso: permite que o modelo "olhe" seletivamente para diferentes partes do texto.</p>
+
+            <div class="highlight-box">
+                <strong>Implicação estratégica:</strong> Transformers conseguem processar contexto de forma muito mais eficiente que arquiteturas anteriores. Isso significa que modelos modernos conseguem "lembrar" de informações de documentos muito longos — essencial para RAG e análise de dados.
+            </div>
+        </div>
+
+        <!-- Section 3: LLMs -->
+        <div class="content-section">
+            <h2>Large Language Models (LLMs)</h2>
+            <p>Um LLM é um Transformer treinado em quantidades massivas de texto (centenas de bilhões de palavras) para prever a próxima palavra em uma sequência. Esse treinamento simples resulta em modelos que conseguem realizar tarefas complexas: tradução, resumo, código, análise estratégica.</p>
+
+            <h3>O Escala Importa</h3>
+            <p>Há uma relação direta entre o tamanho do modelo (número de parâmetros) e sua capacidade:</p>
+            <div class="key-points">
+                <h4>Escala de Modelos</h4>
+                <ul>
+                    <li><strong>Pequenos (7B parâmetros):</strong> Llama 2, Mistral — Bom custo-benefício, rápidos, rodáveis localmente</li>
+                    <li><strong>Médios (13B-70B):</strong> Llama 2 70B, Claude 3 Haiku — Equilíbrio entre qualidade e custo</li>
+                    <li><strong>Grandes (100B+):</strong> GPT-4, Claude 3 Opus — Máxima qualidade, mais caros, maior latência</li>
+                </ul>
+            </div>
+
+            <p>Para a maioria das aplicações empresariais, modelos de 13B a 70B parâmetros oferecem o melhor ROI.</p>
+        </div>
+
+        <!-- Section 4: Espaço Latente -->
+        <div class="content-section">
+            <h2>Espaço Latente: A Representação Interna</h2>
+            <p>Internamente, os modelos não trabalham com texto ou imagens diretamente. Eles convertem tudo em <strong>vetores</strong> — listas de números que representam o significado de uma palavra ou conceito. Esse espaço multidimensional é chamado de <strong>espaço latente</strong>.</p>
+
+            <div class="highlight-box">
+                <strong>Por que isso importa?</strong> O espaço latente permite que o modelo entenda relações semânticas. Palavras com significados similares ficam próximas no espaço. Isso é a base para RAG (Retrieval-Augmented Generation) — a técnica que permite que IA trabalhe com seus dados proprietários sem ser treinada novamente.
+            </div>
+
+            <h3>Embeddings</h3>
+            <p>Um embedding é a representação de uma palavra ou documento como um vetor no espaço latente. Embeddings são fundamentais para:</p>
+            <div class="key-points">
+                <h4>Aplicações de Embeddings</h4>
+                <ul>
+                    <li>Busca semântica (encontrar documentos similares)</li>
+                    <li>Detecção de duplicatas</li>
+                    <li>Clustering de informações</li>
+                    <li>Recomendações personalizadas</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Section 5: Tokens -->
+        <div class="content-section">
+            <h2>Tokens: A Unidade de Processamento</h2>
+            <p>Os modelos não processam caracteres ou palavras inteiras. Eles processam <strong>tokens</strong> — pequenos pedaços de texto (geralmente 4-5 caracteres). Uma frase como "Inteligência Artificial" pode ser dividida em 2-3 tokens.</p>
+
+            <div class="highlight-box">
+                <strong>Implicação de custo:</strong> APIs de IA cobram por token. Compreender tokenização é essencial para otimizar custos. Um documento de 1000 palavras pode ter 1300-1500 tokens.
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="navigation-buttons">
+            <a href="index.html" class="nav-btn nav-btn-secondary">← Voltar</a>
+            <a href="dados.html" class="nav-btn nav-btn-primary">Próxima: Dados & Democratização →</a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 Farpa.ai - Portal Educativo de IA. Todos os direitos reservados.</p>
+    </footer>
+
+    <script>
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
