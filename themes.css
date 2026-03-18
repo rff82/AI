@@ -800,3 +800,82 @@ input:focus, textarea:focus { border-color: var(--accent) !important; }
 [data-theme="ivory"] .compare-card { background: var(--card-bg) !important; }
 [data-theme="ivory"] .test-card { background: var(--card-bg) !important; }
 [data-theme="ivory"] .feat-card { background: var(--card-bg) !important; }
+
+/* ════════════════════════════════════════════════════
+   v0.11 — Adições de contraste e compatibilidade
+════════════════════════════════════════════════════ */
+
+/* Sidebar version badge por tema */
+[data-theme="void"] .sb-version,
+[data-theme="midnight"] .sb-version {
+  color: rgba(240,240,239,0.42);
+  border-top-color: rgba(255,255,255,0.07);
+}
+[data-theme="ivory"] .sb-version {
+  color: rgba(26,26,20,0.42);
+  border-top-color: rgba(60,50,20,0.10);
+}
+
+/* Footer version por tema */
+[data-theme="ivory"] .footer-version { color: rgba(26,26,20,0.45); }
+[data-theme="midnight"] .footer-version { color: rgba(232,240,255,0.42); }
+
+/* Nav breadcrumb links */
+.bc-link {
+  color: var(--text-3);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.bc-link:hover { color: var(--text-1); }
+.nav-breadcrumb .sep { color: var(--text-4); margin: 0 6px; }
+.nav-breadcrumb .current { color: var(--text-1); }
+
+/* Focus ring por tema */
+[data-theme="ivory"] :focus-visible { outline-color: var(--accent, #2d6a1e); }
+[data-theme="midnight"] :focus-visible { outline-color: var(--accent, #6eb5ff); }
+
+/* sb-theme-dot como button */
+.sb-theme-dot {
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: block;
+}
+
+/* Ivory: garantir que textos de lista do footer sejam legíveis */
+[data-theme="ivory"] .footer-links-list a { color: var(--text-2) !important; }
+[data-theme="ivory"] .footer-links-list a:hover { color: var(--text-1) !important; }
+
+/* Midnight: garantir textos legíveis no mockup */
+[data-theme="midnight"] .mockup-card-title { color: var(--text-1) !important; }
+[data-theme="midnight"] .mockup-url { color: var(--text-3) !important; }
+
+/* Onboarding: usar variáveis de tema */
+.onboarding-box {
+  background: var(--bg-layer2, #1a1a1a) !important;
+  border-color: var(--border-md, rgba(255,255,255,0.15)) !important;
+}
+.ob-title { color: var(--text-1, #f0f0ef) !important; }
+.ob-sub   { color: var(--text-2, rgba(240,240,239,0.82)) !important; }
+.ob-label { color: var(--text-1, #f0f0ef) !important; }
+.ob-desc  { color: var(--text-3, rgba(240,240,239,0.72)) !important; }
+.ob-option {
+  background: var(--bg-layer3, rgba(255,255,255,0.04)) !important;
+  border-color: var(--border-lo, rgba(255,255,255,0.12)) !important;
+}
+.ob-option:hover {
+  border-color: var(--accent, #00ff88) !important;
+  background: var(--accent-bg, rgba(0,255,136,0.06)) !important;
+}
+.ob-option.selected {
+  border-color: var(--accent, #00ff88) !important;
+  background: var(--accent-bg, rgba(0,255,136,0.10)) !important;
+}
+.ob-btn { background: var(--accent, #00ff88) !important; color: var(--bg-base, #0a0a0a) !important; }
+
+/* Search modal: usar variáveis de tema */
+.search-modal-box,
+.search-box {
+  background: var(--bg-layer2, #1a1a1a) !important;
+  border-color: var(--border-md, rgba(255,255,255,0.15)) !important;
+}

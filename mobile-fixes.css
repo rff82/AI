@@ -1,93 +1,469 @@
-/* Mobile & cross-browser fixes - added by assistant */
-html, body, #farpa-layout {
+/* ══════════════════════════════════════════════════════════════
+   farpa.ai — v0.11 Fixes & Enhancements
+   2026-03-18
+   — Bugs visuais sidebar/nav corrigidos
+   — Contraste reforçado (WCAG AA+) para baixa visão
+   — Animações e micro-interações polidas
+   — Responsividade mobile robusta (Chrome/Safari iOS)
+   — Cursor nativo preservado em mobile/touch
+   — Version stamp no rodapé index.html
+══════════════════════════════════════════════════════════════ */
+
+/* ── 1. Reset cross-browser base ───────────────────────── */
+html, body {
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* Evitar overflow horizontal em qualquer página */
+html { overflow-x: hidden; }
+body { overflow-x: hidden; }
+
+/* ── 2. Cursor: apenas desktop, nunca touch ─────────────── */
+@media (hover: none), (pointer: coarse) {
+  #cursor, #cursor-ring { display: none !important; }
+  *, *::before, *::after { cursor: auto !important; }
 }
 @media (max-width: 768px) {
   #cursor, #cursor-ring { display: none !important; }
+  *, *::before, *::after { cursor: auto !important; }
 }
-@media (max-width: 900px) {
-  .farpa-sidebar { transform: translateX(-100%); transition: transform 0.28s ease; left:0; }
-  .farpa-sidebar.open { transform: translateX(0); }
-  .farpa-topnav { position: fixed; top:0; left:0; right:0; z-index:80; backdrop-filter: blur(8px); }
-  #farpa-layout > .container, .container { padding-top: 68px; }
-  .nav-search-btn .search-text { display: none; }
-  .nav-search-kbd { display: none; }
-  .nav-lang .lang-btn { font-size: 18px; padding: 6px; margin-left: 6px; }
-}
-.onboarding-overlay, .search-modal-overlay, #farpa-search {
+
+/* ── 3. Sidebar — layout e z-index corretos ─────────────── */
+.farpa-sidebar {
+  z-index: 1000 !important;
+  /* Safari iOS: garante que sidebar não some */
   -webkit-overflow-scrolling: touch;
-  overflow: auto;
-  overscroll-behavior: contain;
-  z-index: 9999;
 }
-@media (max-width: 600px) {
-  .nav.scrolled, .farpa-topnav { backdrop-filter: none; background: rgba(10,10,10,0.92); }
-}
-button, .sb-item, .nav-lang .lang-btn { min-height: 40px; min-width: 40px; touch-action: manipulation; }
-.full-viewport { min-height: -webkit-fill-available; min-height: 100vh; }
 
-/* Sidebar collapsed style */
-.farpa-sidebar.collapsed{
-  width:72px !important;
-}
-.farpa-sidebar.collapsed .sb-item-text{ display:none !important; }
-.farpa-sidebar.collapsed .sb-logo-name{ font-size:0 !important; opacity:0; }
-.farpa-sidebar .sb-icon{ margin-right:0 !important; display:block; text-align:center; }
-.farpa-sidebar .sb-badge{ display:none !important; }
+/* Sidebar collapsed */
+.farpa-sidebar.collapsed { width: 72px !important; }
+.farpa-sidebar.collapsed .sb-item-text { display: none !important; }
+.farpa-sidebar.collapsed .sb-logo-name { opacity: 0; width: 0; overflow: hidden; }
+.farpa-sidebar.collapsed .sb-badge     { display: none !important; }
+.farpa-sidebar.collapsed .sb-section-label { opacity: 0; height: 0; overflow: hidden; margin: 0; padding: 0; }
+.farpa-sidebar.collapsed .sb-theme-label   { display: none; }
+.farpa-sidebar.collapsed .sb-pro-btn span  { display: none; }
+.farpa-sidebar.collapsed .sb-divider       { margin: 6px 8px; }
+.farpa-sidebar.collapsed .sb-version       { display: none; }
 
-/* Tooltip for collapsed sidebar */
+/* Tooltip no collapsed */
 .farpa-sidebar.collapsed .sb-item {
   position: relative;
+  justify-content: center;
 }
 .farpa-sidebar.collapsed .sb-item:hover::after {
   content: attr(data-tooltip);
   position: absolute;
-  left: 70px;
+  left: calc(100% + 8px);
   top: 50%;
   transform: translateY(-50%);
-  background: rgba(0,0,0,0.9);
-  color: white;
-  font-size: 11px;
-  padding: 6px 10px;
-  border-radius: 6px;
+  background: var(--bg-layer1, #141414);
+  color: var(--text-1, #f0f0ef);
+  border: 1px solid var(--border-md, rgba(255,255,255,0.14));
+  font-size: 12px;
+  font-family: 'Space Grotesk', sans-serif;
+  padding: 6px 12px;
+  border-radius: 8px;
   white-space: nowrap;
   z-index: 9999;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+  pointer-events: none;
 }
 
-/* v10 refinements */
+/* ── 4. Topnav z-index e stacking ───────────────────────── */
+.farpa-topnav {
+  z-index: 1100 !important;
+  position: relative;
+  /* Garante backdrop-filter no Safari */
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+}
 
-/* Nav collapse button (refined 'chat-like' icon) */
-#nav-collapse-btn{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  width:36px;
-  height:36px;
-  border-radius:10px;
-  border: none;
+/* Overlays acima de tudo */
+.onboarding-overlay,
+.search-modal-overlay,
+#farpa-search,
+.search-overlay { z-index: 9999 !important; }
+
+/* ── 5. Nav collapse button — limpo e claro ─────────────── */
+#nav-collapse-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid var(--border-lo, rgba(255,255,255,0.08));
   background: transparent;
-  margin: 0 8px 0 6px;
+  margin: 0 6px;
   cursor: pointer;
-  transition: transform 0.12s ease, box-shadow 0.12s ease;
-  box-shadow: 0 2px 6px rgba(2,6,23,0.18);
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.12s ease;
+  color: var(--text-3, rgba(240,240,239,0.72));
   -webkit-tap-highlight-color: transparent;
+  flex-shrink: 0;
 }
-#nav-collapse-btn svg { display:block; }
-#nav-collapse-btn:active{ transform: scale(0.96); }
-#nav-collapse-btn:focus{ outline: 2px solid rgba(0,208,132,0.18); outline-offset: 2px; border-radius:10px; }
+#nav-collapse-btn:hover {
+  background: var(--sidebar-hover, rgba(255,255,255,0.05));
+  border-color: var(--border-md, rgba(255,255,255,0.14));
+  color: var(--text-1, #f0f0ef);
+}
+#nav-collapse-btn:active { transform: scale(0.94); }
+#nav-collapse-btn:focus-visible {
+  outline: 2px solid var(--accent, #00ff88);
+  outline-offset: 2px;
+}
+/* Rotação quando collapsed */
+.farpa-topnav #nav-collapse-btn[aria-pressed="true"] {
+  transform: rotate(180deg);
+}
+.farpa-topnav #nav-collapse-btn[aria-pressed="true"]:active {
+  transform: rotate(180deg) scale(0.94);
+}
 
-/* When collapsed, make nav-collapse-btn indicate expand state (rotate) */
-.farpa-sidebar.collapsed + .farpa-topnav #nav-collapse-btn,
-.farpa-topnav #nav-collapse-btn[aria-pressed="true"] { transform: rotate(180deg); }
+/* ── 6. Nav hamburger (mobile) ──────────────────────────── */
+.nav-hamburger {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 40px; height: 40px;
+  border: 1px solid var(--border-lo, rgba(255,255,255,0.08));
+  border-radius: 10px;
+  background: transparent;
+  color: var(--text-1, #f0f0ef);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.15s, border-color 0.15s;
+  flex-shrink: 0;
+}
+.nav-hamburger:hover {
+  background: var(--sidebar-hover, rgba(255,255,255,0.05));
+  border-color: var(--border-md, rgba(255,255,255,0.14));
+}
 
-/* Ensure stacking order: sidebar < topnav < overlays */
-.farpa-sidebar { z-index: 1000 !important; }
-.farpa-topnav { z-index: 1100 !important; position: relative; }
-.onboarding-overlay, .search-modal-overlay, #farpa-search { z-index: 9999 !important; }
+@media (max-width: 900px) {
+  .nav-hamburger { display: inline-flex; }
+  #nav-collapse-btn { display: none !important; }
 
-/* Prevent floating menus accidentally overlapping nav: ensure popovers have limited z-index unless overlay class */
+  .farpa-sidebar {
+    position: fixed !important;
+    top: 0; left: 0; bottom: 0;
+    transform: translateX(-100%);
+    transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 240px !important;
+    box-shadow: 4px 0 24px rgba(0,0,0,0.5);
+  }
+  .farpa-sidebar.open {
+    transform: translateX(0);
+  }
+  /* Overlay escuro atrás da sidebar mobile */
+  .farpa-sidebar.open::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    z-index: -1;
+    pointer-events: none;
+  }
+  .farpa-topnav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 1100 !important;
+  }
+  /* Compensar topnav fixa */
+  #farpa-layout > .farpa-content,
+  .farpa-content { padding-top: 60px !important; }
+}
+
+/* ── 7. Topnav — busca: esconder texto em telas pequenas ── */
+@media (max-width: 680px) {
+  .search-text { display: none !important; }
+  .nav-search-kbd { display: none !important; }
+  .nav-lang .lang-btn { font-size: 16px; padding: 4px 5px; }
+  .nav-pro { display: none; }
+}
+@media (max-width: 420px) {
+  .nav-lang { display: none; }
+}
+
+/* ── 8. Contraste reforçado — WCAG AA+ ──────────────────── */
+/* Textos secundários nunca abaixo de 60% de opacidade no dark */
+[data-theme="void"] .muted,
+[data-theme="midnight"] .muted {
+  color: rgba(240,240,239,0.70) !important; /* era 0.52, agora mínimo legível */
+}
+[data-theme="void"] .hint,
+[data-theme="midnight"] .hint {
+  color: rgba(240,240,239,0.62) !important;
+}
+/* Texto de rodapé, labels, mono */
+.footer-copy,
+.footer-brand-desc,
+.section-eyebrow,
+.footer-links-title {
+  opacity: 1 !important; /* Remove opacidade residual */
+}
+/* sr-cat e meta text: mínimo 60% */
+.sr-cat,
+.sm-result-cat,
+.mockup-card-sources,
+.hero-stat-label,
+.category-count,
+.cat-count,
+.sb-section-label {
+  opacity: 1;
+}
+[data-theme="void"] .sr-cat,
+[data-theme="void"] .sm-result-cat {
+  color: rgba(240,240,239,0.65) !important;
+}
+
+/* Ivory: garantir contraste nos textos sobre fundo claro */
+[data-theme="ivory"] body { color: var(--text-1, #1a1a14) !important; }
+[data-theme="ivory"] .muted { color: rgba(26,26,20,0.72) !important; }
+[data-theme="ivory"] .hint  { color: rgba(26,26,20,0.60) !important; }
+[data-theme="ivory"] .sr-cat { color: rgba(26,26,20,0.65) !important; }
+
+/* ── 9. Micro-interações polidas ────────────────────────── */
+
+/* Links da sidebar: transição suave */
+.sb-item {
+  transition:
+    background  0.18s ease,
+    color       0.18s ease,
+    border-color 0.18s ease,
+    transform   0.12s ease !important;
+}
+.sb-item:active { transform: scale(0.97); }
+
+/* Cards: transform suave */
+.feature-card,
+.plan-card,
+.category-card,
+.asset-card,
+.lab-card,
+.module-card {
+  transition:
+    border-color 0.2s ease,
+    transform    0.2s ease,
+    box-shadow   0.2s ease !important;
+  will-change: transform;
+}
+
+/* Botões: feedback visual claro */
+.btn-primary,
+.ob-btn,
+.plan-btn-primary,
+.lab-btn-primary {
+  transition:
+    opacity    0.15s ease,
+    box-shadow 0.2s ease,
+    transform  0.12s ease !important;
+}
+.btn-primary:active,
+.ob-btn:active,
+.plan-btn-primary:active {
+  transform: scale(0.97) !important;
+}
+
+/* Tema dots: feedback click */
+.sb-theme-dot {
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease !important;
+  border: none;
+  padding: 0;
+}
+.sb-theme-dot:hover  { transform: scale(1.2); }
+.sb-theme-dot:active { transform: scale(0.9); }
+.sb-theme-dot.active { box-shadow: 0 0 0 2px var(--accent, #00ff88) !important; }
+
+/* Lang btn micro-interação */
+.lang-btn {
+  transition: opacity 0.15s, transform 0.15s !important;
+}
+.lang-btn:hover  { transform: scale(1.18) !important; }
+.lang-btn:active { transform: scale(0.92) !important; }
+
+/* Search btn */
+.nav-search-btn {
+  transition: border-color 0.15s, color 0.15s, background 0.15s !important;
+}
+.nav-search-btn:active {
+  transform: scale(0.97);
+}
+
+/* Nav Pro */
+.nav-pro {
+  transition: opacity 0.15s, transform 0.12s !important;
+}
+.nav-pro:active { transform: scale(0.95); }
+
+/* Reveal: easing melhorado */
+.reveal {
+  transition: opacity 0.65s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.65s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Search result hover */
+.search-result,
+.sm-result {
+  transition: background 0.12s ease !important;
+}
+
+/* ── 10. Animações: respeitar prefers-reduced-motion ────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .hero-eyebrow, .hero-headline, .hero-sub, .hero-actions, .hero-stats, .hero-visual {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .hero-grid { animation: none !important; }
+  .ticker-track { animation: none !important; }
+  .hero-eyebrow-dot { animation: none !important; }
+  .blink-live { animation: none !important; }
+}
+
+/* ── 11. Safari/WebKit compat ───────────────────────────── */
+
+/* Gradiente de texto: fallback para Safari */
+.hero-headline .line-accent,
+.hero-stat-num {
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Backdrop-filter: prefixo webkit */
+.farpa-topnav,
+.nav.scrolled,
+.search-overlay,
+.onboarding-overlay,
+.search-modal-overlay,
+.quick-access-bar {
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+}
+
+/* Input zoom fix no iOS (evita zoom automático) */
+input, textarea, select {
+  font-size: max(16px, 1em) !important;
+}
+/* Exceção: inputs que devem ficar menores */
+.sm-input, #farpa-search-input {
+  font-size: 16px !important;
+}
+
+/* Scrollbar webkit */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: var(--border-md, rgba(255,255,255,0.14));
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--border-hi, rgba(255,255,255,0.24));
+}
+
+/* Ticker: pausar animação ao hover — webkit */
+.ticker-track {
+  -webkit-animation-play-state: running;
+  animation-play-state: running;
+}
+.ticker-track:hover {
+  -webkit-animation-play-state: paused;
+  animation-play-state: paused;
+}
+
+/* ── 12. Focus visível (acessibilidade teclado) ─────────── */
+:focus-visible {
+  outline: 2px solid var(--accent, #00ff88);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+/* Remover outline do mouse */
+:focus:not(:focus-visible) { outline: none; }
+
+/* ── 13. Quick-access bar mobile ────────────────────────── */
+@media (max-width: 900px) {
+  .quick-access-bar {
+    left: unset; top: unset; right: unset; bottom: 0;
+    transform: none;
+    flex-direction: row;
+    width: 100%;
+    border-radius: 0;
+    border-left: none; border-right: none; border-bottom: none;
+    padding: 8px 16px;
+    justify-content: space-around;
+    border-top: 1px solid var(--border-lo, rgba(255,255,255,0.08));
+    /* Safe area para iPhone */
+    padding-bottom: max(8px, env(safe-area-inset-bottom, 8px));
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+  }
+  .qa-btn { flex: 1; justify-content: center; }
+  .qa-btn .qa-tooltip { display: none; }
+  body { padding-bottom: max(72px, calc(56px + env(safe-area-inset-bottom, 0px))); }
+}
+
+/* ── 14. Safe area iPhone (notch/home bar) ──────────────── */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .farpa-topnav { padding-top: env(safe-area-inset-top, 0); }
+  .farpa-sidebar { padding-top: env(safe-area-inset-top, 0); }
+}
+
+/* ── 15. Popup/dropdown z-index hierarquia ──────────────── */
 .popup, .popover, .dropdown { z-index: 1150; position: absolute; }
 
-/* Slight padding on topnav to avoid overlap with page content */
-#farpa-layout > .container, .container { padding-top: 68px; }
+/* ── 16. Padding de conteúdo quando tem topnav fixa ─────── */
+#farpa-layout > .farpa-content,
+.farpa-content {
+  /* Evitar conteúdo esconder atrás da topnav */
+  padding-top: 60px;
+}
+
+/* ── 17. Sidebar version stamp ──────────────────────────── */
+.sb-version {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  color: var(--text-4, rgba(240,240,239,0.45));
+  text-align: center;
+  padding-top: 10px;
+  margin-top: 4px;
+  border-top: 1px solid var(--border-lo, rgba(255,255,255,0.06));
+  opacity: 0.75;
+  user-select: none;
+}
+
+/* ── 18. Version stamp no footer (index.html) ───────────── */
+.footer-version {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--text-4, rgba(240,240,239,0.45));
+  text-transform: uppercase;
+  opacity: 0.75;
+  user-select: none;
+}
+[data-theme="ivory"] .footer-version {
+  color: rgba(26,26,20,0.45);
+}
+
+/* ── 19. Stacking order final ───────────────────────────── */
+/* sidebar(1000) < topnav(1100) < popovers(1150) < overlays(9999) */
+
+/* ── 20. Overrides mobile-fixes anteriores ──────────────── */
+/* Remover padding-top duplicado: a regra #16 acima supre */
+@media (max-width: 900px) {
+  #farpa-layout > .container,
+  .container {
+    padding-top: 0; /* já tratado pelo .farpa-content */
+  }
+}
