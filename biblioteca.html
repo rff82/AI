@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>farpa.ai — Biblioteca · IA Generativa Aplicada</title>
-<meta name="description" content="8 módulos sobre IA Generativa — glossários, referências públicas e análises exclusivas Pro.">
+<meta name="description" content="8 Coleções sobre IA Generativa — glossários, referências públicas e análises exclusivas Pro.">
 <link rel="icon" type="image/svg+xml" href="farpa-icon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;700;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -215,7 +215,7 @@ h1,h2,h3,h4, .module-title, .lab-title,
   <h1 class="page-title">Biblioteca de <span>IA Generativa</span></h1>
   <p class="page-sub">Curadoria aprofundada sobre IA generativa — glossário com 50+ termos, referências públicas creditadas com autores e fontes, e análises exclusivas no plano Pro.</p>
   <div class="lib-stats">
-    <div><div class="lib-stat-num">8</div><div class="lib-stat-label">módulos</div></div>
+    <div><div class="lib-stat-num">8</div><div class="lib-stat-label">Coleções</div></div>
     <div class="lib-stat-divider"></div>
     <div><div class="lib-stat-num">50+</div><div class="lib-stat-label">termos no glossário</div></div>
     <div class="lib-stat-divider"></div>
@@ -227,48 +227,27 @@ h1,h2,h3,h4, .module-title, .lab-title,
 <hr class="grad-divider">
 
 <div class="page-body">
-  <aside class="sidebar">
-    <div class="sidebar-title">Filtrar por tema</div>
-    <button class="sidebar-cat active" onclick="filterCat('all',this)"><span class="cat-icon">🗂️</span>Todos os módulos<span class="cat-count">8</span></button>
-    <button class="sidebar-cat" onclick="filterCat('fundamentos',this)"><span class="cat-icon">🧠</span>Fundamentos<span class="cat-count">2</span></button>
-    <button class="sidebar-cat" onclick="filterCat('modelos',this)"><span class="cat-icon">⚙️</span>Modelos &amp; Técnicas<span class="cat-count">3</span></button>
-    <button class="sidebar-cat" onclick="filterCat('aplicacoes',this)"><span class="cat-icon">🚀</span>Aplicações Práticas<span class="cat-count">2</span></button>
-    <button class="sidebar-cat" onclick="filterCat('etica',this)"><span class="cat-icon">⚖️</span>Ética &amp; Governança<span class="cat-count">1</span></button>
-    <button class="sidebar-cat" onclick="filterCat('economia',this)"><span class="cat-icon">📈</span>Economia &amp; Futuro<span class="cat-count">1</span></button>
-    <div class="sidebar-divider"></div>
-    <div class="sidebar-glossary">
-      <div class="sidebar-gloss-label">Buscar no glossário</div>
-      <input class="gloss-search" type="text" placeholder="Ex: LLM, RAG, embedding..." id="gloss-search-input" oninput="filterGlossary(this.value)">
-      <div class="gloss-list" id="gloss-list"></div>
-    </div>
-    <div class="sidebar-divider"></div>
-    <div class="sidebar-plan">
-      <div class="sidebar-plan-label">Plano Pro</div>
-      <div class="sidebar-plan-title">Análises aprofundadas</div>
-      <div class="sidebar-plan-sub">Notas completas, código funcional e referências complementares curadas módulo a módulo.</div>
-      <button class="sidebar-plan-btn" onclick="scrollToUpgrade()">Assinar o Pro</button>
-    </div>
-  </aside>
+  
 
   <main>
     <div class="content-toolbar">
       <div class="search-wrap">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-        <input class="search-input" id="search" type="text" placeholder="Buscar módulo, conceito ou termo..." oninput="handleSearch(this.value)">
+        <input class="search-input" id="search" type="text" placeholder="Buscar coleção, conceito ou termo..." oninput="handleSearch(this.value)">
       </div>
       <select class="sort-select" onchange="handleSort(this.value)">
         <option value="num">Ordem do curso</option>
         <option value="az">A → Z</option>
         <option value="dificuldade">Dificuldade</option>
       </select>
-      <span class="results-count" id="results-count">8 módulos</span>
+      <span class="results-count" id="results-count">8 Coleções</span>
     </div>
     <div class="upgrade-banner" id="upgrade-banner" style="display:none;">
-      <div><div class="upgrade-banner-eyebrow">Plano Pro</div><div class="upgrade-banner-title">Análises exclusivas disponíveis</div><div class="upgrade-banner-sub">Implementações práticas, notas aprofundadas e referências complementares curadas para cada módulo.</div></div>
+      <div><div class="upgrade-banner-eyebrow">Plano Pro</div><div class="upgrade-banner-title">Análises exclusivas disponíveis</div><div class="upgrade-banner-sub">Implementações práticas, notas aprofundadas e referências complementares curadas para cada coleção.</div></div>
       <button class="upgrade-banner-btn" id="upgrade-btn"><a href="pro.html" style="color:var(--void)">Ver plano Pro →</a></button>
     </div>
     <div class="modules-list" id="modules-list"></div>
-    <div class="no-results" id="no-results"><div class="no-results-icon">🔍</div><div class="no-results-title">Nenhum módulo encontrado</div><div class="no-results-sub">Tente outros termos ou remova os filtros.</div></div>
+    <div class="no-results" id="no-results"><div class="no-results-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></div><div class="no-results-title">Nenhum coleção encontrado</div><div class="no-results-sub">Tente outros termos ou remova os filtros.</div></div>
   </main>
 </div>
 
@@ -293,7 +272,7 @@ const GLOSSARY_ALL=[
   {term:'Espaço de embedding',def:'Espaço que contém vetores de palavras onde palavras similares são agrupadas espacialmente.',mod:2},
   {term:'Prompt do sistema',def:'Fornece instruções sobre a tarefa geral para a qual o LLM está sendo usado.',mod:2},
   {term:'Prompt do usuário',def:'Fornece instruções específicas para o LLM realizar a tarefa solicitada.',mod:2},
-  {term:'Agente do LLM',def:'Combina LLM com módulos externos (ferramentas, memória, planejamento) para respostas mais precisas.',mod:2},
+  {term:'Agente do LLM',def:'Combina LLM com Coleções externos (ferramentas, memória, planejamento) para respostas mais precisas.',mod:2},
   {term:'Fine-tuning (Ajuste fino)',def:'Treinamento adicional em dataset específico para melhorar desempenho em tarefa particular.',mod:3},
   {term:'RAG (Geração Aumentada por Recuperação)',def:'Recupera informações externas antes de gerar resposta para melhorar precisão e atualidade.',mod:3},
   {term:'Evals (Avaliações)',def:'Processo de testar modelos contra critérios/benchmarks para avaliar capacidades e identificar melhorias.',mod:3},
@@ -393,7 +372,7 @@ function renderAll(){
   const list=document.getElementById('modules-list');
   const noRes=document.getElementById('no-results');
   const banner=document.getElementById('upgrade-banner');
-  document.getElementById('results-count').textContent=`${data.length} módulo${data.length!==1?'s':''}`;
+  document.getElementById('results-count').textContent=`${data.length} coleção${data.length!==1?'s':''}`;
   if(!data.length){list.innerHTML='';noRes.classList.add('show');banner.style.display='none';return;}
   noRes.classList.remove('show');
   banner.style.display=data.some(m=>m.pro)?'flex':'none';
@@ -409,7 +388,7 @@ function renderCard(m){
   }).join('');
   const objHTML=m.objs.map(o=>`<div class="obj-item"><div class="obj-dot"></div><span>${o}</span></div>`).join('');
   const mGloss=GLOSSARY_ALL.filter(g=>m.glossMods.includes(g.mod)).slice(0,8);
-  const glossHTML=mGloss.length?`<div><div class="gloss-inline-label">Glossário do módulo (${mGloss.length} termos principais)</div><div class="gloss-grid">${mGloss.map(g=>`<div class="gloss-card"><div class="gloss-card-term">${g.term}</div><div class="gloss-card-def">${g.def}</div></div>`).join('')}</div></div>`:'';
+  const glossHTML=mGloss.length?`<div><div class="gloss-inline-label">Glossário do coleção (${mGloss.length} termos principais)</div><div class="gloss-grid">${mGloss.map(g=>`<div class="gloss-card"><div class="gloss-card-term">${g.term}</div><div class="gloss-card-def">${g.def}</div></div>`).join('')}</div></div>`:'';
   const refsHTML=`<div><div class="refs-label">Referências públicas creditadas</div>${m.refs.map(r=>`<div class="ref-item"><span class="ref-icon">${r.i}</span><div class="ref-content"><div class="ref-title">${r.t}</div><div class="ref-source">${r.s}</div></div><a class="ref-link" href="${r.u}" target="_blank" rel="noopener">Acessar</a></div>`).join('')}</div>`;
   const proHTML=m.pro?`<div class="module-pro-block"><div class="module-pro-blur">${m.proTxt}</div><div class="module-pro-overlay"><div class="module-pro-badge">Exclusivo Pro</div><div class="module-pro-text">Análise aprofundada + implementações</div><div class="module-pro-sub">Notas completas, código funcional e referências complementares curadas.</div><button class="module-pro-btn" onclick="scrollToUpgrade()">Desbloquear acesso</button></div></div>`:'';
   return `<div class="module-card" id="module-${m.id}" data-cat="${m.cat}">

@@ -26,3 +26,68 @@ html, body, #farpa-layout {
 }
 button, .sb-item, .nav-lang .lang-btn { min-height: 40px; min-width: 40px; touch-action: manipulation; }
 .full-viewport { min-height: -webkit-fill-available; min-height: 100vh; }
+
+/* Sidebar collapsed style */
+.farpa-sidebar.collapsed{
+  width:72px !important;
+}
+.farpa-sidebar.collapsed .sb-item-text{ display:none !important; }
+.farpa-sidebar.collapsed .sb-logo-name{ font-size:0 !important; opacity:0; }
+.farpa-sidebar .sb-icon{ margin-right:0 !important; display:block; text-align:center; }
+.farpa-sidebar .sb-badge{ display:none !important; }
+
+/* Tooltip for collapsed sidebar */
+.farpa-sidebar.collapsed .sb-item {
+  position: relative;
+}
+.farpa-sidebar.collapsed .sb-item:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: 70px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0,0,0,0.9);
+  color: white;
+  font-size: 11px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  white-space: nowrap;
+  z-index: 9999;
+}
+
+/* v10 refinements */
+
+/* Nav collapse button (refined 'chat-like' icon) */
+#nav-collapse-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:36px;
+  height:36px;
+  border-radius:10px;
+  border: none;
+  background: transparent;
+  margin: 0 8px 0 6px;
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  box-shadow: 0 2px 6px rgba(2,6,23,0.18);
+  -webkit-tap-highlight-color: transparent;
+}
+#nav-collapse-btn svg { display:block; }
+#nav-collapse-btn:active{ transform: scale(0.96); }
+#nav-collapse-btn:focus{ outline: 2px solid rgba(0,208,132,0.18); outline-offset: 2px; border-radius:10px; }
+
+/* When collapsed, make nav-collapse-btn indicate expand state (rotate) */
+.farpa-sidebar.collapsed + .farpa-topnav #nav-collapse-btn,
+.farpa-topnav #nav-collapse-btn[aria-pressed="true"] { transform: rotate(180deg); }
+
+/* Ensure stacking order: sidebar < topnav < overlays */
+.farpa-sidebar { z-index: 1000 !important; }
+.farpa-topnav { z-index: 1100 !important; position: relative; }
+.onboarding-overlay, .search-modal-overlay, #farpa-search { z-index: 9999 !important; }
+
+/* Prevent floating menus accidentally overlapping nav: ensure popovers have limited z-index unless overlay class */
+.popup, .popover, .dropdown { z-index: 1150; position: absolute; }
+
+/* Slight padding on topnav to avoid overlap with page content */
+#farpa-layout > .container, .container { padding-top: 68px; }

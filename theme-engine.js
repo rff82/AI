@@ -85,14 +85,18 @@
   }
 
   // ── Sidebar 220px ───────────────────────────────────────
-  function buildSidebar(activePage) {
+  function removeLegacySidebar() {
+  try { const legacy = document.querySelector('.sidebar'); if(legacy){ legacy.remove(); } }catch(e){}
+}
+
+function buildSidebar(activePage) {
     const sidebar = document.createElement('aside');
     sidebar.className = 'farpa-sidebar';
     sidebar.id = 'farpa-sidebar';
 
     const navItems = [
       { href: 'index.html',       icon: iconHome,       label: 'Início',     id: 'home',       badge: '' },
-      { href: 'biblioteca.html',  icon: iconLib,        label: 'Biblioteca', id: 'biblioteca', badge: '8 módulos' },
+      { href: 'biblioteca.html',  icon: iconLib,        label: 'Biblioteca', id: 'biblioteca', badge: '8 coleções' },
       { href: 'mercados.html',    icon: iconChart,      label: 'Mercados',   id: 'mercados',   live: true },
       { href: 'labs.html',        icon: iconLabs,       label: 'Labs',       id: 'labs',       badge: 'Novo' },
     ];
@@ -106,9 +110,9 @@
       <div class="sb-section">
         <div class="sb-section-label">Navegar</div>
         ${navItems.map(item => `
-          <a href="${item.href}" class="sb-item ${activePage === item.id ? 'active' : ''}">
+          <a href="${item.href}" class="sb-item" data-tooltip="Menu item"  ${activePage === item.id ? 'active' : ''}">
             ${item.icon}
-            <span class="sb-item-text">${item.label}</span>
+            <span class="sb-item" data-tooltip="Menu item" -text">${item.label}</span>
             ${item.live ? '<span class="sb-live"></span>' : ''}
             ${item.badge ? `<span class="sb-badge">${item.badge}</span>` : ''}
           </a>`).join('')}
@@ -118,25 +122,25 @@
 
       <div class="sb-section">
         <div class="sb-section-label">Biblioteca</div>
-        <a href="biblioteca.html#module-1" class="sb-item">
+        <a href="biblioteca.html#module-1" class="sb-item" data-tooltip="Menu item" ">
           ${iconDot}
-          <span class="sb-item-text">Fundamentos de IA</span>
+          <span class="sb-item" data-tooltip="Menu item" -text">Fundamentos de IA</span>
         </a>
-        <a href="biblioteca.html#module-2" class="sb-item">
+        <a href="biblioteca.html#module-2" class="sb-item" data-tooltip="Menu item" ">
           ${iconDot}
-          <span class="sb-item-text">LLMs e Prompts</span>
+          <span class="sb-item" data-tooltip="Menu item" -text">LLMs e Prompts</span>
         </a>
-        <a href="biblioteca.html#module-3" class="sb-item">
+        <a href="biblioteca.html#module-3" class="sb-item" data-tooltip="Menu item" ">
           ${iconDot}
-          <span class="sb-item-text">Fine-tuning e RAG</span>
+          <span class="sb-item" data-tooltip="Menu item" -text">Fine-tuning e RAG</span>
         </a>
-        <a href="biblioteca.html#module-4" class="sb-item">
+        <a href="biblioteca.html#module-4" class="sb-item" data-tooltip="Menu item" ">
           ${iconDot}
-          <span class="sb-item-text">Ética em IA</span>
+          <span class="sb-item" data-tooltip="Menu item" -text">Ética em IA</span>
         </a>
-        <a href="biblioteca.html" class="sb-item" style="color:var(--accent);font-size:12px;">
+        <a href="biblioteca.html" class="sb-item" data-tooltip="Menu item" " style="color:var(--accent);font-size:12px;">
           ${iconDot}
-          <span class="sb-item-text">Ver todos os módulos →</span>
+          <span class="sb-item" data-tooltip="Menu item" -text">Ver todos os módulos →</span>
         </a>
       </div>
 
@@ -177,7 +181,18 @@
       <button class="nav-hamburger" id="nav-hamburger" aria-label="Abrir menu" title="Menu" onclick="(function(){const sb=document.getElementById('farpa-sidebar');if(sb){sb.classList.toggle('open');}})()">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
       </button>
-      <div class="nav-right">
+      <button class="nav-collapse-btn" id="nav-collapse-btn" aria-pressed="false" aria-label="Recolher menu" title="Recolher/Expandir menu">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <defs>
+    <linearGradient id="g1" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#00d084"/>
+      <stop offset="1" stop-color="#00a67a"/>
+    </linearGradient>
+  </defs>
+  <circle cx="12" cy="12" r="10" fill="url(#g1)" opacity="0.98"/>
+  <path d="M8 10.5c0-1.657 1.343-3 3-3s3 1.343 3 3-1.343 3-3 3c-.36 0-.707-.066-1.02-.186L8.5 15l.5-1.5C8.241 13.063 8 12.31 8 11.5z" fill="#fff" opacity="0.98"/>
+</svg>
+</button>\n      <div class="nav-right">
         <button class="nav-search-btn" onclick="window.farpaSearch.open()" title="Buscar (Ctrl+K)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
           <span class="search-text">Buscar</span>
@@ -348,3 +363,38 @@
 
 // Close sidebar when clicking outside on mobile
 document.addEventListener('click', function(e){try{const sb=document.getElementById('farpa-sidebar');const hb=document.getElementById('nav-hamburger');if(!sb) return; if(window.innerWidth>900) return; if(sb.classList.contains('open')){ const inside = sb.contains(e.target) || (hb && hb.contains(e.target)); if(!inside) sb.classList.remove('open'); }}catch(e){ } }, {passive:true});
+
+// Sidebar collapse toggle: persist collapsed state in localStorage
+function applySidebarCollapsedState() {
+  try {
+    const sb = document.getElementById('farpa-sidebar');
+    const collapsed = localStorage.getItem('farpa_sidebar_collapsed') === '1';
+    if (!sb) return;
+    sb.classList.toggle('collapsed', collapsed);
+  } catch(e) {}
+}
+
+function toggleSidebarCollapsed() {
+  try {
+    const sb = document.getElementById('farpa-sidebar');
+    if (!sb) return;
+    const isCollapsed = sb.classList.toggle('collapsed');
+    localStorage.setItem('farpa_sidebar_collapsed', isCollapsed ? '1' : '0');
+    // adjust aria-label
+    const btn = document.getElementById('nav-collapse-btn');
+    if (btn) btn.setAttribute('aria-pressed', isCollapsed ? 'true' : 'false');
+  } catch(e) {}
+}
+
+// Attach collapse button handler
+document.addEventListener('click', function(e){
+  if (e.target && (e.target.id === 'nav-collapse-btn' || e.target.closest && e.target.closest('#nav-collapse-btn'))) {
+    toggleSidebarCollapsed();
+  }
+}, {passive:true});
+
+// Apply collapsed state after DOM ready
+document.addEventListener('DOMContentLoaded', function(){ try{ applySidebarCollapsedState(); removeLegacySidebar(); }catch(e){} });
+
+// expose API
+window.farpaSidebar.toggleCollapse = toggleSidebarCollapsed;
