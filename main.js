@@ -3,37 +3,10 @@
 (function () {
   'use strict';
 
-  /* ── Cursor personalizado ── */
-  const cursor = document.getElementById('cursor');
-  const cursorRing = document.getElementById('cursor-ring');
-  let mouseX = 0, mouseY = 0;
-  let ringX = 0, ringY = 0;
+  /* -- Cursor: Restaurado ao padrao do sistema -- */
+  /* Cursor personalizado removido para melhor experiencia de usuario */
 
-  if (cursor && cursorRing && window.innerWidth > 768 && !('ontouchstart' in window)) {
-    document.addEventListener('mousemove', (e) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-      cursor.style.left = mouseX + 'px';
-      cursor.style.top = mouseY + 'px';
-    });
-
-    function animateRing() {
-      ringX += (mouseX - ringX) * 0.12;
-      ringY += (mouseY - ringY) * 0.12;
-      cursorRing.style.left = ringX + 'px';
-      cursorRing.style.top = ringY + 'px';
-      requestAnimationFrame(animateRing);
-    }
-    animateRing();
-
-    const hoverEls = document.querySelectorAll('a, button, .feature-card, .plan-card, .category-card, .mockup-card');
-    hoverEls.forEach(el => {
-      el.addEventListener('mouseenter', () => cursor.classList.add('hovering'));
-      el.addEventListener('mouseleave', () => cursor.classList.remove('hovering'));
-    });
-  }
-
-  /* ── Nav scroll ── */
+  /* -- Nav scroll -- */
   const nav = document.querySelector('.nav');
   window.addEventListener('scroll', () => {
     if (window.scrollY > 40) {
