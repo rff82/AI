@@ -1,325 +1,88 @@
-/**
- * farpa.ai — Design System Tokens
- * Versão 1.0
- * ─────────────────────────────────────
- */
-
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;700;900&family=DM+Mono:wght@400;500&display=swap');
+/* farpa.ai — Design Tokens v2.1 — CONTRASTE MÁXIMO */
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700;900&family=DM+Mono:wght@400;500&display=swap');
 
 :root {
-  /* ── Cores Base ── */
-  --color-void:      #0a0a0a;
-  --color-graphite:  #141414;
-  --color-graphite2: #1e1e1e;
-  --color-surface:   #252525;
-  --color-surface2:  #2e2e2e;
-  --color-border:    rgba(255, 255, 255, 0.08);
-  --color-border-md: rgba(255, 255, 255, 0.15);
+  /* Cores base */
+  --void:      #0a0a0a;
+  --graphite:  #141414;
+  --graphite2: #1e1e1e;
+  --surface:   #252525;
+  --surface2:  #2e2e2e;
 
-  /* ── Cores de Marca ── */
-  --color-farpa:        #00ff88;   /* Verde neon — principal */
-  --color-corte:        #00e5ff;   /* Ciano — secundário */
-  --color-urgente:      #ff3b3b;   /* Vermelho — alertas */
-  --color-off-white:    #f0f0ef;   /* Texto principal */
+  /* Bordas */
+  --border:    rgba(255,255,255,0.10);
+  --border-md: rgba(255,255,255,0.18);
+  --border-hi: rgba(255,255,255,0.28);
 
-  /* ── Versões com opacidade ── */
-  --color-farpa-10:     rgba(0, 255, 136, 0.10);
-  --color-farpa-15:     rgba(0, 255, 136, 0.15);
-  --color-farpa-30:     rgba(0, 255, 136, 0.30);
-  --color-corte-10:     rgba(0, 229, 255, 0.10);
-  --color-corte-15:     rgba(0, 229, 255, 0.15);
-  --color-urgente-10:   rgba(255, 59, 59, 0.10);
+  /* Marca */
+  --farpa:     #00ff88;
+  --corte:     #00e5ff;
+  --urgente:   #ff3b3b;
+  --warn:      #ffb800;
+  --purple:    #b57aff;
+  --gold:      #ffd764;
 
-  /* ── Texto ── */
+  /* Transparências */
+  --farpa-10:   rgba(0,255,136,0.10);
+  --farpa-20:   rgba(0,255,136,0.20);
+  --farpa-30:   rgba(0,255,136,0.30);
+  --corte-10:   rgba(0,229,255,0.10);
+  --corte-20:   rgba(0,229,255,0.20);
+  --urgente-10: rgba(255,59,59,0.10);
+  --purple-10:  rgba(181,122,255,0.10);
+  --purple-20:  rgba(181,122,255,0.20);
+
+  /* TEXTO — contraste WCAG AA mínimo */
   --text-primary:   #f0f0ef;
-  --text-secondary: rgba(240, 240, 239, 0.65);
-  --text-muted:     rgba(240, 240, 239, 0.40);
+  --text-secondary: rgba(240,240,239,0.88);
+  --text-muted:     rgba(240,240,239,0.72);
+  --text-hint:      rgba(240,240,239,0.52);
 
-  /* ── Tipografia ── */
-  --font-head: 'Space Grotesk', 'Arial Black', sans-serif;
-  --font-mono: 'DM Mono', 'Courier New', monospace;
+  /* Tipografia */
+  --font-head: 'Space Grotesk', sans-serif;
+  --font-mono: 'DM Mono', monospace;
 
-  /* ── Escala tipográfica ── */
-  --text-xs:   10px;
-  --text-sm:   12px;
-  --text-base: 15px;
-  --text-lg:   18px;
-  --text-xl:   24px;
-  --text-2xl:  32px;
-  --text-3xl:  44px;
-  --text-4xl:  60px;
+  /* Radii */
+  --r-sm:   6px;
+  --r-md:   10px;
+  --r-lg:   14px;
+  --r-xl:   20px;
+  --r-pill: 999px;
 
-  /* ── Pesos ── */
-  --weight-light:   300;
-  --weight-regular: 400;
-  --weight-bold:    700;
-  --weight-black:   900;
-
-  /* ── Espaçamento ── */
-  --space-1:  4px;
-  --space-2:  8px;
-  --space-3:  12px;
-  --space-4:  16px;
-  --space-5:  20px;
-  --space-6:  24px;
-  --space-8:  32px;
-  --space-10: 40px;
-  --space-12: 48px;
-  --space-16: 64px;
-
-  /* ── Border Radius ── */
-  --radius-sm:   6px;
-  --radius-md:   10px;
-  --radius-lg:   14px;
-  --radius-xl:   20px;
-  --radius-pill: 999px;
-
-  /* ── Gradientes ── */
-  --gradient-brand: linear-gradient(90deg, var(--color-farpa), var(--color-corte));
-  --gradient-dark:  linear-gradient(180deg, var(--color-graphite2), var(--color-void));
-  --gradient-glow:  radial-gradient(ellipse at center, rgba(0,255,136,0.07) 0%, transparent 70%);
-
-  /* ── Sombras ── */
-  --shadow-sm:    0 1px 3px rgba(0, 0, 0, 0.4);
-  --shadow-md:    0 4px 16px rgba(0, 0, 0, 0.5);
-  --shadow-neon:  0 0 20px rgba(0, 255, 136, 0.15);
-  --shadow-neon2: 0 0 20px rgba(0, 229, 255, 0.12);
-
-  /* ── Transições ── */
-  --transition-fast:   0.15s ease;
-  --transition-normal: 0.25s ease;
-  --transition-slow:   0.4s ease;
-
-  /* ── z-index ── */
-  --z-base:    0;
-  --z-above:   10;
-  --z-overlay: 100;
-  --z-modal:   1000;
-  --z-toast:   2000;
+  /* Gradientes */
+  --grad-brand: linear-gradient(90deg, var(--farpa), var(--corte));
+  --grad-dark:  linear-gradient(180deg, var(--graphite2), var(--void));
+  --shadow-neon: 0 0 32px rgba(0,255,136,0.18);
+  --shadow-card: 0 4px 24px rgba(0,0,0,0.5);
+  --transition:  0.2s ease;
 }
 
-/* ─────────────────────────────────────
-   Reset base
-   ───────────────────────────────────── */
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
 body {
-  background-color: var(--color-void);
+  background: var(--void);
   color: var(--text-primary);
   font-family: var(--font-head);
-  font-size: var(--text-base);
+  font-size: 16px;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
+a { color: inherit; text-decoration: none; }
+img, svg { display: block; max-width: 100%; }
 
-/* ─────────────────────────────────────
-   Tipografia
-   ───────────────────────────────────── */
-h1, h2, h3, h4, h5, h6 {
+h1,h2,h3,h4 {
   font-family: var(--font-head);
-  font-weight: var(--weight-black);
-  line-height: 1.1;
+  font-weight: 900;
   letter-spacing: -0.03em;
+  line-height: 1.05;
   color: var(--text-primary);
 }
+p, .body-text  { color: var(--text-secondary); }
+.muted         { color: var(--text-muted); }
+.hint          { color: var(--text-hint); }
+.mono          { font-family: var(--font-mono); }
+.label         { font-family: var(--font-mono); font-size: 10px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--text-muted); }
 
-h1 { font-size: var(--text-3xl); }
-h2 { font-size: var(--text-2xl); }
-h3 { font-size: var(--text-xl); }
-h4 { font-size: var(--text-lg); }
-
-p {
-  color: var(--text-secondary);
-  line-height: 1.7;
-}
-
-code, pre, .mono {
-  font-family: var(--font-mono);
-  font-size: var(--text-sm);
-  color: var(--color-farpa);
-}
-
-/* ─────────────────────────────────────
-   Componentes — Botões
-   ───────────────────────────────────── */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-2);
-  padding: var(--space-2) var(--space-5);
-  border-radius: var(--radius-sm);
-  font-family: var(--font-head);
-  font-size: var(--text-sm);
-  font-weight: var(--weight-bold);
-  cursor: pointer;
-  border: 1px solid transparent;
-  text-decoration: none;
-  transition: all var(--transition-fast);
-  white-space: nowrap;
-}
-
-.btn-primary {
-  background: var(--color-farpa);
-  color: var(--color-void);
-  border-color: var(--color-farpa);
-}
-.btn-primary:hover {
-  opacity: 0.88;
-  box-shadow: var(--shadow-neon);
-}
-
-.btn-secondary {
-  background: var(--color-corte);
-  color: var(--color-void);
-  border-color: var(--color-corte);
-}
-.btn-secondary:hover {
-  opacity: 0.88;
-  box-shadow: var(--shadow-neon2);
-}
-
-.btn-ghost {
-  background: transparent;
-  color: var(--text-primary);
-  border-color: var(--color-border-md);
-}
-.btn-ghost:hover {
-  border-color: rgba(255, 255, 255, 0.3);
-  background: rgba(255, 255, 255, 0.04);
-}
-
-.btn-danger {
-  background: var(--color-urgente);
-  color: white;
-  border-color: var(--color-urgente);
-}
-
-/* ─────────────────────────────────────
-   Componentes — Pills / Tags
-   ───────────────────────────────────── */
-.pill {
-  display: inline-flex;
-  align-items: center;
-  padding: 3px var(--space-3);
-  border-radius: var(--radius-pill);
-  font-family: var(--font-mono);
-  font-size: var(--text-xs);
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  border: 1px solid;
-  white-space: nowrap;
-}
-
-.pill-farpa  { color: var(--color-farpa);   border-color: var(--color-farpa-30);  background: var(--color-farpa-10);  }
-.pill-corte  { color: var(--color-corte);   border-color: var(--color-corte-15);  background: var(--color-corte-10);  }
-.pill-urgente{ color: var(--color-urgente); border-color: var(--color-urgente-10);background: var(--color-urgente-10);}
-.pill-muted  { color: var(--text-muted);    border-color: var(--color-border);    background: transparent;            }
-
-/* ─────────────────────────────────────
-   Componentes — Cards
-   ───────────────────────────────────── */
-.card {
-  background: var(--color-graphite2);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: var(--space-4);
-  transition: border-color var(--transition-normal);
-}
-
-.card:hover {
-  border-color: var(--color-farpa-30);
-}
-
-.card-tag {
-  font-family: var(--font-mono);
-  font-size: var(--text-xs);
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--color-farpa);
-  margin-bottom: var(--space-2);
-}
-
-.card-title {
-  font-size: 14px;
-  font-weight: var(--weight-bold);
-  line-height: 1.35;
-  margin-bottom: var(--space-2);
-  color: var(--text-primary);
-}
-
-.card-meta {
-  font-family: var(--font-mono);
-  font-size: var(--text-xs);
-  color: var(--text-muted);
-}
-
-.card-bar {
-  height: 2px;
-  background: var(--color-surface);
-  border-radius: 2px;
-  margin-top: var(--space-3);
-  overflow: hidden;
-}
-
-.card-bar-fill {
-  height: 100%;
-  background: var(--gradient-brand);
-  border-radius: 2px;
-}
-
-/* ─────────────────────────────────────
-   Componentes — Input
-   ───────────────────────────────────── */
-.input {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  padding: var(--space-2) var(--space-4);
-  color: var(--text-primary);
-  font-family: var(--font-head);
-  font-size: var(--text-sm);
-  outline: none;
-  width: 100%;
-  transition: border-color var(--transition-fast);
-}
-.input:focus {
-  border-color: var(--color-farpa);
-  box-shadow: 0 0 0 3px var(--color-farpa-10);
-}
-.input::placeholder {
-  color: var(--text-muted);
-}
-
-/* ─────────────────────────────────────
-   Utilitários
-   ───────────────────────────────────── */
-.text-farpa   { color: var(--color-farpa); }
-.text-corte   { color: var(--color-corte); }
-.text-urgente { color: var(--color-urgente); }
-.text-muted   { color: var(--text-muted); }
-
-.bg-void      { background: var(--color-void); }
-.bg-graphite  { background: var(--color-graphite2); }
-.bg-surface   { background: var(--color-surface); }
-
-.divider-brand {
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--color-farpa), var(--color-corte), transparent);
-  opacity: 0.3;
-  border: none;
-}
-
-.section-label {
-  font-family: var(--font-mono);
-  font-size: var(--text-xs);
-  letter-spacing: 2.5px;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  margin-bottom: var(--space-5);
-}
+.container { width: 100%; max-width: 1160px; margin: 0 auto; padding: 0 32px; }
+@media (max-width: 768px) { .container { padding: 0 20px; } }

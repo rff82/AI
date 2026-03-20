@@ -1,5 +1,5 @@
-/* farpa.ai — Design Tokens v2.0 — CONTRASTE MÁXIMO */
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;700;900&family=DM+Mono:wght@400;500&display=swap');
+/* farpa.ai — Design Tokens v2.1 — CONTRASTE MÁXIMO */
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700;900&family=DM+Mono:wght@400;500&display=swap');
 
 :root {
   /* Cores base */
@@ -22,21 +22,21 @@
   --purple:    #b57aff;
   --gold:      #ffd764;
 
-  /* Transparências da marca */
-  --farpa-10:  rgba(0,255,136,0.10);
-  --farpa-20:  rgba(0,255,136,0.20);
-  --farpa-30:  rgba(0,255,136,0.30);
-  --corte-10:  rgba(0,229,255,0.10);
-  --corte-20:  rgba(0,229,255,0.20);
-  --urgente-10:rgba(255,59,59,0.10);
-  --purple-10: rgba(181,122,255,0.10);
-  --purple-20: rgba(181,122,255,0.20);
+  /* Transparências */
+  --farpa-10:   rgba(0,255,136,0.10);
+  --farpa-20:   rgba(0,255,136,0.20);
+  --farpa-30:   rgba(0,255,136,0.30);
+  --corte-10:   rgba(0,229,255,0.10);
+  --corte-20:   rgba(0,229,255,0.20);
+  --urgente-10: rgba(255,59,59,0.10);
+  --purple-10:  rgba(181,122,255,0.10);
+  --purple-20:  rgba(181,122,255,0.20);
 
-  /* TEXTO — contraste WCAG AA mínimo em todos */
-  --text-primary:   #f0f0ef;           /* 18:1 sobre void */
-  --text-secondary: rgba(240,240,239,0.88); /* ~16:1 */
-  --text-muted:     rgba(240,240,239,0.72); /* ~13:1 */
-  --text-hint:      rgba(240,240,239,0.58); /* ~10:1 — mínimo aceitável */
+  /* TEXTO — contraste WCAG AA mínimo */
+  --text-primary:   #f0f0ef;
+  --text-secondary: rgba(240,240,239,0.88);
+  --text-muted:     rgba(240,240,239,0.72);
+  --text-hint:      rgba(240,240,239,0.52);
 
   /* Tipografia */
   --font-head: 'Space Grotesk', sans-serif;
@@ -54,7 +54,7 @@
   --grad-dark:  linear-gradient(180deg, var(--graphite2), var(--void));
   --shadow-neon: 0 0 32px rgba(0,255,136,0.18);
   --shadow-card: 0 4px 24px rgba(0,0,0,0.5);
-  --transition: 0.2s ease;
+  --transition:  0.2s ease;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -78,8 +78,6 @@ h1,h2,h3,h4 {
   line-height: 1.05;
   color: var(--text-primary);
 }
-
-/* Classe utilitária de contraste máximo */
 p, .body-text  { color: var(--text-secondary); }
 .muted         { color: var(--text-muted); }
 .hint          { color: var(--text-hint); }
