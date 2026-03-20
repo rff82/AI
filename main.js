@@ -105,29 +105,59 @@
   }, { threshold: 0.5 });
   statNums.forEach(el => statObserver.observe(el));
 
-  /* ── Formulário de email ── */
+  /* ── Formulário de email (Integrado com Cloudflare Worker) ── */
   const form = document.getElementById('waitlist-form');
   if (form) {
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const input = form.querySelector('input[type="email"]');
       const btn = form.querySelector('button[type="submit"]');
-      if (!input.value || !input.value.includes('@')) {
+      const email = input.value;
+
+      if (!email || !email.includes('@')) {
         input.style.borderColor = 'var(--urgente)';
         setTimeout(() => input.style.borderColor = '', 1500);
         return;
       }
-      btn.textContent = '✓ Na lista!';
-      btn.style.background = '#0a0a0a';
-      btn.style.color = 'var(--farpa)';
-      input.value = '';
-      input.placeholder = 'Você está na lista de espera!';
-      setTimeout(() => {
-        btn.textContent = 'Entrar';
-        btn.style.background = '';
-        btn.style.color = '';
-        input.placeholder = 'seu@email.com';
-      }, 5000);
+
+      const originalBtnText = btn.textContent;
+      btn.textContent = 'Enviando...';
+      btn.disabled = true;
+
+      try {
+        const response = await fetch('https://api-leads.rfelipefernandes.workers.dev/api/leads', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            name: 'Interessado Farpa', // Nome padrão para waitlist simples
+            email: email,
+            interest: 'Waitlist'
+          }),
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          btn.textContent = '✓ Na lista!';
+          btn.style.background = '#0a0a0a';
+          btn.style.color = 'var(--farpa)';
+          input.value = '';
+          input.placeholder = 'Você está na lista de espera!';
+        } else {
+          throw new Error(result.error || 'Erro ao enviar');
+        }
+      } catch (error) {
+        console.error('Erro no cadastro:', error);
+        btn.textContent = 'Erro. Tente novamente';
+        btn.style.background = 'var(--urgente)';
+        setTimeout(() => {
+          btn.textContent = originalBtnText;
+          btn.style.background = '';
+          btn.disabled = false;
+        }, 3000);
+      }
     });
   }
 
