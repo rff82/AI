@@ -1005,8 +1005,7 @@
   .hero-stats { gap: 24px; }
   .hero-stat-divider { display: none; }
   .footer-top { flex-direction: column; }
-  #cursor, #cursor-ring { display: none; }
-  *, *::before, *::after { cursor: auto !important; }
+  /* Cursor personalizado removido - usando cursor padrão do sistema */
 }
 
 /* ══════════════════════════════════════

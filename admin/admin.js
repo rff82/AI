@@ -1,13 +1,6 @@
 /* Farpa.ai - Admin Dashboard */
 
 const API_BASE = 'https://api-leads.rfelipefernandes.workers.dev/api';
-const ADMIN_PATH = window.location.pathname.includes('/admin') ? '/admin' : '';
-
-// Função para resolver URLs relativas corretamente
-function resolveUrl(path) {
-  if (path.startsWith('http')) return path;
-  return ADMIN_PATH + path;
-}
 let leadsData = [];
 let chartsInstances = {};
 
@@ -16,6 +9,14 @@ document.addEventListener('DOMContentLoaded', () => {
   initializeMenus();
   loadDashboardData();
   setupSearch();
+  
+  // Atualizar dados a cada 30 segundos
+  setInterval(() => {
+    const activeSection = document.querySelector('.section.active').id;
+    if (activeSection === 'dashboard') {
+      loadDashboardData();
+    }
+  }, 30000);
 });
 
 // Menu Navigation
@@ -56,40 +57,75 @@ function showSection(sectionId) {
 async function loadDashboardData() {
   try {
     const response = await fetch(`${API_BASE}/leads`);
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    
     const result = await response.json();
+    
+    if (!result.success) {
+      throw new Error(result.error || 'Erro ao carregar dados');
+    }
     
     leadsData = result.results || [];
     
-    // Calculate stats
+    // Calculate stats with animation
     const totalLeads = leadsData.length;
     const today = new Date().toISOString().split('T')[0];
     const leadsToday = leadsData.filter(l => l.created_at.startsWith(today)).length;
+    const uniqueVisitors = Math.floor(totalLeads * 3.5);
+    const conversionRate = totalLeads > 0 ? ((leadsToday / totalLeads) * 100).toFixed(1) : 0;
     
-    // Update stat cards
-    document.getElementById('total-leads').textContent = totalLeads;
-    document.getElementById('leads-today').textContent = leadsToday;
-    document.getElementById('unique-visitors').textContent = Math.floor(totalLeads * 3.5); // Estimation
-    document.getElementById('conversion-rate').textContent = ((leadsToday / Math.max(totalLeads, 1)) * 100).toFixed(1) + '%';
+    // Animate stat cards
+    animateValue('total-leads', totalLeads);
+    animateValue('leads-today', leadsToday);
+    animateValue('unique-visitors', uniqueVisitors);
+    
+    const conversionEl = document.getElementById('conversion-rate');
+    conversionEl.textContent = conversionRate + '%';
     
     // Draw charts
     drawLeadsChart();
     drawCountriesChart();
   } catch (error) {
     console.error('Erro ao carregar dados:', error);
+    showError('Erro ao carregar dados do dashboard. Tente novamente.');
   }
+}
+
+// Animate number values
+function animateValue(elementId, target) {
+  const element = document.getElementById(elementId);
+  if (!element) return;
+  
+  let current = parseInt(element.textContent) || 0;
+  const increment = Math.ceil((target - current) / 10);
+  
+  const timer = setInterval(() => {
+    current += increment;
+    if (current >= target) {
+      current = target;
+      clearInterval(timer);
+    }
+    element.textContent = current.toLocaleString('pt-BR');
+  }, 30);
 }
 
 // Load Leads Table
 async function loadLeadsTable() {
   try {
     const response = await fetch(`${API_BASE}/leads`);
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    
     const result = await response.json();
+    
+    if (!result.success) {
+      throw new Error(result.error || 'Erro ao carregar leads');
+    }
     
     leadsData = result.results || [];
     renderLeadsTable(leadsData);
   } catch (error) {
     console.error('Erro ao carregar leads:', error);
-    document.getElementById('leads-tbody').innerHTML = '<tr><td colspan="6" class="error-message">Erro ao carregar leads</td></tr>';
+    showError('Erro ao carregar leads. Tente novamente.');
   }
 }
 
@@ -98,20 +134,36 @@ function renderLeadsTable(leads) {
   const tbody = document.getElementById('leads-tbody');
   
   if (leads.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="6" class="loading">Nenhum lead encontrado</td></tr>';
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="6">
+          <div class="empty-state">
+            <div class="empty-state-icon">📭</div>
+            <div class="empty-state-title">Nenhum lead ainda</div>
+            <p>Os leads aparecerão aqui assim que começarem a se inscrever.</p>
+          </div>
+        </td>
+      </tr>
+    `;
     return;
   }
   
-  tbody.innerHTML = leads.map(lead => `
-    <tr>
-      <td>${lead.name || '-'}</td>
+  tbody.innerHTML = leads.map((lead, index) => `
+    <tr style="animation: slideIn 0.3s ease ${index * 0.05}s both;">
+      <td><strong>${lead.name || '-'}</strong></td>
       <td>${lead.email}</td>
       <td>${lead.phone || '-'}</td>
-      <td>${lead.interest || '-'}</td>
-      <td>${new Date(lead.created_at).toLocaleDateString('pt-BR')}</td>
+      <td><span class="badge">${lead.interest || '-'}</span></td>
+      <td>${new Date(lead.created_at).toLocaleDateString('pt-BR', { 
+        year: 'numeric', 
+        month: '2-digit', 
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit'
+      })}</td>
       <td>
-        <button class="action-btn" onclick="copyToClipboard('${lead.email}')">Copiar Email</button>
-        <button class="action-btn delete" onclick="deleteLead('${lead.email}')">Deletar</button>
+        <button class="action-btn" onclick="copyToClipboard('${lead.email}')">📋 Copiar</button>
+        <button class="action-btn delete" onclick="deleteLead('${lead.email}')">🗑️ Deletar</button>
       </td>
     </tr>
   `).join('');
@@ -124,7 +176,7 @@ function setupSearch() {
     searchBox.addEventListener('input', (e) => {
       const query = e.target.value.toLowerCase();
       const filtered = leadsData.filter(lead =>
-        lead.name.toLowerCase().includes(query) ||
+        (lead.name && lead.name.toLowerCase().includes(query)) ||
         lead.email.toLowerCase().includes(query)
       );
       renderLeadsTable(filtered);
@@ -135,7 +187,9 @@ function setupSearch() {
 // Copy to Clipboard
 function copyToClipboard(text) {
   navigator.clipboard.writeText(text).then(() => {
-    alert('Email copiado para a área de transferência!');
+    showSuccess(`Email "${text}" copiado para a área de transferência!`);
+  }).catch(() => {
+    showError('Erro ao copiar para a área de transferência');
   });
 }
 
@@ -147,7 +201,7 @@ async function deleteLead(email) {
   
   // Note: This is a placeholder. The actual delete functionality would need
   // to be implemented in the Worker API
-  alert('Funcionalidade de exclusão será implementada em breve.');
+  showError('Funcionalidade de exclusão será implementada em breve.');
 }
 
 // Draw Leads Chart
@@ -179,14 +233,15 @@ function drawLeadsChart() {
         data: data,
         borderColor: '#00ff88',
         backgroundColor: 'rgba(0, 255, 136, 0.1)',
-        borderWidth: 2,
+        borderWidth: 3,
         fill: true,
         tension: 0.4,
         pointBackgroundColor: '#00ff88',
         pointBorderColor: '#0a0a0a',
         pointBorderWidth: 2,
-        pointRadius: 5,
-        pointHoverRadius: 7
+        pointRadius: 6,
+        pointHoverRadius: 8,
+        pointHoverBackgroundColor: '#00cc6a'
       }]
     },
     options: {
@@ -196,19 +251,29 @@ function drawLeadsChart() {
         legend: {
           labels: {
             color: '#f0f0ef',
-            font: { size: 12 }
+            font: { size: 12, weight: 'bold' },
+            padding: 15
           }
         }
       },
       scales: {
         y: {
           beginAtZero: true,
-          ticks: { color: '#a0a0a0' },
-          grid: { color: '#2a2a2a' }
+          ticks: { 
+            color: '#a0a0a0',
+            stepSize: 1
+          },
+          grid: { 
+            color: '#2a2a2a',
+            drawBorder: false
+          }
         },
         x: {
           ticks: { color: '#a0a0a0' },
-          grid: { color: '#2a2a2a' }
+          grid: { 
+            color: '#2a2a2a',
+            drawBorder: false
+          }
         }
       }
     }
@@ -246,7 +311,8 @@ function drawCountriesChart() {
           '#a0a0a0'
         ],
         borderColor: '#0a0a0a',
-        borderWidth: 2
+        borderWidth: 2,
+        hoverOffset: 8
       }]
     },
     options: {
@@ -256,7 +322,8 @@ function drawCountriesChart() {
         legend: {
           labels: {
             color: '#f0f0ef',
-            font: { size: 12 }
+            font: { size: 12, weight: 'bold' },
+            padding: 15
           }
         }
       }
@@ -264,17 +331,41 @@ function drawCountriesChart() {
   });
 }
 
+// Show Error
+function showError(message) {
+  const errorDiv = document.createElement('div');
+  errorDiv.className = 'error-message';
+  errorDiv.textContent = '❌ ' + message;
+  
+  const mainContent = document.querySelector('.main-content');
+  mainContent.insertBefore(errorDiv, mainContent.firstChild);
+  
+  setTimeout(() => errorDiv.remove(), 5000);
+}
+
+// Show Success
+function showSuccess(message) {
+  const successDiv = document.createElement('div');
+  successDiv.className = 'success-message';
+  successDiv.textContent = '✓ ' + message;
+  
+  const mainContent = document.querySelector('.main-content');
+  mainContent.insertBefore(successDiv, mainContent.firstChild);
+  
+  setTimeout(() => successDiv.remove(), 3000);
+}
+
 // Logout
 function handleLogout() {
-  // In production, this would clear the session/token
-  alert('Logout implementado via Cloudflare Access');
-  window.location.href = '/';
+  if (confirm('Tem certeza que deseja sair?')) {
+    window.location.href = '/';
+  }
 }
 
 // Export to CSV
 function exportLeadsToCSV() {
   if (leadsData.length === 0) {
-    alert('Nenhum lead para exportar');
+    showError('Nenhum lead para exportar');
     return;
   }
   
@@ -292,10 +383,15 @@ function exportLeadsToCSV() {
     ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
   ].join('\n');
   
-  const blob = new Blob([csv], { type: 'text/csv' });
-  const url = window.URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `leads-${new Date().toISOString().split('T')[0]}.csv`;
-  a.click();
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  const url = URL.createObjectURL(blob);
+  link.setAttribute('href', url);
+  link.setAttribute('download', `leads-${new Date().toISOString().split('T')[0]}.csv`);
+  link.style.visibility = 'hidden';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  
+  showSuccess('Leads exportados com sucesso!');
 }
