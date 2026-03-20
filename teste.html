@@ -1,525 +1,263 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Demo Interativa - Farpa.ai">
-    <title>Demo Interativa - Farpa.ai</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --primary: #0ea5e9;
-            --primary-dark: #0284c7;
-            --secondary: #8b5cf6;
-            --accent: #ec4899;
-            --bg-dark: #0f172a;
-            --bg-darker: #020617;
-            --bg-light: #1e293b;
-            --text-primary: #f1f5f9;
-            --text-secondary: #cbd5e1;
-            --border: #334155;
-            --success: #10b981;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-            background: linear-gradient(135deg, var(--bg-darker) 0%, var(--bg-dark) 100%);
-            color: var(--text-primary);
-            line-height: 1.6;
-        }
-
-        /* Navigation */
-        nav {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            background: rgba(15, 23, 42, 0.95);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--border);
-            z-index: 1000;
-            padding: 1rem 2rem;
-        }
-
-        nav .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .back-link {
-            color: var(--primary);
-            text-decoration: none;
-            font-weight: 600;
-            transition: color 0.3s ease;
-        }
-
-        .back-link:hover {
-            color: var(--secondary);
-        }
-
-        /* Main Content */
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 120px 2rem 2rem;
-        }
-
-        .page-title {
-            font-size: clamp(2rem, 5vw, 3.5rem);
-            font-weight: 800;
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .page-subtitle {
-            color: var(--text-secondary);
-            font-size: 1.1rem;
-            margin-bottom: 3rem;
-        }
-
-        /* Cards Grid */
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-            margin-bottom: 4rem;
-        }
-
-        .card {
-            background: linear-gradient(135deg, rgba(30, 41, 59, 0.5) 0%, rgba(51, 65, 85, 0.3) 100%);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 2rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
-            transform: scaleX(0);
-            transform-origin: left;
-            transition: transform 0.3s ease;
-        }
-
-        .card:hover {
-            border-color: var(--primary);
-            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(51, 65, 85, 0.5) 100%);
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(14, 165, 233, 0.15);
-        }
-
-        .card:hover::before {
-            transform: scaleX(1);
-        }
-
-        .card-icon {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .card h3 {
-            font-size: 1.3rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .card p {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-        }
-
-        /* Form Section */
-        .form-section {
-            background: linear-gradient(135deg, rgba(30, 41, 59, 0.5) 0%, rgba(51, 65, 85, 0.3) 100%);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 2rem;
-            margin-bottom: 4rem;
-        }
-
-        .form-section h2 {
-            font-size: 1.8rem;
-            margin-bottom: 1.5rem;
-            color: var(--text-primary);
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: var(--text-primary);
-            font-weight: 600;
-        }
-
-        .form-group input,
-        .form-group textarea,
-        .form-group select {
-            width: 100%;
-            padding: 0.75rem;
-            background: rgba(15, 23, 42, 0.5);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            color: var(--text-primary);
-            font-family: inherit;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus,
-        .form-group select:focus {
-            outline: none;
-            border-color: var(--primary);
-            background: rgba(15, 23, 42, 0.8);
-            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
-        }
-
-        .form-group textarea {
-            resize: vertical;
-            min-height: 120px;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1rem;
-        }
-
-        .btn {
-            padding: 1rem 2rem;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            border: none;
-            cursor: pointer;
-            display: inline-block;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: white;
-            width: 100%;
-            box-shadow: 0 10px 30px rgba(14, 165, 233, 0.3);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 40px rgba(14, 165, 233, 0.4);
-        }
-
-        .btn-secondary {
-            background: transparent;
-            color: var(--primary);
-            border: 2px solid var(--primary);
-            margin-top: 1rem;
-        }
-
-        .btn-secondary:hover {
-            background: rgba(14, 165, 233, 0.1);
-        }
-
-        /* Success Message */
-        .success-message {
-            display: none;
-            background: rgba(16, 185, 129, 0.1);
-            border: 1px solid var(--success);
-            border-radius: 8px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            color: var(--success);
-        }
-
-        .success-message.show {
-            display: block;
-            animation: slideInUp 0.3s ease;
-        }
-
-        /* Stats Display */
-        .stats-display {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin-top: 2rem;
-        }
-
-        .stat-box {
-            background: rgba(15, 23, 42, 0.5);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 1.5rem;
-            text-align: center;
-        }
-
-        .stat-number {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-label {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-        }
-
-        /* Footer */
-        footer {
-            background: rgba(2, 6, 23, 0.8);
-            border-top: 1px solid var(--border);
-            padding: 2rem;
-            text-align: center;
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-        }
-
-        /* Animations */
-        @keyframes slideInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .card {
-            animation: slideInUp 0.6s ease forwards;
-        }
-
-        .card:nth-child(1) { animation-delay: 0.1s; }
-        .card:nth-child(2) { animation-delay: 0.2s; }
-        .card:nth-child(3) { animation-delay: 0.3s; }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .container {
-                padding: 100px 1rem 1rem;
-            }
-
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0a">
+<meta name="robots" content="noindex, nofollow">
+<title>farpa.ai — Área de Testes</title>
+<link rel="icon" type="image/svg+xml" href="farpa-icon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="themes.css">
+<link rel="stylesheet" href="mobile-fixes.css">
+<script src="theme-engine.js"></script>
+<style>
+.test-page { max-width: 1100px; margin: 0 auto; padding: 40px 32px 80px; }
+.test-banner { background: rgba(255,184,0,0.1); border: 1px solid rgba(255,184,0,0.3); border-radius: 12px; padding: 14px 20px; margin-bottom: 32px; display: flex; align-items: center; gap: 12px; }
+.test-banner-icon { font-size: 20px; flex-shrink: 0; }
+.test-banner-text { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--accent-warn); letter-spacing: 0.5px; line-height: 1.5; }
+.test-title { font-size: 28px; font-weight: 900; letter-spacing: -0.03em; margin-bottom: 8px; }
+.test-sub { font-size: 14px; color: var(--text-3); margin-bottom: 40px; }
+.test-section { margin-bottom: 40px; }
+.test-section-title { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); margin-bottom: 16px; }
+.test-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; margin-bottom: 16px; }
+.test-card { background: var(--bg-layer2); border: 1px solid var(--border-lo); border-radius: 14px; padding: 18px 20px; }
+.test-card h4 { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+.test-card p { font-size: 12px; color: var(--text-3); line-height: 1.55; }
+.test-result { background: var(--bg-layer2); border: 1px solid var(--border-lo); border-radius: 10px; padding: 14px 18px; margin-top: 10px; font-family: 'DM Mono', monospace; font-size: 12px; color: var(--text-2); line-height: 1.7; white-space: pre-wrap; max-height: 300px; overflow-y: auto; }
+.test-btn { background: var(--accent); color: var(--bg-base, #0a0a0a); border: none; border-radius: 8px; padding: 9px 18px; font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; margin-right: 8px; margin-bottom: 8px; transition: opacity .18s; }
+.test-btn:hover { opacity: 0.88; }
+.test-btn.secondary { background: transparent; color: var(--text-1); border: 1px solid var(--border-md); }
+.test-btn.secondary:hover { border-color: var(--border-hi); background: rgba(255,255,255,0.04); }
+.test-btn.danger { background: rgba(255,59,59,0.12); color: var(--accent-danger); border: 1px solid rgba(255,59,59,0.2); }
+.status-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
+.status-dot.ok { background: var(--accent); }
+.status-dot.warn { background: var(--accent-warn); }
+.status-dot.err { background: var(--accent-danger); }
+.status-row { display: flex; align-items: center; font-family: 'DM Mono', monospace; font-size: 12px; color: var(--text-2); padding: 8px 0; border-bottom: 1px solid var(--border-lo); }
+.status-row:last-child { border-bottom: none; }
+.status-label { flex: 1; }
+.status-value { color: var(--text-3); font-size: 11px; }
+</style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav>
-        <div class="container">
-            <div class="logo">🚀 Farpa.ai</div>
-            <a href="index.html" class="back-link">← Voltar para Home</a>
-        </div>
-    </nav>
+<div id="farpa-layout">
+<main class="farpa-content" id="farpa-main">
+<div class="test-page">
 
-    <!-- Main Content -->
-    <div class="container">
-        <h1 class="page-title">🧪 Demo Interativa</h1>
-        <p class="page-subtitle">Explore os recursos principais da plataforma Farpa.ai</p>
+  <div class="test-banner">
+    <div class="test-banner-icon">⚠️</div>
+    <div class="test-banner-text">ÁREA DE TESTES — Esta página não é indexada pelos motores de busca.<br>Use para validar integrações, APIs e componentes antes do deploy.</div>
+  </div>
 
-        <!-- Feature Cards -->
-        <div class="cards-grid">
-            <div class="card">
-                <div class="card-icon">🤖</div>
-                <h3>Análise com IA</h3>
-                <p>Extraia insights complexos em linguagem natural. Sem SQL, sem Python, sem barreiras.</p>
-            </div>
+  <h1 class="test-title">Área de Testes</h1>
+  <p class="test-sub">Ferramentas de diagnóstico e validação do ambiente farpa.ai</p>
 
-            <div class="card">
-                <div class="card-icon">📈</div>
-                <h3>Previsões em Tempo Real</h3>
-                <p>Modelos preditivos que se atualizam continuamente com seus dados mais recentes.</p>
-            </div>
-
-            <div class="card">
-                <div class="card-icon">🔒</div>
-                <h3>Privacidade Garantida</h3>
-                <p>RAG com seus dados proprietários. Nenhuma informação sai de sua infraestrutura.</p>
-            </div>
-        </div>
-
-        <!-- Interactive Form -->
-        <div class="form-section">
-            <h2>Solicitar Demonstração</h2>
-            
-            <div class="success-message" id="successMessage">
-                ✓ Obrigado! Sua solicitação foi recebida. Entraremos em contato em breve.
-            </div>
-
-            <form id="demoForm">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="name">Nome Completo</label>
-                        <input type="text" id="name" name="name" required placeholder="Seu nome">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="email">Email</label>
-                        <input type="email" id="email" name="email" required placeholder="seu@email.com">
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="company">Empresa</label>
-                        <input type="text" id="company" name="company" placeholder="Nome da empresa">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="role">Cargo</label>
-                        <input type="text" id="role" name="role" placeholder="Seu cargo">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="interest">Área de Interesse</label>
-                    <select id="interest" name="interest" required>
-                        <option value="">Selecione uma opção</option>
-                        <option value="atendimento">Atendimento ao Cliente</option>
-                        <option value="rh">Recursos Humanos</option>
-                        <option value="vendas">Vendas e Marketing</option>
-                        <option value="operacoes">Operações</option>
-                        <option value="outro">Outro</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="message">Mensagem</label>
-                    <textarea id="message" name="message" placeholder="Conte-nos mais sobre sua necessidade..."></textarea>
-                </div>
-
-                <button type="submit" class="btn btn-primary">Solicitar Demo</button>
-            </form>
-
-            <!-- Stats After Form -->
-            <div class="stats-display">
-                <div class="stat-box">
-                    <div class="stat-number">79.8%</div>
-                    <div class="stat-label">CAGR até 2030</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-number">50%</div>
-                    <div class="stat-label">Tarefas Automatizadas</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-number">90%</div>
-                    <div class="stat-label">Força de Trabalho Capacitada</div>
-                </div>
-            </div>
-        </div>
-
-        <div style="text-align: center; margin-bottom: 3rem;">
-            <a href="index.html" class="btn btn-secondary">← Voltar para Home</a>
-        </div>
+  <!-- Status do ambiente -->
+  <div class="test-section">
+    <div class="test-section-title">Status do ambiente</div>
+    <div class="test-card" style="padding:0;overflow:hidden;">
+      <div id="env-status" style="padding:4px 18px;">
+        <div class="status-row"><span class="status-dot ok"></span><span class="status-label">JavaScript</span><span class="status-value">OK</span></div>
+        <div class="status-row"><span class="status-dot" id="dot-theme"></span><span class="status-label">Theme Engine</span><span class="status-value" id="val-theme">...</span></div>
+        <div class="status-row"><span class="status-dot" id="dot-fonts"></span><span class="status-label">Google Fonts</span><span class="status-value" id="val-fonts">...</span></div>
+        <div class="status-row"><span class="status-dot" id="dot-storage"></span><span class="status-label">localStorage</span><span class="status-value" id="val-storage">...</span></div>
+        <div class="status-row"><span class="status-dot" id="dot-api"></span><span class="status-label">API Leads</span><span class="status-value" id="val-api">Verificando...</span></div>
+      </div>
     </div>
+  </div>
 
-    <!-- Footer -->
-    <footer>
-        <p>&copy; 2026 Farpa.ai - Chief AI Strategist. Todos os direitos reservados.</p>
-    </footer>
+  <!-- Teste de API -->
+  <div class="test-section">
+    <div class="test-section-title">Teste da API de Leads</div>
+    <div>
+      <button class="test-btn" onclick="testApiGet()">GET /leads</button>
+      <button class="test-btn secondary" onclick="testApiPost()">POST /leads (teste)</button>
+      <button class="test-btn danger" onclick="clearResult()">Limpar</button>
+    </div>
+    <div class="test-result" id="api-result">Clique em um botão para testar a API...</div>
+  </div>
 
-    <script>
-        // Form submission handler
-        const form = document.getElementById('demoForm');
-        const successMessage = document.getElementById('successMessage');
+  <!-- Tema -->
+  <div class="test-section">
+    <div class="test-section-title">Troca de temas</div>
+    <div>
+      <button class="test-btn" onclick="window.farpaTheme.set('void')">Void (escuro)</button>
+      <button class="test-btn secondary" onclick="window.farpaTheme.set('ivory')">Ivory (claro)</button>
+      <button class="test-btn secondary" onclick="window.farpaTheme.set('midnight')">Midnight (azul)</button>
+    </div>
+    <div class="test-result" id="theme-result">Tema atual: <span id="theme-current">...</span></div>
+  </div>
 
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
+  <!-- Componentes -->
+  <div class="test-section">
+    <div class="test-section-title">Componentes visuais</div>
+    <div class="test-grid">
+      <div class="test-card" style="border-color:rgba(0,255,136,0.2);">
+        <h4 style="color:var(--accent)">✓ Card com borda accent</h4>
+        <p>Teste de border-color, background e text renderizando corretamente.</p>
+      </div>
+      <div class="test-card" style="border-color:rgba(0,229,255,0.2);">
+        <h4 style="color:var(--accent-2)">✓ Card cyan</h4>
+        <p>Verificação do token --accent-2 aplicado a heading e border.</p>
+      </div>
+      <div class="test-card" style="border-color:rgba(181,122,255,0.2);">
+        <h4 style="color:var(--accent-3)">✓ Card purple</h4>
+        <p>Token --accent-3 — uso em elementos Pro e glossário.</p>
+      </div>
+      <div class="test-card" style="border-color:rgba(255,215,100,0.2);">
+        <h4 style="color:var(--accent-gold)">★ Card gold</h4>
+        <p>Token --accent-gold — exclusivo para elementos do plano Pro.</p>
+      </div>
+      <div class="test-card" style="border-color:rgba(255,59,59,0.2);">
+        <h4 style="color:var(--accent-danger)">⚠ Card urgente</h4>
+        <p>Token --accent-danger — alertas, erros e urgências.</p>
+      </div>
+      <div class="test-card">
+        <h4>Tipografia mista</h4>
+        <p>Body <code style="font-family:'DM Mono',monospace;font-size:11px;color:var(--accent-2);">+ DM Mono</code></p>
+      </div>
+    </div>
+  </div>
 
-            // Collect form data
-            const formData = {
-                name: document.getElementById('name').value,
-                email: document.getElementById('email').value,
-                company: document.getElementById('company').value,
-                role: document.getElementById('role').value,
-                interest: document.getElementById('interest').value,
-                message: document.getElementById('message').value,
-                timestamp: new Date().toISOString()
-            };
+  <!-- Responsive test -->
+  <div class="test-section">
+    <div class="test-section-title">Informações do viewport</div>
+    <div class="test-result" id="viewport-info">Carregando...</div>
+  </div>
 
-            // Log form data (in production, this would be sent to a server)
-            console.log('Form submitted:', formData);
+  <!-- Navegação -->
+  <div class="test-section">
+    <div class="test-section-title">Navegação rápida</div>
+    <div>
+      <a href="index.html" class="test-btn secondary">Home</a>
+      <a href="biblioteca.html" class="test-btn secondary">Biblioteca</a>
+      <a href="labs.html" class="test-btn secondary">Labs</a>
+      <a href="mercados.html" class="test-btn secondary">Mercados</a>
+      <a href="pro.html" class="test-btn secondary">Pro</a>
+      <a href="leads.html" class="test-btn secondary">Leads</a>
+      <a href="admin/index.html" class="test-btn secondary">Admin</a>
+      <a href="brand-guide.html" class="test-btn secondary">Brand Guide</a>
+    </div>
+  </div>
 
-            // Show success message
-            successMessage.classList.add('show');
+</div>
+</main>
+</div>
 
-            // Reset form
-            form.reset();
+<script>
+const API = 'https://api-leads.rfelipefernandes.workers.dev/api';
 
-            // Hide success message after 5 seconds
-            setTimeout(() => {
-                successMessage.classList.remove('show');
-            }, 5000);
-        });
+document.addEventListener('DOMContentLoaded', function() {
+  // Layout
+  var layout = document.getElementById('farpa-layout');
+  if (layout) {
+    var sidebar = window.farpaSidebar.build('teste');
+    layout.insertBefore(sidebar, layout.firstChild);
+    var topnav = window.farpaTopnav.build([{label:'farpa.ai',href:'index.html'},{label:'Testes'}]);
+    layout.insertBefore(topnav, sidebar.nextSibling);
+  }
+  var t = localStorage.getItem('farpa_theme') || 'void';
+  document.documentElement.setAttribute('data-theme', t);
 
-        // Smooth scroll
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth' });
-                }
-            });
-        });
+  // Status checks
+  checkTheme();
+  checkFonts();
+  checkStorage();
+  checkApi();
+  updateViewport();
+  window.addEventListener('resize', updateViewport);
+  window.addEventListener('farpaThemeChange', e => {
+    document.getElementById('theme-current').textContent = e.detail.theme;
+    document.getElementById('theme-result').textContent = 'Tema atual: ' + e.detail.theme;
+  });
+  document.getElementById('theme-current').textContent = t;
+});
 
-        // Add scroll animation
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
+function checkTheme() {
+  try {
+    const ok = typeof window.farpaTheme === 'object';
+    setStatus('dot-theme', 'val-theme', ok, ok ? 'Ativo — tema: ' + (localStorage.getItem('farpa_theme') || 'void') : 'Não encontrado');
+  } catch(e) { setStatus('dot-theme', 'val-theme', false, 'Erro'); }
+}
 
-        const observer = new IntersectionObserver(function(entries) {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
-                }
-            });
-        }, observerOptions);
+function checkFonts() {
+  try {
+    document.fonts.ready.then(() => {
+      const sg = document.fonts.check('900 16px "Space Grotesk"');
+      const dm = document.fonts.check('400 16px "DM Mono"');
+      setStatus('dot-fonts', 'val-fonts', sg && dm, sg && dm ? 'Space Grotesk + DM Mono carregados' : 'Falha parcial');
+    });
+  } catch(e) { setStatus('dot-fonts', 'val-fonts', null, 'Não verificável'); }
+}
 
-        document.querySelectorAll('.card').forEach(el => {
-            el.style.opacity = '0';
-            el.style.transform = 'translateY(20px)';
-            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-            observer.observe(el);
-        });
-    </script>
+function checkStorage() {
+  try {
+    localStorage.setItem('farpa_test', '1');
+    localStorage.removeItem('farpa_test');
+    setStatus('dot-storage', 'val-storage', true, 'Disponível');
+  } catch(e) { setStatus('dot-storage', 'val-storage', false, 'Bloqueado'); }
+}
+
+async function checkApi() {
+  try {
+    const res = await fetch(`${API}/leads`, { signal: AbortSignal.timeout(5000) });
+    setStatus('dot-api', 'val-api', res.ok, res.ok ? `OK ${res.status}` : `Erro HTTP ${res.status}`);
+  } catch(e) { setStatus('dot-api', 'val-api', false, 'Timeout / CORS'); }
+}
+
+function setStatus(dotId, valId, ok, text) {
+  const dot = document.getElementById(dotId);
+  const val = document.getElementById(valId);
+  if (dot) dot.className = 'status-dot ' + (ok === true ? 'ok' : ok === false ? 'err' : 'warn');
+  if (val) val.textContent = text;
+}
+
+async function testApiGet() {
+  const el = document.getElementById('api-result');
+  el.textContent = 'GET /leads → aguardando...';
+  try {
+    const res = await fetch(`${API}/leads`);
+    const json = await res.json();
+    el.textContent = `Status: ${res.status} ${res.statusText}\n\nResposta:\n${JSON.stringify(json, null, 2).slice(0, 800)}${JSON.stringify(json).length > 800 ? '\n...' : ''}`;
+  } catch(e) { el.textContent = `Erro: ${e.message}`; }
+}
+
+async function testApiPost() {
+  const el = document.getElementById('api-result');
+  el.textContent = 'POST /leads → enviando payload de teste...';
+  try {
+    const res = await fetch(`${API}/leads`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: 'Teste Automático', email: `teste_${Date.now()}@farpa.ai`, interest: 'teste' })
+    });
+    const json = await res.json();
+    el.textContent = `Status: ${res.status} ${res.statusText}\n\nResposta:\n${JSON.stringify(json, null, 2)}`;
+  } catch(e) { el.textContent = `Erro: ${e.message}`; }
+}
+
+function clearResult() { document.getElementById('api-result').textContent = 'Resultado limpo.'; }
+
+function updateViewport() {
+  const el = document.getElementById('viewport-info');
+  const ua = navigator.userAgent;
+  const isMobile = /Mobi|Android/i.test(ua);
+  const isIOS = /iPhone|iPad|iPod/i.test(ua);
+  el.textContent = [
+    `Viewport: ${window.innerWidth}px × ${window.innerHeight}px`,
+    `Device pixel ratio: ${window.devicePixelRatio}`,
+    `Touch: ${('ontouchstart' in window) ? 'Sim' : 'Não'}`,
+    `Mobile UA: ${isMobile ? 'Sim' : 'Não'}`,
+    `iOS: ${isIOS ? 'Sim' : 'Não'}`,
+    `Tema ativo: ${document.documentElement.getAttribute('data-theme') || 'void'}`,
+    `localStorage farpa_theme: ${localStorage.getItem('farpa_theme') || '(não definido)'}`,
+    `Sidebar collapsed: ${localStorage.getItem('farpa_sidebar_collapsed') || 'false'}`,
+    `User agent: ${ua.slice(0, 80)}...`,
+  ].join('\n');
+}
+</script>
 </body>
 </html>
