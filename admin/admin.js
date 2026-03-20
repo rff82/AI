@@ -1,6 +1,13 @@
 /* Farpa.ai - Admin Dashboard */
 
 const API_BASE = 'https://api-leads.rfelipefernandes.workers.dev/api';
+const ADMIN_PATH = window.location.pathname.includes('/admin') ? '/admin' : '';
+
+// Função para resolver URLs relativas corretamente
+function resolveUrl(path) {
+  if (path.startsWith('http')) return path;
+  return ADMIN_PATH + path;
+}
 let leadsData = [];
 let chartsInstances = {};
 
@@ -261,7 +268,7 @@ function drawCountriesChart() {
 function handleLogout() {
   // In production, this would clear the session/token
   alert('Logout implementado via Cloudflare Access');
-  window.location.href = 'https://farpa.ai';
+  window.location.href = '/';
 }
 
 // Export to CSV
