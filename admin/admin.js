@@ -4,6 +4,40 @@ const API_BASE = 'https://api-leads.rfelipefernandes.workers.dev/api';
 let leadsData = [];
 let chartsInstances = {};
 
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('\"', '&quot;')
+    .replaceAll("'", '&#39;');
+}
+
+function normalizeLeadValue(value, fallback = '-') {
+  if (value === null || value === undefined || value === '') {
+    return fallback;
+  }
+
+  return String(value);
+}
+
+async function fetchLeads() {
+  const response = await fetch(`${API_BASE}/leads`);
+  let result;
+
+  try {
+    result = await response.json();
+  } catch (error) {
+    throw new Error('Resposta inválida da API de leads.');
+  }
+
+  if (!response.ok) {
+    throw new Error(result?.error || 'Falha ao carregar leads.');
+  }
+
+  return Array.isArray(result.results) ? result.results : [];
+}
+
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
   initializeMenus();
@@ -48,10 +82,7 @@ function showSection(sectionId) {
 // Load Dashboard Data
 async function loadDashboardData() {
   try {
-    const response = await fetch(`${API_BASE}/leads`);
-    const result = await response.json();
-    
-    leadsData = result.results || [];
+    leadsData = await fetchLeads();
     
     // Calculate stats
     const totalLeads = leadsData.length;
@@ -75,10 +106,7 @@ async function loadDashboardData() {
 // Load Leads Table
 async function loadLeadsTable() {
   try {
-    const response = await fetch(`${API_BASE}/leads`);
-    const result = await response.json();
-    
-    leadsData = result.results || [];
+    leadsData = await fetchLeads();
     renderLeadsTable(leadsData);
   } catch (error) {
     console.error('Erro ao carregar leads:', error);
@@ -95,19 +123,28 @@ function renderLeadsTable(leads) {
     return;
   }
   
-  tbody.innerHTML = leads.map(lead => `
+  tbody.innerHTML = leads.map(lead => {
+    const name = escapeHtml(normalizeLeadValue(lead.name));
+    const email = escapeHtml(normalizeLeadValue(lead.email));
+    const phone = escapeHtml(normalizeLeadValue(lead.phone));
+    const interest = escapeHtml(normalizeLeadValue(lead.interest));
+    const createdAt = lead.created_at ? new Date(lead.created_at).toLocaleDateString('pt-BR') : '-';
+    const encodedEmail = encodeURIComponent(normalizeLeadValue(lead.email, ''));
+
+    return `
     <tr>
-      <td>${lead.name || '-'}</td>
-      <td>${lead.email}</td>
-      <td>${lead.phone || '-'}</td>
-      <td>${lead.interest || '-'}</td>
-      <td>${new Date(lead.created_at).toLocaleDateString('pt-BR')}</td>
+      <td>${name}</td>
+      <td>${email}</td>
+      <td>${phone}</td>
+      <td>${interest}</td>
+      <td>${createdAt}</td>
       <td>
-        <button class="action-btn" onclick="copyToClipboard('${lead.email}')">Copiar Email</button>
-        <button class="action-btn delete" onclick="deleteLead('${lead.email}')">Deletar</button>
+        <button class="action-btn" data-email="${encodedEmail}" onclick="copyToClipboard(decodeURIComponent(this.dataset.email))">Copiar Email</button>
+        <button class="action-btn delete" data-email="${encodedEmail}" onclick="deleteLead(decodeURIComponent(this.dataset.email))">Deletar</button>
       </td>
     </tr>
-  `).join('');
+  `;
+  }).join('');
 }
 
 // Search Leads
@@ -117,8 +154,8 @@ function setupSearch() {
     searchBox.addEventListener('input', (e) => {
       const query = e.target.value.toLowerCase();
       const filtered = leadsData.filter(lead =>
-        lead.name.toLowerCase().includes(query) ||
-        lead.email.toLowerCase().includes(query)
+        normalizeLeadValue(lead.name, '').toLowerCase().includes(query) ||
+        normalizeLeadValue(lead.email, '').toLowerCase().includes(query)
       );
       renderLeadsTable(filtered);
     });
@@ -273,11 +310,11 @@ function exportLeadsToCSV() {
   
   const headers = ['Nome', 'Email', 'Telefone', 'Interesse', 'Data'];
   const rows = leadsData.map(lead => [
-    lead.name,
-    lead.email,
-    lead.phone || '-',
-    lead.interest || '-',
-    new Date(lead.created_at).toLocaleDateString('pt-BR')
+    normalizeLeadValue(lead.name),
+    normalizeLeadValue(lead.email),
+    normalizeLeadValue(lead.phone),
+    normalizeLeadValue(lead.interest),
+    lead.created_at ? new Date(lead.created_at).toLocaleDateString('pt-BR') : '-'
   ]);
   
   const csv = [

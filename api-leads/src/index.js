@@ -59,10 +59,17 @@ export default {
     }
 
     if (request.method === "GET" && url.pathname === "/api/leads") {
-      const results = await env.DB.prepare(
-        "SELECT id, name, email, phone, interest, created_at FROM leads ORDER BY created_at DESC LIMIT 100"
-      ).all();
-      return Response.json(results, { headers: corsHeaders });
+      try {
+        const results = await env.DB.prepare(
+          "SELECT id, name, email, phone, interest, created_at FROM leads ORDER BY created_at DESC LIMIT 100"
+        ).all();
+        return Response.json(results, { headers: corsHeaders });
+      } catch (err) {
+        return Response.json(
+          { success: false, error: "Unable to fetch leads." },
+          { status: 500, headers: corsHeaders }
+        );
+      }
     }
 
     return Response.json(
