@@ -149,6 +149,134 @@ body {
   border: none;
 }
 
+
+.labs-actions {
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-top:24px;
+}
+.labs-action-btn {
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:12px 18px;
+  border-radius:12px;
+  border:1px solid var(--border-md);
+  background:var(--bg-layer2);
+  color:var(--text-1);
+  cursor:pointer;
+  text-decoration:none;
+  transition:border-color .18s, transform .18s, background .18s;
+}
+.labs-action-btn:hover { border-color: var(--corte); transform: translateY(-2px); }
+.labs-action-btn.primary { background: linear-gradient(135deg, rgba(0,229,255,.16), rgba(181,122,255,.14)); border-color: rgba(0,229,255,.28); }
+.labs-overview {
+  display:grid;
+  grid-template-columns: repeat(3, minmax(0,1fr));
+  gap:16px;
+  margin: 8px 0 8px;
+}
+.overview-card {
+  background: var(--bg-layer2);
+  border: 1px solid var(--border-lo);
+  border-radius: 18px;
+  padding: 18px 18px 16px;
+}
+.overview-card-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--corte);
+  margin-bottom: 10px;
+}
+.overview-card h3 { font-size: 17px; margin-bottom: 8px; }
+.overview-card p { color: var(--text-3); font-size: 13px; line-height: 1.65; }
+.labs-toolbar {
+  display:flex;
+  justify-content:space-between;
+  gap:16px;
+  align-items:flex-start;
+  flex-wrap:wrap;
+  margin: 4px 0 0;
+}
+.labs-toolbar-copy { max-width: 520px; }
+.labs-toolbar-copy h2 { font-size: 28px; letter-spacing: -.03em; margin-bottom: 8px; }
+.labs-toolbar-copy p { color: var(--text-3); line-height: 1.7; }
+.labs-filter-bar {
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+}
+.filter-chip {
+  border:1px solid var(--border-md);
+  background:transparent;
+  color:var(--text-2);
+  border-radius:999px;
+  padding:9px 14px;
+  font-family:var(--font-mono);
+  font-size:10px;
+  letter-spacing:1.4px;
+  text-transform:uppercase;
+  cursor:pointer;
+  transition:.18s;
+}
+.filter-chip:hover,
+.filter-chip.active {
+  border-color: var(--corte);
+  color: var(--text-1);
+  background: rgba(0,229,255,.08);
+}
+.lab-card.is-hidden { display:none; }
+.lab-identity {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(255,255,255,.03);
+  border: 1px solid var(--border-lo);
+}
+.lab-identity-name {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  color: var(--text-2);
+}
+.lab-identity-note {
+  font-size: 12px;
+  color: var(--text-3);
+}
+.lab-identity-badge {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.14);
+  color: var(--text-2);
+  white-space: nowrap;
+}
+.labs-secondary-note {
+  margin-top: 24px;
+  padding: 18px 20px;
+  border-radius: 18px;
+  border: 1px solid rgba(181,122,255,.18);
+  background: linear-gradient(135deg, rgba(181,122,255,.08), rgba(0,229,255,.04));
+  display:flex;
+  justify-content:space-between;
+  gap:16px;
+  align-items:center;
+  flex-wrap:wrap;
+}
+.labs-secondary-note p { max-width: 640px; color: var(--text-2); }
+
 /* ── Grid ── */
 .labs-grid {
   display: grid;
@@ -184,6 +312,7 @@ body {
 }
 @media (max-width: 720px) {
   .lab-card.featured, .lab-card.trader-card { grid-column: span 1; }
+  .labs-overview { grid-template-columns: 1fr; }
 }
 
 /* ── Preview areas ── */
@@ -347,6 +476,9 @@ body {
 @media (max-width: 640px) {
   .labs-page { padding: 20px 16px 60px; }
   .labs-grid { grid-template-columns: 1fr; }
+  .labs-toolbar { flex-direction: column; }
+  .labs-filter-bar { justify-content: flex-start; }
+  .labs-secondary-note { align-items: flex-start; }
 }
 </style>
 </head>
@@ -359,16 +491,51 @@ body {
   <div class="labs-hero">
     <div class="labs-eyebrow"><span class="labs-eyebrow-dot"></span>Experimentos com IA</div>
     <h1 class="labs-title">Farpa <span>Labs</span></h1>
-    <p class="labs-sub">Demos interativos e ferramentas experimentais construídas com IA — rodando direto no browser, sem instalação.</p>
+    <p class="labs-sub">Cada iniciativa dentro do Labs é uma jornada própria: pode ter estética, lógica e ritmo diferentes — porque o objetivo aqui é testar experiências reais, não forçar tudo a parecer o mesmo produto.</p>
     <p class="labs-note">⚗️ Os demos usam algoritmos locais ou APIs públicas. Nenhum dado pessoal é enviado a servidores externos.</p>
+    <div class="labs-actions">
+      <button class="labs-action-btn primary" onclick="openRandomLab()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 4h6v6H4zM14 14h6v6h-6z"/><path d="m14 4 6 6M10 14l-6 6" stroke-linecap="round"/></svg>Explorar um lab aleatório</button>
+      <a href="#labs-journeys" class="labs-action-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M12 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>Ver jornadas</a>
+    </div>
+  </div>
+
+  <div class="labs-overview">
+    <article class="overview-card">
+      <div class="overview-card-label">Hub de experiências</div>
+      <h3>Descoberta gradual, não menu infinito</h3>
+      <p>O Labs agora assume uma lógica de descoberta: menos ruído, mais clareza para encontrar o experimento certo no momento certo.</p>
+    </article>
+    <article class="overview-card">
+      <div class="overview-card-label">Jornadas separadas</div>
+      <h3>Cada lab pode ter sua própria identidade</h3>
+      <p>Mercados, texto, simulação e experimentos aleatórios convivem aqui, mas cada trilha pode amadurecer com linguagem visual própria.</p>
+    </article>
+    <article class="overview-card">
+      <div class="overview-card-label">Expansão contínua</div>
+      <h3>Espaço para novas features e testes</h3>
+      <p>O catálogo foi preparado para crescer com iniciativas permanentes ou aleatórias, sem quebrar a navegação principal.</p>
+    </article>
   </div>
 
   <hr class="grad-divider" style="margin-top:0">
 
+  <div class="labs-toolbar" id="labs-journeys">
+    <div class="labs-toolbar-copy">
+      <h2>Escolha uma jornada.</h2>
+      <p>Filtre por tipo de experiência e deixe o usuário entrar pelo problema que ele quer resolver — não pela lista completa de tudo o que existe.</p>
+    </div>
+    <div class="labs-filter-bar" role="tablist" aria-label="Filtrar jornadas do Labs">
+      <button class="filter-chip active" data-filter="all" onclick="setLabFilter('all', this)">Todas</button>
+      <button class="filter-chip" data-filter="mercados" onclick="setLabFilter('mercados', this)">Mercados</button>
+      <button class="filter-chip" data-filter="texto" onclick="setLabFilter('texto', this)">Texto & linguagem</button>
+      <button class="filter-chip" data-filter="experimental" onclick="setLabFilter('experimental', this)">Experimental</button>
+    </div>
+  </div>
+
   <div class="labs-grid">
 
     <!-- ★ TRADER SIMULATOR — destaque ★ -->
-    <div class="lab-card trader-card">
+    <div class="lab-card trader-card" data-lab-type="mercados" data-random-target="trader-sim.html">
       <div class="lab-preview pv-trader">
         <div style="display:flex;flex-direction:column;align-items:center;gap:14px;width:100%;padding:16px 24px;">
           <div class="candle-preview">
@@ -406,7 +573,7 @@ body {
           <span class="gam-badge">💬 Fórum</span>
           <span class="gam-badge">📊 Gráficos Reais</span>
         </div>
-        <div class="lab-title">Trader Simulator — Simulação de Trading</div>
+        <div class="lab-identity"><div><div class="lab-identity-name">Jornada Markets Ops</div><div class="lab-identity-note">Uma experiência própria de mercado, progressão e tomada de decisão.</div></div><span class="lab-identity-badge">Identidade autônoma</span></div><div class="lab-title">Trader Simulator — Simulação de Trading</div>
         <div class="lab-desc">Simule operações com dados reais de mercado cripto (BTC, ETH, SOL e mais) via CoinGecko API. Gráficos de preço ao vivo, indicadores técnicos (RSI, MA20, volatilidade, tendência), sistema de XP &amp; níveis, ranking global, 9 conquistas desbloqueáveis e fórum de traders. Comece com $100.000 virtuais — sem risco real.</div>
         <div class="lab-footer">
           <a href="trader-sim.html" class="lab-btn lb-trader">
@@ -419,7 +586,7 @@ body {
     </div>
 
     <!-- Sentimento — featured -->
-    <div class="lab-card featured">
+    <div class="lab-card featured" data-lab-type="texto" data-random-target="sentiment">
       <div class="lab-preview pv-sent">
         <div style="display:flex;flex-direction:column;align-items:center;gap:14px;">
           <div class="bar-anim">
@@ -434,7 +601,7 @@ body {
       </div>
       <div class="lab-body">
         <div class="lab-tags"><span class="lab-tag lt-live">● ao vivo</span><span class="lab-tag lt-ia">NLP</span><span class="lab-tag lt-demo">Demo interativo</span></div>
-        <div class="lab-title">Analisador de Sentimento</div>
+        <div class="lab-identity"><div><div class="lab-identity-name">Jornada Text Signals</div><div class="lab-identity-note">Entrada direta para leitura rápida de sentimento e contexto textual.</div></div><span class="lab-identity-badge">Resposta instantânea</span></div><div class="lab-title">Analisador de Sentimento</div>
         <div class="lab-desc">Cole qualquer texto — notícia, tweet, comunicado — e o modelo analisa o sentimento em tempo real: positivo, negativo ou neutro, com score de confiança e palavras-chave.</div>
         <div class="lab-footer">
           <button class="lab-btn lb-primary" onclick="openDemo('sentiment')">
@@ -446,7 +613,7 @@ body {
     </div>
 
     <!-- Headlines -->
-    <div class="lab-card">
+    <div class="lab-card" data-lab-type="texto" data-random-target="headline">
       <div class="lab-preview pv-head">
         <div style="text-align:center;padding:20px;">
           <div style="font-size:12px;font-weight:700;margin-bottom:8px;">Banco Central eleva juros<span class="typing-cursor"></span></div>
@@ -456,14 +623,14 @@ body {
       </div>
       <div class="lab-body">
         <div class="lab-tags"><span class="lab-tag lt-demo">Demo interativo</span><span class="lab-tag lt-ia">Redação IA</span></div>
-        <div class="lab-title">Gerador de Headlines</div>
+        <div class="lab-identity"><div><div class="lab-identity-name">Jornada Editorial Sprint</div><div class="lab-identity-note">Explora tom, framing e linguagem para times de conteúdo.</div></div><span class="lab-identity-badge">Micro ferramenta</span></div><div class="lab-title">Gerador de Headlines</div>
         <div class="lab-desc">Descreva uma notícia em 1 frase e receba 4 variações de headline em tons diferentes: impactante, técnico, popular e provocador.</div>
         <div class="lab-footer"><button class="lab-btn lb-primary" onclick="openDemo('headline')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>Abrir demo</button></div>
       </div>
     </div>
 
     <!-- Resumidor -->
-    <div class="lab-card">
+    <div class="lab-card" data-lab-type="texto" data-random-target="resume">
       <div class="lab-preview pv-word">
         <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;max-width:200px;padding:20px;">
           <span style="font-weight:900;font-size:18px;color:var(--farpa)">IA</span>
@@ -477,14 +644,14 @@ body {
       </div>
       <div class="lab-body">
         <div class="lab-tags"><span class="lab-tag lt-demo">Demo interativo</span><span class="lab-tag lt-ia">Sumarização</span></div>
-        <div class="lab-title">Resumidor Inteligente</div>
+        <div class="lab-identity"><div><div class="lab-identity-name">Jornada Dense Reading</div><div class="lab-identity-note">Feita para transformar volume em clareza acionável.</div></div><span class="lab-identity-badge">Leitura rápida</span></div><div class="lab-title">Resumidor Inteligente</div>
         <div class="lab-desc">Cole um texto longo e receba um resumo em bullets, palavras-chave principais e nível de complexidade.</div>
         <div class="lab-footer"><button class="lab-btn lb-primary" onclick="openDemo('resume')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>Abrir demo</button></div>
       </div>
     </div>
 
     <!-- Viés -->
-    <div class="lab-card">
+    <div class="lab-card" data-lab-type="experimental" data-random-target="bias">
       <div class="lab-preview pv-bias" style="flex-direction:column;gap:6px;padding:16px;">
         <div style="background:rgba(181,122,255,.12);border:1px solid rgba(181,122,255,.18);border-radius:8px;padding:7px 10px;font-size:11px;">"IA vai destruir todos os empregos"</div>
         <div style="background:rgba(0,255,136,.08);border:1px solid rgba(0,255,136,.18);border-radius:8px;padding:7px 10px;font-size:11px;text-align:right;">Viés: <strong style="color:var(--urgente)">Alto ⚠</strong></div>
@@ -492,14 +659,14 @@ body {
       </div>
       <div class="lab-body">
         <div class="lab-tags"><span class="lab-tag lt-live">● experimental</span><span class="lab-tag lt-ia">Análise crítica</span></div>
-        <div class="lab-title">Detector de Viés em Texto</div>
+        <div class="lab-identity"><div><div class="lab-identity-name">Jornada Critical Lens</div><div class="lab-identity-note">Uma trilha experimental para revisão crítica de narrativa e viés.</div></div><span class="lab-identity-badge">Experimental</span></div><div class="lab-title">Detector de Viés em Texto</div>
         <div class="lab-desc">Analisa manchetes e textos em busca de vieses linguísticos: alarmismo, generalização, sensacionalismo e viés de confirmação.</div>
         <div class="lab-footer"><button class="lab-btn lb-primary" onclick="openDemo('bias')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>Abrir demo</button></div>
       </div>
     </div>
 
     <!-- Mercados -->
-    <div class="lab-card">
+    <div class="lab-card" data-lab-type="mercados" data-random-target="mercados.html">
       <div class="lab-preview pv-market" style="flex-direction:column;gap:6px;padding:16px;width:100%;">
         <div style="display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:11px;"><span style="color:var(--text-3)">PETR4</span><span style="color:var(--farpa)">+2.4%</span></div>
         <div style="display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:11px;"><span style="color:var(--text-3)">BTC</span><span style="color:var(--farpa)">+1.8%</span></div>
@@ -509,29 +676,15 @@ body {
       </div>
       <div class="lab-body">
         <div class="lab-tags"><span class="lab-tag lt-live">● ao vivo</span><span class="lab-tag lt-ext">Yahoo Finance</span></div>
-        <div class="lab-title">Dashboard de Mercados</div>
+        <div class="lab-identity"><div><div class="lab-identity-name">Jornada Live Board</div><div class="lab-identity-note">Painel enxuto para monitoramento contínuo de ativos.</div></div><span class="lab-identity-badge">Observação contínua</span></div><div class="lab-title">Dashboard de Mercados</div>
         <div class="lab-desc">Acompanhe cotações da B3, NYSE, Nasdaq e criptomoedas em tempo real com gráficos sparkline.</div>
         <div class="lab-footer"><a href="mercados.html" class="lab-btn lb-primary"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>Acessar</a></div>
       </div>
     </div>
 
-    <!-- Biblioteca -->
-    <div class="lab-card" style="border-color:rgba(181,122,255,.18);">
-      <div class="lab-preview pv-lib" style="flex-direction:column;gap:8px;padding:20px;">
-        <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;">
-          <span style="background:rgba(181,122,255,.12);border:1px solid rgba(181,122,255,.18);border-radius:6px;padding:4px 10px;font-family:var(--font-mono);font-size:9px;color:var(--purple)">LLM</span>
-          <span style="background:rgba(0,255,136,.08);border:1px solid rgba(0,255,136,.16);border-radius:6px;padding:4px 10px;font-family:var(--font-mono);font-size:9px;color:var(--farpa)">RAG</span>
-          <span style="background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.16);border-radius:6px;padding:4px 10px;font-family:var(--font-mono);font-size:9px;color:var(--corte)">Embeddings</span>
-          <span style="background:rgba(255,184,0,.08);border:1px solid rgba(255,184,0,.16);border-radius:6px;padding:4px 10px;font-family:var(--font-mono);font-size:9px;color:var(--warn)">Fine-tuning</span>
-        </div>
-        <div style="font-family:var(--font-mono);font-size:9px;color:rgba(181,122,255,.55);letter-spacing:2px;text-align:center;">8 MÓDULOS · 50+ TERMOS</div>
-      </div>
-      <div class="lab-body">
-        <div class="lab-tags"><span class="lab-tag" style="color:var(--purple);border-color:rgba(181,122,255,.22);background:rgba(181,122,255,.06);">📚 Curadoria</span></div>
-        <div class="lab-title">Biblioteca de IA Generativa</div>
-        <div class="lab-desc">8 módulos com glossário completo, objetivos de aprendizado, referências públicas e análises Pro exclusivas.</div>
-        <div class="lab-footer"><a href="biblioteca.html" class="lab-btn lb-purple">Acessar biblioteca</a></div>
-      </div>
+    <div class="labs-secondary-note">
+      <p><strong style="color:var(--text-1);display:block;margin-bottom:6px;">Aprofundamento fica por descoberta.</strong>A Biblioteca continua disponível, mas saiu do fluxo principal do Labs para não competir com as jornadas experimentais. Quando a pessoa quiser sair do modo exploração e entrar em aprendizado estruturado, ela descobre esse próximo passo naturalmente.</p>
+      <a href="biblioteca.html" class="lab-btn lb-purple">Explorar a biblioteca</a>
     </div>
 
   </div><!-- /labs-grid -->
@@ -679,6 +832,29 @@ function detectBias() {
     lbl.textContent = `⚠️ ${found.length} viés${found.length>1?'es':''} detectado${found.length>1?'s':''}`; lbl.style.color = 'var(--urgente)';
     det.textContent = found.map(f => f.tip).join(' ');
     tags.innerHTML = found.map(f => `<span class="bias-tag" style="color:${f.color};border-color:${f.color}50;background:${f.color}10">${f.name}</span>`).join('');
+  }
+}
+
+function setLabFilter(filter, button) {
+  document.querySelectorAll('.filter-chip').forEach(function(chip) {
+    chip.classList.toggle('active', chip === button);
+  });
+  document.querySelectorAll('.lab-card[data-lab-type]').forEach(function(card) {
+    var match = filter === 'all' || card.dataset.labType === filter;
+    card.classList.toggle('is-hidden', !match);
+  });
+}
+
+function openRandomLab() {
+  var journeys = Array.from(document.querySelectorAll('.lab-card[data-random-target]')).filter(function(card) {
+    return !card.classList.contains('is-hidden');
+  });
+  if (!journeys.length) return;
+  var choice = journeys[Math.floor(Math.random() * journeys.length)].dataset.randomTarget;
+  if (['sentiment','headline','resume','bias'].includes(choice)) {
+    openDemo(choice);
+  } else {
+    window.location.href = choice;
   }
 }
 

@@ -78,11 +78,12 @@
     const mkItem = (item, isActive) =>
       `<a href="${item.href}" class="sb-item${isActive?' active':''}" data-tooltip="${item.label}"${isActive?' aria-current="page"':''}>${item.icon}<span class="sb-item-text">${item.label}</span>${item.live?'<span class="sb-live"></span>':''}${item.badge?`<span class="sb-badge">${item.badge}</span>`:''}</a>`;
 
+    const showLibraryDiscovery = activePage === 'biblioteca';
+
     s.innerHTML =
       `<a class="sb-logo" href="index.html">${iFarpa}<span class="sb-logo-name">farpa<span class="ai">.ai</span></span></a>` +
       `<div class="sb-section"><div class="sb-section-label">Navegar</div>${navItems.map(i=>mkItem(i,activePage===i.id)).join('')}</div>` +
-      `<div class="sb-divider"></div>` +
-      `<div class="sb-section"><div class="sb-section-label">Biblioteca</div>${subItems.map(i=>`<a href="${i.href}" class="sb-item sb-item-sub" data-tooltip="${i.label}">${iDot}<span class="sb-item-text">${i.label}</span></a>`).join('')}<a href="biblioteca.html" class="sb-item sb-item-sub" style="color:var(--accent)" data-tooltip="Ver todos">${iDot}<span class="sb-item-text">Ver todos →</span></a></div>` +
+      `${showLibraryDiscovery ? `<div class="sb-divider"></div><div class="sb-section"><div class="sb-section-label">Biblioteca</div>${subItems.map(i=>`<a href="${i.href}" class="sb-item sb-item-sub" data-tooltip="${i.label}">${iDot}<span class="sb-item-text">${i.label}</span></a>`).join('')}<a href="biblioteca.html" class="sb-item sb-item-sub" style="color:var(--accent)" data-tooltip="Ver todos">${iDot}<span class="sb-item-text">Ver todos →</span></a></div>` : ''}` +
       `<div class="sb-divider"></div>` +
       `${['admin','leads'].includes(activePage) ? `<div class="sb-section"><div class="sb-section-label">Admin</div>${adminItems.map(i=>mkItem(i,activePage===i.id)).join('')}</div>` : ''}` +
       `<div class="sb-footer"><a href="pro.html" class="sb-pro-btn">${iStar}<span>Plano Pro</span></a><div class="sb-theme-row"><span class="sb-theme-label">Acessibilidade</span><div class="sb-theme-dots"><button class="sb-theme-dot sb-dot-void" data-theme="void" onclick="window.farpaTheme.set('void')" title="Void" aria-label="Tema Void"></button><button class="sb-theme-dot sb-dot-ivory" data-theme="ivory" onclick="window.farpaTheme.set('ivory')" title="Ivory" aria-label="Tema Ivory"></button><button class="sb-theme-dot sb-dot-midnight" data-theme="midnight" onclick="window.farpaTheme.set('midnight')" title="Midnight" aria-label="Tema Midnight"></button><button class="sb-theme-dot sb-dot-contrast" data-theme="contrast" onclick="window.farpaTheme.set('contrast')" title="Alto Contraste" aria-label="Tema Alto Contraste"></button></div></div><div class="sb-version" data-site-version></div></div>`;
