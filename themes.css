@@ -51,6 +51,24 @@
   scrollbar-color: rgba(110,181,255,0.15) transparent;
 }
 
+
+[data-theme="contrast"] {
+  --bg-base: #000000; --bg-layer1: #050505; --bg-layer2: #0c0c0c;
+  --bg-layer3: #141414; --bg-layer4: #1d1d1d;
+  --border-lo: rgba(255,255,255,0.30); --border-md: rgba(255,255,255,0.52); --border-hi: rgba(255,255,255,0.82);
+  --text-1: #ffffff; --text-2: rgba(255,255,255,0.96); --text-3: rgba(255,255,255,0.82); --text-4: rgba(255,255,255,0.68);
+  --accent: #ffd400; --accent-2: #00ffff; --accent-3: #ff5cff;
+  --accent-warn: #ffd400; --accent-danger: #ff6b6b; --accent-gold: #ffd400;
+  --accent-bg: rgba(255,212,0,0.18); --accent-bg-2: rgba(0,255,255,0.18); --accent-bg-3: rgba(255,92,255,0.16);
+  --sidebar-bg: #050505; --sidebar-border: rgba(255,255,255,0.34);
+  --sidebar-hover: rgba(255,255,255,0.10); --sidebar-active: rgba(255,212,0,0.16);
+  --sidebar-active-border: rgba(255,212,0,0.70);
+  --sidebar-text: rgba(255,255,255,0.88); --sidebar-text-active: #ffffff;
+  --nav-bg: rgba(0,0,0,0.98); --card-bg: #0c0c0c; --input-bg: #111111;
+  --shadow: 0 4px 24px rgba(0,0,0,0.75); --shadow-lg: 0 12px 48px rgba(0,0,0,0.82);
+  scrollbar-color: rgba(255,255,255,0.55) transparent;
+}
+
 /* ── Base ── */
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
@@ -112,6 +130,7 @@ input:focus, textarea:focus { border-color: var(--accent) !important; }
 .sb-dot-void     { background: #0a0a0a; outline: 1px solid rgba(0,255,136,0.5); }
 .sb-dot-ivory    { background: #f5f2eb; outline: 1px solid rgba(60,50,20,0.3); }
 .sb-dot-midnight { background: #070c18; outline: 1px solid rgba(110,181,255,0.5); }
+.sb-dot-contrast { background: #000; outline: 1px solid rgba(255,212,0,0.9); box-shadow: inset 0 0 0 3px #fff; }
 .sb-pro-btn { display: flex; align-items: center; gap: 8px; padding: 9px 10px; border-radius: 8px; background: linear-gradient(135deg,rgba(255,215,100,0.12),rgba(255,184,0,0.08)); border: 1px solid rgba(255,215,100,0.22); color: var(--accent-gold); font-size: 13px; font-weight: 700; text-decoration: none; transition: all 0.18s; }
 .sb-pro-btn:hover { background: linear-gradient(135deg,rgba(255,215,100,0.20),rgba(255,184,0,0.14)); border-color: rgba(255,215,100,0.38); }
 .sb-version { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 1.5px; color: var(--text-4); text-align: center; padding-top: 10px; margin-top: 4px; border-top: 1px solid var(--border-lo); opacity: 0.75; user-select: none; transition: opacity 0.2s; }
@@ -143,6 +162,7 @@ input:focus, textarea:focus { border-color: var(--accent) !important; }
 .tp-void     { background: radial-gradient(circle at 35% 35%,#1e1e1e,#0a0a0a); border-color: rgba(0,255,136,0.4); }
 .tp-ivory    { background: radial-gradient(circle at 35% 35%,#faf8f3,#edeae0); border-color: rgba(60,50,20,0.3); }
 .tp-midnight { background: radial-gradient(circle at 35% 35%,#121c30,#070c18); border-color: rgba(110,181,255,0.4); }
+.tp-contrast { background: radial-gradient(circle at 35% 35%,#1d1d1d,#000); border-color: rgba(255,212,0,0.8); box-shadow: inset 0 0 0 2px #fff; }
 .tp-name { font-size: 13px; font-weight: 700; color: var(--text-1); }
 .tp-feel { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text-3); }
 .nav-lang { display: flex; align-items: center; gap: 2px; }
@@ -222,3 +242,17 @@ body.sidebar-open::after { content: ''; position: fixed; inset: 0; background: r
 
 /* ── Midnight overrides ── */
 [data-theme="midnight"] .btn-primary { background: linear-gradient(135deg,var(--accent),var(--accent-2)) !important; color: #000 !important; }
+
+[data-theme="contrast"] .btn-primary,
+[data-theme="contrast"] .plan-btn-primary,
+[data-theme="contrast"] .cta-submit,
+[data-theme="contrast"] .nav-pro { background: var(--accent) !important; color: #000 !important; box-shadow: none !important; }
+[data-theme="contrast"] .btn-hero-link,
+[data-theme="contrast"] .footer-links-list a,
+[data-theme="contrast"] .footer-social-btn,
+[data-theme="contrast"] .plan-btn-ghost { color: var(--text-1) !important; border-color: var(--border-hi) !important; }
+[data-theme="contrast"] .hero-stat-label,
+[data-theme="contrast"] .section-sub,
+[data-theme="contrast"] .cta-note,
+[data-theme="contrast"] .footer-brand-desc { color: var(--text-2) !important; }
+[data-theme="contrast"] :focus-visible { outline-width: 3px; box-shadow: 0 0 0 4px rgba(255,212,0,0.28); }
