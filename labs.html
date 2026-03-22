@@ -9,108 +9,345 @@
 <link rel="icon" type="image/svg+xml" href="farpa-icon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="tokens.css">
-<link rel="stylesheet" href="themes.css">
-<link rel="stylesheet" href="mobile-fixes.css">
-<script src="theme-engine.js"></script>
+
+<!-- farpa.ai design system — load if available -->
+<link rel="stylesheet" href="tokens.css" onerror="this.remove()">
+<link rel="stylesheet" href="themes.css" onerror="this.remove()">
+<link rel="stylesheet" href="mobile-fixes.css" onerror="this.remove()">
+
+<script>
+// Load theme-engine if it exists; if not, define stubs so the page still works
+(function() {
+  var s = document.createElement('script');
+  s.src = 'theme-engine.js';
+  s.onerror = function() {
+    window.farpaSidebar = null;
+    window.farpaTopnav  = null;
+  };
+  document.head.appendChild(s);
+})();
+</script>
+
 <style>
-/* ── Labs page styles ── */
-.labs-page { max-width:1200px; margin:0 auto; padding:32px 32px 80px; }
-.labs-hero { padding:48px 0 40px; position:relative; overflow:hidden; }
-.labs-hero::before { content:''; position:absolute; top:-20%; left:30%; width:600px; height:500px; background:radial-gradient(ellipse,rgba(0,229,255,.07) 0%,rgba(181,122,255,.05) 40%,transparent 70%); pointer-events:none; }
-.labs-eyebrow { font-family:var(--font-mono); font-size:10px; letter-spacing:3px; text-transform:uppercase; color:var(--corte,#00e5ff); margin-bottom:14px; display:flex; align-items:center; gap:8px; }
-.labs-eyebrow-dot { width:6px; height:6px; border-radius:50%; background:var(--corte,#00e5ff); animation:pulse 2s ease-in-out infinite; }
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
-.labs-title { font-size:clamp(36px,6vw,64px); font-weight:900; letter-spacing:-.04em; line-height:1; margin-bottom:16px; }
-.labs-title span { background:linear-gradient(90deg,var(--corte,#00e5ff),var(--purple,#b57aff)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-.labs-sub { font-size:17px; color:var(--text-secondary); max-width:560px; line-height:1.65; margin-bottom:10px; }
-.labs-note { font-family:var(--font-mono); font-size:11px; color:var(--text-muted); letter-spacing:1px; }
-.grad-divider { height:1px; background:linear-gradient(90deg,transparent,var(--corte,#00e5ff),var(--purple,#b57aff),transparent); opacity:.2; margin:32px 0; border:none; }
-/* Labs grid */
-.labs-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(340px,1fr)); gap:20px; margin-top:40px; }
-.lab-card { background:var(--graphite2,#1e1e1e); border:1px solid var(--border); border-radius:20px; overflow:hidden; display:flex; flex-direction:column; transition:border-color .2s,transform .2s,box-shadow .2s; }
-.lab-card:hover { border-color:var(--border-md); transform:translateY(-3px); box-shadow:0 12px 40px rgba(0,0,0,.4); }
-.lab-card.featured { grid-column:span 2; border-color:rgba(0,229,255,.2); }
-.lab-card.trader-featured { grid-column:span 2; border-color:rgba(0,255,136,.25); background:linear-gradient(135deg,#0d1f18,#0a1520,#0a0a0a); }
-@media(max-width:720px){.lab-card.featured,.lab-card.trader-featured{grid-column:span 1;}}
-.lab-preview { height:200px; position:relative; overflow:hidden; background:var(--surface,#252525); display:flex; align-items:center; justify-content:center; border-bottom:1px solid var(--border); }
-.lab-card.featured .lab-preview,.lab-card.trader-featured .lab-preview { height:240px; }
-.preview-sentiment { background:linear-gradient(135deg,#0a1520,#0f1a10); }
-.preview-headline  { background:linear-gradient(135deg,#0f0a1e,#1a0a0a); }
-.preview-word      { background:linear-gradient(135deg,#0a0f1e,#0a1520); }
-.preview-bias      { background:linear-gradient(135deg,#0f1a10,#1a0f1a); }
-.preview-market    { background:linear-gradient(135deg,#0a1520,#0f0a1e); }
-.preview-lib       { background:linear-gradient(135deg,#0f1628,#1a0f28); }
-.preview-trader    { background:linear-gradient(135deg,#0a1a0f,#0a120a); }
-/* bar anim */
-.bar-anim { display:flex; align-items:flex-end; gap:6px; height:90px; }
-.abar { width:18px; border-radius:3px 3px 0 0; animation:barGrow 1.3s ease-out forwards; }
-@keyframes barGrow{from{height:0}to{height:var(--h)}}
-/* candlestick preview anim */
-.candle-preview { display:flex; align-items:flex-end; gap:5px; height:100px; padding:10px; }
-.candle-item { display:flex; flex-direction:column; align-items:center; gap:1px; }
-.candle-wick { width:1px; border-radius:1px; }
-.candle-body { width:12px; border-radius:2px; }
-.candle-up .candle-wick { background:#00ff88; }
-.candle-up .candle-body { background:#00ff88; }
-.candle-dn .candle-wick { background:#ff3b3b; }
-.candle-dn .candle-body { background:#ff3b3b; }
-.typing-cursor { display:inline-block; width:2px; height:18px; background:var(--farpa,#00ff88); animation:blink 1s infinite; vertical-align:middle; margin-left:2px; }
-@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
-.lab-body { padding:20px 22px; flex:1; display:flex; flex-direction:column; }
-.lab-tags { display:flex; gap:6px; margin-bottom:12px; flex-wrap:wrap; }
-.lab-tag { font-family:var(--font-mono); font-size:9px; letter-spacing:1.5px; text-transform:uppercase; padding:2px 8px; border-radius:999px; border:1px solid; }
-.lab-tag-live    { color:var(--farpa,#00ff88); border-color:rgba(0,255,136,.25); background:rgba(0,255,136,.07); }
-.lab-tag-demo    { color:var(--corte,#00e5ff); border-color:rgba(0,229,255,.25); background:rgba(0,229,255,.07); }
-.lab-tag-ia      { color:var(--purple,#b57aff); border-color:rgba(181,122,255,.25); background:rgba(181,122,255,.07); }
-.lab-tag-ext     { color:var(--warn,#ffb800); border-color:rgba(255,184,0,.25); background:rgba(255,184,0,.07); }
-.lab-tag-game    { color:#00ff88; border-color:rgba(0,255,136,.3); background:rgba(0,255,136,.08); }
-.lab-title { font-size:18px; font-weight:700; letter-spacing:-.3px; margin-bottom:8px; }
-.lab-desc { font-size:14px; color:var(--text-secondary); line-height:1.65; flex:1; }
-.lab-footer { display:flex; gap:10px; margin-top:16px; padding-top:14px; border-top:1px solid var(--border); }
-.lab-btn { display:inline-flex; align-items:center; gap:6px; padding:9px 16px; border-radius:8px; font-family:var(--font-head); font-size:12px; font-weight:700; cursor:pointer; border:none; transition:all .18s; }
-.lab-btn-primary { background:var(--farpa,#00ff88); color:var(--void,#0a0a0a); }
-.lab-btn-primary:hover { opacity:.88; box-shadow:0 0 20px rgba(0,255,136,.25); }
-.lab-btn-ghost { background:transparent; color:var(--text-primary); border:1px solid var(--border-md); }
-.lab-btn-ghost:hover { border-color:var(--border-hi); background:rgba(255,255,255,.04); }
-/* Trader card featured styling */
-.lab-card.trader-featured .lab-btn-primary { background:linear-gradient(135deg,#00ff88,#00e5ff); }
-/* Gamification badges */
-.lab-gamification-strip { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px; }
-.gam-badge { font-family:var(--font-mono); font-size:9px; letter-spacing:1px; text-transform:uppercase; padding:2px 8px; border-radius:999px; border:1px solid rgba(255,215,100,.3); color:#ffd764; background:rgba(255,215,100,.07); }
-/* Modal */
-.demo-modal { display:none; position:fixed; inset:0; z-index:200; background:rgba(0,0,0,.8); backdrop-filter:blur(8px); align-items:center; justify-content:center; padding:20px; }
-.demo-modal.open { display:flex; }
-.demo-box { background:var(--graphite2,#1e1e1e); border:1px solid var(--border-md); border-radius:20px; width:100%; max-width:680px; max-height:90vh; overflow-y:auto; position:relative; animation:modalIn .25s ease; }
-@keyframes modalIn{from{opacity:0;transform:scale(.97) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
-.demo-header { display:flex; align-items:center; justify-content:space-between; padding:20px 24px; border-bottom:1px solid var(--border); background:var(--surface,#252525); }
-.demo-title { font-size:17px; font-weight:700; }
-.demo-close { width:30px; height:30px; border-radius:50%; background:var(--surface2,#2e2e2e); border:1px solid var(--border); color:var(--text-muted); display:flex; align-items:center; justify-content:center; font-size:16px; cursor:pointer; transition:all .15s; }
-.demo-close:hover { background:var(--urgente,#ff3b3b); border-color:var(--urgente,#ff3b3b); color:#fff; }
-.demo-content { padding:24px; }
-.demo-input { width:100%; background:var(--surface,#252525); border:1px solid var(--border-md); border-radius:10px; padding:12px 16px; color:var(--text-primary); font-family:var(--font-head); font-size:14px; outline:none; resize:none; min-height:100px; transition:border-color .18s; }
-.demo-input:focus { border-color:var(--farpa,#00ff88); }
-.demo-input.sm { min-height:auto; }
-.demo-btn { margin-top:12px; background:var(--farpa,#00ff88); color:var(--void,#0a0a0a); border:none; border-radius:8px; padding:10px 22px; font-family:var(--font-head); font-size:13px; font-weight:700; cursor:pointer; transition:opacity .18s; }
-.demo-btn:hover { opacity:.88; }
-.demo-result { margin-top:16px; padding:16px; border-radius:10px; background:var(--surface,#252525); border:1px solid var(--border); display:none; }
-.demo-result.show { display:block; }
-.result-label { font-size:22px; font-weight:900; letter-spacing:-1px; margin-bottom:8px; }
-.result-bar-wrap { height:8px; background:var(--surface2,#2e2e2e); border-radius:4px; overflow:hidden; margin-bottom:6px; }
-.result-bar { height:100%; border-radius:4px; transition:width .8s ease; }
-.result-bar.pos { background:linear-gradient(90deg,var(--farpa,#00ff88),#00e676); }
-.result-bar.neg { background:linear-gradient(90deg,var(--urgente,#ff3b3b),#ff8800); }
-.result-bar.neu { background:linear-gradient(90deg,var(--warn,#ffb800),#ffcc00); }
-.result-detail { font-family:var(--font-mono); font-size:11px; color:var(--text-muted); letter-spacing:.5px; }
-.result-kw { display:flex; gap:6px; flex-wrap:wrap; margin-top:12px; padding-top:12px; border-top:1px solid var(--border); }
-.kw-tag { font-family:var(--font-mono); font-size:10px; padding:2px 8px; border-radius:999px; border:1px solid; }
-.kw-tag.pos { color:var(--farpa,#00ff88); border-color:rgba(0,255,136,.3); background:rgba(0,255,136,.08); }
-.kw-tag.neg { color:var(--urgente,#ff3b3b); border-color:rgba(255,59,59,.3); background:rgba(255,59,59,.08); }
-.headline-card { background:var(--surface,#252525); border:1px solid var(--border); border-radius:8px; padding:12px 14px; font-size:13px; font-weight:700; line-height:1.4; margin-bottom:8px; cursor:pointer; transition:border-color .15s; }
-.headline-card:hover { border-color:var(--farpa,#00ff88); }
-.headline-tone { font-family:var(--font-mono); font-size:9px; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:4px; }
-.bias-tag { font-family:var(--font-mono); font-size:10px; padding:3px 10px; border-radius:999px; border:1px solid; display:inline-block; margin:2px; }
-@media(max-width:640px){.labs-page{padding:20px 16px 60px;}}
+/* ═══════════════════════════════════════════════════════
+   FARPA LABS PAGE — inline fallback styles
+   These mirror the farpa.ai design system tokens so the
+   page renders correctly even without tokens.css / themes.css
+═══════════════════════════════════════════════════════ */
+:root {
+  /* Farpa design tokens (mirrors tokens.css) */
+  --farpa:      #00ff88;
+  --corte:      #00e5ff;
+  --urgente:    #ff3b3b;
+  --warn:       #ffb800;
+  --purple:     #b57aff;
+  --gold:       #ffd764;
+
+  --void:       #0a0a0a;
+  --bg-layer1:  #141414;
+  --bg-layer2:  #1e1e1e;
+  --bg-layer3:  #252525;
+
+  --text-1:     #f0f0ef;
+  --text-2:     rgba(240,240,239,.88);
+  --text-3:     rgba(240,240,239,.55);
+
+  --border-lo:  rgba(255,255,255,.08);
+  --border-md:  rgba(255,255,255,.14);
+  --border-hi:  rgba(255,255,255,.22);
+
+  --font-head:  'Space Grotesk', sans-serif;
+  --font-mono:  'DM Mono', monospace;
+
+  --radius:     14px;
+}
+
+/* Base — only applied if tokens.css is missing */
+html { font-size: 14px; }
+body {
+  font-family: var(--font-head);
+  background: var(--void);
+  color: var(--text-1);
+  margin: 0;
+  min-height: 100vh;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* farpa-layout / farpa-content stubs for when theme-engine doesn't inject sidebar */
+.farpa-content { min-height: 100vh; }
+
+/* ── Labs Page ── */
+.labs-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 32px 80px;
+}
+
+/* ── Hero ── */
+.labs-hero {
+  padding: 48px 0 40px;
+  position: relative;
+  overflow: hidden;
+}
+.labs-hero::before {
+  content: '';
+  position: absolute;
+  top: -20%; left: 30%;
+  width: 600px; height: 500px;
+  background: radial-gradient(ellipse, rgba(0,229,255,.07) 0%, rgba(181,122,255,.05) 40%, transparent 70%);
+  pointer-events: none;
+}
+.labs-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--corte);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.labs-eyebrow-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--corte);
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.7)} }
+.labs-title {
+  font-size: clamp(36px, 6vw, 64px);
+  font-weight: 900;
+  letter-spacing: -.04em;
+  line-height: 1;
+  margin-bottom: 16px;
+}
+.labs-title span {
+  background: linear-gradient(90deg, var(--corte), var(--purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.labs-sub {
+  font-size: 17px;
+  color: var(--text-3);
+  max-width: 560px;
+  line-height: 1.65;
+  margin-bottom: 10px;
+}
+.labs-note {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-3);
+  letter-spacing: 1px;
+}
+.grad-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--corte), var(--purple), transparent);
+  opacity: .2;
+  margin: 32px 0;
+  border: none;
+}
+
+/* ── Grid ── */
+.labs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 20px;
+  margin-top: 40px;
+}
+
+/* ── Card ── */
+.lab-card {
+  background: var(--bg-layer2);
+  border: 1px solid var(--border-lo);
+  border-radius: 20px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: border-color .2s, transform .2s, box-shadow .2s;
+}
+.lab-card:hover {
+  border-color: var(--border-md);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 40px rgba(0,0,0,.4);
+}
+.lab-card.featured { grid-column: span 2; border-color: rgba(0,229,255,.18); }
+.lab-card.trader-card {
+  grid-column: span 2;
+  background: linear-gradient(135deg, #0a1810 0%, #0a1018 50%, #0a0a0a 100%);
+  border-color: rgba(0,255,136,.28);
+}
+.lab-card.trader-card:hover {
+  border-color: rgba(0,255,136,.5);
+  box-shadow: 0 12px 48px rgba(0,255,136,.08);
+}
+@media (max-width: 720px) {
+  .lab-card.featured, .lab-card.trader-card { grid-column: span 1; }
+}
+
+/* ── Preview areas ── */
+.lab-preview {
+  height: 200px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid var(--border-lo);
+}
+.lab-card.featured .lab-preview,
+.lab-card.trader-card .lab-preview { height: 240px; }
+.pv-trader   { background: linear-gradient(135deg, #0a1810, #0a0f18); }
+.pv-sent     { background: linear-gradient(135deg, #0a1520, #0f1a10); }
+.pv-head     { background: linear-gradient(135deg, #0f0a1e, #1a0a0a); }
+.pv-word     { background: linear-gradient(135deg, #0a0f1e, #0a1520); }
+.pv-bias     { background: linear-gradient(135deg, #0f1a10, #1a0f1a); }
+.pv-market   { background: linear-gradient(135deg, #0a1520, #0f0a1e); }
+.pv-lib      { background: linear-gradient(135deg, #0f1628, #1a0f28); }
+
+/* Candlestick preview */
+.candle-preview { display: flex; align-items: flex-end; gap: 5px; height: 100px; padding: 10px; justify-content: center; }
+.candle-item { display: flex; flex-direction: column; align-items: center; gap: 1px; }
+.candle-wick { width: 1px; border-radius: 1px; }
+.candle-body { width: 12px; border-radius: 2px; }
+.cup .candle-wick, .cup .candle-body { background: #00ff88; }
+.cdn .candle-wick, .cdn .candle-body { background: #ff3b3b; }
+
+/* bar animation */
+.bar-anim { display: flex; align-items: flex-end; gap: 6px; height: 90px; }
+.abar {
+  width: 18px;
+  border-radius: 3px 3px 0 0;
+  animation: barGrow 1.3s ease-out forwards;
+}
+@keyframes barGrow { from { height: 0 } to { height: var(--h) } }
+
+/* Typing cursor */
+.typing-cursor {
+  display: inline-block; width: 2px; height: 18px;
+  background: var(--farpa); animation: blink 1s infinite; vertical-align: middle; margin-left: 2px;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+/* ── Lab Card Body ── */
+.lab-body { padding: 20px 22px; flex: 1; display: flex; flex-direction: column; }
+.lab-tags { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
+.lab-tag {
+  font-family: var(--font-mono);
+  font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase;
+  padding: 2px 8px; border-radius: 999px; border: 1px solid;
+}
+.lt-live  { color: var(--farpa);   border-color: rgba(0,255,136,.25);  background: rgba(0,255,136,.07); }
+.lt-demo  { color: var(--corte);   border-color: rgba(0,229,255,.25);  background: rgba(0,229,255,.07); }
+.lt-ia    { color: var(--purple);  border-color: rgba(181,122,255,.25); background: rgba(181,122,255,.07); }
+.lt-ext   { color: var(--warn);    border-color: rgba(255,184,0,.25);   background: rgba(255,184,0,.07); }
+.lt-game  { color: var(--farpa);   border-color: rgba(0,255,136,.28);   background: rgba(0,255,136,.08); }
+
+/* Gamification badges strip */
+.gam-strip { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+.gam-badge {
+  font-family: var(--font-mono); font-size: 9px; letter-spacing: 1px; text-transform: uppercase;
+  padding: 2px 8px; border-radius: 999px;
+  border: 1px solid rgba(255,215,100,.28); color: var(--gold); background: rgba(255,215,100,.06);
+}
+
+.lab-title { font-size: 18px; font-weight: 700; letter-spacing: -.3px; margin-bottom: 8px; color: var(--text-1); }
+.lab-desc  { font-size: 14px; color: var(--text-3); line-height: 1.65; flex: 1; }
+.lab-footer {
+  display: flex; gap: 10px; margin-top: 16px; padding-top: 14px;
+  border-top: 1px solid var(--border-lo); align-items: center; flex-wrap: wrap;
+}
+.lab-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 9px 16px; border-radius: 8px;
+  font-family: var(--font-head); font-size: 12px; font-weight: 700;
+  cursor: pointer; border: none; transition: all .18s; text-decoration: none;
+}
+.lb-primary { background: var(--farpa); color: var(--void); }
+.lb-primary:hover { opacity: .88; box-shadow: 0 0 20px rgba(0,255,136,.22); }
+.lb-trader  { background: linear-gradient(135deg, #00ff88, #00e5ff); color: #000; }
+.lb-trader:hover { opacity: .88; box-shadow: 0 0 24px rgba(0,255,136,.28); }
+.lb-ghost {
+  background: transparent; color: var(--text-1);
+  border: 1px solid var(--border-md);
+}
+.lb-ghost:hover { border-color: var(--border-hi); background: rgba(255,255,255,.04); }
+.lb-purple { background: linear-gradient(135deg, var(--purple), #8844ff); color: #fff; }
+.lb-purple:hover { opacity: .88; }
+
+/* ── Modals ── */
+.demo-modal {
+  display: none; position: fixed; inset: 0; z-index: 200;
+  background: rgba(0,0,0,.82); backdrop-filter: blur(8px);
+  align-items: center; justify-content: center; padding: 20px;
+}
+.demo-modal.open { display: flex; }
+.demo-box {
+  background: var(--bg-layer2); border: 1px solid var(--border-md);
+  border-radius: 20px; width: 100%; max-width: 680px; max-height: 90vh;
+  overflow-y: auto; position: relative; animation: modalIn .22s ease;
+}
+@keyframes modalIn { from{opacity:0;transform:scale(.97) translateY(8px)} to{opacity:1;transform:scale(1) translateY(0)} }
+.demo-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 22px; border-bottom: 1px solid var(--border-lo);
+  background: var(--bg-layer3);
+}
+.demo-title { font-size: 16px; font-weight: 700; }
+.demo-close {
+  width: 30px; height: 30px; border-radius: 50%; background: var(--bg-layer2);
+  border: 1px solid var(--border-lo); color: var(--text-3); display: flex;
+  align-items: center; justify-content: center; font-size: 15px; cursor: pointer; transition: all .14s;
+}
+.demo-close:hover { background: var(--urgente); border-color: var(--urgente); color: #fff; }
+.demo-content { padding: 22px; }
+.demo-input {
+  width: 100%; background: var(--bg-layer3); border: 1px solid var(--border-md);
+  border-radius: 10px; padding: 11px 14px; color: var(--text-1); font-family: var(--font-head);
+  font-size: 14px; outline: none; resize: none; min-height: 96px; transition: border-color .15s;
+}
+.demo-input:focus { border-color: var(--farpa); }
+.demo-input.sm { min-height: auto; }
+.demo-btn {
+  margin-top: 11px; background: var(--farpa); color: var(--void); border: none;
+  border-radius: 8px; padding: 10px 20px; font-family: var(--font-head);
+  font-size: 13px; font-weight: 700; cursor: pointer; transition: opacity .15s;
+}
+.demo-btn:hover { opacity: .88; }
+.demo-result {
+  margin-top: 14px; padding: 14px; border-radius: 10px;
+  background: var(--bg-layer3); border: 1px solid var(--border-lo); display: none;
+}
+.demo-result.show { display: block; }
+.result-label { font-size: 20px; font-weight: 900; letter-spacing: -1px; margin-bottom: 8px; }
+.result-bar-wrap { height: 7px; background: var(--bg-layer2); border-radius: 4px; overflow: hidden; margin-bottom: 5px; }
+.result-bar { height: 100%; border-radius: 4px; transition: width .8s ease; }
+.rbar-pos { background: linear-gradient(90deg, var(--farpa), #00e676); }
+.rbar-neg { background: linear-gradient(90deg, var(--urgente), #ff8800); }
+.rbar-neu { background: linear-gradient(90deg, var(--warn), #ffcc00); }
+.result-detail { font-family: var(--font-mono); font-size: 11px; color: var(--text-3); letter-spacing: .5px; }
+.result-kw { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border-lo); }
+.kw-tag { font-family: var(--font-mono); font-size: 10px; padding: 2px 8px; border-radius: 999px; border: 1px solid; }
+.kw-pos { color: var(--farpa);   border-color: rgba(0,255,136,.3);  background: rgba(0,255,136,.08); }
+.kw-neg { color: var(--urgente); border-color: rgba(255,59,59,.3);  background: rgba(255,59,59,.08); }
+.headline-card {
+  background: var(--bg-layer3); border: 1px solid var(--border-lo); border-radius: 8px;
+  padding: 12px 14px; font-size: 13px; font-weight: 600; line-height: 1.45;
+  margin-bottom: 8px; cursor: pointer; transition: border-color .14s;
+}
+.headline-card:hover { border-color: var(--farpa); }
+.headline-tone { font-family: var(--font-mono); font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 4px; }
+.bias-tag {
+  font-family: var(--font-mono); font-size: 10px; padding: 3px 10px;
+  border-radius: 999px; border: 1px solid; display: inline-block; margin: 2px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .labs-page { padding: 20px 16px 60px; }
+  .labs-grid { grid-template-columns: 1fr; }
+}
 </style>
 </head>
 <body>
@@ -126,64 +363,64 @@
     <p class="labs-note">⚗️ Os demos usam algoritmos locais ou APIs públicas. Nenhum dado pessoal é enviado a servidores externos.</p>
   </div>
 
-  <hr class="grad-divider" style="margin-top:0;">
+  <hr class="grad-divider" style="margin-top:0">
 
-  <!-- Grid -->
   <div class="labs-grid">
 
-    <!-- ★ NEW: Trader Simulator — featured ★ -->
-    <div class="lab-card trader-featured">
-      <div class="lab-preview preview-trader">
-        <div style="display:flex;flex-direction:column;align-items:center;gap:14px;width:100%;padding:16px;">
-          <!-- Mini candlestick chart preview -->
-          <div class="candle-preview" style="width:100%;justify-content:center;">
-            <div class="candle-item candle-dn"><div class="candle-wick" style="height:18px"></div><div class="candle-body" style="height:22px"></div><div class="candle-wick" style="height:10px"></div></div>
-            <div class="candle-item candle-up"><div class="candle-wick" style="height:14px"></div><div class="candle-body" style="height:30px"></div><div class="candle-wick" style="height:8px"></div></div>
-            <div class="candle-item candle-up"><div class="candle-wick" style="height:10px"></div><div class="candle-body" style="height:40px"></div><div class="candle-wick" style="height:12px"></div></div>
-            <div class="candle-item candle-dn"><div class="candle-wick" style="height:20px"></div><div class="candle-body" style="height:18px"></div><div class="candle-wick" style="height:8px"></div></div>
-            <div class="candle-item candle-up"><div class="candle-wick" style="height:12px"></div><div class="candle-body" style="height:52px"></div><div class="candle-wick" style="height:10px"></div></div>
-            <div class="candle-item candle-up"><div class="candle-wick" style="height:8px"></div><div class="candle-body" style="height:60px"></div><div class="candle-wick" style="height:14px"></div></div>
-            <div class="candle-item candle-dn"><div class="candle-wick" style="height:22px"></div><div class="candle-body" style="height:25px"></div><div class="candle-wick" style="height:8px"></div></div>
-            <div class="candle-item candle-up"><div class="candle-wick" style="height:10px"></div><div class="candle-body" style="height:45px"></div><div class="candle-wick" style="height:12px"></div></div>
+    <!-- ★ TRADER SIMULATOR — destaque ★ -->
+    <div class="lab-card trader-card">
+      <div class="lab-preview pv-trader">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:14px;width:100%;padding:16px 24px;">
+          <div class="candle-preview">
+            <div class="candle-item cdn"><div class="candle-wick" style="height:18px"></div><div class="candle-body" style="height:22px"></div><div class="candle-wick" style="height:10px"></div></div>
+            <div class="candle-item cup"><div class="candle-wick" style="height:14px"></div><div class="candle-body" style="height:30px"></div><div class="candle-wick" style="height:8px"></div></div>
+            <div class="candle-item cup"><div class="candle-wick" style="height:10px"></div><div class="candle-body" style="height:40px"></div><div class="candle-wick" style="height:12px"></div></div>
+            <div class="candle-item cdn"><div class="candle-wick" style="height:20px"></div><div class="candle-body" style="height:18px"></div><div class="candle-wick" style="height:8px"></div></div>
+            <div class="candle-item cup"><div class="candle-wick" style="height:12px"></div><div class="candle-body" style="height:52px"></div><div class="candle-wick" style="height:10px"></div></div>
+            <div class="candle-item cup"><div class="candle-wick" style="height:8px"></div><div class="candle-body" style="height:60px"></div><div class="candle-wick" style="height:14px"></div></div>
+            <div class="candle-item cdn"><div class="candle-wick" style="height:22px"></div><div class="candle-body" style="height:25px"></div><div class="candle-wick" style="height:8px"></div></div>
+            <div class="candle-item cup"><div class="candle-wick" style="height:10px"></div><div class="candle-body" style="height:45px"></div><div class="candle-wick" style="height:12px"></div></div>
+            <div class="candle-item cdn"><div class="candle-wick" style="height:16px"></div><div class="candle-body" style="height:20px"></div><div class="candle-wick" style="height:10px"></div></div>
+            <div class="candle-item cup"><div class="candle-wick" style="height:9px"></div><div class="candle-body" style="height:55px"></div><div class="candle-wick" style="height:11px"></div></div>
           </div>
-          <div style="display:flex;gap:12px;align-items:center;">
-            <span style="font-family:'DM Mono',monospace;font-size:10px;color:#00ff88;letter-spacing:2px;">+$3,240 P&amp;L</span>
-            <span style="width:1px;height:14px;background:rgba(255,255,255,.15);"></span>
-            <span style="font-family:'DM Mono',monospace;font-size:10px;color:rgba(240,240,239,.5);letter-spacing:1.5px;">XP 1200 · NÍVEL 3</span>
-            <span style="width:1px;height:14px;background:rgba(255,255,255,.15);"></span>
-            <span style="font-family:'DM Mono',monospace;font-size:10px;color:#ffd764;letter-spacing:1.5px;">#2 RANKING</span>
+          <div style="display:flex;gap:20px;align-items:center;flex-wrap:wrap;justify-content:center;">
+            <span style="font-family:var(--font-mono);font-size:11px;color:#00ff88;letter-spacing:2px;font-weight:700;">+$3,240 P&amp;L</span>
+            <span style="width:1px;height:16px;background:rgba(255,255,255,.12)"></span>
+            <span style="font-family:var(--font-mono);font-size:10px;color:var(--text-3);letter-spacing:1.5px">XP 1200 · NÍVEL 3</span>
+            <span style="width:1px;height:16px;background:rgba(255,255,255,.12)"></span>
+            <span style="font-family:var(--font-mono);font-size:10px;color:var(--gold);letter-spacing:1.5px">#2 RANKING</span>
           </div>
         </div>
       </div>
       <div class="lab-body">
         <div class="lab-tags">
-          <span class="lab-tag lab-tag-live">● ao vivo</span>
-          <span class="lab-tag lab-tag-game">⚔ Gamificado</span>
-          <span class="lab-tag lab-tag-ext">CoinGecko API</span>
-          <span class="lab-tag lab-tag-ia">Indicadores Técnicos</span>
+          <span class="lab-tag lt-live">● ao vivo</span>
+          <span class="lab-tag lt-game">⚔ Gamificado</span>
+          <span class="lab-tag lt-ext">CoinGecko API</span>
+          <span class="lab-tag lt-ia">RSI · MA · Volatilidade</span>
         </div>
-        <div class="lab-gamification-strip">
+        <div class="gam-strip">
           <span class="gam-badge">🏆 Ranking</span>
           <span class="gam-badge">🏅 Conquistas</span>
           <span class="gam-badge">⚡ XP &amp; Níveis</span>
           <span class="gam-badge">💬 Fórum</span>
-          <span class="gam-badge">📊 Candlestick</span>
+          <span class="gam-badge">📊 Gráficos Reais</span>
         </div>
         <div class="lab-title">Trader Simulator — Simulação de Trading</div>
-        <div class="lab-desc">Simule operações com dados reais de mercado cripto (BTC, ETH, SOL e mais). Gráficos de candlestick ao vivo via CoinGecko API, indicadores técnicos (RSI, MA20, volatilidade), sistema de XP e níveis, ranking global, conquistas e fórum de traders. Comece com $100.000 virtuais.</div>
+        <div class="lab-desc">Simule operações com dados reais de mercado cripto (BTC, ETH, SOL e mais) via CoinGecko API. Gráficos de preço ao vivo, indicadores técnicos (RSI, MA20, volatilidade, tendência), sistema de XP &amp; níveis, ranking global, 9 conquistas desbloqueáveis e fórum de traders. Comece com $100.000 virtuais — sem risco real.</div>
         <div class="lab-footer">
-          <a href="labs/trader-sim.html" class="lab-btn lab-btn-primary">
+          <a href="trader-sim.html" class="lab-btn lb-trader">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
-            Abrir simulador
+            Abrir Simulador
           </a>
-          <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-muted);align-self:center;">$100K virtual · sem risco</span>
+          <span style="font-family:var(--font-mono);font-size:10px;color:var(--text-3);">$100K virtual · sem risco real</span>
         </div>
       </div>
     </div>
 
-    <!-- 1. Sentimento — featured -->
+    <!-- Sentimento — featured -->
     <div class="lab-card featured">
-      <div class="lab-preview preview-sentiment">
+      <div class="lab-preview pv-sent">
         <div style="display:flex;flex-direction:column;align-items:center;gap:14px;">
           <div class="bar-anim">
             <div class="abar" style="background:rgba(0,255,136,.7);--h:60px"></div>
@@ -192,123 +429,121 @@
             <div class="abar" style="background:rgba(255,59,59,.4);--h:45px;animation-delay:.6s"></div>
             <div class="abar" style="background:rgba(0,255,136,.8);--h:78px;animation-delay:.8s"></div>
           </div>
-          <div style="font-family:'DM Mono',monospace;font-size:11px;color:rgba(0,255,136,.7);letter-spacing:2px;">ANÁLISE EM TEMPO REAL</div>
+          <div style="font-family:var(--font-mono);font-size:11px;color:rgba(0,255,136,.7);letter-spacing:2px;">ANÁLISE EM TEMPO REAL</div>
         </div>
       </div>
       <div class="lab-body">
-        <div class="lab-tags"><span class="lab-tag lab-tag-live">● ao vivo</span><span class="lab-tag lab-tag-ia">NLP</span><span class="lab-tag lab-tag-demo">Demo interativo</span></div>
-        <div class="lab-title">Analisador de Sentimento de Notícias</div>
+        <div class="lab-tags"><span class="lab-tag lt-live">● ao vivo</span><span class="lab-tag lt-ia">NLP</span><span class="lab-tag lt-demo">Demo interativo</span></div>
+        <div class="lab-title">Analisador de Sentimento</div>
         <div class="lab-desc">Cole qualquer texto — notícia, tweet, comunicado — e o modelo analisa o sentimento em tempo real: positivo, negativo ou neutro, com score de confiança e palavras-chave.</div>
         <div class="lab-footer">
-          <button class="lab-btn lab-btn-primary" onclick="openDemo('sentiment')">
+          <button class="lab-btn lb-primary" onclick="openDemo('sentiment')">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>Abrir demo
           </button>
-          <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-muted);align-self:center;">Roda no browser</span>
+          <span style="font-family:var(--font-mono);font-size:10px;color:var(--text-3);">Roda no browser</span>
         </div>
       </div>
     </div>
 
-    <!-- 2. Headline -->
+    <!-- Headlines -->
     <div class="lab-card">
-      <div class="lab-preview preview-headline">
+      <div class="lab-preview pv-head">
         <div style="text-align:center;padding:20px;">
-          <div style="font-size:12px;font-weight:700;color:var(--text-primary);margin-bottom:8px;">Banco Central eleva juros<span class="typing-cursor"></span></div>
-          <div style="font-size:10px;color:var(--corte,#00e5ff);font-family:'DM Mono',monospace;margin-bottom:4px;">✦ IMPACTANTE</div>
-          <div style="font-size:10px;color:var(--text-muted);font-family:'DM Mono',monospace;">✦ TÉCNICO · ✦ POPULAR</div>
+          <div style="font-size:12px;font-weight:700;margin-bottom:8px;">Banco Central eleva juros<span class="typing-cursor"></span></div>
+          <div style="font-size:10px;color:var(--corte);font-family:var(--font-mono);margin-bottom:4px;">✦ IMPACTANTE</div>
+          <div style="font-size:10px;color:var(--text-3);font-family:var(--font-mono);">✦ TÉCNICO · ✦ POPULAR</div>
         </div>
       </div>
       <div class="lab-body">
-        <div class="lab-tags"><span class="lab-tag lab-tag-demo">Demo interativo</span><span class="lab-tag lab-tag-ia">Redação IA</span></div>
+        <div class="lab-tags"><span class="lab-tag lt-demo">Demo interativo</span><span class="lab-tag lt-ia">Redação IA</span></div>
         <div class="lab-title">Gerador de Headlines</div>
         <div class="lab-desc">Descreva uma notícia em 1 frase e receba 4 variações de headline em tons diferentes: impactante, técnico, popular e provocador.</div>
-        <div class="lab-footer"><button class="lab-btn lab-btn-primary" onclick="openDemo('headline')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>Abrir demo</button></div>
+        <div class="lab-footer"><button class="lab-btn lb-primary" onclick="openDemo('headline')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>Abrir demo</button></div>
       </div>
     </div>
 
-    <!-- 3. Resumidor -->
+    <!-- Resumidor -->
     <div class="lab-card">
-      <div class="lab-preview preview-word">
+      <div class="lab-preview pv-word">
         <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;max-width:200px;padding:20px;">
-          <span style="font-weight:900;font-size:18px;color:var(--farpa,#00ff88);">IA</span>
-          <span style="font-size:10px;color:var(--text-secondary);">regulação</span>
-          <span style="font-weight:700;font-size:14px;color:var(--corte,#00e5ff);">dados</span>
-          <span style="font-size:12px;color:var(--text-muted);">mercado</span>
-          <span style="font-weight:900;font-size:16px;color:var(--purple,#b57aff);">LLM</span>
-          <span style="font-size:10px;color:var(--text-muted);">futuro</span>
-          <span style="font-weight:700;font-size:13px;color:var(--warn,#ffb800);">impacto</span>
+          <span style="font-weight:900;font-size:18px;color:var(--farpa)">IA</span>
+          <span style="font-size:10px;color:var(--text-3)">regulação</span>
+          <span style="font-weight:700;font-size:14px;color:var(--corte)">dados</span>
+          <span style="font-size:12px;color:var(--text-3)">mercado</span>
+          <span style="font-weight:900;font-size:16px;color:var(--purple)">LLM</span>
+          <span style="font-size:10px;color:var(--text-3)">futuro</span>
+          <span style="font-weight:700;font-size:13px;color:var(--warn)">impacto</span>
         </div>
       </div>
       <div class="lab-body">
-        <div class="lab-tags"><span class="lab-tag lab-tag-demo">Demo interativo</span><span class="lab-tag lab-tag-ia">Sumarização</span></div>
+        <div class="lab-tags"><span class="lab-tag lt-demo">Demo interativo</span><span class="lab-tag lt-ia">Sumarização</span></div>
         <div class="lab-title">Resumidor Inteligente</div>
-        <div class="lab-desc">Cole um texto longo e receba um resumo em bullets, palavras-chave principais e nível de complexidade do texto.</div>
-        <div class="lab-footer"><button class="lab-btn lab-btn-primary" onclick="openDemo('resume')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>Abrir demo</button></div>
+        <div class="lab-desc">Cole um texto longo e receba um resumo em bullets, palavras-chave principais e nível de complexidade.</div>
+        <div class="lab-footer"><button class="lab-btn lb-primary" onclick="openDemo('resume')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>Abrir demo</button></div>
       </div>
     </div>
 
-    <!-- 4. Detector de Viés -->
+    <!-- Viés -->
     <div class="lab-card">
-      <div class="lab-preview preview-bias" style="flex-direction:column;gap:6px;padding:16px;">
-        <div style="background:rgba(181,122,255,.15);border:1px solid rgba(181,122,255,.2);border-radius:8px;padding:7px 10px;font-size:11px;color:var(--text-primary);">"IA vai destruir todos os empregos"</div>
-        <div style="background:rgba(0,255,136,.1);border:1px solid rgba(0,255,136,.2);border-radius:8px;padding:7px 10px;font-size:11px;color:var(--text-primary);text-align:right;">Viés: <strong style="color:var(--urgente,#ff3b3b);">Alto ⚠</strong></div>
-        <div style="background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.15);border-radius:8px;padding:7px 10px;font-size:10px;color:var(--corte,#00e5ff);font-family:'DM Mono',monospace;">Generalização · Alarmismo</div>
+      <div class="lab-preview pv-bias" style="flex-direction:column;gap:6px;padding:16px;">
+        <div style="background:rgba(181,122,255,.12);border:1px solid rgba(181,122,255,.18);border-radius:8px;padding:7px 10px;font-size:11px;">"IA vai destruir todos os empregos"</div>
+        <div style="background:rgba(0,255,136,.08);border:1px solid rgba(0,255,136,.18);border-radius:8px;padding:7px 10px;font-size:11px;text-align:right;">Viés: <strong style="color:var(--urgente)">Alto ⚠</strong></div>
+        <div style="background:rgba(0,229,255,.06);border:1px solid rgba(0,229,255,.14);border-radius:8px;padding:7px 10px;font-size:10px;color:var(--corte);font-family:var(--font-mono);">Generalização · Alarmismo</div>
       </div>
       <div class="lab-body">
-        <div class="lab-tags"><span class="lab-tag lab-tag-live">● experimental</span><span class="lab-tag lab-tag-ia">Análise crítica</span></div>
+        <div class="lab-tags"><span class="lab-tag lt-live">● experimental</span><span class="lab-tag lt-ia">Análise crítica</span></div>
         <div class="lab-title">Detector de Viés em Texto</div>
         <div class="lab-desc">Analisa manchetes e textos em busca de vieses linguísticos: alarmismo, generalização, sensacionalismo e viés de confirmação.</div>
-        <div class="lab-footer"><button class="lab-btn lab-btn-primary" onclick="openDemo('bias')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>Abrir demo</button></div>
+        <div class="lab-footer"><button class="lab-btn lb-primary" onclick="openDemo('bias')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>Abrir demo</button></div>
       </div>
     </div>
 
-    <!-- 5. Mercados -->
+    <!-- Mercados -->
     <div class="lab-card">
-      <div class="lab-preview preview-market" style="flex-direction:column;gap:6px;padding:16px;width:100%;">
-        <div style="display:flex;justify-content:space-between;font-family:'DM Mono',monospace;font-size:11px;"><span style="color:var(--text-secondary);">PETR4</span><span style="color:var(--farpa,#00ff88);">+2.4%</span></div>
-        <div style="display:flex;justify-content:space-between;font-family:'DM Mono',monospace;font-size:11px;"><span style="color:var(--text-secondary);">BTC</span><span style="color:var(--farpa,#00ff88);">+1.8%</span></div>
-        <div style="display:flex;justify-content:space-between;font-family:'DM Mono',monospace;font-size:11px;"><span style="color:var(--text-secondary);">AAPL</span><span style="color:var(--urgente,#ff3b3b);">-0.6%</span></div>
-        <div style="height:1px;background:var(--border);margin:4px 0;"></div>
-        <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--corte,#00e5ff);letter-spacing:1.5px;">● DADOS AO VIVO</div>
+      <div class="lab-preview pv-market" style="flex-direction:column;gap:6px;padding:16px;width:100%;">
+        <div style="display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:11px;"><span style="color:var(--text-3)">PETR4</span><span style="color:var(--farpa)">+2.4%</span></div>
+        <div style="display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:11px;"><span style="color:var(--text-3)">BTC</span><span style="color:var(--farpa)">+1.8%</span></div>
+        <div style="display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:11px;"><span style="color:var(--text-3)">AAPL</span><span style="color:var(--urgente)">-0.6%</span></div>
+        <div style="height:1px;background:var(--border-lo);margin:4px 0;"></div>
+        <div style="font-family:var(--font-mono);font-size:9px;color:var(--corte);letter-spacing:1.5px;">● DADOS AO VIVO</div>
       </div>
       <div class="lab-body">
-        <div class="lab-tags"><span class="lab-tag lab-tag-live">● ao vivo</span><span class="lab-tag lab-tag-ext">Yahoo Finance</span></div>
+        <div class="lab-tags"><span class="lab-tag lt-live">● ao vivo</span><span class="lab-tag lt-ext">Yahoo Finance</span></div>
         <div class="lab-title">Dashboard de Mercados</div>
         <div class="lab-desc">Acompanhe cotações da B3, NYSE, Nasdaq e criptomoedas em tempo real com gráficos sparkline.</div>
-        <div class="lab-footer"><a href="mercados.html" class="lab-btn lab-btn-primary"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>Acessar</a></div>
+        <div class="lab-footer"><a href="mercados.html" class="lab-btn lb-primary"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>Acessar</a></div>
       </div>
     </div>
 
-    <!-- 6. Biblioteca -->
-    <div class="lab-card" style="border-color:rgba(181,122,255,.2);">
-      <div class="lab-preview preview-lib" style="flex-direction:column;gap:8px;padding:20px;">
+    <!-- Biblioteca -->
+    <div class="lab-card" style="border-color:rgba(181,122,255,.18);">
+      <div class="lab-preview pv-lib" style="flex-direction:column;gap:8px;padding:20px;">
         <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;">
-          <span style="background:rgba(181,122,255,.15);border:1px solid rgba(181,122,255,.2);border-radius:6px;padding:4px 10px;font-family:'DM Mono',monospace;font-size:9px;color:var(--purple,#b57aff);">LLM</span>
-          <span style="background:rgba(0,255,136,.1);border:1px solid rgba(0,255,136,.2);border-radius:6px;padding:4px 10px;font-family:'DM Mono',monospace;font-size:9px;color:var(--farpa,#00ff88);">RAG</span>
-          <span style="background:rgba(0,229,255,.1);border:1px solid rgba(0,229,255,.2);border-radius:6px;padding:4px 10px;font-family:'DM Mono',monospace;font-size:9px;color:var(--corte,#00e5ff);">Embeddings</span>
-          <span style="background:rgba(255,184,0,.1);border:1px solid rgba(255,184,0,.2);border-radius:6px;padding:4px 10px;font-family:'DM Mono',monospace;font-size:9px;color:var(--warn,#ffb800);">Fine-tuning</span>
+          <span style="background:rgba(181,122,255,.12);border:1px solid rgba(181,122,255,.18);border-radius:6px;padding:4px 10px;font-family:var(--font-mono);font-size:9px;color:var(--purple)">LLM</span>
+          <span style="background:rgba(0,255,136,.08);border:1px solid rgba(0,255,136,.16);border-radius:6px;padding:4px 10px;font-family:var(--font-mono);font-size:9px;color:var(--farpa)">RAG</span>
+          <span style="background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.16);border-radius:6px;padding:4px 10px;font-family:var(--font-mono);font-size:9px;color:var(--corte)">Embeddings</span>
+          <span style="background:rgba(255,184,0,.08);border:1px solid rgba(255,184,0,.16);border-radius:6px;padding:4px 10px;font-family:var(--font-mono);font-size:9px;color:var(--warn)">Fine-tuning</span>
         </div>
-        <div style="font-family:'DM Mono',monospace;font-size:9px;color:rgba(181,122,255,.6);letter-spacing:2px;text-align:center;">8 MÓDULOS · 50+ TERMOS</div>
+        <div style="font-family:var(--font-mono);font-size:9px;color:rgba(181,122,255,.55);letter-spacing:2px;text-align:center;">8 MÓDULOS · 50+ TERMOS</div>
       </div>
       <div class="lab-body">
-        <div class="lab-tags"><span class="lab-tag" style="color:var(--purple,#b57aff);border-color:rgba(181,122,255,.25);background:rgba(181,122,255,.07);">📚 Curadoria</span></div>
+        <div class="lab-tags"><span class="lab-tag" style="color:var(--purple);border-color:rgba(181,122,255,.22);background:rgba(181,122,255,.06);">📚 Curadoria</span></div>
         <div class="lab-title">Biblioteca de IA Generativa</div>
         <div class="lab-desc">8 módulos com glossário completo, objetivos de aprendizado, referências públicas e análises Pro exclusivas.</div>
-        <div class="lab-footer"><a href="biblioteca.html" class="lab-btn" style="background:linear-gradient(135deg,#b57aff,#8844ff);color:#fff;border:none;display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:8px;font-family:var(--font-head);font-size:12px;font-weight:700;">Acessar biblioteca</a></div>
+        <div class="lab-footer"><a href="biblioteca.html" class="lab-btn lb-purple">Acessar biblioteca</a></div>
       </div>
     </div>
 
   </div><!-- /labs-grid -->
-</div>
+</div><!-- /labs-page -->
 
 <!-- ── Modals ── -->
-
-<!-- Sentimento -->
 <div class="demo-modal" id="modal-sentiment">
   <div class="demo-box">
     <div class="demo-header"><div class="demo-title">🎯 Analisador de Sentimento</div><button class="demo-close" onclick="closeDemo('sentiment')">✕</button></div>
     <div class="demo-content">
-      <p style="font-size:14px;color:var(--text-secondary);margin-bottom:16px;line-height:1.6;">Cole qualquer texto abaixo para análise de sentimento instantânea.</p>
-      <textarea class="demo-input" id="sentiment-text" placeholder="Ex: O Banco Central surpreendeu o mercado com alta maior do que o esperado, gerando queda nas bolsas e incerteza nos investidores..."></textarea>
+      <p style="font-size:14px;color:var(--text-3);margin-bottom:16px;line-height:1.6;">Cole qualquer texto abaixo para análise de sentimento instantânea.</p>
+      <textarea class="demo-input" id="sentiment-text" placeholder="Ex: O Banco Central surpreendeu o mercado com alta maior do que o esperado..."></textarea>
       <button class="demo-btn" onclick="analyzeSentiment()">Analisar sentimento →</button>
       <div class="demo-result" id="sentiment-result">
         <div class="result-label" id="s-label"></div>
@@ -320,12 +555,11 @@
   </div>
 </div>
 
-<!-- Headlines -->
 <div class="demo-modal" id="modal-headline">
   <div class="demo-box">
     <div class="demo-header"><div class="demo-title">✍️ Gerador de Headlines</div><button class="demo-close" onclick="closeDemo('headline')">✕</button></div>
     <div class="demo-content">
-      <p style="font-size:14px;color:var(--text-secondary);margin-bottom:16px;">Descreva o fato em 1 frase e receba 4 headlines em tons diferentes.</p>
+      <p style="font-size:14px;color:var(--text-3);margin-bottom:16px;">Descreva o fato em 1 frase e receba 4 headlines em tons diferentes.</p>
       <input class="demo-input sm" id="headline-input" type="text" placeholder="Ex: Banco Central sobe juros 0.5 ponto acima do esperado">
       <button class="demo-btn" onclick="generateHeadlines()">Gerar headlines →</button>
       <div id="headline-grid" style="margin-top:14px;"></div>
@@ -333,33 +567,31 @@
   </div>
 </div>
 
-<!-- Resumidor -->
 <div class="demo-modal" id="modal-resume">
   <div class="demo-box">
     <div class="demo-header"><div class="demo-title">📋 Resumidor Inteligente</div><button class="demo-close" onclick="closeDemo('resume')">✕</button></div>
     <div class="demo-content">
-      <p style="font-size:14px;color:var(--text-secondary);margin-bottom:16px;">Cole um texto e receba bullets, palavras-chave e nível de complexidade.</p>
+      <p style="font-size:14px;color:var(--text-3);margin-bottom:16px;">Cole um texto e receba bullets, palavras-chave e nível de complexidade.</p>
       <textarea class="demo-input" id="resume-input" placeholder="Cole aqui um artigo ou texto longo..."></textarea>
       <button class="demo-btn" onclick="resumeText()">Resumir →</button>
       <div class="demo-result" id="resume-result">
-        <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--corte,#00e5ff);margin-bottom:8px;">RESUMO</div>
+        <div style="font-family:var(--font-mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--corte);margin-bottom:8px;">RESUMO</div>
         <div id="resume-bullets"></div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Viés -->
 <div class="demo-modal" id="modal-bias">
   <div class="demo-box">
     <div class="demo-header"><div class="demo-title">🔍 Detector de Viés</div><button class="demo-close" onclick="closeDemo('bias')">✕</button></div>
     <div class="demo-content">
-      <p style="font-size:14px;color:var(--text-secondary);margin-bottom:16px;">Cole uma manchete ou trecho de texto para detectar vieses linguísticos.</p>
-      <textarea class="demo-input" id="bias-text" placeholder='"IA vai destruir toda a civilização" ou "Governo resolve todos os problemas com nova lei"...'></textarea>
+      <p style="font-size:14px;color:var(--text-3);margin-bottom:16px;">Cole uma manchete ou trecho para detectar vieses linguísticos.</p>
+      <textarea class="demo-input" id="bias-text" placeholder='"IA vai destruir toda a civilização"...'></textarea>
       <button class="demo-btn" onclick="detectBias()">Detectar viés →</button>
       <div class="demo-result" id="bias-result">
         <div id="bias-label" style="font-size:18px;font-weight:700;margin-bottom:8px;"></div>
-        <div id="bias-detail" style="font-size:13px;color:var(--text-secondary);line-height:1.6;margin-bottom:12px;"></div>
+        <div id="bias-detail" style="font-size:13px;color:var(--text-3);line-height:1.6;margin-bottom:12px;"></div>
         <div id="bias-tags"></div>
       </div>
     </div>
@@ -367,87 +599,103 @@
 </div>
 
 </main>
-</div>
+</div><!-- /farpa-layout -->
 
 <script>
-/* ── Modal controls ── */
-function openDemo(id){ document.getElementById('modal-'+id).classList.add('open'); document.body.style.overflow='hidden'; }
-function closeDemo(id){ document.getElementById('modal-'+id).classList.remove('open'); document.body.style.overflow=''; }
-document.querySelectorAll('.demo-modal').forEach(m=>m.addEventListener('click',e=>{ if(e.target===m) closeDemo(m.id.replace('modal-','')); }));
-document.addEventListener('keydown',e=>{ if(e.key==='Escape') document.querySelectorAll('.demo-modal.open').forEach(m=>closeDemo(m.id.replace('modal-',''))); });
+/* ── Modal helpers ── */
+function openDemo(id) { document.getElementById('modal-' + id).classList.add('open'); document.body.style.overflow = 'hidden'; }
+function closeDemo(id) { document.getElementById('modal-' + id).classList.remove('open'); document.body.style.overflow = ''; }
+document.querySelectorAll('.demo-modal').forEach(m => m.addEventListener('click', e => { if (e.target === m) closeDemo(m.id.replace('modal-','')); }));
+document.addEventListener('keydown', e => { if (e.key === 'Escape') document.querySelectorAll('.demo-modal.open').forEach(m => closeDemo(m.id.replace('modal-',''))); });
 
 /* ── Sentiment ── */
-const POS_W=['crescimento','alta','lucro','ganho','positivo','melhora','avanço','forte','recorde','otimismo','aprovado','acelerou','superou','confirmou','subiu','subida','valorização','sucesso','bom','ótimo','excelente','inovação','conquista','recuperação'];
-const NEG_W=['queda','baixa','perda','risco','crise','negativo','piora','fraco','incerteza','preocupa','falha','recuo','déficit','problema','dificuldade','caiu','declínio','recessão','colapso','fracasso','medo','alerta','preocupante','crítico','grave'];
-function analyzeSentiment(){
-  const text=document.getElementById('sentiment-text').value.toLowerCase();
-  if(!text.trim()){alert('Digite algum texto para analisar.');return;}
-  let pos=0,neg=0,fp=[],fn=[];
-  POS_W.forEach(w=>{if(text.includes(w)){pos++;fp.push(w);}});
-  NEG_W.forEach(w=>{if(text.includes(w)){neg++;fn.push(w);}});
-  const total=pos+neg||1; const score=pos/total;
-  const r=document.getElementById('sentiment-result');
-  const lbl=document.getElementById('s-label'); const bar=document.getElementById('s-bar'); const det=document.getElementById('s-detail'); const kw=document.getElementById('s-kw');
+const POS_W = ['crescimento','alta','lucro','ganho','positivo','melhora','avanço','forte','recorde','otimismo','aprovado','acelerou','superou','confirmou','subiu','subida','valorização','sucesso','bom','ótimo','excelente','inovação','conquista','recuperação'];
+const NEG_W = ['queda','baixa','perda','risco','crise','negativo','piora','fraco','incerteza','preocupa','falha','recuo','déficit','problema','dificuldade','caiu','declínio','recessão','colapso','fracasso','medo','alerta','preocupante','crítico','grave'];
+function analyzeSentiment() {
+  const text = document.getElementById('sentiment-text').value.toLowerCase(); if (!text.trim()) { alert('Digite algum texto.'); return; }
+  let pos = 0, neg = 0, fp = [], fn = [];
+  POS_W.forEach(w => { if (text.includes(w)) { pos++; fp.push(w); } });
+  NEG_W.forEach(w => { if (text.includes(w)) { neg++; fn.push(w); } });
+  const total = pos + neg || 1, score = pos / total;
+  const r = document.getElementById('sentiment-result'), lbl = document.getElementById('s-label'), bar = document.getElementById('s-bar'), det = document.getElementById('s-detail'), kw = document.getElementById('s-kw');
   r.classList.add('show');
-  if(score>.6){lbl.textContent='😊 Sentimento positivo';lbl.style.color='#00e676';bar.className='result-bar pos';bar.style.width=Math.round(score*100)+'%';}
-  else if(score<.4){lbl.textContent='😟 Sentimento negativo';lbl.style.color='var(--urgente,#ff3b3b)';bar.className='result-bar neg';bar.style.width=Math.round((1-score)*100)+'%';}
-  else{lbl.textContent='😐 Sentimento neutro';lbl.style.color='var(--warn,#ffb800)';bar.className='result-bar neu';bar.style.width='50%';}
-  det.textContent=`Score: ${Math.round(score*100)}% · Positivas: ${pos} · Negativas: ${neg}`;
-  kw.innerHTML=[...fp.slice(0,4).map(w=>`<span class="kw-tag pos">${w}</span>`),...fn.slice(0,4).map(w=>`<span class="kw-tag neg">${w}</span>`)].join('');
+  if (score > .6) { lbl.textContent = '😊 Sentimento positivo'; lbl.style.color = '#00e676'; bar.className = 'result-bar rbar-pos'; bar.style.width = Math.round(score*100)+'%'; }
+  else if (score < .4) { lbl.textContent = '😟 Sentimento negativo'; lbl.style.color = 'var(--urgente)'; bar.className = 'result-bar rbar-neg'; bar.style.width = Math.round((1-score)*100)+'%'; }
+  else { lbl.textContent = '😐 Sentimento neutro'; lbl.style.color = 'var(--warn)'; bar.className = 'result-bar rbar-neu'; bar.style.width = '50%'; }
+  det.textContent = `Score: ${Math.round(score*100)}% · Positivas: ${pos} · Negativas: ${neg}`;
+  kw.innerHTML = [...fp.slice(0,4).map(w=>`<span class="kw-tag kw-pos">${w}</span>`), ...fn.slice(0,4).map(w=>`<span class="kw-tag kw-neg">${w}</span>`)].join('');
 }
 
 /* ── Headlines ── */
-const HL={impactante:t=>`🚨 URGENTE: ${cap(t)} — especialistas alertam para impacto imediato`,tecnico:t=>`Análise: ${cap(t)} registra variação além do consenso projetado`,popular:t=>`O que você precisa saber sobre ${t.toLowerCase()} — em 1 minuto`,provocador:t=>`"${cap(t)}" — e isso muda tudo o que você achava que sabia`};
-function cap(s){return s.charAt(0).toUpperCase()+s.slice(1);}
-function generateHeadlines(){
-  const input=document.getElementById('headline-input').value.trim();
-  if(!input){alert('Descreva o fato.');return;}
-  const tones=[{k:'impactante',l:'⚡ Impactante',c:'#ff3b3b'},{k:'tecnico',l:'📊 Técnico',c:'#00e5ff'},{k:'popular',l:'👥 Popular',c:'#00ff88'},{k:'provocador',l:'🔥 Provocador',c:'#b57aff'}];
-  document.getElementById('headline-grid').innerHTML=tones.map(t=>`<div class="headline-card"><div class="headline-tone" style="color:${t.c}">${t.l}</div>${HL[t.k](input)}</div>`).join('');
+const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+const HL_TONES = {
+  impactante: t => `🚨 URGENTE: ${cap(t)} — especialistas alertam para impacto imediato`,
+  tecnico:    t => `Análise: ${cap(t)} registra variação além do consenso projetado`,
+  popular:    t => `O que você precisa saber sobre "${t.toLowerCase()}" — em 1 minuto`,
+  provocador: t => `"${cap(t)}" — e isso muda tudo o que você achava que sabia`,
+};
+function generateHeadlines() {
+  const input = document.getElementById('headline-input').value.trim(); if (!input) { alert('Descreva o fato.'); return; }
+  const tones = [{k:'impactante',l:'⚡ Impactante',c:'#ff3b3b'},{k:'tecnico',l:'📊 Técnico',c:'#00e5ff'},{k:'popular',l:'👥 Popular',c:'#00ff88'},{k:'provocador',l:'🔥 Provocador',c:'#b57aff'}];
+  document.getElementById('headline-grid').innerHTML = tones.map(t => `<div class="headline-card"><div class="headline-tone" style="color:${t.c}">${t.l}</div>${HL_TONES[t.k](input)}</div>`).join('');
 }
 
 /* ── Resumidor ── */
-function resumeText(){
-  const text=document.getElementById('resume-input').value.trim();
-  if(!text){alert('Cole um texto.');return;}
-  const sents=text.split(/[.!?]+/).filter(s=>s.trim().length>20).slice(0,3);
-  const kws=extractKW(text); const complexity=text.split(' ').length>300?'Alta':text.split(' ').length>100?'Média':'Baixa';
-  const r=document.getElementById('resume-result'); const b=document.getElementById('resume-bullets');
-  r.classList.add('show');
-  b.innerHTML=`<ul style="list-style:none;display:flex;flex-direction:column;gap:8px;margin-bottom:12px;">${sents.map(s=>`<li style="display:flex;gap:8px;font-size:13px;color:var(--text-secondary);line-height:1.6;"><span style="color:var(--farpa,#00ff88);flex-shrink:0;">▸</span><span>${s.trim()}.</span></li>`).join('')}</ul><div style="padding-top:10px;border-top:1px solid var(--border);font-family:'DM Mono',monospace;font-size:10px;color:var(--text-muted);">Complexidade: <strong style="color:var(--warn,#ffb800)">${complexity}</strong> · ${text.split(' ').length} palavras</div><div style="margin-top:8px;">${kws.map(k=>`<span style="display:inline-block;margin:2px;background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.2);border-radius:999px;padding:2px 8px;font-family:'DM Mono',monospace;font-size:10px;color:var(--corte,#00e5ff)">${k}</span>`).join('')}</div>`;
+function extractKW(text) {
+  const stop = ['o','a','os','as','um','uma','de','do','da','dos','das','em','no','na','para','por','com','que','se','é','ao','à','e','ou','não','mas'];
+  const words = text.toLowerCase().replace(/[^a-záéíóúâêôãõç\s]/g,'').split(/\s+/).filter(w => w.length > 4 && !stop.includes(w));
+  const freq = {}; words.forEach(w => freq[w] = (freq[w]||0)+1);
+  return Object.entries(freq).sort((a,b) => b[1]-a[1]).slice(0,6).map(e => e[0]);
 }
-function extractKW(text){const stop=['o','a','os','as','um','uma','de','do','da','dos','das','em','no','na','para','por','com','que','se','é','ao','à','e','ou','os','um'];const words=text.toLowerCase().replace(/[^a-záéíóúâêôãõç\s]/g,'').split(/\s+/).filter(w=>w.length>4&&!stop.includes(w));const freq={};words.forEach(w=>freq[w]=(freq[w]||0)+1);return Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,6).map(e=>e[0]);}
+function resumeText() {
+  const text = document.getElementById('resume-input').value.trim(); if (!text) { alert('Cole um texto.'); return; }
+  const sents = text.split(/[.!?]+/).filter(s => s.trim().length > 20).slice(0, 3);
+  const kws = extractKW(text), complexity = text.split(' ').length > 300 ? 'Alta' : text.split(' ').length > 100 ? 'Média' : 'Baixa';
+  document.getElementById('resume-result').classList.add('show');
+  document.getElementById('resume-bullets').innerHTML = `
+    <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;margin-bottom:12px;">
+      ${sents.map(s => `<li style="display:flex;gap:8px;font-size:13px;color:var(--text-3);line-height:1.6;"><span style="color:var(--farpa);flex-shrink:0">▸</span><span>${s.trim()}.</span></li>`).join('')}
+    </ul>
+    <div style="padding-top:10px;border-top:1px solid var(--border-lo);font-family:var(--font-mono);font-size:10px;color:var(--text-3);">Complexidade: <strong style="color:var(--warn)">${complexity}</strong> · ${text.split(' ').length} palavras</div>
+    <div style="margin-top:8px;">${kws.map(k => `<span style="display:inline-block;margin:2px;background:rgba(0,229,255,.07);border:1px solid rgba(0,229,255,.18);border-radius:999px;padding:2px 8px;font-family:var(--font-mono);font-size:10px;color:var(--corte)">${k}</span>`).join('')}</div>`;
+}
 
-/* ── Detector de Viés ── */
-const BIAS_P=[
-  {name:'Alarmismo',words:['vai destruir','nunca mais','catástrofe','colapso total','fim do','apocalipse'],color:'#ff3b3b',tip:'Usa linguagem catastrófica sem base factual.'},
-  {name:'Generalização',words:['todo mundo','ninguém','sempre','jamais','todos os','nenhum','tudo vai'],color:'#ffb800',tip:'Aplica conclusões amplas sem evidências suficientes.'},
-  {name:'Sensacionalismo',words:['chocante','inacreditável','surpreendente demais','bombástico','imperdível'],color:'#b57aff',tip:'Usa emoção acima dos fatos para capturar atenção.'},
-  {name:'Clickbait',words:['você não vai acreditar','o que ninguém te contou','a verdade que escondem','segredo revelado'],color:'#00e5ff',tip:'Apela à curiosidade sem entregar o conteúdo prometido.'},
+/* ── Bias detector ── */
+const BIAS_P = [
+  {name:'Alarmismo',     words:['vai destruir','nunca mais','catástrofe','colapso total','fim do','apocalipse'], color:'#ff3b3b', tip:'Usa linguagem catastrófica sem base factual.'},
+  {name:'Generalização', words:['todo mundo','ninguém','sempre','jamais','todos os','nenhum','tudo vai'],       color:'#ffb800', tip:'Aplica conclusões amplas sem evidências suficientes.'},
+  {name:'Sensacionalismo',words:['chocante','inacreditável','surpreendente demais','bombástico'],               color:'#b57aff', tip:'Usa emoção acima dos fatos para capturar atenção.'},
+  {name:'Clickbait',     words:['você não vai acreditar','o que ninguém te contou','a verdade que escondem'],   color:'#00e5ff', tip:'Apela à curiosidade sem entregar o conteúdo prometido.'},
 ];
-function detectBias(){
-  const text=document.getElementById('bias-text').value.toLowerCase();
-  if(!text.trim()){alert('Digite um texto.');return;}
-  const found=BIAS_P.filter(p=>p.words.some(w=>text.includes(w)));
-  const r=document.getElementById('bias-result'); r.classList.add('show');
-  const lbl=document.getElementById('bias-label'); const det=document.getElementById('bias-detail'); const tags=document.getElementById('bias-tags');
-  if(!found.length){lbl.textContent='✅ Viés não detectado';lbl.style.color='#00e676';det.textContent='Nenhum padrão de viés linguístico evidente encontrado.';tags.innerHTML='';}
-  else{lbl.textContent=`⚠️ ${found.length} viés${found.length>1?'es':''} detectado${found.length>1?'s':''}`;lbl.style.color='var(--urgente,#ff3b3b)';det.textContent=found.map(f=>f.tip).join(' ');tags.innerHTML=found.map(f=>`<span class="bias-tag" style="color:${f.color};border-color:${f.color}50;background:${f.color}10">${f.name}</span>`).join('');}
+function detectBias() {
+  const text = document.getElementById('bias-text').value.toLowerCase(); if (!text.trim()) { alert('Digite um texto.'); return; }
+  const found = BIAS_P.filter(p => p.words.some(w => text.includes(w)));
+  document.getElementById('bias-result').classList.add('show');
+  const lbl = document.getElementById('bias-label'), det = document.getElementById('bias-detail'), tags = document.getElementById('bias-tags');
+  if (!found.length) {
+    lbl.textContent = '✅ Viés não detectado'; lbl.style.color = '#00e676';
+    det.textContent = 'Nenhum padrão de viés linguístico evidente encontrado.'; tags.innerHTML = '';
+  } else {
+    lbl.textContent = `⚠️ ${found.length} viés${found.length>1?'es':''} detectado${found.length>1?'s':''}`; lbl.style.color = 'var(--urgente)';
+    det.textContent = found.map(f => f.tip).join(' ');
+    tags.innerHTML = found.map(f => `<span class="bias-tag" style="color:${f.color};border-color:${f.color}50;background:${f.color}10">${f.name}</span>`).join('');
+  }
 }
-</script>
 
-<script>
+/* ── Theme engine integration ── */
 document.addEventListener('DOMContentLoaded', function() {
   var layout = document.getElementById('farpa-layout');
-  if (!layout) return;
-  var sidebar = window.farpaSidebar.build('labs');
-  layout.insertBefore(sidebar, layout.firstChild);
-  var topnav = window.farpaTopnav.build([{label:'farpa.ai',href:'index.html'},{label:'Labs'}]);
-  layout.insertBefore(topnav, sidebar.nextSibling);
-  var t = localStorage.getItem('farpa_theme');
-  if (t) document.documentElement.setAttribute('data-theme', t);
-  var lang = localStorage.getItem('farpa_lang') || 'pt';
-  document.querySelectorAll('.lang-btn').forEach(function(b) { b.classList.toggle('active', b.id === 'lang-' + lang); });
+  if (!layout || !window.farpaSidebar) return;
+  try {
+    var sidebar = window.farpaSidebar.build('labs');
+    layout.insertBefore(sidebar, layout.firstChild);
+    var topnav = window.farpaTopnav.build([{label:'farpa.ai',href:'index.html'},{label:'Labs'}]);
+    layout.insertBefore(topnav, sidebar.nextSibling);
+    var t = localStorage.getItem('farpa_theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+    var lang = localStorage.getItem('farpa_lang') || 'pt';
+    document.querySelectorAll('.lang-btn').forEach(function(b) { b.classList.toggle('active', b.id === 'lang-' + lang); });
+  } catch(e) { console.warn('theme-engine integration skipped:', e); }
 });
 </script>
 </body>
