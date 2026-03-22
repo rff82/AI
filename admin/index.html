@@ -1,139 +1,321 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Farpa.ai - Painel Administrativo">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="farpa.ai - Painel administrativo para gestão de conteúdo, leads e operação editorial.">
 <title>Painel Administrativo — farpa.ai</title>
 <link rel="icon" type="image/svg+xml" href="../farpa-icon.svg">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-:root{--primary:#00ff88;--primary-dark:#00cc6a;--secondary:#00e5ff;--bg-dark:#0a0a0a;--bg-light:#1e1e1e;--bg-lighter:#252525;--text-primary:#f0f0ef;--text-secondary:rgba(240,240,239,0.82);--border:rgba(255,255,255,0.09);--danger:#ff3b3b;--success:#00ff88;}
-html{scroll-behavior:smooth;}
-body{font-family:'Space Grotesk',sans-serif;background:var(--bg-dark);color:var(--text-primary);line-height:1.6;}
-.admin-container{display:grid;grid-template-columns:250px 1fr;min-height:100vh;}
-.sidebar{background:var(--bg-light);border-right:1px solid var(--border);padding:2rem 1rem;position:fixed;left:0;top:0;width:250px;height:100vh;overflow-y:auto;z-index:100;}
-.sidebar-logo{font-size:1.5rem;font-weight:900;margin-bottom:2rem;color:var(--primary);}
-.sidebar-logo a{color:var(--primary);text-decoration:none;transition:opacity .3s;}
-.sidebar-logo a:hover{opacity:.8;}
-.sidebar-menu{list-style:none;}
-.sidebar-menu li{margin-bottom:.5rem;}
-.sidebar-menu a{display:block;padding:.75rem 1rem;color:var(--text-secondary);text-decoration:none;border-radius:6px;transition:all .3s;cursor:pointer;font-size:14px;}
-.sidebar-menu a:hover,.sidebar-menu a.active{background:var(--bg-lighter);color:var(--primary);transform:translateX(4px);}
-.main-content{margin-left:250px;padding:2rem;}
-.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid var(--border);}
-.header h1{font-size:2rem;background:linear-gradient(135deg,var(--primary),var(--secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.logout-btn{background:var(--danger);color:white;border:none;padding:.5rem 1rem;border-radius:6px;cursor:pointer;font-weight:600;transition:all .3s;}
-.logout-btn:hover{opacity:.8;transform:translateY(-2px);}
-.dashboard-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.5rem;margin-bottom:2rem;}
-.stat-card{background:linear-gradient(135deg,var(--bg-light),var(--bg-lighter));border:1px solid var(--border);border-radius:8px;padding:1.5rem;text-align:center;transition:all .3s;cursor:default;position:relative;overflow:hidden;}
-.stat-card:hover{border-color:var(--primary);transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,255,136,.1);}
-.stat-card h3{color:var(--text-secondary);font-size:.85rem;margin-bottom:.5rem;text-transform:uppercase;letter-spacing:1px;}
-.stat-card .value{font-size:2.5rem;font-weight:900;color:var(--primary);}
-.table-container{background:var(--bg-light);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:2rem;box-shadow:0 4px 12px rgba(0,0,0,.3);}
-.table-header{padding:1rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;background:var(--bg-lighter);}
-.table-header h2{font-size:1.2rem;}
-.search-box{padding:.5rem 1rem;background:var(--bg-dark);border:1px solid var(--border);border-radius:4px;color:var(--text-primary);width:250px;transition:all .3s;}
-.search-box:focus{outline:none;border-color:var(--primary);box-shadow:0 0 8px rgba(0,255,136,.2);}
+:root{
+  --primary:#00ff88;--secondary:#00e5ff;--gold:#ffd764;--danger:#ff5f5f;
+  --bg:#060606;--panel:#101010;--panel-2:#171717;--panel-3:#1f1f1f;
+  --text:#f4f4f2;--text-2:rgba(244,244,242,.84);--text-3:rgba(244,244,242,.62);
+  --border:rgba(255,255,255,.09);--border-strong:rgba(255,255,255,.18);
+  --shadow:0 20px 60px rgba(0,0,0,.45);
+}
+body{font-family:'Space Grotesk',sans-serif;background:radial-gradient(circle at top right,rgba(0,229,255,.08),transparent 24%),radial-gradient(circle at top left,rgba(0,255,136,.10),transparent 28%),var(--bg);color:var(--text);line-height:1.55;}
+a{color:inherit;text-decoration:none;}
+button,input{font:inherit;}
+.admin-shell{display:grid;grid-template-columns:280px 1fr;min-height:100vh;}
+.sidebar{position:fixed;left:0;top:0;width:280px;height:100vh;background:rgba(10,10,10,.96);backdrop-filter:blur(16px);border-right:1px solid var(--border);padding:28px 18px 20px;display:flex;flex-direction:column;gap:22px;}
+.brand{display:flex;align-items:center;gap:12px;padding:0 8px 18px;border-bottom:1px solid var(--border);}
+.brand-mark{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,rgba(0,255,136,.12),rgba(0,229,255,.12));border:1px solid rgba(0,255,136,.18);}
+.brand-mark svg{width:22px;height:22px;color:var(--primary);}
+.brand-text strong{display:block;font-size:18px;letter-spacing:-.04em;}
+.brand-text span{display:block;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1.8px;text-transform:uppercase;color:var(--text-3);margin-top:4px;}
+.nav-group-label{padding:0 10px;margin-bottom:8px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-3);}
+.nav-list{list-style:none;display:flex;flex-direction:column;gap:6px;}
+.nav-btn{display:flex;align-items:flex-start;gap:12px;padding:12px 12px;border-radius:14px;border:1px solid transparent;color:var(--text-2);transition:.2s;}
+.nav-btn:hover,.nav-btn.active{background:var(--panel-2);border-color:var(--border-strong);color:var(--text);transform:translateX(2px);}
+.nav-btn svg{width:18px;height:18px;flex-shrink:0;margin-top:2px;color:var(--primary);}
+.nav-copy strong{display:block;font-size:14px;}
+.nav-copy span{display:block;font-size:12px;color:var(--text-3);margin-top:2px;}
+.sidebar-footer{margin-top:auto;padding:14px;border-radius:16px;background:linear-gradient(135deg,rgba(255,215,100,.10),rgba(0,229,255,.06));border:1px solid rgba(255,215,100,.16);}
+.sidebar-footer strong{display:block;font-size:14px;margin-bottom:6px;}
+.sidebar-footer p{font-size:12px;color:var(--text-2);margin-bottom:12px;}
+.sidebar-actions{display:flex;gap:8px;flex-wrap:wrap;}
+.sidebar-chip{padding:8px 10px;border-radius:999px;border:1px solid var(--border-strong);font-size:11px;color:var(--text-2);background:rgba(255,255,255,.03);}
+.main{margin-left:280px;padding:28px;}
+.topbar{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:24px;}
+.eyebrow{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--secondary);margin-bottom:10px;}
+.hero h1{font-size:clamp(28px,4vw,42px);line-height:1;letter-spacing:-.05em;margin-bottom:10px;}
+.hero p{max-width:760px;color:var(--text-2);}
+.top-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end;}
+.action-link,.action-primary{display:inline-flex;align-items:center;gap:8px;padding:11px 14px;border-radius:12px;border:1px solid var(--border-strong);background:var(--panel);color:var(--text);transition:.2s;}
+.action-primary{background:linear-gradient(135deg,var(--primary),var(--secondary));color:#000;border:none;font-weight:800;}
+.action-link:hover,.action-primary:hover{transform:translateY(-1px);}
+.grid{display:grid;gap:18px;}
+.metrics{grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:18px;}
+.card{background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.01)),var(--panel);border:1px solid var(--border);border-radius:20px;box-shadow:var(--shadow);}
+.metric-card{padding:20px;position:relative;overflow:hidden;}
+.metric-card::after{content:'';position:absolute;inset:auto -40px -40px auto;width:120px;height:120px;background:radial-gradient(circle,rgba(0,255,136,.18),transparent 70%);pointer-events:none;}
+.metric-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1.6px;text-transform:uppercase;color:var(--text-3);margin-bottom:14px;}
+.metric-value{font-size:34px;font-weight:900;letter-spacing:-.06em;}
+.metric-foot{margin-top:10px;font-size:12px;color:var(--text-2);}
+.duo{grid-template-columns:1.35fr .95fr;margin-bottom:18px;}
+.section-card{padding:22px;}
+.section-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px;}
+.section-head h2{font-size:20px;letter-spacing:-.03em;}
+.section-head p{font-size:13px;color:var(--text-3);margin-top:4px;}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;}
+.pill{padding:8px 12px;border-radius:999px;background:var(--panel-3);border:1px solid var(--border);font-family:'DM Mono',monospace;font-size:11px;color:var(--text-2);}
+.kanban{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;}
+.kanban-col{background:var(--panel-2);border:1px solid var(--border);border-radius:18px;padding:16px;}
+.kanban-col h3{font-size:14px;margin-bottom:12px;}
+.kanban-col h3 span{display:inline-flex;margin-left:6px;padding:2px 8px;border-radius:999px;background:rgba(255,255,255,.04);font-family:'DM Mono',monospace;font-size:10px;color:var(--text-3);}
+.story{padding:14px;border-radius:14px;background:var(--panel-3);border:1px solid var(--border);margin-bottom:10px;}
+.story:last-child{margin-bottom:0;}
+.story strong{display:block;font-size:14px;margin-bottom:6px;}
+.story p{font-size:12px;color:var(--text-2);margin-bottom:10px;}
+.story-meta{display:flex;justify-content:space-between;gap:8px;font-family:'DM Mono',monospace;font-size:10px;color:var(--text-3);text-transform:uppercase;letter-spacing:1px;}
+.checklist{display:flex;flex-direction:column;gap:12px;}
+.check-item{display:flex;align-items:flex-start;gap:12px;padding:14px;border-radius:14px;background:var(--panel-2);border:1px solid var(--border);}
+.check-item svg{width:18px;height:18px;flex-shrink:0;color:var(--gold);margin-top:2px;}
+.check-item strong{display:block;font-size:14px;margin-bottom:4px;}
+.check-item p{font-size:12px;color:var(--text-2);}
+.table-wrap{overflow:auto;border-radius:18px;border:1px solid var(--border);}
+.table-bar{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:14px;background:var(--panel-2);border-bottom:1px solid var(--border);}
+.table-bar input{width:320px;max-width:100%;padding:11px 14px;border-radius:12px;border:1px solid var(--border);background:var(--panel-3);color:var(--text);}
+.table-bar input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(0,255,136,.10);}
 table{width:100%;border-collapse:collapse;}
-th{background:var(--bg-lighter);padding:.75rem 1rem;text-align:left;font-weight:600;color:var(--text-secondary);font-size:.8rem;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);}
-td{padding:.9rem 1rem;border-bottom:1px solid var(--border);font-size:13px;color:var(--text-secondary);}
-tr:hover{background:var(--bg-lighter);}
-.action-btn{background:transparent;border:1px solid var(--border);color:var(--text-secondary);padding:.35rem .75rem;border-radius:4px;cursor:pointer;font-size:.8rem;transition:all .3s;margin-right:.4rem;}
-.action-btn:hover{border-color:var(--primary);color:var(--primary);background:rgba(0,255,136,.1);}
-.action-btn.delete{border-color:var(--danger);color:var(--danger);}
-.action-btn.delete:hover{background:var(--danger);color:white;}
-.chart-container{background:var(--bg-light);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin-bottom:2rem;}
-.chart-container h2{margin-bottom:1rem;}
-.loading{text-align:center;padding:2rem;color:var(--text-secondary);animation:pulse 1.5s ease-in-out infinite;}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
-.error-message{background:rgba(255,59,59,.1);border:1px solid var(--danger);color:var(--danger);padding:1rem;border-radius:6px;margin-bottom:1rem;}
-.success-message{background:rgba(0,255,136,.1);border:1px solid var(--primary);color:var(--primary);padding:1rem;border-radius:6px;margin-bottom:1rem;}
+th,td{padding:14px 16px;text-align:left;border-bottom:1px solid var(--border);}
+th{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1.6px;text-transform:uppercase;color:var(--text-3);background:rgba(255,255,255,.01);}
+td{font-size:13px;color:var(--text-2);}
+tr:hover td{background:rgba(255,255,255,.02);}
+.badge{display:inline-flex;align-items:center;padding:5px 10px;border-radius:999px;background:rgba(0,255,136,.10);color:var(--primary);font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;border:1px solid rgba(0,255,136,.18);}
+.row-actions{display:flex;gap:8px;flex-wrap:wrap;}
+.icon-btn{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:10px;border:1px solid var(--border-strong);background:transparent;color:var(--text);cursor:pointer;}
+.icon-btn svg{width:14px;height:14px;}
+.note{padding:14px 16px;border-radius:14px;background:rgba(0,229,255,.06);border:1px solid rgba(0,229,255,.16);color:var(--text-2);font-size:13px;}
+.loading,.empty-state{text-align:center;padding:36px 18px;color:var(--text-3);}
+.empty-state strong{display:block;font-size:16px;color:var(--text);margin-bottom:6px;}
+.chart-slot{min-height:320px;}
 .section{display:none;}
-.section.active{display:block;animation:fadeIn .3s ease;}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-.badge{display:inline-block;padding:.2rem .7rem;background:rgba(0,255,136,.15);color:var(--primary);border-radius:12px;font-size:.72rem;font-weight:600;text-transform:uppercase;}
-.empty-state{text-align:center;padding:3rem 1rem;color:var(--text-secondary);}
-.empty-state-icon{font-size:3rem;margin-bottom:1rem;}
-.empty-state-title{font-size:1.2rem;font-weight:600;margin-bottom:.5rem;color:var(--text-primary);}
-@media(max-width:768px){.admin-container{grid-template-columns:1fr;}.sidebar{width:100%;height:auto;position:relative;border-right:none;border-bottom:1px solid var(--border);padding:1rem;}.main-content{margin-left:0;padding:1rem;}.dashboard-grid{grid-template-columns:1fr;}.search-box{width:100%;}.table-header{flex-direction:column;gap:1rem;align-items:flex-start;}}
+.section.active{display:block;}
+.error-message,.success-message{padding:14px 16px;border-radius:14px;margin-bottom:18px;font-size:14px;}
+.error-message{background:rgba(255,95,95,.10);border:1px solid rgba(255,95,95,.28);color:#ff9e9e;}
+.success-message{background:rgba(0,255,136,.10);border:1px solid rgba(0,255,136,.28);color:var(--primary);}
+@media(max-width:1200px){.metrics,.kanban,.duo{grid-template-columns:1fr 1fr;}.duo>.section-card:first-child{grid-column:1/-1;}}
+@media(max-width:860px){.admin-shell{grid-template-columns:1fr;}.sidebar{position:relative;width:100%;height:auto;}.main{margin-left:0;padding:20px;}.metrics,.kanban,.duo{grid-template-columns:1fr;}.topbar{flex-direction:column;}.table-bar{flex-direction:column;align-items:stretch;}}
 </style>
 </head>
 <body>
-<div class="admin-container">
+<div class="admin-shell">
   <aside class="sidebar">
-    <div class="sidebar-logo"><a href="../index.html">🚀 Farpa</a></div>
-    <ul class="sidebar-menu" id="admin-menu">
-      <li><a href="#" class="menu-item active" data-section="dashboard">📊 Dashboard</a></li>
-      <li><a href="#" class="menu-item" data-section="leads">👥 Leads</a></li>
-      <li><a href="../leads.html" style="color:#00e5ff">🎯 Central de Leads ↗</a></li>
-      <li><a href="#" class="menu-item" data-section="analytics">📈 Análises</a></li>
-      <li><a href="#" class="menu-item" data-section="settings">⚙️ Configurações</a></li>
-    </ul>
-  </aside>
-  <main class="main-content">
-    <div class="header">
-      <h1>Painel Administrativo</h1>
-      <button class="logout-btn" onclick="if(confirm('Sair?'))window.location.href='../index.html'">Sair</button>
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M4 12h16M4 17h10" stroke-linecap="round"/><path d="M18 17h2" stroke-linecap="round"/></svg>
+      </div>
+      <div class="brand-text">
+        <strong>farpa.ai Admin</strong>
+        <span>operações · conteúdo · inteligência</span>
+      </div>
     </div>
-    <!-- Dashboard -->
+
+    <div>
+      <div class="nav-group-label">Navegação interna</div>
+      <ul class="nav-list" id="admin-menu">
+        <li><a href="#" class="nav-btn menu-item active" data-section="dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><div class="nav-copy"><strong>Dashboard executivo</strong><span>KPIs, conversão e visão operacional</span></div></a></li>
+        <li><a href="#" class="nav-btn menu-item" data-section="content"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 4h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z"/><path d="M7 8h10M7 12h10M7 16h6" stroke-linecap="round"/></svg><div class="nav-copy"><strong>Gestão de conteúdo</strong><span>Planejamento editorial e fila de publicação</span></div></a></li>
+        <li><a href="#" class="nav-btn menu-item" data-section="leads"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="4"/><path d="M20 8v6M17 11h6" stroke-linecap="round"/></svg><div class="nav-copy"><strong>Leads e pipeline</strong><span>Consulta, filtro e ação comercial</span></div></a></li>
+        <li><a href="#" class="nav-btn menu-item" data-section="analytics"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19h16" stroke-linecap="round"/><path d="M7 16V9"/><path d="M12 16V5"/><path d="M17 16v-3"/></svg><div class="nav-copy"><strong>Painéis analíticos</strong><span>Fontes, tráfego e desempenho do funil</span></div></a></li>
+        <li><a href="#" class="nav-btn menu-item" data-section="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 15.5A3.5 3.5 0 1 0 12 8.5a3.5 3.5 0 0 0 0 7Z"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 8.9 4.6 1.65 1.65 0 0 0 10 3.09V3a2 2 0 0 1 4 0v.09A1.65 1.65 0 0 0 15.1 4.6a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9c.36.58.92.94 1.6 1H21a2 2 0 0 1 0 4h-.09c-.68.06-1.24.42-1.51 1Z"/></svg><div class="nav-copy"><strong>Configurações</strong><span>Fluxos, integrações e governança</span></div></a></li>
+      </ul>
+    </div>
+
+    <div class="sidebar-footer">
+      <strong>Modo editorial ativo</strong>
+      <p>Painel orientado para gestão de conteúdo, visão executiva e resposta rápida do time.</p>
+      <div class="sidebar-actions">
+        <a class="sidebar-chip" href="../index.html">Voltar ao site</a>
+        <a class="sidebar-chip" href="../leads.html">Central de leads</a>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div class="hero">
+        <div class="eyebrow">Painel administrativo</div>
+        <h1>Gestão de conteúdo, painéis e operação comercial em uma única camada.</h1>
+        <p>O admin agora prioriza leitura executiva, fila editorial e acompanhamento do funil sem depender de ícones simples ou atalhos visuais frágeis.</p>
+      </div>
+      <div class="top-actions">
+        <a class="action-link" href="../leads.html">Abrir central de leads</a>
+        <button class="action-primary" onclick="exportLeadsToCSV()">Exportar leads</button>
+      </div>
+    </div>
+
     <section id="dashboard" class="section active">
-      <div class="dashboard-grid">
-        <div class="stat-card"><h3>Total de Leads</h3><div class="value" id="total-leads">0</div></div>
-        <div class="stat-card"><h3>Novos Hoje</h3><div class="value" id="leads-today">0</div></div>
-        <div class="stat-card"><h3>Visitantes Únicos</h3><div class="value" id="unique-visitors">0</div></div>
-        <div class="stat-card"><h3>Taxa de Conversão</h3><div class="value" id="conversion-rate">0%</div></div>
+      <div class="grid metrics">
+        <article class="card metric-card"><div class="metric-label">Total de leads</div><div class="metric-value" id="total-leads">0</div><div class="metric-foot">Base consolidada para acompanhamento comercial.</div></article>
+        <article class="card metric-card"><div class="metric-label">Novos hoje</div><div class="metric-value" id="leads-today">0</div><div class="metric-foot">Velocidade de entrada nas últimas 24h.</div></article>
+        <article class="card metric-card"><div class="metric-label">Visitantes únicos</div><div class="metric-value" id="unique-visitors">0</div><div class="metric-foot">Estimativa operacional para leitura de topo do funil.</div></article>
+        <article class="card metric-card"><div class="metric-label">Taxa de conversão</div><div class="metric-value" id="conversion-rate">0%</div><div class="metric-foot">Comparativo rápido entre tráfego e captura.</div></article>
       </div>
-      <div class="chart-container">
-        <h2>Leads por Dia (Últimos 7 dias)</h2>
-        <canvas id="leadsChart" style="max-height:280px;"></canvas>
+
+      <div class="grid duo">
+        <article class="card section-card">
+          <div class="section-head">
+            <div>
+              <h2>Radar editorial</h2>
+              <p>Priorização de conteúdo para home, biblioteca, labs e páginas comerciais.</p>
+            </div>
+            <div class="toolbar"><span class="pill">Sprint atual</span><span class="pill">Publicação contínua</span></div>
+          </div>
+          <div class="kanban">
+            <div class="kanban-col">
+              <h3>Backlog <span>04</span></h3>
+              <div class="story"><strong>Refinar copy da home</strong><p>Ajustar promessa principal e alinhar CTA com o fluxo real de captação.</p><div class="story-meta"><span>Conversão</span><span>Alta</span></div></div>
+              <div class="story"><strong>Casos de uso por perfil</strong><p>Criar blocos para executivo, analista e equipe de inovação.</p><div class="story-meta"><span>Conteúdo</span><span>Média</span></div></div>
+            </div>
+            <div class="kanban-col">
+              <h3>Em produção <span>03</span></h3>
+              <div class="story"><strong>Guia de acessibilidade</strong><p>Documentar contraste, foco visível e tema de alto contraste.</p><div class="story-meta"><span>A11y</span><span>Alta</span></div></div>
+              <div class="story"><strong>Biblioteca Pro</strong><p>Preparar novos módulos premium com CTA contextual.</p><div class="story-meta"><span>Produto</span><span>Média</span></div></div>
+            </div>
+            <div class="kanban-col">
+              <h3>Pronto para publicar <span>02</span></h3>
+              <div class="story"><strong>Revisão do fluxo Pro</strong><p>Deixar explícito quando o usuário está entrando em lista e não em checkout.</p><div class="story-meta"><span>Receita</span><span>Alta</span></div></div>
+              <div class="story"><strong>Contato consultivo</strong><p>Garantir captura de mensagem e contexto comercial.</p><div class="story-meta"><span>Leads</span><span>Alta</span></div></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="card section-card">
+          <div class="section-head">
+            <div>
+              <h2>Checklist operacional</h2>
+              <p>Itens críticos para manter consistência entre site, conteúdo e comercial.</p>
+            </div>
+          </div>
+          <div class="checklist">
+            <div class="check-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m20 6-11 11-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg><div><strong>Promessa alinhada ao CTA</strong><p>Evitar discrepância entre “assinar”, “começar grátis” e “entrar na lista”.</p></div></div>
+            <div class="check-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m20 6-11 11-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg><div><strong>Governança editorial</strong><p>Definir o que entra na home, na biblioteca e no Pro sem conflito de narrativa.</p></div></div>
+            <div class="check-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m20 6-11 11-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg><div><strong>Acessibilidade visível</strong><p>Manter opção de alto contraste e foco destacado em todas as principais jornadas.</p></div></div>
+          </div>
+          <div class="note" style="margin-top:16px;">Use este painel como centro de decisão: menos ruído visual, mais contexto operacional e prioridade para conteúdo acionável.</div>
+        </article>
       </div>
-      <div class="chart-container">
-        <h2>Distribuição por País</h2>
-        <canvas id="countriesChart" style="max-height:280px;"></canvas>
+
+      <div class="grid duo">
+        <article class="card section-card chart-slot">
+          <div class="section-head"><div><h2>Leads por dia</h2><p>Últimos 7 dias para leitura rápida do ritmo comercial.</p></div></div>
+          <canvas id="leadsChart" style="max-height:280px;"></canvas>
+        </article>
+        <article class="card section-card chart-slot">
+          <div class="section-head"><div><h2>Distribuição por país</h2><p>Panorama atual dos contatos para apoiar segmentação.</p></div></div>
+          <canvas id="countriesChart" style="max-height:280px;"></canvas>
+        </article>
       </div>
     </section>
-    <!-- Leads -->
-    <section id="leads" class="section">
-      <div class="table-container">
-        <div class="table-header">
-          <h2>Gestão de Leads</h2>
-          <input type="text" class="search-box" id="search-leads" placeholder="Buscar por nome ou email...">
+
+    <section id="content" class="section">
+      <article class="card section-card">
+        <div class="section-head">
+          <div>
+            <h2>Gestão de conteúdo</h2>
+            <p>Fila editorial centralizada para manter home, páginas de produto e conteúdo educacional coerentes.</p>
+          </div>
+          <div class="toolbar"><span class="pill">Home</span><span class="pill">Biblioteca</span><span class="pill">Pro</span><span class="pill">Labs</span></div>
         </div>
-        <table id="leads-table">
-          <thead><tr><th>Nome</th><th>Email</th><th>Telefone</th><th>Interesse</th><th>Data</th><th>Ações</th></tr></thead>
-          <tbody id="leads-tbody"><tr><td colspan="6" class="loading">Carregando leads...</td></tr></tbody>
-        </table>
-      </div>
+        <div class="kanban">
+          <div class="kanban-col">
+            <h3>Prioridade imediata <span>03</span></h3>
+            <div class="story"><strong>Hero da home</strong><p>Mensagem orientada a benefício, ICP e próximo passo claro.</p><div class="story-meta"><span>Home</span><span>Hoje</span></div></div>
+            <div class="story"><strong>Prova social</strong><p>Adicionar blocos objetivos antes do CTA principal.</p><div class="story-meta"><span>Conversão</span><span>Hoje</span></div></div>
+          </div>
+          <div class="kanban-col">
+            <h3>Planejamento editorial <span>03</span></h3>
+            <div class="story"><strong>Série Fundamentos</strong><p>Expandir pilares com contexto para decisão executiva.</p><div class="story-meta"><span>SEO</span><span>Semana</span></div></div>
+            <div class="story"><strong>Biblioteca Pro</strong><p>Separar melhor conteúdo aberto de material premium.</p><div class="story-meta"><span>Produto</span><span>Semana</span></div></div>
+          </div>
+          <div class="kanban-col">
+            <h3>Governança <span>02</span></h3>
+            <div class="story"><strong>Taxonomia de páginas</strong><p>Clarificar páginas públicas, páginas comerciais e áreas internas.</p><div class="story-meta"><span>IA</span><span>Estrutural</span></div></div>
+            <div class="story"><strong>Padrão de CTA</strong><p>Normalizar verbos e expectativas de cada jornada.</p><div class="story-meta"><span>CX</span><span>Estrutural</span></div></div>
+          </div>
+        </div>
+      </article>
     </section>
-    <!-- Analytics -->
+
+    <section id="leads" class="section">
+      <article class="card section-card">
+        <div class="section-head">
+          <div>
+            <h2>Leads e pipeline</h2>
+            <p>Consulta rápida para priorização comercial e retorno contextual ao usuário.</p>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <div class="table-bar">
+            <div class="toolbar"><span class="pill">Base ativa</span><span class="pill">Filtro em tempo real</span></div>
+            <input type="text" id="search-leads" placeholder="Buscar por nome ou email...">
+          </div>
+          <table id="leads-table">
+            <thead><tr><th>Nome</th><th>Email</th><th>Telefone</th><th>Interesse</th><th>Data</th><th>Ações</th></tr></thead>
+            <tbody id="leads-tbody"><tr><td colspan="6" class="loading">Carregando leads...</td></tr></tbody>
+          </table>
+        </div>
+      </article>
+    </section>
+
     <section id="analytics" class="section">
-      <div class="chart-container"><h2>Análise de Tráfego</h2><p style="color:var(--text-secondary);margin-top:1rem;">Dados de acesso serão exibidos aqui em breve.</p></div>
+      <article class="card section-card">
+        <div class="section-head">
+          <div>
+            <h2>Painéis analíticos</h2>
+            <p>Área reservada para fontes, tráfego por jornada, desempenho de CTA e maturidade de conteúdo.</p>
+          </div>
+        </div>
+        <div class="checklist">
+          <div class="check-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-6" stroke-linecap="round"/></svg><div><strong>Funil por página</strong><p>Monitorar visitas → clique → cadastro para home, Pro e contato.</p></div></div>
+          <div class="check-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19h16" stroke-linecap="round"/><path d="M7 16l3-4 3 2 4-6" stroke-linecap="round" stroke-linejoin="round"/></svg><div><strong>Performance de conteúdo</strong><p>Acompanhar módulos, páginas e clusters com melhor retenção.</p></div></div>
+          <div class="check-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v18M3 12h18" stroke-linecap="round"/></svg><div><strong>Segmentação futura</strong><p>Preparar painéis por ICP, origem de lead e interesse declarado.</p></div></div>
+        </div>
+      </article>
     </section>
-    <!-- Settings -->
+
     <section id="settings" class="section">
-      <div class="table-container"><div class="table-header"><h2>Configurações</h2></div><div style="padding:2rem;"><p style="color:var(--text-secondary);">Configurações serão gerenciadas aqui em breve.</p></div></div>
+      <article class="card section-card">
+        <div class="section-head">
+          <div>
+            <h2>Configurações e governança</h2>
+            <p>Parâmetros do funil, rotinas internas e padrões para experiência consistente.</p>
+          </div>
+        </div>
+        <div class="checklist">
+          <div class="check-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14" stroke-linecap="round"/><path d="M12 5v14" stroke-linecap="round"/></svg><div><strong>Fluxo de resposta</strong><p>Definir SLA para leads da home, Pro e contato consultivo.</p></div></div>
+          <div class="check-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M4 12h16M4 17h10" stroke-linecap="round"/></svg><div><strong>Padrões editoriais</strong><p>Controlar taxonomia, tom de voz e distribuição das publicações.</p></div></div>
+          <div class="check-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l7 4v6c0 5-3.5 8-7 10-3.5-2-7-5-7-10V6l7-4Z"/><path d="m9 12 2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg><div><strong>Controles internos</strong><p>Garantir que links administrativos não sejam expostos na navegação pública.</p></div></div>
+        </div>
+      </article>
     </section>
   </main>
 </div>
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 const API_BASE='https://api-leads.rfelipefernandes.workers.dev/api';
 let leadsData=[];
 const chartsInstances={};
-document.addEventListener('DOMContentLoaded',()=>{initMenus();loadDashboardData();setupSearch();setInterval(()=>{if(document.querySelector('.section.active').id==='dashboard')loadDashboardData();},30000);});
+document.addEventListener('DOMContentLoaded',()=>{initMenus();loadDashboardData();setupSearch();setInterval(()=>{if(document.querySelector('.section.active')?.id==='dashboard')loadDashboardData();},30000);});
 function initMenus(){document.querySelectorAll('.menu-item').forEach(item=>{item.addEventListener('click',e=>{e.preventDefault();const section=item.dataset.section;showSection(section);document.querySelectorAll('.menu-item').forEach(m=>m.classList.remove('active'));item.classList.add('active');});});}
 function showSection(id){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));const s=document.getElementById(id);if(s){s.classList.add('active');if(id==='leads')loadLeadsTable();else if(id==='dashboard')loadDashboardData();}}
-async function loadDashboardData(){try{const r=await fetch(`${API_BASE}/leads`);if(!r.ok)throw new Error();const result=await r.json();leadsData=result.results||[];const total=leadsData.length;const today=new Date().toISOString().split('T')[0];const todayCount=leadsData.filter(l=>l.created_at.startsWith(today)).length;animateValue('total-leads',total);animateValue('leads-today',todayCount);animateValue('unique-visitors',Math.floor(total*3.5));document.getElementById('conversion-rate').textContent=total>0?((todayCount/total)*100).toFixed(1)+'%':'0%';drawLeadsChart();drawCountriesChart();}catch(e){showError('Erro ao carregar dados.');}}
-function animateValue(id,target){const el=document.getElementById(id);if(!el)return;let cur=parseInt(el.textContent)||0;const inc=Math.ceil((target-cur)/10);const t=setInterval(()=>{cur+=inc;if(cur>=target){cur=target;clearInterval(t);}el.textContent=cur.toLocaleString('pt-BR');},30);}
-async function loadLeadsTable(){try{const r=await fetch(`${API_BASE}/leads`);const result=await r.json();leadsData=result.results||[];renderLeadsTable(leadsData);}catch(e){showError('Erro ao carregar leads.');}}
-function renderLeadsTable(leads){const tbody=document.getElementById('leads-tbody');if(!leads.length){tbody.innerHTML='<tr><td colspan="6"><div class="empty-state"><div class="empty-state-icon">📭</div><div class="empty-state-title">Nenhum lead ainda</div></div></td></tr>';return;}tbody.innerHTML=leads.map((lead,i)=>`<tr style="animation:fadeIn .3s ease ${i*.05}s both"><td><strong>${lead.name||'-'}</strong></td><td>${lead.email}</td><td>${lead.phone||'-'}</td><td><span class="badge">${lead.interest||'-'}</span></td><td style="font-size:11px;font-family:'DM Mono',monospace;">${new Date(lead.created_at).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'})}</td><td><button class="action-btn" onclick="navigator.clipboard.writeText('${lead.email}').then(()=>showSuccess('Email copiado!'))">📋 Copiar</button></td></tr>`).join('');}
-function setupSearch(){const sb=document.getElementById('search-leads');if(sb)sb.addEventListener('input',e=>{const q=e.target.value.toLowerCase();renderLeadsTable(leadsData.filter(l=>(l.name&&l.name.toLowerCase().includes(q))||l.email.toLowerCase().includes(q)));});}
-function drawLeadsChart(){const ctx=document.getElementById('leadsChart');if(!ctx)return;const lpd={};leadsData.forEach(l=>{const d=new Date(l.created_at).toLocaleDateString('pt-BR');lpd[d]=(lpd[d]||0)+1;});const labels=Object.keys(lpd).slice(-7);const data=labels.map(l=>lpd[l]||0);if(chartsInstances.leadsChart)chartsInstances.leadsChart.destroy();chartsInstances.leadsChart=new Chart(ctx,{type:'line',data:{labels,datasets:[{label:'Novos Leads',data,borderColor:'#00ff88',backgroundColor:'rgba(0,255,136,.1)',borderWidth:3,fill:true,tension:.4,pointBackgroundColor:'#00ff88',pointBorderColor:'#0a0a0a',pointBorderWidth:2,pointRadius:5}]},options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{labels:{color:'#f0f0ef',font:{size:12,weight:'bold'}}}},scales:{y:{beginAtZero:true,ticks:{color:'#a0a0a0',stepSize:1},grid:{color:'rgba(255,255,255,0.07)'}},x:{ticks:{color:'#a0a0a0'},grid:{color:'rgba(255,255,255,0.07)'}}}}});}
-function drawCountriesChart(){const ctx=document.getElementById('countriesChart');if(!ctx)return;if(chartsInstances.countriesChart)chartsInstances.countriesChart.destroy();chartsInstances.countriesChart=new Chart(ctx,{type:'doughnut',data:{labels:['Brasil','Portugal','EUA','Outros'],datasets:[{data:[45,15,20,20],backgroundColor:['#00ff88','#00e5ff','#ff3b3b','#a0a0a0'],borderColor:'#0a0a0a',borderWidth:2,hoverOffset:8}]},options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{labels:{color:'#f0f0ef',font:{size:12,weight:'bold'}}}}}});}
-function showError(msg){const d=document.createElement('div');d.className='error-message';d.textContent='❌ '+msg;const m=document.querySelector('.main-content');m.insertBefore(d,m.firstChild);setTimeout(()=>d.remove(),5000);}
-function showSuccess(msg){const d=document.createElement('div');d.className='success-message';d.textContent='✓ '+msg;const m=document.querySelector('.main-content');m.insertBefore(d,m.firstChild);setTimeout(()=>d.remove(),3000);}
-function exportLeadsToCSV(){if(!leadsData.length){showError('Nenhum lead para exportar');return;}const h=['Nome','Email','Telefone','Interesse','Data'];const rows=leadsData.map(l=>[l.name,l.email,l.phone||'-',l.interest||'-',new Date(l.created_at).toLocaleDateString('pt-BR')]);const csv=[h,...rows].map(r=>r.map(c=>`"${c}"`).join(',')).join('\n');const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`leads-${new Date().toISOString().split('T')[0]}.csv`;a.click();showSuccess('Exportado!');}
+async function loadDashboardData(){try{const r=await fetch(`${API_BASE}/leads`);if(!r.ok)throw new Error();const result=await r.json();leadsData=result.results||[];const total=leadsData.length;const today=new Date().toISOString().split('T')[0];const todayCount=leadsData.filter(l=>String(l.created_at||'').startsWith(today)).length;animateValue('total-leads',total);animateValue('leads-today',todayCount);animateValue('unique-visitors',Math.floor(total*3.5));document.getElementById('conversion-rate').textContent=total>0?((todayCount/total)*100).toFixed(1)+'%':'0%';drawLeadsChart();drawCountriesChart();}catch(e){showError('Erro ao carregar dados do dashboard.');}}
+function animateValue(id,target){const el=document.getElementById(id);if(!el)return;let cur=parseInt(String(el.textContent).replace(/\D/g,''),10)||0;const step=Math.max(1,Math.ceil((target-cur)/10));const t=setInterval(()=>{cur+=step;if(cur>=target){cur=target;clearInterval(t);}el.textContent=id==='conversion-rate'?cur:cur.toLocaleString('pt-BR');},28);}
+async function loadLeadsTable(){try{const r=await fetch(`${API_BASE}/leads`);if(!r.ok)throw new Error();const result=await r.json();leadsData=result.results||[];renderLeadsTable(leadsData);}catch(e){showError('Erro ao carregar leads.');}}
+function renderLeadsTable(leads){const tbody=document.getElementById('leads-tbody');if(!tbody)return;if(!leads.length){tbody.innerHTML='<tr><td colspan="6"><div class="empty-state"><strong>Nenhum lead ainda</strong><span>Assim que os envios acontecerem, eles aparecem aqui para priorização do time.</span></div></td></tr>';return;}tbody.innerHTML=leads.map(lead=>`<tr><td><strong style="color:var(--text)">${lead.name||'-'}</strong></td><td>${lead.email||'-'}</td><td>${lead.phone||'-'}</td><td><span class="badge">${lead.interest||'geral'}</span></td><td style="font-family:'DM Mono',monospace;font-size:11px;">${lead.created_at?new Date(lead.created_at).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}):'-'}</td><td><div class="row-actions"><button class="icon-btn" onclick="copyEmail('${lead.email||''}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg>Copiar</button></div></td></tr>`).join('');}
+function copyEmail(email){if(!email)return;navigator.clipboard.writeText(email).then(()=>showSuccess('Email copiado com sucesso.'));}
+function setupSearch(){const input=document.getElementById('search-leads');if(input)input.addEventListener('input',e=>{const q=e.target.value.toLowerCase();renderLeadsTable(leadsData.filter(l=>(l.name&&l.name.toLowerCase().includes(q))||(l.email&&l.email.toLowerCase().includes(q))));});}
+function drawLeadsChart(){const ctx=document.getElementById('leadsChart');if(!ctx)return;const byDay={};leadsData.forEach(l=>{if(!l.created_at)return;const d=new Date(l.created_at).toLocaleDateString('pt-BR');byDay[d]=(byDay[d]||0)+1;});const labels=Object.keys(byDay).slice(-7);const data=labels.map(label=>byDay[label]||0);if(chartsInstances.leadsChart)chartsInstances.leadsChart.destroy();chartsInstances.leadsChart=new Chart(ctx,{type:'line',data:{labels,datasets:[{label:'Novos leads',data,borderColor:'#00ff88',backgroundColor:'rgba(0,255,136,.12)',borderWidth:3,fill:true,tension:.35,pointBackgroundColor:'#00ff88',pointBorderColor:'#060606',pointBorderWidth:2,pointRadius:4}]},options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{labels:{color:'#f4f4f2'}}},scales:{y:{beginAtZero:true,ticks:{color:'rgba(244,244,242,.62)',stepSize:1},grid:{color:'rgba(255,255,255,.08)'}},x:{ticks:{color:'rgba(244,244,242,.62)'},grid:{color:'rgba(255,255,255,.06)'}}}}});}
+function drawCountriesChart(){const ctx=document.getElementById('countriesChart');if(!ctx)return;if(chartsInstances.countriesChart)chartsInstances.countriesChart.destroy();chartsInstances.countriesChart=new Chart(ctx,{type:'doughnut',data:{labels:['Brasil','Portugal','Estados Unidos','Outros'],datasets:[{data:[45,15,20,20],backgroundColor:['#00ff88','#00e5ff','#ffd764','#787878'],borderColor:'#060606',borderWidth:2,hoverOffset:6}]},options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{labels:{color:'#f4f4f2'}}}}});}
+function showError(msg){const d=document.createElement('div');d.className='error-message';d.textContent=msg;const main=document.querySelector('.main');main.insertBefore(d,main.firstChild);setTimeout(()=>d.remove(),5000);}
+function showSuccess(msg){const d=document.createElement('div');d.className='success-message';d.textContent=msg;const main=document.querySelector('.main');main.insertBefore(d,main.firstChild);setTimeout(()=>d.remove(),3000);}
+function exportLeadsToCSV(){if(!leadsData.length){showError('Nenhum lead disponível para exportação.');return;}const headers=['Nome','Email','Telefone','Interesse','Data'];const rows=leadsData.map(l=>[l.name||'',l.email||'',l.phone||'',l.interest||'',l.created_at?new Date(l.created_at).toLocaleString('pt-BR'):'']);const csv=[headers,...rows].map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`leads-${new Date().toISOString().split('T')[0]}.csv`;a.click();showSuccess('Base exportada com sucesso.');}
 </script>
 </body>
 </html>
