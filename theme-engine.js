@@ -72,82 +72,32 @@
     if (picker) picker.classList.toggle('open');
   }
 
-  /* ── Sidebar ── */
+  /* ── Primary Navigation ── */
   function buildSidebar(activePage) {
-    var sidebar = document.createElement('aside');
-    sidebar.className = 'farpa-sidebar';
-    sidebar.id = 'farpa-sidebar';
+    var nav = document.createElement('nav');
+    nav.className = 'farpa-primary-nav';
+    nav.id = 'farpa-primary-nav';
 
     var navItems = [
-      { href: 'index.html',      icon: iconHome,  label: 'Início',     id: 'home',       badge: '',          live: false },
-      { href: 'biblioteca.html', icon: iconLib,   label: 'Biblioteca', id: 'biblioteca', badge: '8 módulos', live: false },
-      { href: 'mercados.html',   icon: iconChart, label: 'Mercados',   id: 'mercados',   badge: '',          live: true  },
-      { href: 'labs.html',       icon: iconLabs,  label: 'Labs',       id: 'labs',       badge: 'Novo',      live: false },
+      { href: 'index.html',      label: 'Início',     id: 'home' },
+      { href: 'biblioteca.html', label: 'Biblioteca', id: 'biblioteca' },
+      { href: 'mercados.html',   label: 'Mercados',   id: 'mercados' },
+      { href: 'labs.html',       label: 'Labs',       id: 'labs' }
     ];
 
-    var subItems = [
-      { href: 'biblioteca.html#module-1', label: 'Fundamentos de IA' },
-      { href: 'biblioteca.html#module-2', label: 'LLMs e Prompts' },
-      { href: 'biblioteca.html#module-3', label: 'Fine-tuning e RAG' },
-      { href: 'biblioteca.html#module-4', label: 'Ética em IA' },
-    ];
-
-    var mainNav = navItems.map(function(item) {
-      var isActive = activePage === item.id;
-      return '<a href="' + item.href + '" class="sb-item' + (isActive ? ' active' : '') + '" data-tooltip="' + item.label + '"' + (isActive ? ' aria-current="page"' : '') + '>' +
-        item.icon +
-        '<span class="sb-item-text">' + item.label + '</span>' +
-        (item.live ? '<span class="sb-live"></span>' : '') +
-        (item.badge ? '<span class="sb-badge">' + item.badge + '</span>' : '') +
-        '</a>';
-    }).join('');
-
-    var subNav = subItems.map(function(item) {
-      return '<a href="' + item.href + '" class="sb-item sb-item-sub" data-tooltip="' + item.label + '">' +
-        iconDot +
-        '<span class="sb-item-text">' + item.label + '</span>' +
-        '</a>';
-    }).join('');
-
-    sidebar.innerHTML =
-      '<a class="sb-logo" href="index.html">' +
-        iconFarpa +
-        '<span class="sb-logo-name">farpa<span class="ai">.ai</span></span>' +
-      '</a>' +
-      '<div class="sb-section">' +
-        '<div class="sb-section-label">Navegar</div>' +
-        mainNav +
-      '</div>' +
-      '<div class="sb-divider"></div>' +
-      '<div class="sb-section">' +
-        '<div class="sb-section-label">Biblioteca</div>' +
-        subNav +
-        '<a href="biblioteca.html" class="sb-item sb-item-sub" data-tooltip="Ver todos os módulos" style="color:var(--accent);">' +
-          iconDot +
-          '<span class="sb-item-text">Ver todos os módulos →</span>' +
-        '</a>' +
-      '</div>' +
-      '<div class="sb-footer">' +
-        '<a href="pro.html" class="sb-pro-btn">' +
-          iconStar +
-          '<span>Plano Pro</span>' +
-        '</a>' +
-        '<div class="sb-theme-row">' +
-          '<span class="sb-theme-label">Tema</span>' +
-          '<div class="sb-theme-dots">' +
-            '<button class="sb-theme-dot sb-dot-void"     data-theme="void"     onclick="window.farpaTheme.set(\'void\')"     title="Void (escuro)"></button>' +
-            '<button class="sb-theme-dot sb-dot-ivory"    data-theme="ivory"    onclick="window.farpaTheme.set(\'ivory\')"    title="Ivory (claro)"></button>' +
-            '<button class="sb-theme-dot sb-dot-midnight" data-theme="midnight" onclick="window.farpaTheme.set(\'midnight\')" title="Midnight (azul)"></button>' +
-          '</div>' +
-        '</div>' +
-        '<div class="sb-version">v0.11 · ' + new Date().toLocaleDateString('pt-BR', {month:'short', year:'numeric'}) + '</div>' +
+    nav.innerHTML =
+      '<div class="pn-links">' +
+      navItems.map(function(item) {
+        var isActive = activePage === item.id;
+        return '<a href="' + item.href + '" class="pn-link' + (isActive ? ' active' : '') + '"' + (isActive ? ' aria-current="page"' : '') + '>' + item.label + '</a>';
+      }).join('') +
       '</div>';
 
-    return sidebar;
+    return nav;
   }
 
   /* ── Topnav ── */
-  function buildTopnav(breadcrumb) {
+  function buildTopnav(activePage, breadcrumb) {
     var nav = document.createElement('header');
     nav.className = 'farpa-topnav';
     nav.id = 'farpa-topnav';
@@ -160,37 +110,23 @@
     }).join('');
 
     nav.innerHTML =
-      '<button class="nav-hamburger" id="nav-hamburger" aria-label="Abrir menu" title="Menu" onclick="(function(){var sb=document.getElementById(\'farpa-sidebar\');if(sb){sb.classList.toggle(\'open\');}})()">'+
-        '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>'+
-      '</button>'+
-
-      '<button class="nav-collapse-btn" id="nav-collapse-btn" aria-pressed="false" aria-label="Recolher menu lateral" title="Recolher/Expandir menu">'+
-        '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">'+
-          '<rect x="3" y="3" width="7" height="18" rx="1.5" stroke-width="1.6"/>'+
-          '<path d="M14 9l-3 3 3 3"/>'+
-        '</svg>'+
-      '</button>'+
-
-      '<nav class="nav-breadcrumb" aria-label="Localização atual">' + bcHtml + '</nav>'+
-
-      '<div class="nav-right">'+
+      '<a class="topnav-brand" href="index.html">' +
+        iconFarpa +
+        '<span class="topnav-brand-name">farpa<span class="ai">.ai</span></span>' +
+      '</a>' +
+      '<div class="topnav-center">' + buildSidebar(activePage).outerHTML + '</div>' +
+      '<div class="nav-right">' +
+        '<nav class="nav-breadcrumb" aria-label="Localização atual">' + bcHtml + '</nav>'+
         '<button class="nav-search-btn" onclick="window.farpaSearch.open()" title="Buscar (Ctrl+K)" aria-label="Abrir busca">'+
           '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>'+
           '<span class="search-text">Buscar</span>'+
           '<span class="nav-search-kbd" aria-hidden="true">Ctrl K</span>'+
         '</button>'+
-        '<div class="nav-lang">'+
-          '<button class="lang-btn" onclick="window.farpaI18n&&window.farpaI18n.set(\'pt\')" title="Português" id="lang-pt">🇧🇷</button>'+
-          '<button class="lang-btn" onclick="window.farpaI18n&&window.farpaI18n.set(\'en\')" title="English"   id="lang-en">🇺🇸</button>'+
-          '<button class="lang-btn" onclick="window.farpaI18n&&window.farpaI18n.set(\'zh\')" title="中文"      id="lang-zh">🇨🇳</button>'+
-          '<button class="lang-btn" onclick="window.farpaI18n&&window.farpaI18n.set(\'de\')" title="Deutsch"   id="lang-de">🇩🇪</button>'+
-        '</div>'+
         '<div style="position:relative;">'+
           '<button class="nav-theme-btn" id="theme-palette-btn" onclick="window.farpaTheme.toggle()" title="Mudar tema" aria-label="Selecionar tema">'+
             '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 0 20"/><path d="M12 2C6.5 2 2 6.5 2 12"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>'+
           '</button>'+
         '</div>'+
-        '<a href="pro.html" class="nav-pro">⭐ Pro</a>'+
       '</div>';
 
     setTimeout(function() {
@@ -216,12 +152,11 @@
     { title: 'B3 — Ações brasileiras ao vivo', cat: 'Mercados · B3', icon: '🇧🇷', url: 'mercados.html' },
     { title: 'NYSE / Nasdaq — Ações americanas', cat: 'Mercados · EUA', icon: '🇺🇸', url: 'mercados.html' },
     { title: 'Criptomoedas — BTC, ETH, SOL', cat: 'Mercados · Cripto', icon: '₿', url: 'mercados.html' },
-    { title: 'Farpa Labs — Demos interativos', cat: 'Labs', icon: '⚗️', url: 'labs.html' },
-    { title: 'Analisador de Sentimento de Notícias', cat: 'Labs · Demo', icon: '🎯', url: 'labs.html' },
-    { title: 'Gerador de Headlines em 4 tons', cat: 'Labs · Demo', icon: '✍️', url: 'labs.html' },
-    { title: 'Resumidor Inteligente com keywords', cat: 'Labs · Demo', icon: '📋', url: 'labs.html' },
-    { title: 'Detector de Viés Linguístico', cat: 'Labs · Demo', icon: '🔍', url: 'labs.html' },
-    { title: 'Plano Pro — análises e biblioteca completa', cat: 'Pro', icon: '⭐', url: 'pro.html' },
+    { title: 'Farpa Labs — Dados abertos e watchlists', cat: 'Labs', icon: '⚗️', url: 'labs.html' },
+    { title: 'Radar macro com SGS + Pix + crédito', cat: 'Labs · Banco Central', icon: '🏦', url: 'labs.html#tools' },
+    { title: 'Pulso do Open Finance', cat: 'Labs · Open Finance', icon: '🔗', url: 'labs.html#tools' },
+    { title: 'Monitor de competição bancária', cat: 'Labs · SFN', icon: '📊', url: 'labs.html#tools' },
+    { title: 'Fontes oficiais priorizadas', cat: 'Labs · Fontes', icon: '🧭', url: 'labs.html#sources' },
     { title: 'LLM · Large Language Model', cat: 'Glossário', icon: '📖', url: 'biblioteca.html' },
     { title: 'RAG · Geração Aumentada por Recuperação', cat: 'Glossário', icon: '📖', url: 'biblioteca.html' },
     { title: 'Embeddings · Representações vetoriais', cat: 'Glossário', icon: '📖', url: 'biblioteca.html' },
@@ -280,10 +215,6 @@
     document.addEventListener('DOMContentLoaded', function() {
       buildSearchModal();
       updateThemeUI(theme);
-      var savedLang = localStorage.getItem('farpa_lang') || 'pt';
-      document.querySelectorAll('.lang-btn').forEach(function(b) {
-        b.classList.toggle('active', b.id === 'lang-' + savedLang);
-      });
       document.addEventListener('keydown', function(e) {
         if ((e.ctrlKey || e.metaKey) && e.key === 'k') { e.preventDefault(); window.farpaSearch.open(); }
         if (e.key === 'Escape') window.farpaSearch.close();
@@ -331,55 +262,9 @@
   init();
 })();
 
-/* ── Close sidebar on outside tap (mobile) ─────────────── */
-document.addEventListener('click', function(e) {
-  try {
-    var sb = document.getElementById('farpa-sidebar');
-    var hb = document.getElementById('nav-hamburger');
-    if (!sb || window.innerWidth > 900) return;
-    if (sb.classList.contains('open')) {
-      var inside = sb.contains(e.target) || (hb && hb.contains(e.target));
-      if (!inside) sb.classList.remove('open');
-    }
-  } catch(err) {}
-}, { passive: true });
-
-/* ── Sidebar collapse ───────────────────────────────────── */
-function applySidebarCollapsedState() {
-  try {
-    var sb = document.getElementById('farpa-sidebar');
-    if (!sb) return;
-    var collapsed = localStorage.getItem('farpa_sidebar_collapsed') === '1';
-    sb.classList.toggle('collapsed', collapsed);
-    var btn = document.getElementById('nav-collapse-btn');
-    if (btn) btn.setAttribute('aria-pressed', collapsed ? 'true' : 'false');
-  } catch(err) {}
-}
-
-function toggleSidebarCollapsed() {
-  try {
-    var sb = document.getElementById('farpa-sidebar');
-    if (!sb) return;
-    var isCollapsed = sb.classList.toggle('collapsed');
-    localStorage.setItem('farpa_sidebar_collapsed', isCollapsed ? '1' : '0');
-    var btn = document.getElementById('nav-collapse-btn');
-    if (btn) btn.setAttribute('aria-pressed', isCollapsed ? 'true' : 'false');
-  } catch(err) {}
-}
-
-document.addEventListener('click', function(e) {
-  var target = e.target;
-  if (target && (target.id === 'nav-collapse-btn' || (target.closest && target.closest('#nav-collapse-btn')))) {
-    toggleSidebarCollapsed();
-  }
-}, { passive: true });
-
 document.addEventListener('DOMContentLoaded', function() {
   try {
-    applySidebarCollapsedState();
-    var legacy = document.querySelector('.sidebar:not(#farpa-sidebar)');
+    var legacy = document.querySelector('.sidebar:not(#farpa-primary-nav)');
     if (legacy) legacy.remove();
   } catch(err) {}
 });
-
-if (window.farpaSidebar) window.farpaSidebar.toggleCollapse = toggleSidebarCollapsed;
