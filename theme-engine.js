@@ -3,7 +3,7 @@
   'use strict';
 
   const STORAGE_KEY = 'farpa_theme';
-  const THEMES = { void:{name:'Void',feel:'Foco · Escuro'}, ivory:{name:'Ivory',feel:'Leitura · Claro'}, midnight:{name:'Midnight',feel:'Tech · Azul'} };
+  const THEMES = { void:{name:'Void',feel:'Foco · Escuro'}, ivory:{name:'Ivory',feel:'Leitura · Claro'}, midnight:{name:'Midnight',feel:'Tech · Azul'}, contrast:{name:'Alto Contraste',feel:'Acessibilidade · Máxima legibilidade'} };
 
   function detectInitialTheme() {
     const saved = localStorage.getItem(STORAGE_KEY);
@@ -26,7 +26,7 @@
     document.querySelectorAll('.tp-option').forEach(el => el.classList.toggle('active', el.dataset.theme === theme));
     document.querySelectorAll('.sb-theme-dot').forEach(el => el.classList.toggle('active', el.dataset.theme === theme));
     const btn = document.getElementById('theme-palette-btn');
-    if (btn) { const c = {void:'#00ff88',ivory:'#2d6a1e',midnight:'#6eb5ff'}; btn.style.borderColor = c[theme] || ''; }
+    if (btn) { const c = {void:'#00ff88',ivory:'#2d6a1e',midnight:'#6eb5ff',contrast:'#ffd400'}; btn.style.borderColor = c[theme] || ''; }
   }
 
   function buildThemePicker(container) {
@@ -71,7 +71,7 @@
     ];
     const adminItems = [
       {href:'leads.html',        icon:iLeads, label:'Central de Leads', id:'leads'},
-      {href:'admin/index.html',  icon:iAdmin, label:'Dashboard Admin',  id:'admin'},
+      {href:'admin/index.html',  icon:iAdmin, label:'Painel Admin',     id:'admin'},
     ];
 
     const mkItem = (item, isActive) =>
@@ -83,8 +83,8 @@
       `<div class="sb-divider"></div>` +
       `<div class="sb-section"><div class="sb-section-label">Biblioteca</div>${subItems.map(i=>`<a href="${i.href}" class="sb-item sb-item-sub" data-tooltip="${i.label}">${iDot}<span class="sb-item-text">${i.label}</span></a>`).join('')}<a href="biblioteca.html" class="sb-item sb-item-sub" style="color:var(--accent)" data-tooltip="Ver todos">${iDot}<span class="sb-item-text">Ver todos →</span></a></div>` +
       `<div class="sb-divider"></div>` +
-      `<div class="sb-section"><div class="sb-section-label">Admin</div>${adminItems.map(i=>mkItem(i,activePage===i.id)).join('')}</div>` +
-      `<div class="sb-footer"><a href="pro.html" class="sb-pro-btn">${iStar}<span>Plano Pro</span></a><div class="sb-theme-row"><span class="sb-theme-label">Tema</span><div class="sb-theme-dots"><button class="sb-theme-dot sb-dot-void" data-theme="void" onclick="window.farpaTheme.set('void')" title="Void"></button><button class="sb-theme-dot sb-dot-ivory" data-theme="ivory" onclick="window.farpaTheme.set('ivory')" title="Ivory"></button><button class="sb-theme-dot sb-dot-midnight" data-theme="midnight" onclick="window.farpaTheme.set('midnight')" title="Midnight"></button></div></div><div class="sb-version">v0.12 · mar 2026</div></div>`;
+      `${['admin','leads'].includes(activePage) ? `<div class="sb-section"><div class="sb-section-label">Admin</div>${adminItems.map(i=>mkItem(i,activePage===i.id)).join('')}</div>` : ''}` +
+      `<div class="sb-footer"><a href="pro.html" class="sb-pro-btn">${iStar}<span>Plano Pro</span></a><div class="sb-theme-row"><span class="sb-theme-label">Acessibilidade</span><div class="sb-theme-dots"><button class="sb-theme-dot sb-dot-void" data-theme="void" onclick="window.farpaTheme.set('void')" title="Void" aria-label="Tema Void"></button><button class="sb-theme-dot sb-dot-ivory" data-theme="ivory" onclick="window.farpaTheme.set('ivory')" title="Ivory" aria-label="Tema Ivory"></button><button class="sb-theme-dot sb-dot-midnight" data-theme="midnight" onclick="window.farpaTheme.set('midnight')" title="Midnight" aria-label="Tema Midnight"></button><button class="sb-theme-dot sb-dot-contrast" data-theme="contrast" onclick="window.farpaTheme.set('contrast')" title="Alto Contraste" aria-label="Tema Alto Contraste"></button></div></div><div class="sb-version">v0.13 · mar 2026</div></div>`;
     return s;
   }
 
@@ -103,7 +103,7 @@
       `<div class="nav-right">` +
         `<button class="nav-search-btn" onclick="window.farpaSearch.open()" title="Buscar (Ctrl+K)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><span class="search-text">Buscar</span><span class="nav-search-kbd">Ctrl K</span></button>` +
         `<div class="nav-lang"><button class="lang-btn" onclick="window.farpaI18n&&window.farpaI18n.set('pt')" title="Português" id="lang-pt">🇧🇷</button><button class="lang-btn" onclick="window.farpaI18n&&window.farpaI18n.set('en')" title="English" id="lang-en">🇺🇸</button><button class="lang-btn" onclick="window.farpaI18n&&window.farpaI18n.set('zh')" title="中文" id="lang-zh">🇨🇳</button><button class="lang-btn" onclick="window.farpaI18n&&window.farpaI18n.set('de')" title="Deutsch" id="lang-de">🇩🇪</button></div>` +
-        `<div style="position:relative"><button class="nav-theme-btn" id="theme-palette-btn" onclick="window.farpaTheme.toggle()" title="Tema"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 0 20"/><path d="M12 2C6.5 2 2 6.5 2 12"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg></button></div>` +
+        `<div style="position:relative"><button class="nav-theme-btn" id="theme-palette-btn" onclick="window.farpaTheme.toggle()" title="Tema e acessibilidade" aria-label="Abrir temas e opções de acessibilidade"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 0 20"/><path d="M12 2C6.5 2 2 6.5 2 12"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg></button></div>` +
         `<a href="pro.html" class="nav-pro">⭐ Pro</a>` +
       `</div>`;
 
@@ -128,9 +128,7 @@
     {title:'Farpa Labs — Demos interativos',cat:'Labs',icon:'⚗️',url:'labs.html'},
     {title:'Analisador de Sentimento',cat:'Labs',icon:'🎯',url:'labs.html'},
     {title:'Gerador de Headlines',cat:'Labs',icon:'✍️',url:'labs.html'},
-    {title:'Central de Leads',cat:'Admin',icon:'👥',url:'leads.html'},
-    {title:'Dashboard Administrativo',cat:'Admin',icon:'📊',url:'admin/index.html'},
-    {title:'Plano Pro',cat:'Pro',icon:'⭐',url:'pro.html'},
+        {title:'Plano Pro',cat:'Pro',icon:'⭐',url:'pro.html'},
     {title:'LLM · Large Language Model',cat:'Glossário',icon:'📖',url:'biblioteca.html'},
     {title:'RAG · Geração Aumentada por Recuperação',cat:'Glossário',icon:'📖',url:'biblioteca.html'},
     {title:'Embeddings · Representações vetoriais',cat:'Glossário',icon:'📖',url:'biblioteca.html'},

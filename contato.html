@@ -60,7 +60,13 @@
       try {
         const res = await fetch('https://api-leads.rfelipefernandes.workers.dev/api/leads', {
           method: 'POST', headers: {'Content-Type':'application/json'},
-          body: JSON.stringify({ name: document.getElementById('cf-name').value, email: document.getElementById('cf-email').value, interest: document.getElementById('cf-interest').value, phone: '' })
+          body: JSON.stringify({
+            name: document.getElementById('cf-name').value,
+            email: document.getElementById('cf-email').value,
+            interest: document.getElementById('cf-interest').value,
+            phone: '',
+            message: document.getElementById('cf-message').value
+          })
         });
         if (res.ok) { document.getElementById('contact-success').style.display = 'block'; this.reset(); }
         else { btn.textContent = 'Erro. Tente novamente'; setTimeout(() => { btn.textContent = orig; btn.disabled = false; }, 3000); }
