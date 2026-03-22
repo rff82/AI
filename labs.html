@@ -31,19 +31,30 @@
 .lab-card { background:var(--graphite2,#1e1e1e); border:1px solid var(--border); border-radius:20px; overflow:hidden; display:flex; flex-direction:column; transition:border-color .2s,transform .2s,box-shadow .2s; }
 .lab-card:hover { border-color:var(--border-md); transform:translateY(-3px); box-shadow:0 12px 40px rgba(0,0,0,.4); }
 .lab-card.featured { grid-column:span 2; border-color:rgba(0,229,255,.2); }
-@media(max-width:720px){.lab-card.featured{grid-column:span 1;}}
+.lab-card.trader-featured { grid-column:span 2; border-color:rgba(0,255,136,.25); background:linear-gradient(135deg,#0d1f18,#0a1520,#0a0a0a); }
+@media(max-width:720px){.lab-card.featured,.lab-card.trader-featured{grid-column:span 1;}}
 .lab-preview { height:200px; position:relative; overflow:hidden; background:var(--surface,#252525); display:flex; align-items:center; justify-content:center; border-bottom:1px solid var(--border); }
-.lab-card.featured .lab-preview { height:240px; }
+.lab-card.featured .lab-preview,.lab-card.trader-featured .lab-preview { height:240px; }
 .preview-sentiment { background:linear-gradient(135deg,#0a1520,#0f1a10); }
 .preview-headline  { background:linear-gradient(135deg,#0f0a1e,#1a0a0a); }
 .preview-word      { background:linear-gradient(135deg,#0a0f1e,#0a1520); }
 .preview-bias      { background:linear-gradient(135deg,#0f1a10,#1a0f1a); }
 .preview-market    { background:linear-gradient(135deg,#0a1520,#0f0a1e); }
 .preview-lib       { background:linear-gradient(135deg,#0f1628,#1a0f28); }
+.preview-trader    { background:linear-gradient(135deg,#0a1a0f,#0a120a); }
 /* bar anim */
 .bar-anim { display:flex; align-items:flex-end; gap:6px; height:90px; }
 .abar { width:18px; border-radius:3px 3px 0 0; animation:barGrow 1.3s ease-out forwards; }
 @keyframes barGrow{from{height:0}to{height:var(--h)}}
+/* candlestick preview anim */
+.candle-preview { display:flex; align-items:flex-end; gap:5px; height:100px; padding:10px; }
+.candle-item { display:flex; flex-direction:column; align-items:center; gap:1px; }
+.candle-wick { width:1px; border-radius:1px; }
+.candle-body { width:12px; border-radius:2px; }
+.candle-up .candle-wick { background:#00ff88; }
+.candle-up .candle-body { background:#00ff88; }
+.candle-dn .candle-wick { background:#ff3b3b; }
+.candle-dn .candle-body { background:#ff3b3b; }
 .typing-cursor { display:inline-block; width:2px; height:18px; background:var(--farpa,#00ff88); animation:blink 1s infinite; vertical-align:middle; margin-left:2px; }
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
 .lab-body { padding:20px 22px; flex:1; display:flex; flex-direction:column; }
@@ -53,6 +64,7 @@
 .lab-tag-demo    { color:var(--corte,#00e5ff); border-color:rgba(0,229,255,.25); background:rgba(0,229,255,.07); }
 .lab-tag-ia      { color:var(--purple,#b57aff); border-color:rgba(181,122,255,.25); background:rgba(181,122,255,.07); }
 .lab-tag-ext     { color:var(--warn,#ffb800); border-color:rgba(255,184,0,.25); background:rgba(255,184,0,.07); }
+.lab-tag-game    { color:#00ff88; border-color:rgba(0,255,136,.3); background:rgba(0,255,136,.08); }
 .lab-title { font-size:18px; font-weight:700; letter-spacing:-.3px; margin-bottom:8px; }
 .lab-desc { font-size:14px; color:var(--text-secondary); line-height:1.65; flex:1; }
 .lab-footer { display:flex; gap:10px; margin-top:16px; padding-top:14px; border-top:1px solid var(--border); }
@@ -61,6 +73,11 @@
 .lab-btn-primary:hover { opacity:.88; box-shadow:0 0 20px rgba(0,255,136,.25); }
 .lab-btn-ghost { background:transparent; color:var(--text-primary); border:1px solid var(--border-md); }
 .lab-btn-ghost:hover { border-color:var(--border-hi); background:rgba(255,255,255,.04); }
+/* Trader card featured styling */
+.lab-card.trader-featured .lab-btn-primary { background:linear-gradient(135deg,#00ff88,#00e5ff); }
+/* Gamification badges */
+.lab-gamification-strip { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px; }
+.gam-badge { font-family:var(--font-mono); font-size:9px; letter-spacing:1px; text-transform:uppercase; padding:2px 8px; border-radius:999px; border:1px solid rgba(255,215,100,.3); color:#ffd764; background:rgba(255,215,100,.07); }
 /* Modal */
 .demo-modal { display:none; position:fixed; inset:0; z-index:200; background:rgba(0,0,0,.8); backdrop-filter:blur(8px); align-items:center; justify-content:center; padding:20px; }
 .demo-modal.open { display:flex; }
@@ -106,13 +123,63 @@
     <div class="labs-eyebrow"><span class="labs-eyebrow-dot"></span>Experimentos com IA</div>
     <h1 class="labs-title">Farpa <span>Labs</span></h1>
     <p class="labs-sub">Demos interativos e ferramentas experimentais construídas com IA — rodando direto no browser, sem instalação.</p>
-    <p class="labs-note">⚗️ Os demos usam algoritmos locais ou modelos públicos. Nenhum dado é enviado a servidores externos.</p>
+    <p class="labs-note">⚗️ Os demos usam algoritmos locais ou APIs públicas. Nenhum dado pessoal é enviado a servidores externos.</p>
   </div>
 
   <hr class="grad-divider" style="margin-top:0;">
 
   <!-- Grid -->
   <div class="labs-grid">
+
+    <!-- ★ NEW: Trader Simulator — featured ★ -->
+    <div class="lab-card trader-featured">
+      <div class="lab-preview preview-trader">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:14px;width:100%;padding:16px;">
+          <!-- Mini candlestick chart preview -->
+          <div class="candle-preview" style="width:100%;justify-content:center;">
+            <div class="candle-item candle-dn"><div class="candle-wick" style="height:18px"></div><div class="candle-body" style="height:22px"></div><div class="candle-wick" style="height:10px"></div></div>
+            <div class="candle-item candle-up"><div class="candle-wick" style="height:14px"></div><div class="candle-body" style="height:30px"></div><div class="candle-wick" style="height:8px"></div></div>
+            <div class="candle-item candle-up"><div class="candle-wick" style="height:10px"></div><div class="candle-body" style="height:40px"></div><div class="candle-wick" style="height:12px"></div></div>
+            <div class="candle-item candle-dn"><div class="candle-wick" style="height:20px"></div><div class="candle-body" style="height:18px"></div><div class="candle-wick" style="height:8px"></div></div>
+            <div class="candle-item candle-up"><div class="candle-wick" style="height:12px"></div><div class="candle-body" style="height:52px"></div><div class="candle-wick" style="height:10px"></div></div>
+            <div class="candle-item candle-up"><div class="candle-wick" style="height:8px"></div><div class="candle-body" style="height:60px"></div><div class="candle-wick" style="height:14px"></div></div>
+            <div class="candle-item candle-dn"><div class="candle-wick" style="height:22px"></div><div class="candle-body" style="height:25px"></div><div class="candle-wick" style="height:8px"></div></div>
+            <div class="candle-item candle-up"><div class="candle-wick" style="height:10px"></div><div class="candle-body" style="height:45px"></div><div class="candle-wick" style="height:12px"></div></div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:center;">
+            <span style="font-family:'DM Mono',monospace;font-size:10px;color:#00ff88;letter-spacing:2px;">+$3,240 P&amp;L</span>
+            <span style="width:1px;height:14px;background:rgba(255,255,255,.15);"></span>
+            <span style="font-family:'DM Mono',monospace;font-size:10px;color:rgba(240,240,239,.5);letter-spacing:1.5px;">XP 1200 · NÍVEL 3</span>
+            <span style="width:1px;height:14px;background:rgba(255,255,255,.15);"></span>
+            <span style="font-family:'DM Mono',monospace;font-size:10px;color:#ffd764;letter-spacing:1.5px;">#2 RANKING</span>
+          </div>
+        </div>
+      </div>
+      <div class="lab-body">
+        <div class="lab-tags">
+          <span class="lab-tag lab-tag-live">● ao vivo</span>
+          <span class="lab-tag lab-tag-game">⚔ Gamificado</span>
+          <span class="lab-tag lab-tag-ext">CoinGecko API</span>
+          <span class="lab-tag lab-tag-ia">Indicadores Técnicos</span>
+        </div>
+        <div class="lab-gamification-strip">
+          <span class="gam-badge">🏆 Ranking</span>
+          <span class="gam-badge">🏅 Conquistas</span>
+          <span class="gam-badge">⚡ XP &amp; Níveis</span>
+          <span class="gam-badge">💬 Fórum</span>
+          <span class="gam-badge">📊 Candlestick</span>
+        </div>
+        <div class="lab-title">Trader Simulator — Simulação de Trading</div>
+        <div class="lab-desc">Simule operações com dados reais de mercado cripto (BTC, ETH, SOL e mais). Gráficos de candlestick ao vivo via CoinGecko API, indicadores técnicos (RSI, MA20, volatilidade), sistema de XP e níveis, ranking global, conquistas e fórum de traders. Comece com $100.000 virtuais.</div>
+        <div class="lab-footer">
+          <a href="labs/trader-sim.html" class="lab-btn lab-btn-primary">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+            Abrir simulador
+          </a>
+          <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-muted);align-self:center;">$100K virtual · sem risco</span>
+        </div>
+      </div>
+    </div>
 
     <!-- 1. Sentimento — featured -->
     <div class="lab-card featured">
