@@ -1,6 +1,6 @@
-/* farpa.ai — Theme Engine v0.11
+/* farpa.ai — Theme Engine v0.12
    Auto-detect sistema · Persiste localStorage · Troca sem reload
-   v0.11 — 2026-03-18: bugfixes sidebar HTML, contraste, micro-interações */
+   v0.12 — 2026-03-23: navegação simplificada e alinhada ao controle de versão do deploy */
 
 (function () {
   'use strict';
@@ -81,7 +81,7 @@
     var navItems = [
       { href: 'index.html',      label: 'Início',     id: 'home' },
       { href: 'biblioteca.html', label: 'Biblioteca', id: 'biblioteca' },
-      { href: 'mercados.html',   label: 'Mercados',   id: 'mercados' },
+      { href: 'mercados.html',   label: 'Mercado',    id: 'mercados' },
       { href: 'labs.html',       label: 'Labs',       id: 'labs' }
     ];
 
