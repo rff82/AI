@@ -96,17 +96,9 @@
     sidebar.setAttribute('aria-label', 'Menu principal');
 
     const navItems = [
-      { href:'index.html',      icon:iconHome,  label:'Início',          id:'home',       badge:'',         live:false },
-      { href:'biblioteca.html', icon:iconLib,   label:'Biblioteca',      id:'biblioteca', badge:'8 labs',   live:false },
-      { href:'mercados.html',   icon:iconChart, label:'Mercados',        id:'mercados',   badge:'',         live:true  },
-      { href:'labs.html',       icon:iconLabs,  label:'Labs',            id:'labs',       badge:'Novo',     live:false },
-    ];
-
-    const subItems = [
-      { href:'biblioteca.html#module-1', label:'Fundamentos de IA' },
-      { href:'biblioteca.html#module-2', label:'LLMs e Prompts' },
-      { href:'biblioteca.html#module-3', label:'Fine-tuning e RAG' },
-      { href:'biblioteca.html#module-4', label:'Ética em IA' },
+      { href:'index.html',      icon:iconHome,  label:'Visão geral',          id:'home',       badge:'',             live:false },
+      { href:'mercados.html',   icon:iconChart, label:'Mercado em tempo real',id:'mercados',   badge:'Ao vivo',      live:true  },
+      { href:'labs.html',       icon:iconLabs,  label:'Análises ao vivo',     id:'labs',       badge:'Sentimento',   live:false },
     ];
 
     const adminItems = [
@@ -121,12 +113,6 @@
         '<span class="sb-item-text">' + item.label + '</span>' +
         (item.live ? '<span class="sb-live" aria-hidden="true"></span>' : '') +
         (item.badge ? '<span class="sb-badge">' + item.badge + '</span>' : '') +
-        '</a>';
-    }).join('');
-
-    const subNav = subItems.map(function(item) {
-      return '<a href="' + item.href + '" class="sb-item sb-item-sub" data-tooltip="' + item.label + '">' +
-        iconDot + '<span class="sb-item-text">' + item.label + '</span>' +
         '</a>';
     }).join('');
 
@@ -148,20 +134,12 @@
       '</div>' +
       '<div class="sb-divider" role="separator"></div>' +
       '<div class="sb-section">' +
-        '<div class="sb-section-label">Biblioteca</div>' +
-        subNav +
-        '<a href="biblioteca.html" class="sb-item sb-item-sub" style="color:var(--accent);" data-tooltip="Ver todos">' +
-          iconDot + '<span class="sb-item-text">Ver todos →</span>' +
-        '</a>' +
-      '</div>' +
-      '<div class="sb-divider" role="separator"></div>' +
-      '<div class="sb-section">' +
         '<div class="sb-section-label">Admin</div>' +
         adminNav +
       '</div>' +
       '<div class="sb-footer">' +
-        '<a href="pro.html" class="sb-pro-btn">' +
-          iconStar + '<span>Plano Pro</span>' +
+        '<a href="index.html#waitlist" class="sb-pro-btn">' +
+          iconStar + '<span>Cadastre-se</span>' +
         '</a>' +
         '<div class="sb-theme-row">' +
           '<span class="sb-theme-label">Tema</span>' +
@@ -219,7 +197,7 @@
             '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 0 20"/><path d="M12 2C6.5 2 2 6.5 2 12"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>' +
           '</button>' +
         '</div>' +
-        '<a href="pro.html" class="nav-pro" aria-label="Ver plano Pro">⭐ Pro</a>' +
+        '<a href="index.html#waitlist" class="nav-pro" aria-label="Cadastre-se para saber mais">✦ Cadastre-se</a>' +
       '</div>';
 
     // Build theme picker after DOM insert

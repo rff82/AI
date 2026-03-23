@@ -366,6 +366,10 @@ a.category-card { cursor: pointer; }
 .plan-btn-primary:hover { opacity: 0.9; box-shadow: 0 0 32px rgba(0,255,136,0.25); }
 .plan-btn-ghost { background: transparent; color: var(--text-primary); border-color: var(--border-md); }
 .plan-btn-ghost:hover { border-color: var(--border-hi); background: rgba(255,255,255,0.04); }
+.single-pricing-grid { grid-template-columns: minmax(0, 760px); justify-content: center; }
+.lead-plan-card { text-align: left; }
+.plan-lead-title { font-size: clamp(24px, 3vw, 36px); font-weight: 800; letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 22px; }
+
 
 /* ── CTA ── */
 .cta-section { padding: 140px 0; text-align: center; position: relative; overflow: hidden; border-top: 1px solid var(--border); }
