@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Farpa Labs — experimentos com dados abertos, inteligência financeira e novas fontes para leitura de contexto.">
+  <meta name="description" content="Farpa Labs — os MVPs e protótipos que evoluíram nas versões anteriores e continuam guiando a construção do produto.">
   <title>farpa.ai — Labs</title>
   <link rel="icon" type="image/svg+xml" href="farpa-icon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,24 +12,19 @@
   <link rel="stylesheet" href="themes.css">
   <script src="theme-engine.js"></script>
   <style>
-    :root {
-      --bg:#050505; --panel:#11151c; --panel-2:#141a22; --border:rgba(255,255,255,.12); --border-strong:rgba(255,255,255,.2);
-      --text:#fff; --muted:rgba(255,255,255,.9); --muted-2:rgba(255,255,255,.78); --farpa:#00ff88; --corte:#00e5ff; --purple:#b57aff;
-    }
+    :root { --bg:#050505; --panel:#11151c; --border:rgba(255,255,255,.12); --border-strong:rgba(255,255,255,.2); --text:#fff; --muted:rgba(255,255,255,.9); --corte:#00e5ff; --purple:#b57aff; --farpa:#00ff88; }
     *{box-sizing:border-box} html{scroll-behavior:smooth} body{margin:0;background:var(--bg);color:var(--text);font-family:'Space Grotesk',sans-serif;-webkit-font-smoothing:antialiased}
-    a{text-decoration:none;color:inherit}.container{width:min(1160px,calc(100% - 36px));margin:0 auto}.page{padding:112px 0 72px}
-    .hero{display:grid;grid-template-columns:1.1fr .9fr;gap:24px;align-items:center;margin-bottom:64px}
-    .eyebrow,.card-label{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--corte)}
-    h1,h2,h3{color:#fff;margin:0 0 14px}.hero h1{font-size:clamp(2.6rem,5.2vw,5rem);line-height:.98;letter-spacing:-.04em}.hero h1 span{background:linear-gradient(135deg,var(--corte),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-    p,li{color:var(--muted);line-height:1.72}.hero p{font-size:1.08rem;max-width:700px}.hero-panel,.panel,.lab-card,.idea-card,.manifesto,.final-cta{background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.025));border:1px solid var(--border);border-radius:28px;box-shadow:0 20px 70px rgba(0,0,0,.35)}
-    .hero-panel{padding:28px}.hero-list{display:grid;gap:14px;margin-top:18px}.hero-list div{padding:14px 16px;border-radius:16px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);color:#fff}
-    .section{padding:0 0 56px}.section-head{max-width:760px;margin-bottom:26px}.section-head h2{font-size:clamp(2rem,4vw,3.3rem);line-height:1.04}.pill-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}.pill{padding:10px 14px;border-radius:999px;border:1px solid var(--border-strong);color:#fff;background:rgba(255,255,255,.03);font-size:.95rem}
-    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}.lab-card,.idea-card{padding:24px}.card-label{margin-bottom:12px}.lab-card h3,.idea-card h3{font-size:1.35rem}.card-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px}.btn{display:inline-flex;align-items:center;justify-content:center;padding:13px 18px;border-radius:999px;font-weight:700;border:1px solid transparent;transition:.2s ease}.btn-primary{background:var(--farpa);color:#04110a}.btn-secondary{background:rgba(255,255,255,.03);border-color:var(--border-strong);color:#fff}.btn:hover{transform:translateY(-1px)}
-    .manifesto{padding:32px;margin-top:10px}.manifesto-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}.manifesto ul{margin:0;padding-left:18px}.manifesto li{margin:0 0 10px}
-    .idea-meta{margin-top:14px;font-family:'DM Mono',monospace;font-size:11px;color:#fff;letter-spacing:1px;text-transform:uppercase}
-    .final-cta{padding:32px;display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;margin-top:10px}
-    .final-cta .btn-primary{white-space:nowrap}
-    @media (max-width: 900px){.hero,.grid-3,.grid-2,.manifesto-grid,.final-cta{grid-template-columns:1fr}.page{padding-top:96px}}
+    a{text-decoration:none;color:inherit}.container{width:min(1160px,calc(100% - 36px));margin:0 auto}.page{padding:112px 0 72px}.section{padding:0 0 56px}
+    .hero,.grid-3,.grid-2,.manifesto-grid,.final-cta{display:grid;gap:18px}.hero{grid-template-columns:1.1fr .9fr;align-items:center;margin-bottom:56px}.grid-3{grid-template-columns:repeat(3,1fr)}.grid-2{grid-template-columns:repeat(2,1fr)}.manifesto-grid{grid-template-columns:1fr 1fr}.final-cta{grid-template-columns:1fr auto;align-items:center}
+    .eyebrow,.card-label,.idea-meta{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase}.eyebrow,.card-label{color:var(--corte)}
+    h1,h2,h3{margin:0 0 14px}.hero h1{font-size:clamp(2.6rem,5.2vw,5rem);line-height:.98;letter-spacing:-.04em}.hero h1 span{background:linear-gradient(135deg,var(--corte),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}.section-head{max-width:760px;margin-bottom:26px}.section-head h2{font-size:clamp(2rem,4vw,3.3rem);line-height:1.04}
+    p,li{color:var(--muted);line-height:1.72}.hero p{font-size:1.08rem;max-width:700px}.pill-row,.card-actions{display:flex;gap:10px;flex-wrap:wrap}.pill{padding:10px 14px;border-radius:999px;border:1px solid var(--border-strong);background:rgba(255,255,255,.03)}
+    .hero-panel,.lab-card,.idea-card,.manifesto,.timeline,.final-cta{background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.025));border:1px solid var(--border);border-radius:28px;box-shadow:0 20px 70px rgba(0,0,0,.35)}
+    .hero-panel,.manifesto,.timeline,.final-cta{padding:30px}.lab-card,.idea-card{padding:24px}.hero-list{display:grid;gap:14px;margin-top:18px}.hero-list div{padding:14px 16px;border-radius:16px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);color:#fff}
+    .btn{display:inline-flex;align-items:center;justify-content:center;padding:13px 18px;border-radius:999px;font-weight:700;border:1px solid transparent;transition:.2s ease}.btn:hover{transform:translateY(-1px)}.btn-primary{background:var(--farpa);color:#04110a}.btn-secondary{background:rgba(255,255,255,.03);border-color:var(--border-strong)}
+    .timeline-list{display:grid;gap:14px;margin-top:18px}.timeline-item{padding:18px;border-radius:18px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03)}.timeline-item strong{display:block;color:#fff;margin-bottom:6px}
+    .idea-meta{color:#fff;letter-spacing:1px}.manifesto ul{margin:0;padding-left:18px}.manifesto li{margin:0 0 10px}
+    @media (max-width:900px){.hero,.grid-3,.grid-2,.manifesto-grid,.final-cta{grid-template-columns:1fr}.page{padding-top:96px}}
   </style>
 </head>
 <body>
@@ -39,102 +34,111 @@
       <section class="hero">
         <div>
           <div class="eyebrow">Farpa Labs</div>
-          <h1>Experimentos com <span>dados abertos</span> para transformar sinais em contexto.</h1>
-          <p>O Labs passa a concentrar protótipos orientados a dados públicos e financeiros: séries do Banco Central, indicadores do Open Finance, bases de mercado e novas camadas analíticas para antecipar movimentos relevantes.</p>
+          <h1>O Labs volta a ser a casa dos <span>MVPs</span> que moldaram o Farpa.</h1>
+          <p>Em vez de misturar notícias em tempo real com protótipos, o Labs agora concentra os MVPs, testes de interface, fluxos de leitura e conceitos que apareceram nas versões anteriores do produto e continuam relevantes para a evolução do Farpa.</p>
           <div class="pill-row">
-            <span class="pill">Banco Central</span>
-            <span class="pill">Open Finance</span>
-            <span class="pill">Dados públicos conectados</span>
+            <span class="pill">MVPs anteriores</span>
+            <span class="pill">Protótipos navegáveis</span>
+            <span class="pill">Aprendizados de produto</span>
           </div>
         </div>
         <aside class="hero-panel">
-          <div class="card-label">O papel do Labs</div>
-          <h3>Um espaço para provar valor com fontes verificáveis.</h3>
-          <p>Cada item do Labs nasce de uma pergunta analítica real: quais bases públicas ajudam a ler liquidez, crédito, pagamentos, competição bancária e comportamento do sistema financeiro com mais clareza?</p>
+          <div class="card-label">O novo papel do Labs</div>
+          <h3>Preservar, explicar e evoluir o que já foi testado.</h3>
+          <p>O objetivo aqui é mostrar os blocos que já nasceram no produto: hipóteses, interfaces, painéis e jornadas que serviram de base para a visão atual.</p>
           <div class="hero-list">
-            <div>Séries econômicas e monetárias via SGS e Portal de Dados Abertos do Banco Central.</div>
-            <div>Indicadores operacionais do ecossistema Open Finance Brasil.</div>
-            <div>Combinação de fontes abertas para watchlists, alertas e leitura de contexto.</div>
+            <div>Reúne MVPs que apareceram nas iterações anteriores e ainda inspiram decisões.</div>
+            <div>Documenta o que cada experimento tentou resolver e o que aprendemos com ele.</div>
+            <div>Aponta para a nova área de Notícias quando o assunto for atualização em tempo real.</div>
           </div>
         </aside>
       </section>
 
-      <section class="section" id="tools">
+      <section class="section" id="mvps">
         <div class="section-head">
-          <div class="eyebrow">Novos itens do Labs</div>
-          <h2>Protótipos orientados por fontes abertas de alto valor analítico.</h2>
-          <p>Os itens abaixo priorizam bases públicas e sinais institucionais que podem alimentar painéis, listas de observação e narrativas de mercado mais consistentes.</p>
+          <div class="eyebrow">MVPs em destaque</div>
+          <h2>Os experimentos que formaram a base do produto.</h2>
+          <p>Cada item abaixo representa uma frente que já apareceu em versões anteriores do Farpa e que segue útil como referência de UX, curadoria, análise e organização de sinais.</p>
         </div>
         <div class="grid-3">
           <article class="lab-card">
-            <div class="card-label">Banco Central · séries</div>
-            <h3>Radar macro com SGS + Pix + crédito</h3>
-            <p>Um cockpit para cruzar séries temporais do Banco Central com estatísticas de Pix, crédito e liquidez e detectar mudanças que merecem entrar em watchlists temáticas.</p>
-            <div class="card-actions"><a class="btn btn-secondary" href="https://dadosabertos.bcb.gov.br/" target="_blank" rel="noopener">Fonte oficial BCB</a></div>
+            <div class="card-label">Curadoria editorial</div>
+            <h3>Radar de sinais prioritários</h3>
+            <p>MVP para transformar excesso de informação em uma fila de temas prioritários, com leitura rápida do que realmente mudou e do que merece ação.</p>
           </article>
           <article class="lab-card">
-            <div class="card-label">Open Finance · indicadores</div>
-            <h3>Pulso do Open Finance</h3>
-            <p>Painel para acompanhar consentimentos ativos, funis de pagamento, ranking de serviços e volume de chamadas de APIs públicas do ecossistema brasileiro.</p>
-            <div class="card-actions"><a class="btn btn-secondary" href="https://dados.openfinancebrasil.org.br/" target="_blank" rel="noopener">Portal Open Finance</a></div>
+            <div class="card-label">Leitura assistida</div>
+            <h3>Resumo com contexto e implicação</h3>
+            <p>Protótipo de leitura que não para na manchete: explica contexto, impacto potencial e próxima pergunta que o usuário deveria fazer.</p>
           </article>
           <article class="lab-card">
-            <div class="card-label">Regulação + mercado</div>
-            <h3>Monitor de competição bancária</h3>
-            <p>Experimento para conectar dados de instituições financeiras, canais de atendimento e bases regulatórias e mapear expansão, concentração e novos entrantes.</p>
-            <div class="card-actions"><a class="btn btn-secondary" href="https://www.bcb.gov.br/estabilidadefinanceira/dadosabertossfn" target="_blank" rel="noopener">Dados abertos SFN</a></div>
+            <div class="card-label">Painel operacional</div>
+            <h3>Dashboard de observação contínua</h3>
+            <p>Estrutura de monitoramento para acompanhar tópicos, ativos, temas e alertas em uma experiência de consulta recorrente.</p>
           </article>
           <article class="lab-card">
-            <div class="card-label">Infra de pagamentos</div>
-            <h3>Mapa de fricção de pagamentos</h3>
-            <p>Protótipo para observar adoção, disponibilidade e gargalos usando indicadores de iniciação de pagamentos e chamadas por APIs do Open Finance.</p>
-            <div class="card-actions"><a class="btn btn-secondary" href="https://dados.openfinancebrasil.org.br/conjuntos-de-dados/consentimentos-ativos" target="_blank" rel="noopener">Ver conjunto oficial</a></div>
+            <div class="card-label">Descoberta de produto</div>
+            <h3>Fluxo de onboarding por interesse</h3>
+            <p>Experimento para captar perfil, temas prioritários e intenção do usuário logo no primeiro contato com a plataforma.</p>
           </article>
           <article class="lab-card">
-            <div class="card-label">Funding & juros</div>
-            <h3>Termômetro de juros e funding</h3>
-            <p>Leituras rápidas para acompanhar Selic, curvas, captação e variações de custo de dinheiro em uma lógica voltada para contexto e decisão.</p>
-            <div class="card-actions"><a class="btn btn-secondary" href="https://dadosabertos.bcb.gov.br/dataset" target="_blank" rel="noopener">Explorar datasets</a></div>
+            <div class="card-label">Navegação</div>
+            <h3>Arquitetura por áreas e submenus</h3>
+            <p>Modelo que separa Biblioteca, Mercado, Notícias e Labs para deixar mais claro o papel de cada frente do ecossistema Farpa.</p>
           </article>
           <article class="lab-card">
-            <div class="card-label">Farpa workflow</div>
-            <h3>Gerador de watchlist institucional</h3>
-            <p>Ferramenta para transformar bases abertas em listas vivas de sinais: temas, periodicidade, gatilhos e narrativa do que mudou no sistema financeiro.</p>
-            <div class="card-actions"><a class="btn btn-primary" href="index.html#waitlist">Entrar na lista</a></div>
+            <div class="card-label">Validação</div>
+            <h3>Home de acesso antecipado</h3>
+            <p>Landing focada em explicar o produto de forma objetiva, mostrar as áreas principais e transformar interesse em entrada na lista.</p>
           </article>
         </div>
       </section>
 
-      <section class="section" id="sources">
+      <section class="section" id="timeline">
+        <div class="timeline">
+          <div class="section-head" style="margin-bottom:0;max-width:none;">
+            <div class="eyebrow">Leitura das versões</div>
+            <h2>Como o Labs conversa com o restante do site.</h2>
+            <p>Agora existe uma separação mais nítida entre experimentar, acompanhar em tempo real e explicar valor na home.</p>
+          </div>
+          <div class="timeline-list">
+            <div class="timeline-item"><strong>Labs</strong> guarda os MVPs e protótipos que nasceram ao longo das versões anteriores.</div>
+            <div class="timeline-item"><strong>Notícias</strong> passa a concentrar o menu editorial e os feeds em tempo real por tema.</div>
+            <div class="timeline-item"><strong>Home</strong> apresenta a proposta do Farpa e oferece uma prévia curta do que existe em cada submenu.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="submenus">
         <div class="section-head">
-          <div class="eyebrow">Fontes priorizadas</div>
-          <h2>Baseado em fontes oficiais e reutilizáveis.</h2>
-          <p>Estas são algumas das frentes que passam a estruturar o Labs para gerar análises mais sólidas e novos produtos de observação contínua.</p>
+          <div class="eyebrow">Submenus do ecossistema</div>
+          <h2>O Labs também serve como memória do sistema.</h2>
+          <p>Essas frentes ajudam a contextualizar onde cada tipo de valor aparece dentro do produto.</p>
         </div>
         <div class="grid-2">
           <article class="idea-card">
-            <div class="card-label">Banco Central do Brasil</div>
-            <h3>Portal de Dados Abertos + catálogo do SFN</h3>
-            <p>Usaremos séries econômicas, estatísticas do Pix, dados de crédito, informações de instituições financeiras e catálogos padronizados do Sistema Financeiro Nacional para compor leituras multi-camada.</p>
-            <div class="idea-meta">uso · séries, estrutura e monitoramento</div>
+            <div class="card-label">Biblioteca</div>
+            <h3>Aprendizado estruturado</h3>
+            <p>Módulos, conceitos e referências para aprofundar temas com mais calma e continuidade.</p>
+            <div class="idea-meta">papel · formação e repertório</div>
           </article>
           <article class="idea-card">
-            <div class="card-label">Open Finance Brasil</div>
-            <h3>Indicadores operacionais e chamadas por APIs</h3>
-            <p>O portal do Open Finance oferece rankings, consentimentos, funis e estatísticas de APIs que ajudam a acompanhar adoção, disponibilidade e competição por serviços.</p>
-            <div class="idea-meta">uso · adoção, performance e concorrência</div>
+            <div class="card-label">Mercado</div>
+            <h3>Leitura operacional de ativos</h3>
+            <p>Dashboard de ativos, listas monitoradas e visão prática do que está acontecendo em mercados selecionados.</p>
+            <div class="idea-meta">papel · observação e acompanhamento</div>
           </article>
           <article class="idea-card">
-            <div class="card-label">Expansão futura</div>
-            <h3>Integração com CVM, Tesouro e dados governamentais</h3>
-            <p>O próximo passo do Labs é combinar bases de fundos, emissores, dívida pública e orçamento para ligar sinais financeiros a narrativa macro e institucional.</p>
-            <div class="idea-meta">status · em mapeamento</div>
+            <div class="card-label">Notícias</div>
+            <h3>Atualização em tempo real com menu editorial</h3>
+            <p>Nova área dedicada a organizar notícias em tempo real por assunto, separando feed vivo de protótipo de produto.</p>
+            <div class="idea-meta">papel · monitoramento editorial</div>
           </article>
           <article class="idea-card">
-            <div class="card-label">Aplicação Farpa</div>
-            <h3>Dados abertos convertidos em contexto acionável</h3>
-            <p>Mais do que exibir números, a proposta é transformar atualizações institucionais em explicações curtas: o que mudou, quem é afetado e por que isso entra na sua watchlist.</p>
-            <div class="idea-meta">status · linha editorial ativa</div>
+            <div class="card-label">Labs</div>
+            <h3>Arquivo vivo de MVPs</h3>
+            <p>Espaço para mostrar o que já foi testado, o que funcionou e o que ainda pode evoluir para versões futuras.</p>
+            <div class="idea-meta">papel · memória e experimentação</div>
           </article>
         </div>
       </section>
@@ -143,30 +147,30 @@
         <div class="manifesto">
           <div class="manifesto-grid">
             <div>
-              <div class="eyebrow">Tese editorial</div>
-              <h2>Menos demo genérica. Mais inteligência construída em cima de base aberta.</h2>
-              <p>O Labs deixa de ser apenas uma vitrine de experimentos amplos e passa a operar como uma camada de pesquisa aplicada: identificar fontes abertas, testar combinações e publicar protótipos que mostrem utilidade concreta.</p>
+              <div class="eyebrow">Direção</div>
+              <h2>Menos mistura entre conteúdo vivo e protótipo. Mais clareza sobre a função de cada área.</h2>
+              <p>Essa organização deixa o produto mais legível: quem quer explorar MVPs vai para o Labs; quem quer ver notícias em tempo real vai para Notícias; quem está chegando pela primeira vez entende tudo pela home.</p>
             </div>
             <div>
               <ul>
-                <li><strong style="color:#fff">Monitorar:</strong> séries, rankings e indicadores com atualização recorrente.</li>
-                <li><strong style="color:#fff">Conectar:</strong> fontes econômicas, regulatórias e operacionais no mesmo fluxo.</li>
-                <li><strong style="color:#fff">Explicar:</strong> traduzir os dados em mudanças de contexto, risco e oportunidade.</li>
-                <li><strong style="color:#fff">Priorizar:</strong> destacar o que merece entrar primeiro na rotina de leitura.</li>
-                <li><strong style="color:#fff">Validar:</strong> construir os próximos produtos junto da lista de espera.</li>
+                <li><strong style="color:#fff">Preservar:</strong> os experimentos que já contam a história do produto.</li>
+                <li><strong style="color:#fff">Separar:</strong> notícias em tempo real em uma área própria.</li>
+                <li><strong style="color:#fff">Explicar:</strong> na home, o papel de cada submenu.</li>
+                <li><strong style="color:#fff">Evoluir:</strong> os MVPs com base no uso e no feedback.</li>
               </ul>
             </div>
           </div>
         </div>
       </section>
+
       <section class="section">
         <div class="final-cta">
           <div>
-            <div class="eyebrow">Conecte com o restante do ecossistema</div>
-            <h2>Use o Labs para explorar. Use a home para entrar cedo.</h2>
-            <p>O Labs amplia visão e repertório; a lista de acesso concentra a validação de demanda do Farpa.</p>
+            <div class="eyebrow">Próximo passo</div>
+            <h2>Explore os MVPs no Labs e acompanhe o fluxo vivo em Notícias.</h2>
+            <p>Essa divisão ajuda a contar melhor a proposta do Farpa e deixa o percurso mais claro para quem chega agora.</p>
           </div>
-          <a class="btn btn-primary" href="index.html#waitlist">Entrar na lista</a>
+          <a class="btn btn-primary" href="noticias.html">Abrir Notícias</a>
         </div>
       </section>
     </div>
