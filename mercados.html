@@ -1303,10 +1303,8 @@ setTimeout(startAutoRefresh, 5000);
 document.addEventListener('DOMContentLoaded', function() {
   var layout = document.getElementById('farpa-layout');
   if (!layout) return;
-  var sidebar = window.farpaSidebar.build('mercados');
-  layout.insertBefore(sidebar, layout.firstChild);
-  var topnav = window.farpaTopnav.build([{label:'farpa.ai',href:'index.html'},{label:'Mercados'}]);
-  layout.insertBefore(topnav, sidebar.nextSibling);
+  var topnav = window.farpaTopnav.build('mercados', [{label:'farpa.ai',href:'index.html'},{label:'Mercados'}]);
+  layout.insertBefore(topnav, layout.firstChild);
   var t = localStorage.getItem('farpa_theme');
   if (t) document.documentElement.setAttribute('data-theme', t);
   var lang = localStorage.getItem('farpa_lang') || 'pt';
