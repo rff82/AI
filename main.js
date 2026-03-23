@@ -1,6 +1,15 @@
 (function () {
   'use strict';
 
+  const layout = document.getElementById('farpa-layout');
+  if (layout && window.farpaTopnav) {
+    const existingTopnav = document.getElementById('farpa-topnav');
+    if (!existingTopnav) {
+      const topnav = window.farpaTopnav.build('home', [{ label: 'Início' }]);
+      layout.insertBefore(topnav, layout.firstChild);
+    }
+  }
+
   const waitlistForm = document.getElementById('waitlist-form');
   if (waitlistForm) {
     waitlistForm.addEventListener('submit', async function (event) {
