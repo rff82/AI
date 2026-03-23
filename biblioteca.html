@@ -109,7 +109,6 @@
 <body>
 <div id="farpa-layout">
 <main class="farpa-content" id="farpa-main">
-
 <div class="page-hero">
   <div class="hero-grid-bg"></div>
   <div class="hero-eyebrow"><span class="hero-eyebrow-dot"></span>Curadoria de conhecimento</div>
@@ -126,7 +125,6 @@
   </div>
 </div>
 <hr class="grad-divider">
-
 <div class="page-body">
   <div class="content-toolbar">
     <div class="search-wrap">
@@ -147,7 +145,6 @@
   <div class="modules-list" id="modules-list"></div>
   <div class="no-results" id="no-results"><div style="font-size:28px;opacity:.3;margin-bottom:8px;">🔍</div><div style="font-size:16px;font-weight:700;color:var(--t2);margin-bottom:4px;">Nenhum módulo encontrado</div><div style="font-size:13px;color:var(--t3);">Tente outros termos.</div></div>
 </div>
-
 <script>
 const GLOSSARY=[
   {term:'LLM (Large Language Model)',def:'Modelos de ML projetados para entender e gerar texto similar ao humano. Ex: GPT-4, Claude.',mod:1},
@@ -159,90 +156,39 @@ const GLOSSARY=[
   {term:'Tokens',def:'Unidade de dado que representa um elemento de sequência (caractere ou subpalavra).',mod:1},
   {term:'RLHF',def:'Aprendizado por reforço com feedback humano — técnica para alinhar modelos às preferências humanas.',mod:2},
   {term:'Prompt do sistema',def:'Fornece instruções sobre a tarefa geral para a qual o LLM está sendo usado.',mod:2},
-  {term:'Prompt do usuário',def:'Fornece instruções específicas para o LLM realizar a tarefa solicitada.',mod:2},
   {term:'Agente do LLM',def:'Combina LLM com ferramentas externas (memória, planejamento) para respostas mais precisas.',mod:2},
   {term:'Fine-tuning',def:'Treinamento adicional em dataset específico para melhorar desempenho em tarefa particular.',mod:3},
   {term:'RAG',def:'Geração Aumentada por Recuperação — recupera informações externas antes de gerar resposta.',mod:3},
-  {term:'Evals',def:'Processo de testar modelos contra critérios para avaliar capacidades e identificar melhorias.',mod:3},
   {term:'Agentic Reasoning',def:'Sistemas de IA que tomam decisões autônomas, planejam ações e se adaptam sem intervenção constante.',mod:4},
-  {term:'Overfitting',def:'Problema onde o modelo aprende os dados de treino demais e falha em generalizar.',mod:4},
   {term:'Memória paramétrica',def:'Conhecimento armazenado nos parâmetros (pesos) do LLM durante o treinamento.',mod:5},
-  {term:'Memória não paramétrica',def:'Memória externa que não depende dos parâmetros do modelo — dados recuperáveis dinamicamente.',mod:5},
-  {term:'Reflexão (Reflection)',def:'Técnica onde o LLM auto-avalia seus resultados e ajusta para melhorar precisão.',mod:5},
+  {term:'RAG',def:'Geração Aumentada por Recuperação — recupera informações externas antes de gerar resposta.',mod:5},
   {term:'LangChain',def:'Framework para desenvolver aplicativos com LLMs, conectando-os a fontes de dados e ferramentas.',mod:6},
-  {term:'Pesquisa semântica',def:'Busca que usa significado e contexto em vez de apenas correspondência de palavras-chave.',mod:7},
   {term:'ReAct',def:'Framework que combina raciocínio e ação intercalados nos LLMs para melhorar tarefas.',mod:7},
   {term:'SaaS',def:'Software as a Service — modelo de entrega de software via internet por provedor terceirizado.',mod:8},
-  {term:'Open source',def:'Software com código-fonte disponível publicamente para uso, modificação e distribuição.',mod:8},
 ];
-
 const MODULES=[
-  {id:1,num:'01',cat:'fundamentos',title:'Fundamentos de IA Generativa — Da origem aos LLMs',subtitle:'Evolução histórica, arquitetura de LLMs e aplicações em organizações',tags:[{l:'Fundamentos',c:'tag-farpa'},{l:'LLM',c:'tag-corte'}],diff:1,dur:'~30 min',pro:false,
-   summary:'A IA generativa representa uma mudança de paradigma: de manipulação passiva de dados para análise ativa e geração de outputs. O impacto na produtividade é profundo — menos recursos, menos tempo, menor custo. Machine Learning é a tecnologia fundacional dos LLMs. O pipeline de ML envolve coleta, processamento, treinamento, avaliação e predição.',
-   objs:['Descrever os marcos no desenvolvimento da IA, da origem às tecnologias modernas','Explicar o funcionamento e arquitetura dos LLMs, incluindo processo de treinamento','Examinar aplicações de ML e augmentação por IA em diferentes indústrias'],
-   glossMods:[1],
-   refs:[{i:'📄',t:'Attention Is All You Need — Vaswani et al.',s:'arXiv 2017 · PDF gratuito',u:'https://arxiv.org/abs/1706.03762'},{i:'📺',t:'Intro to Large Language Models — Andrej Karpathy',s:'YouTube · 1 hora · Gratuito',u:'https://www.youtube.com/watch?v=zjkBMFhNj_g'},{i:'🌐',t:'Introducing ChatGPT — OpenAI',s:'OpenAI Blog · Acesso gratuito',u:'https://openai.com/blog/chatgpt'},{i:'📊',t:'The State of AI — McKinsey',s:'McKinsey & Company · Gratuito',u:'https://www.mckinsey.com/capabilities/quantumblack'}],
-   proTxt:'Análise comparativa dos 3 paradigmas de IA, linha do tempo dos invernos e booms, diagrama do ciclo GenAI/Dev/Ops/Biz e mapa dos laboratórios de fronteira.'},
-  {id:2,num:'02',cat:'fundamentos',title:'Como os LLMs Pensam — Embeddings, Camadas e Prompts',subtitle:'Como os modelos processam linguagem, representam conhecimento e respondem a instruções',tags:[{l:'Fundamentos',c:'tag-farpa'},{l:'Prompt',c:'tag-corte'}],diff:2,dur:'~40 min',pro:false,
-   summary:'LLMs processam linguagem em 3 camadas: entrada, camadas ocultas (toda computação) e saída. Embeddings representam palavras em espaço vetorial — palavras similares ficam próximas. RLHF alinha o modelo às preferências humanas. Prompt de sistema define o contexto; prompt de usuário define a tarefa específica.',
-   objs:['Compreender as 3 camadas de redes neurais e seu papel no processamento','Entender embeddings e por que representações vetoriais capturam semântica','Aplicar técnicas de prompt engineering: system prompt, user prompt','Entender como RLHF alinha LLMs às preferências humanas'],
-   glossMods:[2],
-   refs:[{i:'🌐',t:'Playground Interativo de Redes Neurais',s:'TensorFlow · Ferramenta gratuita',u:'https://playground.tensorflow.org/'},{i:'📺',t:'But What Is a Neural Network? — 3Blue1Brown',s:'YouTube · Série gratuita',u:'https://www.youtube.com/watch?v=aircAruvnKk'},{i:'🌐',t:'Better Language Models — OpenAI',s:'OpenAI Blog · Gratuito',u:'https://openai.com/research/'}],
-   proTxt:'Implementação de embeddings do zero em Python com NumPy, análise visual do espaço de embedding para português, técnicas avançadas de prompt com exemplos, e benchmark comparativo de modelos.'},
-  {id:3,num:'03',cat:'modelos',title:'Personalização e Recuperação — Fine-tuning e RAG na Prática',subtitle:'Quando e como personalizar modelos — do ajuste fino ao sistema RAG completo',tags:[{l:'Modelos',c:'tag-corte'},{l:'RAG',c:'tag-farpa'}],diff:3,dur:'~50 min',pro:false,
-   summary:'Fine-tuning treina um modelo base em dataset específico para melhorar desempenho em tarefa particular. RAG vai além: recupera informações de fontes externas antes de gerar resposta. O pipeline RAG inclui: documentos → chunking → embedding → vector DB → retriever → LLM → output.',
-   objs:['Distinguir entre fine-tuning e RAG e quando aplicar cada abordagem','Entender o pipeline completo de um sistema RAG','Aplicar frameworks de Evals para medir qualidade de respostas','Identificar riscos de lock-in e estratégias de mitigação'],
-   glossMods:[3],
-   refs:[{i:'📄',t:'Retrieval-Augmented Generation — Lewis et al.',s:'Meta AI · arXiv 2020 · Gratuito',u:'https://arxiv.org/abs/2005.11401'},{i:'🌐',t:'Hugging Face Course — Fine-tuning LLMs',s:'Hugging Face · 100% gratuito',u:'https://huggingface.co/learn/nlp-course/'},{i:'🌐',t:'LangChain — RAG Documentation',s:'LangChain Docs · Gratuito',u:'https://python.langchain.com/'}],
-   proTxt:'Pipeline RAG completo em Python com LangChain e ChromaDB, análise comparativa de estratégias de chunking, e framework de avaliação automatizada com RAGAS.'},
-  {id:4,num:'04',cat:'etica',title:'IA Responsável — Viés, Riscos e Estruturas de Governança',subtitle:'Riscos reais, frameworks de maturidade tecnológica e regulação em evolução',tags:[{l:'Ética',c:'tag-urgente'},{l:'Governança',c:'tag-warn'}],diff:2,dur:'~45 min',pro:false,
-   summary:'À medida que a IA generativa se torna norma, surgem desafios críticos: conteúdo sintético realista, desinformação, viés algorítmico e privacidade. O Technology Readiness Level (TRL 1-9) avalia maturidade tecnológica. DevOps para IA integra desenvolvimento e operações em loop contínuo.',
-   objs:['Descrever riscos, oportunidades e desafios éticos da IA generativa','Aplicar o framework TRL para avaliar maturidade de tecnologias de IA','Usar o método científico como base para avaliação responsável','Aplicar frameworks éticos para mitigar riscos organizacionais'],
-   glossMods:[4],
-   refs:[{i:'📄',t:'Gender Shades — Intersectional Accuracy in Commercial AI',s:'MIT Media Lab · Gratuito',u:'http://proceedings.mlr.press/v81/buolamwini18a.html'},{i:'🌐',t:'EU AI Act — Texto completo',s:'Parlamento Europeu · Acesso público',u:'https://artificialintelligenceact.eu/'},{i:'📄',t:'On the Dangers of Stochastic Parrots — Bender et al.',s:'ACM FAccT 2021 · Gratuito',u:'https://dl.acm.org/doi/10.1145/3442188.3445922'}],
-   proTxt:'Framework de auditoria de viés em datasets, análise do EU AI Act para empresas brasileiras, comparação de ferramentas de explicabilidade (SHAP, LIME) com código funcional.'},
-  {id:5,num:'05',cat:'aplicacoes',title:'Agentes e Memória — Sistemas LLM Avançados com RAG',subtitle:'Capacidades robustas vs emergentes, arquitetura de agentes e tipos de memória',tags:[{l:'Aplicações',c:'tag-purple'},{l:'Agentes',c:'tag-farpa'}],diff:3,dur:'~55 min',pro:false,
-   summary:'Capacidades de IA dividem-se em robustas e emergentes. Um assistente IA combina LLM + RAG + Funções externas. Memória paramétrica é o conhecimento nos pesos do modelo; memória não-paramétrica é externa e dinâmica. Workflow de reflexão: request → resposta inicial → busca → execução de ferramentas → revisão → resposta final.',
-   objs:['Diferenciar capacidades robustas de emergentes em sistemas de IA','Entender a arquitetura de um assistente IA: LLM + RAG + Funções','Compreender a diferença entre memória paramétrica e não-paramétrica','Projetar pipelines RAG com dense retrieval e vector databases'],
-   glossMods:[5],
-   refs:[{i:'📄',t:'What\'s Next for AI Agentic Workflows — Andrew Ng',s:'Sequoia Capital · YouTube',u:'https://www.youtube.com/'},{i:'🌐',t:'LangChain — Reflection Agents',s:'LangChain Docs · Gratuito',u:'https://python.langchain.com/'}],
-   proTxt:'Implementação de workflow de reflexão com LangChain, construção de RAG com ChromaDB, e arquitetura de agente multi-ferramenta com chamadas de API reais.'},
-  {id:6,num:'06',cat:'aplicacoes',title:'LLMs como Plataformas — Memória, LangChain e Contexto Infinito',subtitle:'Arquitetura de memória em SOs e sua analogia com LLMs',tags:[{l:'Aplicações',c:'tag-purple'},{l:'Avançado',c:'tag-warn'},{l:'Pro',c:'tag-urgente'}],diff:4,dur:'~60 min',pro:true,
-   summary:'Sistemas operacionais organizam memória hierarquicamente. LLMs podem adotar arquitetura similar. LangChain encadeia LLM + Memória + Prompt + Agente. MemGPT propõe tratar LLMs como sistemas operacionais completos com gerenciamento de memória real.',
-   objs:['Entender a hierarquia de memória de SOs e sua analogia com LLMs','Construir chatbots com respostas diferenciadas para diferentes contextos','Usar LangChain para conectar LLMs a bancos de dados e APIs externas','Implementar recall_storage para memória de longo prazo'],
-   glossMods:[6],
-   refs:[{i:'📄',t:'MemGPT: Towards LLMs as Operating Systems',s:'Packer et al. · arXiv 2024 · Gratuito',u:'https://arxiv.org/abs/2310.08560'},{i:'🌐',t:'LangChain — Memory Documentation',s:'LangChain Docs · Gratuito',u:'https://python.langchain.com/'}],
-   proTxt:'Implementação de MemGPT-like com Python e LangChain, arquitetura de chatbot com dois modos, integração com SQL via agente, e sistema de recall_storage para memória persistente.'},
-  {id:7,num:'07',cat:'modelos',title:'Engenharia de LLMs — Vetores, ReAct e o Futuro do Trabalho',subtitle:'Representações vetoriais, raciocínio e ação intercalados e impacto no mercado',tags:[{l:'Modelos',c:'tag-corte'},{l:'Agentes',c:'tag-farpa'},{l:'Pro',c:'tag-urgente'}],diff:4,dur:'~60 min',pro:true,
-   summary:'LLMs convertem texto em embeddings vetoriais em espaço multidimensional. O framework ReAct intercala raciocínio e ação para melhorar tarefas. O impacto no mercado de trabalho é real: reskilling é imperativo, mas IA também cria novas funções.',
-   objs:['Visualizar e interpretar representações de embedding vetorial','Implementar o framework ReAct para agentes que raciocinam e agem','Usar plugins para estender funcionalidades dos LLMs','Analisar o impacto da IA no futuro das profissões'],
-   glossMods:[7],
-   refs:[{i:'📄',t:'ReAct: Synergizing Reasoning and Acting in LLMs',s:'Yao et al. · arXiv 2023 · Gratuito',u:'https://arxiv.org/abs/2210.03629'},{i:'📄',t:'The Future of Jobs Report 2025 — WEF',s:'World Economic Forum · Gratuito',u:'https://www.weforum.org/reports/'},{i:'📄',t:'Text and Code Embeddings — OpenAI',s:'OpenAI · Gratuito',u:'https://openai.com/research/text-and-code-embeddings'}],
-   proTxt:'Visualização 3D de embeddings com Plotly, implementação de agente ReAct do zero em Python, e roadmap de adaptação de carreira para a era da IA.'},
-  {id:8,num:'08',cat:'economia',title:'Ecossistema e Estratégia — O Mercado Global de IA',subtitle:'Players do ecossistema, comparação de modelos e framework de maturidade de dados',tags:[{l:'Economia',c:'tag-warn'},{l:'Estratégia',c:'tag-muted'},{l:'Pro',c:'tag-urgente'}],diff:3,dur:'~55 min',pro:true,
-   summary:'O ecossistema de IA organiza-se em 5 camadas: Apps, Developer, Data, Security e Infrastructure. Benchmarks (MMLU, GSM8K, HumanEval) avaliam modelos. A pirâmide de maturidade de dados vai da coleta básica até IA/deep learning. Raciocínio agêntico representa a shift de IA passiva para proativa.',
-   objs:['Mapear os principais players do ecossistema de IA','Comparar modelos LLM usando benchmarks padronizados','Aplicar o framework de maturidade de dados','Desenvolver estratégia de integração de IA para escalar operações'],
-   glossMods:[8],
-   refs:[{i:'📊',t:'AI Index Report 2024 — Stanford HAI',s:'Stanford University · Gratuito',u:'https://aiindex.stanford.edu/report/'},{i:'📄',t:'Generative AI\'s Act Two — Sequoia Capital',s:'Sequoia · Gratuito',u:'https://www.sequoiacap.com/'},{i:'📊',t:'The AI Hierarchy of Needs — Rogati',s:'HackerNoon · Gratuito',u:'https://hackernoon.com/the-ai-hierarchy-of-needs'}],
-   proTxt:'Análise competitiva Claude vs GPT vs Gemini vs Llama com benchmarks atualizados, framework de decisão build vs buy vs fine-tune, e modelo financeiro de ROI para iniciativas de IA.'},
+  {id:1,num:'01',cat:'fundamentos',title:'Fundamentos de IA Generativa — Da origem aos LLMs',subtitle:'Evolução histórica, arquitetura de LLMs e aplicações em organizações',tags:[{l:'Fundamentos',c:'tag-farpa'},{l:'LLM',c:'tag-corte'}],diff:1,dur:'~30 min',pro:false,summary:'A IA generativa representa uma mudança de paradigma: de manipulação passiva de dados para análise ativa e geração de outputs. Machine Learning é a tecnologia fundacional dos LLMs. O pipeline de ML envolve coleta, processamento, treinamento, avaliação e predição.',objs:['Descrever os marcos no desenvolvimento da IA, da origem às tecnologias modernas','Explicar o funcionamento e arquitetura dos LLMs, incluindo processo de treinamento','Examinar aplicações de ML e augmentação por IA em diferentes indústrias'],glossMods:[1],refs:[{i:'📄',t:'Attention Is All You Need — Vaswani et al.',s:'arXiv 2017 · PDF gratuito',u:'https://arxiv.org/abs/1706.03762'},{i:'📺',t:'Intro to Large Language Models — Andrej Karpathy',s:'YouTube · 1 hora · Gratuito',u:'https://www.youtube.com/watch?v=zjkBMFhNj_g'}],proTxt:'Análise comparativa dos 3 paradigmas de IA, linha do tempo dos invernos e booms, e mapa dos laboratórios de fronteira.'},
+  {id:2,num:'02',cat:'fundamentos',title:'Como os LLMs Pensam — Embeddings, Camadas e Prompts',subtitle:'Como os modelos processam linguagem, representam conhecimento e respondem a instruções',tags:[{l:'Fundamentos',c:'tag-farpa'},{l:'Prompt',c:'tag-corte'}],diff:2,dur:'~40 min',pro:false,summary:'LLMs processam linguagem em 3 camadas: entrada, camadas ocultas e saída. Embeddings representam palavras em espaço vetorial. RLHF alinha o modelo às preferências humanas.',objs:['Compreender as 3 camadas de redes neurais','Entender embeddings e representações vetoriais','Aplicar técnicas de prompt engineering'],glossMods:[2],refs:[{i:'🌐',t:'Playground Interativo de Redes Neurais',s:'TensorFlow · Ferramenta gratuita',u:'https://playground.tensorflow.org/'},{i:'📺',t:'But What Is a Neural Network? — 3Blue1Brown',s:'YouTube · Série gratuita',u:'https://www.youtube.com/watch?v=aircAruvnKk'}],proTxt:'Implementação de embeddings do zero em Python com NumPy, e benchmark comparativo de modelos.'},
+  {id:3,num:'03',cat:'modelos',title:'Personalização e Recuperação — Fine-tuning e RAG na Prática',subtitle:'Quando e como personalizar modelos — do ajuste fino ao sistema RAG completo',tags:[{l:'Modelos',c:'tag-corte'},{l:'RAG',c:'tag-farpa'}],diff:3,dur:'~50 min',pro:false,summary:'Fine-tuning treina um modelo base em dataset específico. RAG vai além: recupera informações de fontes externas antes de gerar resposta. O pipeline RAG inclui: documentos → chunking → embedding → vector DB → retriever → LLM → output.',objs:['Distinguir entre fine-tuning e RAG e quando aplicar cada abordagem','Entender o pipeline completo de um sistema RAG','Aplicar frameworks de Evals para medir qualidade de respostas'],glossMods:[3],refs:[{i:'📄',t:'Retrieval-Augmented Generation — Lewis et al.',s:'Meta AI · arXiv 2020 · Gratuito',u:'https://arxiv.org/abs/2005.11401'},{i:'🌐',t:'Hugging Face Course — Fine-tuning LLMs',s:'Hugging Face · 100% gratuito',u:'https://huggingface.co/learn/nlp-course/'}],proTxt:'Pipeline RAG completo em Python com LangChain e ChromaDB, e framework de avaliação automatizada com RAGAS.'},
+  {id:4,num:'04',cat:'etica',title:'IA Responsável — Viés, Riscos e Estruturas de Governança',subtitle:'Riscos reais, frameworks de maturidade tecnológica e regulação em evolução',tags:[{l:'Ética',c:'tag-urgente'},{l:'Governança',c:'tag-warn'}],diff:2,dur:'~45 min',pro:false,summary:'À medida que a IA generativa se torna norma, surgem desafios críticos: conteúdo sintético realista, desinformação, viés algorítmico e privacidade.',objs:['Descrever riscos, oportunidades e desafios éticos da IA generativa','Aplicar o framework TRL para avaliar maturidade de tecnologias de IA','Aplicar frameworks éticos para mitigar riscos organizacionais'],glossMods:[4],refs:[{i:'🌐',t:'EU AI Act — Texto completo',s:'Parlamento Europeu · Acesso público',u:'https://artificialintelligenceact.eu/'}],proTxt:'Framework de auditoria de viés em datasets e análise do EU AI Act para empresas brasileiras.'},
+  {id:5,num:'05',cat:'aplicacoes',title:'Agentes e Memória — Sistemas LLM Avançados com RAG',subtitle:'Capacidades robustas vs emergentes, arquitetura de agentes e tipos de memória',tags:[{l:'Aplicações',c:'tag-purple'},{l:'Agentes',c:'tag-farpa'}],diff:3,dur:'~55 min',pro:false,summary:'Capacidades de IA dividem-se em robustas e emergentes. Um assistente IA combina LLM + RAG + Funções externas. Memória paramétrica é o conhecimento nos pesos do modelo; memória não-paramétrica é externa e dinâmica.',objs:['Diferenciar capacidades robustas de emergentes em sistemas de IA','Entender a arquitetura de um assistente IA: LLM + RAG + Funções','Projetar pipelines RAG com dense retrieval e vector databases'],glossMods:[5],refs:[{i:'🌐',t:'LangChain — Reflection Agents',s:'LangChain Docs · Gratuito',u:'https://python.langchain.com/'}],proTxt:'Implementação de workflow de reflexão com LangChain e construção de RAG com ChromaDB.'},
+  {id:6,num:'06',cat:'aplicacoes',title:'LLMs como Plataformas — Memória, LangChain e Contexto Infinito',subtitle:'Arquitetura de memória em SOs e sua analogia com LLMs',tags:[{l:'Aplicações',c:'tag-purple'},{l:'Avançado',c:'tag-warn'},{l:'Pro',c:'tag-urgente'}],diff:4,dur:'~60 min',pro:true,summary:'Sistemas operacionais organizam memória hierarquicamente. LLMs podem adotar arquitetura similar. LangChain encadeia LLM + Memória + Prompt + Agente.',objs:['Entender a hierarquia de memória de SOs e sua analogia com LLMs','Construir chatbots com respostas diferenciadas para diferentes contextos','Usar LangChain para conectar LLMs a bancos de dados e APIs externas'],glossMods:[6],refs:[{i:'📄',t:'MemGPT: Towards LLMs as Operating Systems',s:'Packer et al. · arXiv 2024 · Gratuito',u:'https://arxiv.org/abs/2310.08560'}],proTxt:'Implementação de MemGPT-like com Python e LangChain, e sistema de recall_storage para memória persistente.'},
+  {id:7,num:'07',cat:'modelos',title:'Engenharia de LLMs — Vetores, ReAct e o Futuro do Trabalho',subtitle:'Representações vetoriais, raciocínio e ação intercalados e impacto no mercado',tags:[{l:'Modelos',c:'tag-corte'},{l:'Agentes',c:'tag-farpa'},{l:'Pro',c:'tag-urgente'}],diff:4,dur:'~60 min',pro:true,summary:'LLMs convertem texto em embeddings vetoriais. O framework ReAct intercala raciocínio e ação para melhorar tarefas. O impacto no mercado de trabalho é real: reskilling é imperativo.',objs:['Visualizar e interpretar representações de embedding vetorial','Implementar o framework ReAct para agentes que raciocinam e agem','Analisar o impacto da IA no futuro das profissões'],glossMods:[7],refs:[{i:'📄',t:'ReAct: Synergizing Reasoning and Acting in LLMs',s:'Yao et al. · arXiv 2023 · Gratuito',u:'https://arxiv.org/abs/2210.03629'}],proTxt:'Visualização 3D de embeddings com Plotly e implementação de agente ReAct do zero em Python.'},
+  {id:8,num:'08',cat:'economia',title:'Ecossistema e Estratégia — O Mercado Global de IA',subtitle:'Players do ecossistema, comparação de modelos e framework de maturidade de dados',tags:[{l:'Economia',c:'tag-warn'},{l:'Estratégia',c:'tag-muted'},{l:'Pro',c:'tag-urgente'}],diff:3,dur:'~55 min',pro:true,summary:'O ecossistema de IA organiza-se em 5 camadas: Apps, Developer, Data, Security e Infrastructure. Benchmarks (MMLU, GSM8K, HumanEval) avaliam modelos.',objs:['Mapear os principais players do ecossistema de IA','Comparar modelos LLM usando benchmarks padronizados','Desenvolver estratégia de integração de IA para escalar operações'],glossMods:[8],refs:[{i:'📊',t:'AI Index Report 2024 — Stanford HAI',s:'Stanford University · Gratuito',u:'https://aiindex.stanford.edu/report/'}],proTxt:'Análise competitiva Claude vs GPT vs Gemini vs Llama e modelo financeiro de ROI para iniciativas de IA.'},
 ];
-
 let currentSearch='',currentSort='num';
-
 function renderAll(){
   let data=[...MODULES];
   if(currentSearch.trim()){const q=currentSearch.toLowerCase();data=data.filter(m=>m.title.toLowerCase().includes(q)||m.subtitle.toLowerCase().includes(q)||m.summary.toLowerCase().includes(q)||m.tags.some(t=>t.l.toLowerCase().includes(q)));}
-  if(currentSort==='az') data.sort((a,b)=>a.title.localeCompare(b.title,'pt'));
-  else if(currentSort==='dificuldade') data.sort((a,b)=>a.diff-b.diff);
+  if(currentSort==='az')data.sort((a,b)=>a.title.localeCompare(b.title,'pt'));
+  else if(currentSort==='dificuldade')data.sort((a,b)=>a.diff-b.diff);
   else data.sort((a,b)=>a.id-b.id);
   const list=document.getElementById('modules-list'),noRes=document.getElementById('no-results'),banner=document.getElementById('upgrade-banner');
   document.getElementById('results-count').textContent=`${data.length} módulo${data.length!==1?'s':''}`;
   if(!data.length){list.innerHTML='';noRes.classList.add('show');banner.style.display='none';return;}
-  noRes.classList.remove('show');
-  banner.style.display=data.some(m=>m.pro)?'flex':'none';
+  noRes.classList.remove('show');banner.style.display=data.some(m=>m.pro)?'flex':'none';
   list.innerHTML=data.map(renderCard).join('');
 }
-
 function renderCard(m){
   const tags=m.tags.map(t=>`<span class="tag ${t.c}">${t.l}</span>`).join('');
   const dots=[1,2,3,4].map(i=>{if(i>m.diff)return'<div class="difficulty-dot"></div>';const cls=m.diff<=2?'filled':m.diff===3?'filled mid':'filled hard';return`<div class="difficulty-dot ${cls}"></div>`;}).join('');
@@ -251,43 +197,24 @@ function renderCard(m){
   const glossHTML=mGloss.length?`<div><div class="gloss-inline-label">Glossário (${mGloss.length} termos principais)</div><div class="gloss-grid">${mGloss.map(g=>`<div class="gloss-card"><div class="gloss-card-term">${g.term}</div><div class="gloss-card-def">${g.def}</div></div>`).join('')}</div></div>`:'';
   const refsHTML=`<div><div class="refs-label">Referências públicas</div>${m.refs.map(r=>`<div class="ref-item"><span class="ref-icon">${r.i}</span><div class="ref-content"><div class="ref-title">${r.t}</div><div class="ref-source">${r.s}</div></div><a class="ref-link" href="${r.u}" target="_blank" rel="noopener">Acessar</a></div>`).join('')}</div>`;
   const proHTML=m.pro?`<div class="module-pro-block"><div class="module-pro-blur">${m.proTxt}</div><div class="module-pro-overlay"><div class="module-pro-badge">Exclusivo Pro</div><div class="module-pro-text">Análise aprofundada + implementações</div><div class="module-pro-sub">Notas completas, código funcional e referências complementares.</div><a href="pro.html" class="module-pro-btn">Desbloquear acesso</a></div></div>`:'';
-  return `<div class="module-card" id="module-${m.id}">
-    <div class="module-header" onclick="toggleCard(${m.id})">
-      <div class="module-num">${m.num}</div>
-      <div class="module-header-content"><div class="module-tags">${tags}</div><div class="module-title">${m.title}</div><div class="module-subtitle">${m.subtitle}</div></div>
-      <div class="module-toggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg></div>
-    </div>
-    <div class="module-body"><div class="module-body-inner">
-      <div class="module-summary">${m.summary}</div>
-      <div class="module-objectives"><div class="objectives-label">Objetivos de aprendizado</div>${objHTML}</div>
-      ${glossHTML}${refsHTML}${proHTML}
-    </div></div>
-    <div class="module-footer"><div class="module-difficulty"><div class="difficulty-dots">${dots}</div>Dificuldade</div><div class="module-duration">⏱ ${m.dur}</div></div>
-  </div>`;
+  return `<div class="module-card" id="module-${m.id}"><div class="module-header" onclick="toggleCard(${m.id})"><div class="module-num">${m.num}</div><div class="module-header-content"><div class="module-tags">${tags}</div><div class="module-title">${m.title}</div><div class="module-subtitle">${m.subtitle}</div></div><div class="module-toggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg></div></div><div class="module-body"><div class="module-body-inner"><div class="module-summary">${m.summary}</div><div class="module-objectives"><div class="objectives-label">Objetivos de aprendizado</div>${objHTML}</div>${glossHTML}${refsHTML}${proHTML}</div></div><div class="module-footer"><div class="module-difficulty"><div class="difficulty-dots">${dots}</div>Dificuldade</div><div class="module-duration">⏱ ${m.dur}</div></div></div>`;
 }
-
 function toggleCard(id){const card=document.getElementById(`module-${id}`);if(!card)return;const wasOpen=card.classList.contains('open');document.querySelectorAll('.module-card.open').forEach(c=>c.classList.remove('open'));if(!wasOpen)card.classList.add('open');}
 function handleSearch(v){currentSearch=v;renderAll();}
 function handleSort(v){currentSort=v;renderAll();}
-
 renderAll();
 setTimeout(()=>{const f=document.querySelector('.module-card');if(f)f.classList.add('open');},100);
 </script>
-
 </main>
 </div>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-  var layout = document.getElementById('farpa-layout');
-  if (!layout) return;
-  var sidebar = window.farpaSidebar.build('biblioteca');
-  layout.insertBefore(sidebar, layout.firstChild);
-  var topnav = window.farpaTopnav.build([{"label": "farpa.ai", "href": "index.html"}, {"label": "Biblioteca de IA"}]);
-  layout.insertBefore(topnav, sidebar.nextSibling);
-  var t = localStorage.getItem('farpa_theme');
-  if (t) document.documentElement.setAttribute('data-theme', t);
-  var lang = localStorage.getItem('farpa_lang') || 'pt';
-  document.querySelectorAll('.lang-btn').forEach(function(b) { b.classList.toggle('active', b.id === 'lang-' + lang); });
+document.addEventListener('DOMContentLoaded',function(){
+  var layout=document.getElementById('farpa-layout');if(!layout)return;
+  var sidebar=window.farpaSidebar.build('biblioteca');layout.insertBefore(sidebar,layout.firstChild);
+  var topnav=window.farpaTopnav.build([{label:'farpa.ai',href:'index.html'},{label:'Biblioteca de IA'}]);layout.insertBefore(topnav,sidebar.nextSibling);
+  var t=localStorage.getItem('farpa_theme');if(t)document.documentElement.setAttribute('data-theme',t);
+  var lang=localStorage.getItem('farpa_lang')||'pt';document.querySelectorAll('.lang-btn').forEach(function(b){b.classList.toggle('active',b.id==='lang-'+lang);});
 });
 </script>
-</body></html>
+</body>
+</html>

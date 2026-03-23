@@ -1,321 +1,328 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#050505">
-<meta name="description" content="farpa.ai Pro — A farpa que corta mais fundo. Análises exclusivas, biblioteca completa e alertas instantâneos.">
-<title>farpa.ai Pro — A farpa que corta mais fundo</title>
-<link rel="icon" type="image/svg+xml" href="farpa-icon.svg">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="tokens.css">
-<link rel="stylesheet" href="themes.css">
-<link rel="stylesheet" href="mobile-fixes.css">
-<script src="theme-engine.js"></script>
-<style>
-/* Pro page overrides — gold theme */
-[data-theme="void"] body, body {
-  --pro-gold: #ffd764; --pro-gold2: #ffb800; --pro-gold3: #ff8c00;
-  --pro-border: rgba(255,215,100,0.12); --pro-border-md: rgba(255,215,100,0.22);
-}
-.pro-hero { min-height:100vh; display:flex; align-items:center; position:relative; overflow:hidden; }
-.pro-hero-orb1 { position:absolute; top:-20%; right:-15%; width:700px; height:600px; background:radial-gradient(ellipse,rgba(255,215,100,0.07) 0%,transparent 65%); pointer-events:none; }
-.pro-hero-orb2 { position:absolute; bottom:-10%; left:-10%; width:500px; height:400px; background:radial-gradient(ellipse,rgba(181,122,255,0.05) 0%,transparent 65%); pointer-events:none; }
-.pro-hero-grid { position:absolute; inset:0; background-image:linear-gradient(rgba(255,215,100,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,215,100,0.025) 1px,transparent 1px); background-size:60px 60px; mask-image:radial-gradient(ellipse 70% 80% at 70% 30%,black 20%,transparent 80%); }
-.pro-eyebrow { font-family:var(--font-mono); font-size:11px; letter-spacing:3px; text-transform:uppercase; color:var(--pro-gold); margin-bottom:20px; display:flex; align-items:center; gap:10px; }
-.pro-eyebrow-dot { width:8px; height:8px; border-radius:50%; background:var(--pro-gold); box-shadow:0 0 12px rgba(255,215,100,0.5); animation:goldPulse 2s ease-in-out infinite; }
-@keyframes goldPulse { 0%,100%{opacity:1;box-shadow:0 0 12px rgba(255,215,100,0.5)} 50%{opacity:.6;box-shadow:0 0 4px rgba(255,215,100,0.2)} }
-.pro-headline { font-size:clamp(48px,7vw,88px); font-weight:900; letter-spacing:-0.04em; line-height:.95; margin-bottom:24px; }
-.pro-headline .gold { background:linear-gradient(135deg,var(--pro-gold),var(--pro-gold2),var(--pro-gold3)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-.pro-sub { font-size:18px; color:var(--text-secondary); line-height:1.7; max-width:480px; margin-bottom:40px; }
-.pro-cta-primary { display:inline-flex; align-items:center; gap:10px; background:linear-gradient(135deg,var(--pro-gold),var(--pro-gold2)); color:#000; font-weight:900; font-size:16px; padding:16px 36px; border-radius:12px; border:none; cursor:pointer; transition:all .2s; text-decoration:none; }
-.pro-cta-primary:hover { transform:translateY(-2px); box-shadow:0 12px 40px rgba(255,215,100,0.3); }
-.pro-note { font-family:var(--font-mono); font-size:11px; color:var(--text-muted); margin-top:12px; letter-spacing:1px; }
-.pro-note strong { color:var(--pro-gold); }
-/* Mockup */
-.pro-mockup { background:var(--graphite2); border:1px solid var(--pro-border-md); border-radius:24px; overflow:hidden; box-shadow:0 24px 80px rgba(0,0,0,.6),0 0 80px rgba(255,215,100,.03); }
-.pro-mock-top { background:var(--graphite); padding:14px 20px; display:flex; align-items:center; gap:8px; border-bottom:1px solid var(--pro-border); }
-.pro-mock-dots { display:flex; gap:6px; }
-.pro-mock-dots span { width:10px; height:10px; border-radius:50%; }
-.pro-mock-titlebar { font-family:var(--font-mono); font-size:10px; letter-spacing:2px; color:var(--text-muted); flex:1; text-align:center; }
-.pro-chip { background:linear-gradient(135deg,var(--pro-gold),var(--pro-gold2)); color:#000; font-family:var(--font-mono); font-size:8px; letter-spacing:1.5px; font-weight:700; padding:2px 8px; border-radius:999px; }
-.pro-feed { padding:16px; display:flex; flex-direction:column; gap:10px; }
-.pro-feed-item { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:14px 16px; }
-.pro-feed-item.premium { border-color:rgba(255,215,100,.2); background:linear-gradient(135deg,#161208,#0f0c16); }
-.pro-feed-tag { font-family:var(--font-mono); font-size:9px; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:6px; }
-.pro-feed-tag.gold { color:var(--pro-gold); }
-.pro-feed-tag.teal { color:var(--corte); }
-.pro-feed-title { font-size:13px; font-weight:700; line-height:1.35; margin-bottom:6px; }
-.pro-feed-meta { display:flex; justify-content:space-between; }
-.pro-feed-sources { font-family:var(--font-mono); font-size:9px; color:var(--text-muted); }
-.pro-feed-bar { width:60px; height:2px; background:rgba(255,255,255,.08); border-radius:2px; overflow:hidden; }
-.pro-feed-bar-fill { height:100%; border-radius:2px; }
-.pro-pro-badge { display:inline-flex; align-items:center; gap:4px; background:rgba(255,215,100,.12); border:1px solid rgba(255,215,100,.25); border-radius:999px; padding:2px 8px; font-family:var(--font-mono); font-size:8px; letter-spacing:1.5px; color:var(--pro-gold); margin-bottom:6px; }
-/* Features grid */
-.pro-features-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:48px; }
-@media(max-width:900px) { .pro-features-grid { grid-template-columns:1fr 1fr; } }
-@media(max-width:640px) { .pro-features-grid { grid-template-columns:1fr; } }
-.pro-feat-card { background:var(--graphite2); border:1px solid var(--border); border-radius:20px; padding:28px 24px; transition:border-color .2s,transform .2s; position:relative; overflow:hidden; }
-.pro-feat-card::before { content:''; position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent,var(--pro-gold),transparent); opacity:0; transition:opacity .2s; }
-.pro-feat-card:hover { border-color:var(--pro-border-md); transform:translateY(-4px); }
-.pro-feat-card:hover::before { opacity:1; }
-.pro-feat-card.hl { background:linear-gradient(135deg,#161208,#0f0c16); border-color:rgba(255,215,100,.25); }
-.pro-feat-card.hl::before { opacity:1; }
-.pro-feat-icon { width:48px; height:48px; border-radius:12px; background:rgba(255,215,100,.08); border:1px solid rgba(255,215,100,.15); display:flex; align-items:center; justify-content:center; margin-bottom:18px; font-size:20px; }
-.pro-feat-title { font-size:17px; font-weight:700; letter-spacing:-.3px; margin-bottom:10px; }
-.pro-feat-desc { font-size:14px; color:var(--text-secondary); line-height:1.7; }
-/* Compare */
-.pro-compare-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-top:48px; }
-@media(max-width:768px) { .pro-compare-grid { grid-template-columns:1fr; } }
-.pro-compare-card { border-radius:20px; padding:32px; border:1px solid; }
-.pro-compare-free { background:var(--graphite2); border-color:var(--border); }
-.pro-compare-pro  { background:linear-gradient(135deg,#161208,#0f0c16); border-color:rgba(255,215,100,.3); box-shadow:0 0 60px rgba(255,215,100,.05); }
-.pro-plan-label { font-family:var(--font-mono); font-size:10px; letter-spacing:3px; text-transform:uppercase; color:var(--text-muted); margin-bottom:12px; }
-.pro-compare-pro .pro-plan-label { color:var(--pro-gold); }
-.pro-price { font-size:44px; font-weight:900; letter-spacing:-2px; line-height:1; margin-bottom:6px; }
-.pro-compare-pro .pro-price { background:linear-gradient(135deg,var(--pro-gold),var(--pro-gold2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-.pro-period { font-family:var(--font-mono); font-size:10px; color:var(--text-muted); letter-spacing:1px; margin-bottom:24px; }
-.pro-divider { height:1px; background:var(--border); margin-bottom:20px; }
-.pro-list { display:flex; flex-direction:column; gap:12px; margin-bottom:28px; }
-.pro-item { display:flex; align-items:flex-start; gap:10px; font-size:14px; color:var(--text-secondary); line-height:1.5; }
-.pro-item.dim { color:var(--text-muted); }
-.pro-check { flex-shrink:0; margin-top:2px; font-size:14px; }
-.pro-cta-btn { display:block; width:100%; text-align:center; padding:14px; border-radius:10px; font-weight:700; font-size:15px; transition:all .2s; cursor:pointer; border:none; text-decoration:none; }
-.pro-cta-btn.main { background:linear-gradient(135deg,var(--pro-gold),var(--pro-gold2)); color:#000; }
-.pro-cta-btn.main:hover { transform:translateY(-1px); box-shadow:0 8px 32px rgba(255,215,100,.25); }
-.pro-cta-btn.ghost { background:transparent; color:var(--text-primary); border:1px solid var(--border-md); }
-.pro-cta-btn.ghost:hover { border-color:var(--border-hi); background:rgba(255,255,255,.04); }
-/* Testimonials */
-.pro-test-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:48px; }
-@media(max-width:768px) { .pro-test-grid { grid-template-columns:1fr; } }
-.pro-test-card { background:var(--graphite2); border:1px solid var(--border); border-radius:16px; padding:24px; }
-.pro-stars { color:var(--pro-gold); font-size:14px; margin-bottom:12px; letter-spacing:2px; }
-.pro-test-text { font-size:14px; color:var(--text-secondary); line-height:1.7; margin-bottom:16px; font-style:italic; }
-.pro-test-author { display:flex; align-items:center; gap:10px; }
-.pro-avatar { width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,var(--pro-gold),var(--pro-gold2)); display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:900; color:#000; flex-shrink:0; }
-.pro-test-name { font-size:13px; font-weight:700; }
-.pro-test-role { font-family:var(--font-mono); font-size:10px; color:var(--text-muted); letter-spacing:.5px; }
-/* Final CTA */
-.pro-final { padding:120px 0; text-align:center; position:relative; }
-.pro-final-glow { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:600px; height:400px; background:radial-gradient(ellipse,rgba(255,215,100,.07) 0%,transparent 65%); pointer-events:none; }
-.pro-final-title { font-size:clamp(40px,6vw,72px); font-weight:900; letter-spacing:-.04em; line-height:1; margin-bottom:20px; }
-.pro-final-sub { font-size:17px; color:var(--text-secondary); max-width:480px; margin:0 auto 40px; line-height:1.65; }
-.pro-email-wrap { display:flex; align-items:center; max-width:440px; margin:0 auto; background:var(--surface); border:1px solid var(--pro-border-md); border-radius:12px; overflow:hidden; transition:border-color .2s,box-shadow .2s; }
-.pro-email-wrap:focus-within { border-color:rgba(255,215,100,.4); box-shadow:0 0 0 3px rgba(255,215,100,.08); }
-.pro-email-input { flex:1; background:transparent !important; border:none !important; outline:none; padding:14px 18px; color:var(--text-primary) !important; font-family:var(--font-head); font-size:14px; }
-.pro-email-input::placeholder { color:var(--text-muted) !important; }
-.pro-email-btn { background:linear-gradient(135deg,var(--pro-gold),var(--pro-gold2)); color:#000; border:none; padding:14px 22px; font-family:var(--font-head); font-size:13px; font-weight:700; cursor:pointer; transition:opacity .18s; white-space:nowrap; }
-.pro-email-btn:hover { opacity:.88; }
-/* Pro footer */
-.pro-footer { padding:40px 0; border-top:1px solid var(--border); }
-.pro-footer-inner { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px; }
-.pro-footer-logo { font-size:17px; font-weight:900; letter-spacing:-.8px; }
-.pro-footer-logo .ai { color:var(--pro-gold); font-weight:300; }
-.pro-footer-copy { font-family:var(--font-mono); font-size:10px; color:var(--text-muted); letter-spacing:1.5px; }
-.pro-footer-links { display:flex; gap:20px; }
-.pro-footer-links a { font-family:var(--font-mono); font-size:10px; color:var(--text-muted); letter-spacing:1px; transition:color .2s; }
-.pro-footer-links a:hover { color:var(--pro-gold); }
-/* Section helpers */
-.pro-section { padding:100px 0; max-width:1200px; margin:0 auto; padding-left:32px; padding-right:32px; }
-.pro-section-eyebrow { font-family:var(--font-mono); font-size:10px; letter-spacing:3px; text-transform:uppercase; color:var(--pro-gold); margin-bottom:16px; }
-.pro-section-title { font-size:clamp(32px,4vw,52px); font-weight:900; letter-spacing:-.035em; line-height:1.05; margin-bottom:16px; }
-.pro-section-sub { font-size:16px; color:var(--text-secondary); max-width:560px; line-height:1.65; }
-.gold-text { background:linear-gradient(135deg,var(--pro-gold),var(--pro-gold2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Farpa Pro · farpa.ai</title>
+  <link rel="icon" type="image/svg+xml" href="farpa-icon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="themes.css" />
+  <link rel="stylesheet" href="mobile-fixes.css" />
+  <style>
+    .pro-layout { display: flex; flex-direction: column; gap: var(--space-10); }
+
+    /* Hero */
+    .pro-hero {
+      text-align: center;
+      padding: var(--space-10) 0 var(--space-6);
+    }
+    .pro-eyebrow {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--color-accent-alpha); color: var(--color-accent);
+      font-family: var(--font-mono); font-size: 0.7rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.1em;
+      padding: 5px 12px; border-radius: 20px;
+      border: 1px solid rgba(99,102,241,0.2);
+      margin-bottom: var(--space-4);
+    }
+    .pro-hero h1 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 700;
+      color: var(--color-text-primary);
+      margin-bottom: var(--space-4);
+      line-height: 1.15;
+    }
+    .pro-hero h1 span {
+      background: var(--gradient-accent);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .pro-hero p {
+      font-size: 1.05rem;
+      color: var(--color-text-secondary);
+      max-width: 480px;
+      margin: 0 auto var(--space-6);
+      line-height: 1.6;
+    }
+    .waitlist-cta {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: var(--space-4) var(--space-7);
+      background: var(--color-accent);
+      color: #fff; font-weight: 700; font-size: 1rem;
+      border-radius: var(--radius-lg); text-decoration: none;
+      transition: opacity 0.2s, transform 0.2s;
+      box-shadow: 0 4px 24px rgba(99,102,241,0.35);
+    }
+    .waitlist-cta:hover { opacity: 0.88; transform: translateY(-2px); }
+
+    /* Feature matrix */
+    .compare-section {}
+    .compare-title {
+      font-size: 1.3rem; font-weight: 700; color: var(--color-text-primary);
+      margin-bottom: var(--space-6); text-align: center;
+    }
+    .compare-table {
+      width: 100%; border-collapse: collapse;
+      background: var(--color-surface-2);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+    }
+    .compare-table th {
+      padding: var(--space-4) var(--space-5);
+      text-align: center; font-size: 0.9rem; font-weight: 700;
+      color: var(--color-text-primary);
+      border-bottom: 1px solid var(--color-border);
+    }
+    .compare-table th:first-child { text-align: left; color: var(--color-text-muted); font-weight: 500; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; font-family: var(--font-mono); }
+    .compare-table th.pro-col {
+      background: var(--color-accent-alpha);
+      color: var(--color-accent);
+    }
+    .compare-table td {
+      padding: var(--space-3) var(--space-5);
+      font-size: 0.88rem; color: var(--color-text-secondary);
+      border-bottom: 1px solid var(--color-border);
+      text-align: center;
+    }
+    .compare-table td:first-child { text-align: left; color: var(--color-text-primary); font-weight: 500; }
+    .compare-table tr:last-child td { border-bottom: none; }
+    .compare-table td.pro-col { background: rgba(99,102,241,0.04); }
+    .compare-table tr:hover td { background: var(--color-surface-3); }
+    .compare-table tr:hover td.pro-col { background: var(--color-accent-alpha); }
+    .check { color: #10b981; font-weight: 700; font-size: 1rem; }
+    .cross { color: var(--color-text-muted); font-size: 0.9rem; }
+
+    /* What you get */
+    .features-section {}
+    .features-title { font-size: 1.3rem; font-weight: 700; color: var(--color-text-primary); margin-bottom: var(--space-6); text-align: center; }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: var(--space-4);
+    }
+    .feature-item {
+      background: var(--color-surface-2);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-5);
+      transition: border-color 0.2s;
+    }
+    .feature-item:hover { border-color: var(--color-accent); }
+    .feature-icon { font-size: 1.5rem; margin-bottom: var(--space-3); }
+    .feature-item h3 { font-size: 0.95rem; font-weight: 700; color: var(--color-text-primary); margin-bottom: var(--space-2); }
+    .feature-item p { font-size: 0.82rem; color: var(--color-text-secondary); line-height: 1.6; margin: 0; }
+
+    /* FAQ */
+    .faq-title { font-size: 1.3rem; font-weight: 700; color: var(--color-text-primary); margin-bottom: var(--space-6); text-align: center; }
+    .faq-item {
+      border-bottom: 1px solid var(--color-border);
+    }
+    .faq-q {
+      width: 100%; text-align: left; background: none; border: none;
+      padding: var(--space-4) 0; font-family: var(--font-body);
+      font-size: 0.9rem; font-weight: 600; color: var(--color-text-primary);
+      cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+      gap: var(--space-4);
+    }
+    .faq-q:hover { color: var(--color-accent); }
+    .faq-chevron { font-size: 0.8rem; transition: transform 0.2s; color: var(--color-text-muted); }
+    .faq-item.open .faq-chevron { transform: rotate(180deg); }
+    .faq-a {
+      font-size: 0.85rem; color: var(--color-text-secondary); line-height: 1.7;
+      max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.2s;
+    }
+    .faq-item.open .faq-a { max-height: 300px; padding-bottom: var(--space-4); }
+
+    /* Bottom CTA */
+    .bottom-cta {
+      background: var(--color-surface-2);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      padding: var(--space-10) var(--space-6);
+      text-align: center;
+    }
+    .bottom-cta h2 { font-size: 1.5rem; font-weight: 700; color: var(--color-text-primary); margin-bottom: var(--space-3); }
+    .bottom-cta p { font-size: 0.9rem; color: var(--color-text-secondary); margin-bottom: var(--space-5); }
+  </style>
 </head>
 <body>
-<div id="farpa-layout">
-<main class="farpa-content" id="farpa-main">
+  <div id="farpa-sidebar"></div>
+  <div class="page-wrapper">
+    <div id="farpa-topnav"></div>
+    <main class="main-content">
+      <div class="pro-layout">
 
-<!-- HERO -->
-<section class="pro-hero" style="padding-top:0;">
-  <div class="pro-hero-orb1"></div>
-  <div class="pro-hero-orb2"></div>
-  <div class="pro-hero-grid"></div>
-  <div style="max-width:1200px;margin:0 auto;padding:80px 32px;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;width:100%;">
-    <div>
-      <div class="pro-eyebrow"><span class="pro-eyebrow-dot"></span>farpa.ai Pro</div>
-      <h1 class="pro-headline">
-        <span>A farpa que</span><br>
-        <span class="gold">corta mais</span><br>
-        <span>fundo.</span>
-      </h1>
-      <p class="pro-sub">Enquanto o mercado lê resumos, você lê a análise que está por trás. Insights em tempo real, biblioteca completa, alertas instantâneos e análises exclusivas para quem toma decisões.</p>
-      <a href="#pro-final" class="pro-cta-primary">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-        Assinar o Pro — R$97/mês
-      </a>
-      <p class="pro-note">✓ Cancele quando quiser · <strong>primeiros 500 = 3 meses grátis</strong></p>
-    </div>
-    <div class="pro-mockup">
-      <div class="pro-mock-top">
-        <div class="pro-mock-dots"><span style="background:#ff5f57"></span><span style="background:#febc2e"></span><span style="background:#28c840"></span></div>
-        <div class="pro-mock-titlebar">farpa.ai / pro / feed</div>
-        <span class="pro-chip">PRO</span>
-      </div>
-      <div class="pro-feed">
-        <div class="pro-feed-item premium">
-          <div class="pro-pro-badge">⚡ Análise Pro</div>
-          <div class="pro-feed-tag gold">análise profunda · ia generativa</div>
-          <div class="pro-feed-title">Como a regulação europeia de LLMs vai remodelar o mercado brasileiro nos próximos 18 meses</div>
-          <div class="pro-feed-meta"><span class="pro-feed-sources">31 fontes cruzadas</span><div class="pro-feed-bar"><div class="pro-feed-bar-fill" style="width:97%;background:linear-gradient(90deg,#ffd764,#ffb800)"></div></div></div>
+        <!-- Hero -->
+        <div class="pro-hero">
+          <div class="pro-eyebrow">✦ Farpa Pro</div>
+          <h1>IA financeira sem<br/><span>filtros nem limites</span></h1>
+          <p>Acesso completo à biblioteca, análises em tempo real, labs exclusivos e suporte dedicado. Para quem leva a sério.</p>
+          <a href="index.html#waitlist" class="waitlist-cta">Garantir acesso antecipado →</a>
         </div>
-        <div class="pro-feed-item">
-          <div class="pro-feed-tag teal">mercados · urgente</div>
-          <div class="pro-feed-title">Fed sinaliza pausa — o que gestores de fundos estão fazendo agora</div>
-          <div class="pro-feed-meta"><span class="pro-feed-sources">18 fontes</span><div class="pro-feed-bar"><div class="pro-feed-bar-fill" style="width:89%;background:linear-gradient(90deg,#00e5ff,#00ff88)"></div></div></div>
+
+        <!-- Comparison table -->
+        <div class="compare-section">
+          <div class="compare-title">Gratuito vs. Pro</div>
+          <table class="compare-table">
+            <thead>
+              <tr>
+                <th>Recurso</th>
+                <th>Gratuito</th>
+                <th class="pro-col">✦ Pro</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Biblioteca de IA (módulos básicos)</td>
+                <td><span class="check">✓</span></td>
+                <td class="pro-col"><span class="check">✓</span></td>
+              </tr>
+              <tr>
+                <td>Biblioteca de IA (módulos avançados)</td>
+                <td><span class="cross">—</span></td>
+                <td class="pro-col"><span class="check">✓</span></td>
+              </tr>
+              <tr>
+                <td>Mercados ao vivo (dados indicativos)</td>
+                <td><span class="check">✓</span></td>
+                <td class="pro-col"><span class="check">✓</span></td>
+              </tr>
+              <tr>
+                <td>Análise farpa AI (dados em tempo real)</td>
+                <td><span class="cross">—</span></td>
+                <td class="pro-col"><span class="check">✓</span></td>
+              </tr>
+              <tr>
+                <td>Farpa Labs (demos públicos)</td>
+                <td><span class="check">✓</span></td>
+                <td class="pro-col"><span class="check">✓</span></td>
+              </tr>
+              <tr>
+                <td>Farpa Labs (demos exclusivos Pro)</td>
+                <td><span class="cross">—</span></td>
+                <td class="pro-col"><span class="check">✓</span></td>
+              </tr>
+              <tr>
+                <td>Otimizador de portfólio</td>
+                <td><span class="cross">—</span></td>
+                <td class="pro-col"><span class="check">✓</span></td>
+              </tr>
+              <tr>
+                <td>Alertas personalizados</td>
+                <td><span class="cross">—</span></td>
+                <td class="pro-col"><span class="check">✓</span></td>
+              </tr>
+              <tr>
+                <td>Export de relatórios em PDF</td>
+                <td><span class="cross">—</span></td>
+                <td class="pro-col"><span class="check">✓</span></td>
+              </tr>
+              <tr>
+                <td>Suporte prioritário</td>
+                <td><span class="cross">—</span></td>
+                <td class="pro-col"><span class="check">✓</span></td>
+              </tr>
+              <tr>
+                <td>Acesso antecipado a novidades</td>
+                <td><span class="cross">—</span></td>
+                <td class="pro-col"><span class="check">✓</span></td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-        <div class="pro-feed-item premium">
-          <div class="pro-pro-badge">📚 Biblioteca Pro</div>
-          <div class="pro-feed-tag gold">ia generativa · módulo 6</div>
-          <div class="pro-feed-title">LLMs como Sistemas Operacionais — implementação completa com LangChain</div>
-          <div class="pro-feed-meta"><span class="pro-feed-sources">Anotações exclusivas</span><div class="pro-feed-bar"><div class="pro-feed-bar-fill" style="width:100%;background:linear-gradient(90deg,#b57aff,#ffd764)"></div></div></div>
+
+        <!-- Features grid -->
+        <div class="features-section">
+          <div class="features-title">O que você ganha com o Pro</div>
+          <div class="features-grid">
+            <div class="feature-item">
+              <div class="feature-icon">📚</div>
+              <h3>Biblioteca completa desbloqueada</h3>
+              <p>Todos os módulos avançados, cases reais de implementação e frameworks prontos para uso em organizações.</p>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">⚡</div>
+              <h3>Análise AI em tempo real</h3>
+              <p>Insights gerados ao vivo sobre movimentos de mercado, com contexto macroeconômico atualizado a cada hora.</p>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">🔬</div>
+              <h3>Labs exclusivos</h3>
+              <p>Acesso a experimentos em estágio alpha: otimizador de portfólio, gerador de teses de investimento e mais.</p>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">🔔</div>
+              <h3>Alertas inteligentes</h3>
+              <p>Configure gatilhos por ativo, setor ou evento macro. Receba notificações com análise contextual automática.</p>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">📊</div>
+              <h3>Relatórios exportáveis</h3>
+              <p>Exporte análises, watchlists e simulações em PDF formatados para compartilhar com equipe ou clientes.</p>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">🎯</div>
+              <h3>Suporte dedicado</h3>
+              <p>Canal direto com o time farpa para dúvidas, feedbacks e solicitações de conteúdo. Resposta em até 4h.</p>
+            </div>
+          </div>
         </div>
+
+        <!-- FAQ -->
+        <div>
+          <div class="faq-title">Perguntas frequentes</div>
+          <div id="pro-faq">
+            <div class="faq-item">
+              <button class="faq-q" onclick="toggleFaq(this)">Quando o Pro será lançado? <span class="faq-chevron">▼</span></button>
+              <div class="faq-a">Estamos em fase de acesso antecipado. Os primeiros usuários da lista serão notificados assim que abrirmos as vagas. A previsão é para o segundo semestre de 2026.</div>
+            </div>
+            <div class="faq-item">
+              <button class="faq-q" onclick="toggleFaq(this)">Haverá período de teste gratuito? <span class="faq-chevron">▼</span></button>
+              <div class="faq-a">Sim. Usuários da lista de acesso antecipado terão acesso a um trial gratuito por 14 dias com todas as funcionalidades Pro desbloqueadas.</div>
+            </div>
+            <div class="faq-item">
+              <button class="faq-q" onclick="toggleFaq(this)">O plano gratuito continuará disponível? <span class="faq-chevron">▼</span></button>
+              <div class="faq-a">Sim. O plano gratuito permanecerá disponível com acesso aos módulos básicos da Biblioteca, Mercados ao vivo (dados indicativos) e demos públicos do Labs.</div>
+            </div>
+            <div class="faq-item">
+              <button class="faq-q" onclick="toggleFaq(this)">Os dados financeiros são em tempo real? <span class="faq-chevron">▼</span></button>
+              <div class="faq-a">No plano Pro, trabalhamos com dados com latência de até 15 minutos via feeds B3 e integrações com provedores de dados. Usuários gratuitos veem dados indicativos com maior defasagem.</div>
+            </div>
+            <div class="faq-item">
+              <button class="faq-q" onclick="toggleFaq(this)">A farpa AI dá recomendações de investimento? <span class="faq-chevron">▼</span></button>
+              <div class="faq-a">Não. A farpa AI fornece análise educacional e contextual — não constitui recomendação de compra ou venda. Sempre consulte um assessor de investimentos habilitado para decisões financeiras.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom CTA -->
+        <div class="bottom-cta">
+          <h2>Pronto para o próximo nível?</h2>
+          <p>Entre na lista e seja um dos primeiros a acessar o farpa.ai Pro com todas as funcionalidades desbloqueadas.</p>
+          <a href="index.html#waitlist" class="waitlist-cta">Entrar na lista de espera →</a>
+        </div>
+
       </div>
-    </div>
+    </main>
   </div>
-</section>
 
-<!-- FEATURES -->
-<div class="pro-section">
-  <div class="pro-section-eyebrow">O que está incluso</div>
-  <h2 class="pro-section-title">Tudo que o plano grátis<br><span class="gold-text">não tem.</span></h2>
-  <p class="pro-section-sub">O Pro não é apenas "mais do mesmo". É uma camada diferente de inteligência sobre os mesmos eventos.</p>
-  <div class="pro-features-grid">
-    <div class="pro-feat-card hl"><div class="pro-feat-icon">⚡</div><div class="pro-feat-title">Análises Pro em tempo real</div><div class="pro-feat-desc">Cada notícia relevante ganha uma análise aprofundada cruzando múltiplas fontes, identificando implicações não óbvias e posicionando o evento no contexto macro.</div></div>
-    <div class="pro-feat-card"><div class="pro-feat-icon">📚</div><div class="pro-feat-title">Biblioteca completa desbloqueada</div><div class="pro-feat-desc">Todos os módulos da Biblioteca de IA Generativa com anotações exclusivas, implementações de código e referências complementares curadas.</div></div>
-    <div class="pro-feat-card"><div class="pro-feat-icon">🔔</div><div class="pro-feat-title">Alertas instantâneos</div><div class="pro-feat-desc">Notificações sem delay para eventos críticos. Enquanto o plano grátis tem delay de 15 minutos, o Pro entrega no momento em que o evento é detectado.</div></div>
-    <div class="pro-feat-card"><div class="pro-feat-icon">🔗</div><div class="pro-feat-title">Referências públicas completas</div><div class="pro-feat-desc">Todas as fontes citadas em cada análise, com links, autores, data e nível de credibilidade. Rastreabilidade total de cada insight.</div></div>
-    <div class="pro-feat-card"><div class="pro-feat-icon">⚙️</div><div class="pro-feat-title">Integrações Slack &amp; Notion</div><div class="pro-feat-desc">Conecte o farpa.ai ao seu fluxo de trabalho. Alertas direto no Slack da sua equipe e relatórios automáticos no Notion.</div></div>
-    <div class="pro-feat-card hl"><div class="pro-feat-icon">📊</div><div class="pro-feat-title">Relatórios diários e semanais</div><div class="pro-feat-desc">Sínteses curadas das principais tendências, organizadas por setor, com destaque para o que realmente importou e por quê.</div></div>
-  </div>
-</div>
-
-<!-- COMPARE -->
-<div class="pro-section" style="padding-top:0;">
-  <div class="pro-section-eyebrow">Comparação</div>
-  <h2 class="pro-section-title">Grátis <span class="gold-text">vs</span> Pro</h2>
-  <div class="pro-compare-grid">
-    <div class="pro-compare-card pro-compare-free">
-      <div class="pro-plan-label">Plano Grátis</div>
-      <div class="pro-price"><sup style="font-size:20px;font-weight:400;vertical-align:super">R$</sup>0</div>
-      <div class="pro-period">Para sempre</div>
-      <div class="pro-divider"></div>
-      <div class="pro-list">
-        <div class="pro-item"><span class="pro-check">✓</span>Até 3 categorias monitoradas</div>
-        <div class="pro-item"><span class="pro-check">✓</span>20 insights por dia</div>
-        <div class="pro-item"><span class="pro-check">✓</span>Digest semanal por e-mail</div>
-        <div class="pro-item dim"><span class="pro-check">✗</span>Alertas com delay de 15 min</div>
-        <div class="pro-item dim"><span class="pro-check">✗</span>Sem análises aprofundadas</div>
-        <div class="pro-item dim"><span class="pro-check">✗</span>Biblioteca parcial (5/8 módulos)</div>
-        <div class="pro-item dim"><span class="pro-check">✗</span>Sem integrações</div>
-      </div>
-      <a href="index.html" class="pro-cta-btn ghost">Continuar grátis</a>
-    </div>
-    <div class="pro-compare-card pro-compare-pro">
-      <div class="pro-plan-label">Plano Pro</div>
-      <div class="pro-price"><sup style="font-size:20px;font-weight:400;vertical-align:super">R$</sup>97</div>
-      <div class="pro-period">/mês · cancele quando quiser</div>
-      <div class="pro-divider"></div>
-      <div class="pro-list">
-        <div class="pro-item"><span class="pro-check" style="color:var(--pro-gold)">★</span>Categorias ilimitadas</div>
-        <div class="pro-item"><span class="pro-check" style="color:var(--pro-gold)">★</span>Insights ilimitados em tempo real</div>
-        <div class="pro-item"><span class="pro-check" style="color:var(--pro-gold)">★</span>Alertas instantâneos (sem delay)</div>
-        <div class="pro-item"><span class="pro-check" style="color:var(--pro-gold)">★</span>Análises Pro aprofundadas</div>
-        <div class="pro-item"><span class="pro-check" style="color:var(--pro-gold)">★</span>Biblioteca completa (8/8 módulos)</div>
-        <div class="pro-item"><span class="pro-check" style="color:var(--pro-gold)">★</span>Referências públicas completas</div>
-        <div class="pro-item"><span class="pro-check" style="color:var(--pro-gold)">★</span>Slack + Notion + API</div>
-        <div class="pro-item"><span class="pro-check" style="color:var(--pro-gold)">★</span>Relatórios diários e semanais</div>
-      </div>
-      <a href="#pro-final" class="pro-cta-btn main">Quero o Pro agora →</a>
-    </div>
-  </div>
-</div>
-
-<!-- TESTIMONIALS -->
-<div class="pro-section" style="padding-top:0;">
-  <div class="pro-section-eyebrow">Quem usa</div>
-  <h2 class="pro-section-title">Quem paga,<br><span class="gold-text">não volta.</span></h2>
-  <div class="pro-test-grid">
-    <div class="pro-test-card"><div class="pro-stars">★★★★★</div><div class="pro-test-text">"O farpa.ai Pro mudou a forma como faço análise de mercado. Recebi o alerta sobre a mudança de política do Fed 11 minutos antes de qualquer newsletter que assino."</div><div class="pro-test-author"><div class="pro-avatar">R</div><div><div class="pro-test-name">Rodrigo M.</div><div class="pro-test-role">Gestor de fundos · São Paulo</div></div></div></div>
-    <div class="pro-test-card"><div class="pro-stars">★★★★★</div><div class="pro-test-text">"A Biblioteca de IA com as análises Pro é o melhor material em português sobre IA generativa aplicada que já vi. Cada módulo tem código real e contexto de negócio."</div><div class="pro-test-author"><div class="pro-avatar">C</div><div><div class="pro-test-name">Carla F.</div><div class="pro-test-role">CTO · Fintech · Recife</div></div></div></div>
-    <div class="pro-test-card"><div class="pro-stars">★★★★★</div><div class="pro-test-text">"Uso o Pro para preparar os briefings executivos da semana. Em 10 minutos tenho uma visão do que realmente importou globalmente, com fontes para citar."</div><div class="pro-test-author"><div class="pro-avatar">M</div><div><div class="pro-test-name">Marcos L.</div><div class="pro-test-role">Diretor de Estratégia · Multinacional</div></div></div></div>
-  </div>
-</div>
-
-<!-- FINAL CTA -->
-<div class="pro-section" id="pro-final" style="text-align:center;">
-  <div class="pro-final-glow"></div>
-  <div class="pro-section-eyebrow">Acesso antecipado Pro</div>
-  <h2 class="pro-final-title">Corte mais <span class="gold-text">fundo.</span></h2>
-  <p class="pro-final-sub">Os primeiros 500 assinantes garantem 3 meses grátis. Sem fidelidade, sem multa.</p>
-  <form id="pro-form">
-    <div class="pro-email-wrap">
-      <input class="pro-email-input" type="email" id="pro-email" placeholder="seu@email.com" required>
-      <button type="submit" class="pro-email-btn">Garantir meu Pro →</button>
-    </div>
-  </form>
-  <div class="pro-note" id="pro-signup-note" style="margin-top:14px;">✓ Sem cartão agora · 3 meses grátis · Cancele quando quiser</div>
-</div>
-
-<!-- FOOTER -->
-<div class="pro-footer">
-  <div style="max-width:1200px;margin:0 auto;padding:0 32px;">
-    <div class="pro-footer-inner">
-      <div class="pro-footer-logo">farpa<span class="ai">.ai</span></div>
-      <div class="pro-footer-copy">© 2026 FARPA.AI · TODOS OS DIREITOS RESERVADOS</div>
-      <div class="pro-footer-links">
-        <a href="index.html">Home</a>
-        <a href="biblioteca.html">Biblioteca</a>
-        <a href="labs.html">Labs</a>
-        <a href="mercados.html">Mercados</a>
-      </div>
-    </div>
-  </div>
-</div>
-
-<script>
-document.getElementById('pro-form').addEventListener('submit', async function(e) {
-  e.preventDefault();
-  const email = document.getElementById('pro-email').value;
-  const note = document.getElementById('pro-signup-note');
-  const btn = this.querySelector('button');
-  const orig = btn.textContent; btn.textContent = 'Enviando…'; btn.disabled = true;
-  try {
-    const res = await fetch('https://api-leads.rfelipefernandes.workers.dev/api/leads', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({name:'Lead Pro', email, interest:'pro'})
+  <script src="theme-engine.js"></script>
+  <script>
+    function toggleFaq(btn) {
+      const item = btn.closest('.faq-item');
+      item.classList.toggle('open');
+    }
+  </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      window.farpaSidebar.build('pro');
+      window.farpaTopnav.build([{ label: 'Farpa Pro' }]);
     });
-    if (res.ok) { note.textContent='✅ Você está na lista! Entraremos em contato em breve.'; note.style.color='var(--pro-gold)'; document.getElementById('pro-email').value=''; }
-    else throw new Error();
-  } catch { btn.textContent=orig; btn.disabled=false; }
-});
-</script>
-
-</main>
-</div>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  var layout = document.getElementById('farpa-layout');
-  if (!layout) return;
-  var sidebar = window.farpaSidebar.build('pro');
-  layout.insertBefore(sidebar, layout.firstChild);
-  var topnav = window.farpaTopnav.build([{label:'farpa.ai',href:'index.html'},{label:'Plano Pro'}]);
-  layout.insertBefore(topnav, sidebar.nextSibling);
-  var t = localStorage.getItem('farpa_theme');
-  if (t) document.documentElement.setAttribute('data-theme', t);
-  var lang = localStorage.getItem('farpa_lang') || 'pt';
-  document.querySelectorAll('.lang-btn').forEach(function(b) { b.classList.toggle('active', b.id === 'lang-' + lang); });
-});
-</script>
-<style>
-@media(max-width:900px) {
-  .pro-hero > div { grid-template-columns:1fr !important; gap:48px; }
-  .pro-mockup { display:none; }
-}
-@media(max-width:640px) { .pro-section { padding-left:20px; padding-right:20px; } }
-</style>
+  </script>
 </body>
 </html>

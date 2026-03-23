@@ -24,7 +24,7 @@
     <div class="content-section">
       <h2>O Problema: Conhecimento Aprisionado</h2>
       <p>A maioria das organizações possui um ativo valioso subutilizado: seus dados. Documentos, relatórios, planilhas e bases de dados contêm conhecimento estratégico, mas apenas uma pequena fração da força de trabalho consegue acessá-lo eficientemente.</p>
-      <div class="highlight-box"><strong>Realidade corporativa:</strong> 90% dos colaboradores não conseguem extrair insights de dados sem ajuda de analistas. Isso cria gargalos, reduz velocidade organizacional e deixa oportunidades no chão.</div>
+      <div class="highlight-box"><strong>Realidade corporativa:</strong> 90% dos colaboradores não conseguem extrair insights de dados sem ajuda de analistas. Isso cria gargalos e reduz velocidade organizacional.</div>
       <div class="key-points"><h4>Três Barreiras Tradicionais</h4><ul>
         <li><strong>Técnica:</strong> SQL, Python, ferramentas de BI — conhecimento especializado necessário</li>
         <li><strong>Organizacional:</strong> Permissões, governança, silos de dados departamentais</li>
@@ -34,32 +34,15 @@
     <div class="content-section">
       <h2>RAG: Retrieval-Augmented Generation</h2>
       <p>RAG é a técnica que permite que modelos de IA trabalhem com seus dados proprietários sem necessidade de retreinamento. É o "cheat code" para IA corporativa.</p>
-      <h3>Como Funciona RAG?</h3>
       <div class="key-points"><h4>Os Dois Pilares do RAG</h4><ul>
-        <li><strong>Retrieval (Recuperação):</strong> Buscar documentos relevantes de uma base de dados usando embeddings semânticos</li>
-        <li><strong>Augmented Generation:</strong> Passar esses documentos como contexto para o LLM gerar uma resposta fundamentada</li>
+        <li><strong>Retrieval (Recuperação):</strong> Buscar documentos relevantes usando embeddings semânticos</li>
+        <li><strong>Augmented Generation:</strong> Passar esses documentos como contexto para o LLM gerar resposta fundamentada</li>
       </ul></div>
-      <div class="highlight-box"><strong>Vantagem estratégica:</strong> RAG elimina alucinações (respostas inventadas). O modelo só pode responder baseado no contexto fornecido. Perfeito para compliance, LGPD e governança corporativa.</div>
-      <h3>Arquitetura Típica de RAG</h3>
-      <p>1. Seus documentos são convertidos em embeddings e armazenados em banco de dados vetorial (Pinecone, Weaviate, ChromaDB)</p>
-      <p>2. Quando um usuário faz uma pergunta, ela também é convertida em embedding</p>
-      <p>3. O sistema busca os documentos mais similares (distância no espaço vetorial)</p>
-      <p>4. Esses documentos são passados como contexto para o LLM, que gera resposta fundamentada</p>
-    </div>
-    <div class="content-section">
-      <h2>Democratização: Linguagem Natural como Interface</h2>
-      <p>A grande revolução é simples: perguntar em português. Sem SQL. Sem código. Sem intermediários técnicos.</p>
-      <div class="key-points"><h4>Casos de Uso Imediatos</h4><ul>
-        <li><strong>RH:</strong> "Quantos colaboradores temos em São Paulo com mais de 5 anos de empresa?"</li>
-        <li><strong>Vendas:</strong> "Qual foi o ticket médio por região no Q3?"</li>
-        <li><strong>Operações:</strong> "Quais são os 10 fornecedores com maior tempo de entrega?"</li>
-        <li><strong>Executivos:</strong> "Qual é a tendência de churn por segmento de cliente?"</li>
-      </ul></div>
+      <div class="highlight-box"><strong>Vantagem estratégica:</strong> RAG elimina alucinações. O modelo só pode responder baseado no contexto fornecido. Perfeito para compliance, LGPD e governança corporativa.</div>
     </div>
     <div class="content-section">
       <h2>Embeddings: O Coração da Busca Semântica</h2>
       <p>Embeddings são vetores que representam o significado de um texto. Diferente de buscas por palavra-chave, embeddings entendem <strong>significado e contexto</strong>.</p>
-      <p>Se você buscar por "carro", uma busca por palavra-chave não encontrará "automóvel". Com embeddings, encontrará — porque ambos têm significado similar no espaço latente.</p>
       <div class="highlight-box"><strong>Implicação para negócios:</strong> Busca semântica melhora a experiência do usuário e a relevância dos resultados. Reduz o tempo para encontrar informações críticas em repositórios corporativos.</div>
     </div>
     <div class="content-section">
@@ -68,7 +51,6 @@
       <div class="key-points"><h4>Controles de Governança</h4><ul>
         <li><strong>Acesso Granular:</strong> Cada usuário só vê dados que tem permissão para acessar</li>
         <li><strong>Auditoria Completa:</strong> Rastreie quem perguntou o quê, quando e com qual resultado</li>
-        <li><strong>Retenção de Dados:</strong> Dados sensíveis podem ser removidos automaticamente após período definido</li>
         <li><strong>Compliance:</strong> LGPD, GDPR, HIPAA — todos implementáveis sobre RAG</li>
       </ul></div>
     </div>
@@ -81,19 +63,12 @@
 </main>
 </div>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-  var layout = document.getElementById('farpa-layout');
-  if (!layout) return;
-  var sidebar = window.farpaSidebar.build('dados');
-  layout.insertBefore(sidebar, layout.firstChild);
-  var topnav = window.farpaTopnav.build([{"label": "farpa.ai", "href": "index.html"}, {"label": "Dados & Democratiza\u00e7\u00e3o"}]);
-  layout.insertBefore(topnav, sidebar.nextSibling);
-  var t = localStorage.getItem('farpa_theme');
-  if (t) document.documentElement.setAttribute('data-theme', t);
-  var lang = localStorage.getItem('farpa_lang') || 'pt';
-  document.querySelectorAll('.lang-btn').forEach(function(b) {
-    b.classList.toggle('active', b.id === 'lang-' + lang);
-  });
+document.addEventListener('DOMContentLoaded',function(){
+  var layout=document.getElementById('farpa-layout');if(!layout)return;
+  var sidebar=window.farpaSidebar.build('biblioteca');layout.insertBefore(sidebar,layout.firstChild);
+  var topnav=window.farpaTopnav.build([{label:'farpa.ai',href:'index.html'},{label:'Dados & Democratização'}]);layout.insertBefore(topnav,sidebar.nextSibling);
+  var t=localStorage.getItem('farpa_theme');if(t)document.documentElement.setAttribute('data-theme',t);
 });
 </script>
-</body></html>
+</body>
+</html>

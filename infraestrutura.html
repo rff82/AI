@@ -5,7 +5,11 @@
 <meta name="theme-color" content="#0a0a0a">
 <meta name="description" content="Requisitos técnicos, GPUs, TPUs e otimização de custos para IA em escala">
 <title>Infraestrutura & Escala — farpa.ai</title>
-<link rel="icon" type="image/svg+xml" href="farpa-icon.svg"><link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"><link rel="stylesheet" href="tokens.css"><link rel="stylesheet" href="themes.css"><link rel="stylesheet" href="mobile-fixes.css"><link rel="stylesheet" href="content-pages.css"><script src="theme-engine.js"></script>
+<link rel="icon" type="image/svg+xml" href="farpa-icon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css"><link rel="stylesheet" href="themes.css">
+<link rel="stylesheet" href="mobile-fixes.css"><link rel="stylesheet" href="content-pages.css">
+<script src="theme-engine.js"></script>
 </head>
 <body>
 <div id="farpa-layout">
@@ -14,24 +18,20 @@
   <div class="content-page-header">
     <div class="cp-eyebrow"><a href="index.html" class="cp-back">← Voltar</a></div>
     <h1 class="cp-title">Infraestrutura & Escala</h1>
-    <p class="cp-subtitle">Explore os requisitos técnicos, hardware especializado e estratégias de otimização de custos para IA em escala</p>
+    <p class="cp-subtitle">Requisitos técnicos, hardware especializado e estratégias de otimização de custos para IA em escala</p>
   </div>
   <div class="content-body">
-    
     <div class="content-section">
       <h2>Por que Infraestrutura é Crítica?</h2>
       <p>IA não é apenas software. É software + hardware especializado + dados. Sem a infraestrutura certa, você não consegue treinar, servir ou escalar modelos de forma econômica.</p>
-      <div class="highlight-box"><strong>Realidade de custos:</strong> Um modelo GPT-4 custa bilhões de dólares para treinar. Mas você não precisa treinar do zero. Use modelos pré-treinados via API ou open-source e otimize custos de inferência.</div>
+      <div class="highlight-box"><strong>Realidade de custos:</strong> Você não precisa treinar do zero. Use modelos pré-treinados via API ou open-source e otimize custos de inferência.</div>
     </div>
     <div class="content-section">
       <h2>Hardware Especializado para IA</h2>
-      <p>CPUs tradicionais são lentas para IA. Você precisa de aceleradores especializados.</p>
-      <h3>GPUs (Graphics Processing Units)</h3>
-      <p>Processadores paralelos originalmente criados para gráficos. Perfeitos para operações matriciais — o coração de redes neurais.</p>
       <div class="key-points"><h4>Principais GPUs para IA</h4><ul>
         <li><strong>NVIDIA H100:</strong> Topo de linha, ~$40k, para datacenters de alto volume</li>
         <li><strong>NVIDIA A100:</strong> Versão anterior, ~$10-15k, ainda muito usada em produção</li>
-        <li><strong>NVIDIA L40S:</strong> Otimizada para inferência, ~$10k, melhor custo-benefício</li>
+        <li><strong>NVIDIA L40S:</strong> Otimizada para inferência, melhor custo-benefício</li>
         <li><strong>AMD MI300X:</strong> Alternativa emergente, geralmente mais barata</li>
       </ul></div>
       <h3>Comparação: GPU vs TPU vs CPU</h3>
@@ -45,58 +45,35 @@
       </table>
     </div>
     <div class="content-section">
-      <h2>Arquitetura de Deployment</h2>
-      <h3>1. APIs de Terceiros (SaaS)</h3>
-      <div class="key-points"><h4>OpenAI, Anthropic, Google — Vantagens e Desvantagens</h4><ul>
-        <li><strong>✓ Sem infraestrutura:</strong> Você paga por uso, sem capex inicial</li>
-        <li><strong>✓ Modelos de ponta:</strong> Acesso aos melhores modelos do mercado imediatamente</li>
-        <li><strong>✗ Dados na nuvem:</strong> Seus prompts e dados vão para servidores terceirizados</li>
-        <li><strong>✗ Custo em escala:</strong> Pode ficar caro com volumes altos</li>
-      </ul></div>
-      <h3>2. Self-Hosted</h3>
-      <div class="key-points"><h4>Llama 3, Mistral, Phi — sua infraestrutura</h4><ul>
-        <li><strong>✓ Controle total:</strong> Seus dados nunca saem da sua infraestrutura</li>
-        <li><strong>✓ Custo previsível:</strong> Capex e opex sob seu controle</li>
-        <li><strong>✗ Complexidade operacional:</strong> Você gerencia GPUs, scaling e updates</li>
-      </ul></div>
-      <div class="highlight-box"><strong>Recomendação:</strong> Comece com APIs (OpenAI/Anthropic) para prototipagem rápida. Quando o volume crescer, migre para self-hosted com modelos menores (Llama 3 8B–70B) para casos de uso mais sensíveis ou de alto volume.</div>
-    </div>
-    <div class="content-section">
       <h2>Otimização de Custos</h2>
       <div class="key-points"><h4>Técnicas que reduzem custos em 50-70%</h4><ul>
-        <li><strong>Quantização:</strong> Reduzir precisão numérica (float32 → int8) sem perder qualidade perceptível</li>
-        <li><strong>Destilação:</strong> Treinar modelos menores que imitam modelos maiores para tarefas específicas</li>
+        <li><strong>Quantização:</strong> Reduzir precisão numérica sem perder qualidade perceptível</li>
+        <li><strong>Destilação:</strong> Treinar modelos menores que imitam modelos maiores</li>
         <li><strong>Caching:</strong> Armazenar respostas para prompts frequentes</li>
         <li><strong>Batch Processing:</strong> Processar múltiplas requisições simultaneamente</li>
-        <li><strong>Modelos Menores:</strong> Llama 3 8B vs 70B — 10x mais barato, 85% da qualidade para muitas tarefas</li>
       </ul></div>
     </div>
     <div class="content-section">
       <h2>Roadmap de Infraestrutura</h2>
-      <div class="stage-card"><div class="stage-num">01</div><h3>Fase 1: Experimentação (Meses 1-3)</h3>
-        <p>Use APIs (OpenAI, Anthropic) para explorar casos de uso. Custo estimado: ~$1-5k/mês. ROI: aprendizado e identificação de oportunidades.</p></div>
-      <div class="stage-card"><div class="stage-num">02</div><h3>Fase 2: Piloto (Meses 3-6)</h3>
-        <p>Implemente RAG com dados internos. Teste modelos open-source em pequena escala. Custo: ~$10-20k/mês.</p></div>
-      <div class="stage-card"><div class="stage-num">03</div><h3>Fase 3: Produção (Meses 6+)</h3>
-        <p>Self-hosted com GPUs (A100/H100) para cargas de trabalho de alto volume. Econimiza 60%+ vs APIs em escala.</p></div>
+      <div class="stage-card"><div class="stage-num">01</div><h3>Fase 1: Experimentação (Meses 1-3)</h3><p>Use APIs (OpenAI, Anthropic) para explorar casos de uso. Custo estimado: ~$1-5k/mês.</p></div>
+      <div class="stage-card"><div class="stage-num">02</div><h3>Fase 2: Piloto (Meses 3-6)</h3><p>Implemente RAG com dados internos. Teste modelos open-source em pequena escala.</p></div>
+      <div class="stage-card"><div class="stage-num">03</div><h3>Fase 3: Produção (Meses 6+)</h3><p>Self-hosted com GPUs para cargas de trabalho de alto volume. Economiza 60%+ vs APIs em escala.</p></div>
     </div>
-    <div class="nav-buttons"><a href="dados.html" class="nav-btn-cp nav-btn-secondary-cp">← Dados & Democratização</a><a href="maturidade.html" class="nav-btn-cp nav-btn-primary-cp">Próxima: Maturidade →</a></div>
+    <div class="nav-buttons">
+      <a href="dados.html" class="nav-btn-cp nav-btn-secondary-cp">← Dados & Democratização</a>
+      <a href="maturidade.html" class="nav-btn-cp nav-btn-primary-cp">Próxima: Maturidade →</a>
+    </div>
   </div>
 </div>
 </main>
 </div>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-  var layout = document.getElementById('farpa-layout');
-  if (!layout) return;
-  var sidebar = window.farpaSidebar.build('infraestrutura');
-  layout.insertBefore(sidebar, layout.firstChild);
-  var topnav = window.farpaTopnav.build([{"label": "farpa.ai", "href": "index.html"}, {"label": "Infraestrutura & Escala"}]);
-  layout.insertBefore(topnav, sidebar.nextSibling);
-  var t = localStorage.getItem('farpa_theme');
-  if (t) document.documentElement.setAttribute('data-theme', t);
-  var lang = localStorage.getItem('farpa_lang') || 'pt';
-  document.querySelectorAll('.lang-btn').forEach(function(b) { b.classList.toggle('active', b.id === 'lang-' + lang); });
+document.addEventListener('DOMContentLoaded',function(){
+  var layout=document.getElementById('farpa-layout');if(!layout)return;
+  var sidebar=window.farpaSidebar.build('biblioteca');layout.insertBefore(sidebar,layout.firstChild);
+  var topnav=window.farpaTopnav.build([{label:'farpa.ai',href:'index.html'},{label:'Infraestrutura & Escala'}]);layout.insertBefore(topnav,sidebar.nextSibling);
+  var t=localStorage.getItem('farpa_theme');if(t)document.documentElement.setAttribute('data-theme',t);
 });
 </script>
-</body></html>
+</body>
+</html>

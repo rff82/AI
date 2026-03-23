@@ -37,28 +37,22 @@
       <h2>Transformers: A Arquitetura Revolucionária</h2>
       <p>O Transformer é a arquitetura neural que alimenta praticamente todos os modelos de IA generativa modernos (ChatGPT, Claude, Gemini). Publicado em 2017 no paper "Attention is All You Need", ele introduziu o mecanismo de <strong>atenção</strong>.</p>
       <h3>Como funciona a Atenção?</h3>
-      <p>Imagine que você está lendo um texto e precisa entender o significado de uma palavra. Você não lê toda a frase de uma vez; você <strong>foca</strong> nas palavras mais relevantes para aquela palavra específica. O mecanismo de atenção faz exatamente isso: permite que o modelo "olhe" seletivamente para diferentes partes do texto.</p>
+      <p>Imagine que você está lendo um texto e precisa entender o significado de uma palavra. Você não lê toda a frase de uma vez; você <strong>foca</strong> nas palavras mais relevantes. O mecanismo de atenção faz exatamente isso: permite que o modelo "olhe" seletivamente para diferentes partes do texto.</p>
       <div class="highlight-box"><strong>Implicação estratégica:</strong> Transformers conseguem processar contexto de forma muito mais eficiente que arquiteturas anteriores. Modelos modernos conseguem "lembrar" de informações de documentos muito longos — essencial para RAG e análise de dados.</div>
     </div>
     <div class="content-section">
       <h2>Large Language Models (LLMs)</h2>
-      <p>Um LLM é um Transformer treinado em quantidades massivas de texto (centenas de bilhões de palavras) para prever a próxima palavra em uma sequência. Esse treinamento simples resulta em modelos que conseguem realizar tarefas complexas: tradução, resumo, código, análise estratégica.</p>
+      <p>Um LLM é um Transformer treinado em quantidades massivas de texto para prever a próxima palavra em uma sequência. Esse treinamento simples resulta em modelos que conseguem realizar tarefas complexas: tradução, resumo, código, análise estratégica.</p>
       <div class="key-points"><h4>Escala de Modelos</h4><ul>
         <li><strong>Pequenos (7B parâmetros):</strong> Llama 3, Mistral — Bom custo-benefício, rápidos, rodáveis localmente</li>
         <li><strong>Médios (13B–70B):</strong> Llama 3 70B, Claude Haiku — Equilíbrio entre qualidade e custo</li>
-        <li><strong>Grandes (100B+):</strong> GPT-4, Claude Sonnet/Opus — Máxima qualidade, mais caros</li>
+        <li><strong>Grandes (100B+):</strong> GPT-4, Claude Sonnet/Opus — Máxima qualidade</li>
       </ul></div>
-      <p>Para a maioria das aplicações empresariais, modelos de 13B a 70B parâmetros oferecem o melhor ROI.</p>
     </div>
     <div class="content-section">
-      <h2>Espaço Latente e Embeddings</h2>
-      <p>Internamente, os modelos não trabalham com texto diretamente. Eles convertem tudo em <strong>vetores</strong> — listas de números que representam o significado de uma palavra ou conceito. Esse espaço multidimensional é chamado de <strong>espaço latente</strong>.</p>
-      <div class="highlight-box"><strong>Por que isso importa?</strong> O espaço latente permite que o modelo entenda relações semânticas. Palavras com significados similares ficam próximas no espaço. Isso é a base para RAG — a técnica que permite que IA trabalhe com seus dados proprietários sem ser retreinada.</div>
-    </div>
-    <div class="content-section">
-      <h2>Tokens: A Unidade de Processamento</h2>
-      <p>Os modelos não processam caracteres ou palavras inteiras. Eles processam <strong>tokens</strong> — pequenos pedaços de texto (geralmente 3–5 caracteres). Uma frase como "Inteligência Artificial" pode ser dividida em 3–4 tokens.</p>
-      <div class="highlight-box"><strong>Implicação de custo:</strong> APIs de IA cobram por token. Compreender tokenização é essencial para otimizar custos. Um documento de 1.000 palavras tem aproximadamente 1.300–1.500 tokens.</div>
+      <h2>Embeddings e Espaço Latente</h2>
+      <p>Internamente, os modelos não trabalham com texto diretamente. Eles convertem tudo em <strong>vetores</strong> — listas de números que representam o significado de uma palavra ou conceito.</p>
+      <div class="highlight-box"><strong>Por que isso importa?</strong> O espaço latente permite que o modelo entenda relações semânticas. Isso é a base para RAG — a técnica que permite que IA trabalhe com seus dados proprietários sem ser retreinada.</div>
     </div>
     <div class="nav-buttons">
       <a href="index.html" class="nav-btn-cp nav-btn-secondary-cp">← Voltar</a>
@@ -69,19 +63,12 @@
 </main>
 </div>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-  var layout = document.getElementById('farpa-layout');
-  if (!layout) return;
-  var sidebar = window.farpaSidebar.build('fundamentos');
-  layout.insertBefore(sidebar, layout.firstChild);
-  var topnav = window.farpaTopnav.build([{"label": "farpa.ai", "href": "index.html"}, {"label": "Fundamentos de IA"}]);
-  layout.insertBefore(topnav, sidebar.nextSibling);
-  var t = localStorage.getItem('farpa_theme');
-  if (t) document.documentElement.setAttribute('data-theme', t);
-  var lang = localStorage.getItem('farpa_lang') || 'pt';
-  document.querySelectorAll('.lang-btn').forEach(function(b) {
-    b.classList.toggle('active', b.id === 'lang-' + lang);
-  });
+document.addEventListener('DOMContentLoaded',function(){
+  var layout=document.getElementById('farpa-layout');if(!layout)return;
+  var sidebar=window.farpaSidebar.build('biblioteca');layout.insertBefore(sidebar,layout.firstChild);
+  var topnav=window.farpaTopnav.build([{label:'farpa.ai',href:'index.html'},{label:'Fundamentos de IA'}]);layout.insertBefore(topnav,sidebar.nextSibling);
+  var t=localStorage.getItem('farpa_theme');if(t)document.documentElement.setAttribute('data-theme',t);
 });
 </script>
-</body></html>
+</body>
+</html>

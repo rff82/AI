@@ -1,209 +1,476 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#0a0a0a">
-<meta name="description" content="farpa.ai — Dashboard de Mercados ao vivo: B3, NYSE, Nasdaq e Criptomoedas">
-<title>farpa.ai — Mercados ao Vivo</title>
-<link rel="icon" type="image/svg+xml" href="farpa-icon.svg">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="tokens.css">
-<link rel="stylesheet" href="themes.css">
-<link rel="stylesheet" href="mobile-fixes.css">
-<script src="theme-engine.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-<style>
-:root{--void:#0a0a0a;--g1:#141414;--g2:#1e1e1e;--g3:#252525;--g4:#2e2e2e;--border:rgba(255,255,255,0.07);--border-md:rgba(255,255,255,0.13);--border-hi:rgba(255,255,255,0.22);--farpa:#00ff88;--corte:#00e5ff;--urgente:#ff3b3b;--warn:#ffb800;--t1:#f0f0ef;--t2:rgba(240,240,239,0.88);--t3:rgba(240,240,239,0.68);--t4:rgba(240,240,239,0.44);--up:#00e676;--down:#ff3b3b;--font:'Space Grotesk',sans-serif;--mono:'DM Mono',monospace;}
-.page{max-width:1280px;margin:0 auto;padding:32px 32px 80px;}
-.page-header{margin-bottom:28px;display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:16px;}
-.page-eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--farpa);margin-bottom:8px;}
-.page-title{font-size:32px;font-weight:900;letter-spacing:-1.5px;line-height:1;color:var(--t1);}
-.page-sub{font-size:12px;color:var(--t3);margin-top:6px;font-family:var(--mono);letter-spacing:.5px;}
-.live-badge{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;color:var(--t3);letter-spacing:1px;}
-.live-dot{width:7px;height:7px;border-radius:50%;background:var(--farpa);animation:blink 2s ease-in-out infinite;}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-/* Tabs */
-.market-tabs{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;}
-.tab-btn{display:flex;align-items:center;gap:8px;padding:9px 18px;border-radius:10px;border:1px solid var(--border);background:var(--g2);color:var(--t3);font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;transition:all .18s;}
-.tab-btn:hover{border-color:var(--border-md);color:var(--t1);}
-.tab-btn.active{background:var(--farpa);border-color:var(--farpa);color:var(--void);}
-/* Search */
-.search-bar{display:flex;gap:10px;margin-bottom:24px;flex-wrap:wrap;}
-.search-wrap{flex:1;min-width:200px;position:relative;}
-.search-wrap svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:var(--t3);pointer-events:none;}
-.search-input{width:100%;background:var(--g2);border:1px solid var(--border-md);border-radius:10px;padding:11px 14px 11px 40px;color:var(--t1);font-family:var(--mono);font-size:12px;outline:none;transition:border-color .18s,box-shadow .18s;letter-spacing:1px;text-transform:uppercase;}
-.search-input::placeholder{text-transform:none;letter-spacing:0;color:var(--t3);}
-.search-input:focus{border-color:var(--farpa);box-shadow:0 0 0 3px rgba(0,255,136,.1);}
-.search-btn{background:var(--farpa);color:var(--void);border:none;border-radius:10px;padding:11px 22px;font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;transition:opacity .18s;white-space:nowrap;}
-.search-btn:hover{opacity:.88;}
-/* Quick tags */
-.quick-tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px;align-items:center;}
-.quick-label{font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--t3);margin-right:4px;}
-.quick-tag{font-family:var(--mono);font-size:10px;letter-spacing:1px;padding:4px 10px;border-radius:999px;border:1px solid var(--border-md);color:var(--t3);cursor:pointer;transition:all .15s;background:transparent;}
-.quick-tag:hover{border-color:var(--farpa);color:var(--farpa);background:rgba(0,255,136,.06);}
-/* Dashboard grid */
-.dashboard{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-bottom:32px;}
-/* Asset card */
-.asset-card{background:var(--g2);border:1px solid var(--border);border-radius:20px;padding:18px 20px 14px;position:relative;transition:border-color .2s,transform .2s,box-shadow .2s;cursor:pointer;}
-.asset-card:hover{border-color:var(--border-md);transform:translateY(-3px);box-shadow:0 8px 32px rgba(0,0,0,.4);}
-.asset-card.up{border-top:2px solid var(--up);}
-.asset-card.down{border-top:2px solid var(--down);}
-.card-remove{position:absolute;top:12px;right:12px;width:22px;height:22px;border-radius:50%;background:var(--g4);border:1px solid var(--border);color:var(--t3);font-size:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:0;transition:opacity .15s,background .15s;}
-.asset-card:hover .card-remove{opacity:1;}
-.card-remove:hover{background:var(--urgente);color:white;border-color:var(--urgente);}
-.card-ticker{font-family:var(--mono);font-size:10px;letter-spacing:2.5px;color:var(--t3);margin-bottom:4px;}
-.card-name{font-size:14px;font-weight:700;letter-spacing:-.2px;line-height:1.2;padding-right:28px;color:var(--t1);}
-.card-price-row{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin:10px 0;}
-.card-price{font-size:26px;font-weight:900;letter-spacing:-1.5px;line-height:1;color:var(--t1);}
-.card-currency{font-family:var(--mono);font-size:10px;color:var(--t3);margin-right:4px;}
-.card-change{display:inline-flex;align-items:center;gap:4px;font-family:var(--mono);font-size:11px;font-weight:500;padding:3px 8px;border-radius:999px;letter-spacing:.5px;}
-.card-change.up{background:rgba(0,230,118,.12);color:var(--up);}
-.card-change.down{background:rgba(255,59,59,.12);color:var(--down);}
-.card-sparkline{height:38px;margin:8px 0 6px;}
-.card-meta{display:flex;justify-content:space-between;font-family:var(--mono);font-size:9px;color:var(--t3);letter-spacing:.5px;padding-top:8px;border-top:1px solid var(--border);}
-/* Skeleton */
-.skeleton{background:linear-gradient(90deg,var(--g3) 25%,var(--g4) 50%,var(--g3) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:4px;}
-@keyframes shimmer{from{background-position:200% 0}to{background-position:-200% 0}}
-/* Empty state */
-.empty-state{grid-column:1/-1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:64px 32px;text-align:center;border:1px dashed var(--border-md);border-radius:20px;gap:14px;}
-.empty-title{font-size:18px;font-weight:700;color:var(--t2);}
-.empty-sub{font-size:13px;color:var(--t3);max-width:320px;line-height:1.6;}
-/* News */
-.news-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;}
-.news-card{background:var(--g2);border:1px solid var(--border);border-radius:14px;padding:16px 18px;display:flex;flex-direction:column;gap:8px;transition:border-color .2s,transform .2s;}
-.news-card:hover{border-color:var(--border-hi);transform:translateY(-2px);}
-.news-source{font-family:var(--mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--farpa);}
-.news-title{font-size:13px;font-weight:700;line-height:1.4;color:var(--t1);}
-.news-title a{transition:color .15s;}
-.news-title a:hover{color:var(--farpa);}
-.news-date{font-family:var(--mono);font-size:9px;color:var(--t3);margin-top:auto;}
-/* Grad divider */
-.grad-divider{height:1px;background:linear-gradient(90deg,transparent,var(--farpa),var(--corte),transparent);opacity:.2;margin:28px 0;border:none;}
-/* Toast */
-#toast{position:fixed;bottom:28px;right:28px;background:var(--g2);border:1px solid var(--border-md);border-radius:10px;padding:11px 16px;font-family:var(--mono);font-size:12px;color:var(--t1);z-index:999;transform:translateY(10px);opacity:0;transition:all .25s ease;pointer-events:none;max-width:280px;}
-#toast.show{opacity:1;transform:translateY(0);}
-#toast.success{border-color:rgba(0,255,136,.3);color:var(--farpa);}
-#toast.error{border-color:rgba(255,59,59,.3);color:var(--urgente);}
-/* Proxy banner */
-#proxy-banner{display:none;background:rgba(255,184,0,.1);border:1px solid rgba(255,184,0,.3);border-radius:10px;padding:10px 16px;margin-bottom:18px;font-family:var(--mono);font-size:11px;color:var(--warn);letter-spacing:.5px;align-items:center;gap:8px;}
-@media(max-width:640px){.page{padding:20px 16px 60px;}.market-tabs{gap:6px;}.tab-btn{padding:8px 12px;font-size:12px;}}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mercados ao Vivo · farpa.ai</title>
+  <link rel="icon" type="image/svg+xml" href="farpa-icon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="themes.css" />
+  <link rel="stylesheet" href="mobile-fixes.css" />
+  <style>
+    .markets-layout {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-6);
+    }
+    .markets-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: var(--space-3);
+    }
+    .markets-header h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--color-text-primary);
+    }
+    .live-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(16,185,129,0.12);
+      color: #10b981;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 500;
+      padding: 4px 10px;
+      border-radius: 20px;
+      border: 1px solid rgba(16,185,129,0.25);
+    }
+    .live-badge .dot {
+      width: 6px; height: 6px;
+      background: #10b981;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%,100% { opacity:1; transform:scale(1); }
+      50% { opacity:0.5; transform:scale(1.4); }
+    }
+    .disclaimer-bar {
+      background: rgba(245,158,11,0.08);
+      border: 1px solid rgba(245,158,11,0.2);
+      border-radius: var(--radius-md);
+      padding: var(--space-3) var(--space-4);
+      font-size: 0.8rem;
+      color: var(--color-text-secondary);
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+    .disclaimer-bar span.icon { font-size: 1rem; }
+    .section-title {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--color-text-muted);
+      font-family: var(--font-mono);
+      margin-bottom: var(--space-3);
+    }
+    /* Ticker grid */
+    .ticker-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: var(--space-3);
+    }
+    .ticker-card {
+      background: var(--color-surface-2);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4);
+      transition: border-color 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .ticker-card:hover { border-color: var(--color-accent); }
+    .ticker-card .symbol {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--color-text-muted);
+      margin-bottom: 2px;
+    }
+    .ticker-card .name {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--color-text-primary);
+      margin-bottom: var(--space-3);
+    }
+    .ticker-card .price {
+      font-family: var(--font-mono);
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--color-text-primary);
+    }
+    .ticker-card .change {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      font-weight: 500;
+      margin-top: 4px;
+    }
+    .change.up { color: #10b981; }
+    .change.down { color: #ef4444; }
+    .change.neutral { color: var(--color-text-muted); }
+    .sparkline {
+      position: absolute;
+      bottom: 0; right: 0;
+      width: 80px; height: 40px;
+      opacity: 0.3;
+    }
+    /* Crypto section */
+    .crypto-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--space-3) var(--space-4);
+      background: var(--color-surface-2);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      margin-bottom: var(--space-2);
+      transition: border-color 0.2s;
+    }
+    .crypto-row:hover { border-color: var(--color-accent); }
+    .crypto-row .left { display:flex; align-items:center; gap: var(--space-3); }
+    .crypto-icon {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      display: flex; align-items:center; justify-content:center;
+      font-size: 1.1rem;
+      background: var(--color-surface-3);
+    }
+    .crypto-name { font-weight: 600; font-size: 0.9rem; color: var(--color-text-primary); }
+    .crypto-symbol { font-family:var(--font-mono); font-size:0.72rem; color:var(--color-text-muted); }
+    .crypto-right { text-align:right; }
+    .crypto-price { font-family:var(--font-mono); font-size:1rem; font-weight:600; color:var(--color-text-primary); }
+    /* Sentiment */
+    .sentiment-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-3);
+    }
+    @media (max-width: 600px) { .sentiment-grid { grid-template-columns: 1fr; } }
+    .sentiment-card {
+      background: var(--color-surface-2);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4);
+    }
+    .sentiment-card h3 {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--color-text-secondary);
+      margin-bottom: var(--space-3);
+    }
+    .sentiment-meter {
+      height: 8px;
+      background: var(--color-surface-3);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: var(--space-2);
+    }
+    .sentiment-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 1s ease;
+    }
+    .sentiment-labels {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--color-text-muted);
+    }
+    .sentiment-value {
+      font-size: 1.6rem;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      margin-bottom: 4px;
+    }
+    .sentiment-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    /* Fear & Greed colors */
+    .fear { color: #ef4444; }
+    .greed { color: #10b981; }
+    .neutral-s { color: #f59e0b; }
+    /* News feed */
+    .news-item {
+      display: flex;
+      gap: var(--space-3);
+      padding: var(--space-3) 0;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .news-item:last-child { border-bottom: none; }
+    .news-time {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--color-text-muted);
+      min-width: 42px;
+      padding-top: 2px;
+    }
+    .news-headline {
+      font-size: 0.85rem;
+      color: var(--color-text-primary);
+      line-height: 1.4;
+    }
+    .news-tag {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      padding: 1px 6px;
+      border-radius: 3px;
+      margin-right: 4px;
+      font-weight: 600;
+    }
+    .tag-b3 { background: rgba(99,102,241,0.15); color: #818cf8; }
+    .tag-crypto { background: rgba(245,158,11,0.15); color: #f59e0b; }
+    .tag-macro { background: rgba(16,185,129,0.15); color: #10b981; }
+    /* AI analysis panel */
+    .ai-panel {
+      background: var(--color-surface-2);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-5);
+    }
+    .ai-panel-header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      margin-bottom: var(--space-4);
+    }
+    .ai-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--color-accent-alpha);
+      color: var(--color-accent);
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 4px;
+    }
+    .ai-panel p {
+      font-size: 0.88rem;
+      line-height: 1.7;
+      color: var(--color-text-secondary);
+      margin-bottom: var(--space-3);
+    }
+    .ai-panel p:last-child { margin-bottom: 0; }
+    .ai-bullets { list-style: none; padding: 0; margin: var(--space-3) 0; }
+    .ai-bullets li {
+      font-size: 0.85rem;
+      color: var(--color-text-secondary);
+      padding: var(--space-2) 0;
+      border-bottom: 1px solid var(--color-border);
+      padding-left: var(--space-4);
+      position: relative;
+    }
+    .ai-bullets li::before {
+      content: "›";
+      position: absolute;
+      left: 0;
+      color: var(--color-accent);
+      font-weight: 700;
+    }
+    .ai-bullets li:last-child { border-bottom: none; }
+    .refresh-note {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--color-text-muted);
+      margin-top: var(--space-3);
+    }
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-5);
+    }
+    @media (max-width: 768px) { .two-col { grid-template-columns: 1fr; } }
+    .card-section {
+      background: var(--color-surface-2);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-5);
+    }
+  </style>
 </head>
 <body>
-<div id="farpa-layout">
-<main class="farpa-content" id="farpa-main">
-<div class="page">
-  <div class="page-header">
-    <div>
-      <div class="page-eyebrow">Mercados & Finanças</div>
-      <h1 class="page-title">Dashboard de Ativos</h1>
-      <div class="page-sub" id="last-update">Aguardando dados...</div>
-    </div>
-    <div class="live-badge"><div class="live-dot"></div><span id="nav-clock">--:--:--</span></div>
+  <div id="farpa-sidebar"></div>
+  <div class="page-wrapper">
+    <div id="farpa-topnav"></div>
+    <main class="main-content">
+      <div class="markets-layout">
+
+        <div class="markets-header">
+          <h1>Mercados ao Vivo</h1>
+          <div class="live-badge"><span class="dot"></span> Dados simulados · fora do pregão</div>
+        </div>
+
+        <div class="disclaimer-bar">
+          <span class="icon">⚠️</span>
+          <span>Dados exibidos são ilustrativos e gerados por IA para fins educacionais. Não constituem recomendação de investimento. Valores defasados em até 15 minutos em modo de demonstração.</span>
+        </div>
+
+        <!-- B3 Principais -->
+        <div>
+          <div class="section-title">B3 · Principais índices e ações</div>
+          <div class="ticker-grid" id="b3-grid">
+            <!-- JS populated -->
+          </div>
+        </div>
+
+        <!-- Crypto -->
+        <div>
+          <div class="section-title">Crypto · Top ativos digitais</div>
+          <div id="crypto-list"></div>
+        </div>
+
+        <div class="two-col">
+          <!-- Sentiment -->
+          <div>
+            <div class="section-title">Sentimento de mercado</div>
+            <div class="sentiment-grid" id="sentiment-grid"></div>
+          </div>
+          <!-- News -->
+          <div>
+            <div class="section-title">Últimas notícias</div>
+            <div class="card-section">
+              <div id="news-feed"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- AI Analysis -->
+        <div>
+          <div class="section-title">Análise farpa · IA</div>
+          <div class="ai-panel">
+            <div class="ai-panel-header">
+              <span class="ai-badge">✦ farpa AI</span>
+              <span style="font-size:0.8rem; color:var(--color-text-muted)">Atualizado simulado · mar 2026</span>
+            </div>
+            <p>O cenário macro permanece em modo de espera. Com o Fed mantendo juros estáveis e o Copom sinalizando cautela, os mercados emergentes operam com volatilidade contida. O Ibovespa consolida suporte na faixa dos 128k pontos, enquanto o dólar ensaia reversão abaixo de R$ 5,80.</p>
+            <ul class="ai-bullets">
+              <li>Petróleo Brent acima de $82 sustenta momentum para PETR4 no curto prazo</li>
+              <li>BTC consolida acima de $68k — próxima resistência em $72k</li>
+              <li>Atenção ao IPCA de abril: leitura acima de 4,5% pode pressionar juros longos</li>
+              <li>Fluxo estrangeiro na B3 positivo pelo 3º mês consecutivo — sinal de risk-on</li>
+              <li>Temporada de resultados 1T26: bancos e commodities em destaque</li>
+            </ul>
+            <p>Esta análise é gerada automaticamente por modelos de linguagem a partir de dados públicos. Não substitui análise profissional. Consulte um assessor de investimentos.</p>
+            <div class="refresh-note">↻ Análise renovada a cada 6h · Próxima atualização: 18:00 BRT</div>
+          </div>
+        </div>
+
+      </div>
+    </main>
   </div>
 
-  <div class="market-tabs">
-    <button class="tab-btn active" data-market="br" onclick="switchMarket('br',this)"><span>🇧🇷</span> B3 — Brasil</button>
-    <button class="tab-btn" data-market="us" onclick="switchMarket('us',this)"><span>🇺🇸</span> NYSE / Nasdaq</button>
-    <button class="tab-btn" data-market="crypto" onclick="switchMarket('crypto',this)"><span>₿</span> Cripto</button>
-  </div>
+  <script src="theme-engine.js"></script>
+  <script>
+    // Mock data
+    const b3Data = [
+      { symbol:'IBOV', name:'Ibovespa', price:'128.450', change:'+1,23%', dir:'up' },
+      { symbol:'IFIX', name:'Fundos Imob.', price:'3.142', change:'-0,31%', dir:'down' },
+      { symbol:'PETR4', name:'Petrobras PN', price:'R$ 38,72', change:'+2,11%', dir:'up' },
+      { symbol:'VALE3', name:'Vale ON', price:'R$ 61,05', change:'-0,87%', dir:'down' },
+      { symbol:'ITUB4', name:'Itaú PN', price:'R$ 35,40', change:'+0,55%', dir:'up' },
+      { symbol:'BBDC4', name:'Bradesco PN', price:'R$ 14,28', change:'+0,07%', dir:'neutral' },
+      { symbol:'ABEV3', name:'Ambev ON', price:'R$ 12,91', change:'-1,05%', dir:'down' },
+      { symbol:'MGLU3', name:'Magazine Luiza', price:'R$ 2,47', change:'+3,78%', dir:'up' },
+    ];
 
-  <div class="search-bar">
-    <div class="search-wrap">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-      <input class="search-input" id="ticker-input" type="text" placeholder="Digite o ticker (ex: PETR4, AAPL, BTC)" autocomplete="off" autocorrect="off" spellcheck="false">
-    </div>
-    <button class="search-btn" onclick="handleAdd()">Adicionar ativo</button>
-  </div>
+    const cryptoData = [
+      { icon:'₿', name:'Bitcoin', symbol:'BTC', price:'$68.420', change:'+1,84%', dir:'up' },
+      { icon:'Ξ', name:'Ethereum', symbol:'ETH', price:'$3.210', change:'+0,92%', dir:'up' },
+      { icon:'◎', name:'Solana', symbol:'SOL', price:'$142,30', change:'-2,15%', dir:'down' },
+      { icon:'♦', name:'XRP', symbol:'XRP', price:'$0,5821', change:'+0,44%', dir:'up' },
+      { icon:'●', name:'BNB', symbol:'BNB', price:'$584,10', change:'-0,30%', dir:'down' },
+    ];
 
-  <div class="quick-tags" id="quick-tags"><span class="quick-label">Populares:</span></div>
+    const sentimentData = [
+      { title:'Fear & Greed Index', value:'67', label:'Ganância', cls:'greed', fill:'67%', gradient:'linear-gradient(90deg,#ef4444,#f59e0b,#10b981)' },
+      { title:'B3 Sentimento', value:'58', label:'Otimista', cls:'greed', fill:'58%', gradient:'linear-gradient(90deg,#ef4444,#f59e0b,#10b981)' },
+    ];
 
-  <div id="proxy-banner"><span style="font-size:15px;">⚠</span><span id="proxy-banner-msg">Tentando proxy alternativo...</span></div>
+    const newsData = [
+      { time:'14:32', tag:'b3', tagLabel:'B3', headline:'Ibovespa avança 1,2% com alta das commodities e entrada de capital estrangeiro' },
+      { time:'13:55', tag:'macro', tagLabel:'MACRO', headline:'Copom mantém Selic em 10,5% e sinaliza pausa no ciclo de cortes' },
+      { time:'12:40', tag:'crypto', tagLabel:'CRYPTO', headline:'Bitcoin supera $68k pela segunda vez na semana; analistas miram $75k' },
+      { time:'11:18', tag:'b3', tagLabel:'B3', headline:'Petrobras sobe 2% após dados de produção superarem expectativas do mercado' },
+      { time:'09:45', tag:'macro', tagLabel:'MACRO', headline:'Dólar cai abaixo de R$5,80 com fluxo positivo e expectativa de Fed dovish' },
+      { time:'09:02', tag:'crypto', tagLabel:'CRYPTO', headline:'ETFs de Bitcoin registram maior captação semanal desde fevereiro de 2025' },
+    ];
 
-  <div class="dashboard" id="dashboard">
-    <div class="empty-state"><div style="font-size:36px;opacity:.3;">📊</div><div class="empty-title">Nenhum ativo adicionado</div><div class="empty-sub">Digite um ticker no campo acima ou clique em um dos ativos populares.</div></div>
-  </div>
+    // Render B3
+    const b3Grid = document.getElementById('b3-grid');
+    b3Data.forEach(t => {
+      b3Grid.innerHTML += `
+        <div class="ticker-card">
+          <div class="symbol">${t.symbol}</div>
+          <div class="name">${t.name}</div>
+          <div class="price">${t.price}</div>
+          <div class="change ${t.dir}">${t.dir==='up'?'▲':t.dir==='down'?'▼':'▸'} ${t.change}</div>
+        </div>`;
+    });
 
-  <hr class="grad-divider">
+    // Render Crypto
+    const cryptoList = document.getElementById('crypto-list');
+    cryptoData.forEach(c => {
+      cryptoList.innerHTML += `
+        <div class="crypto-row">
+          <div class="left">
+            <div class="crypto-icon">${c.icon}</div>
+            <div>
+              <div class="crypto-name">${c.name}</div>
+              <div class="crypto-symbol">${c.symbol}</div>
+            </div>
+          </div>
+          <div class="crypto-right">
+            <div class="crypto-price">${c.price}</div>
+            <div class="change ${c.dir}">${c.dir==='up'?'▲':'▼'} ${c.change}</div>
+          </div>
+        </div>`;
+    });
 
-  <div id="news-section">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
-      <div style="font-size:17px;font-weight:700;letter-spacing:-.3px;">Notícias do mercado</div>
-      <div style="font-family:var(--mono);font-size:10px;color:var(--t3);letter-spacing:2px;" id="news-meta">Carregando...</div>
-    </div>
-    <div class="news-grid" id="news-grid">
-      <div style="background:var(--g2);border:1px solid var(--border);border-radius:14px;padding:16px 18px;display:flex;flex-direction:column;gap:10px;"><div class="skeleton" style="height:10px;width:40%"></div><div class="skeleton" style="height:12px;width:90%"></div><div class="skeleton" style="height:12px;width:75%"></div><div class="skeleton" style="height:9px;width:30%"></div></div>
-      <div style="background:var(--g2);border:1px solid var(--border);border-radius:14px;padding:16px 18px;display:flex;flex-direction:column;gap:10px;"><div class="skeleton" style="height:10px;width:35%"></div><div class="skeleton" style="height:12px;width:85%"></div><div class="skeleton" style="height:12px;width:70%"></div><div class="skeleton" style="height:9px;width:30%"></div></div>
-      <div style="background:var(--g2);border:1px solid var(--border);border-radius:14px;padding:16px 18px;display:flex;flex-direction:column;gap:10px;"><div class="skeleton" style="height:10px;width:45%"></div><div class="skeleton" style="height:12px;width:80%"></div><div class="skeleton" style="height:12px;width:90%"></div><div class="skeleton" style="height:9px;width:30%"></div></div>
-    </div>
-  </div>
-</div>
-<div id="toast"></div>
+    // Render Sentiment
+    const sentGrid = document.getElementById('sentiment-grid');
+    sentimentData.forEach(s => {
+      sentGrid.innerHTML += `
+        <div class="sentiment-card">
+          <h3>${s.title}</h3>
+          <div class="sentiment-value ${s.cls}">${s.value}</div>
+          <div class="sentiment-label ${s.cls}">${s.label}</div>
+          <div class="sentiment-meter" style="margin-top:var(--space-3)">
+            <div class="sentiment-fill" style="width:${s.fill};background:${s.gradient}"></div>
+          </div>
+          <div class="sentiment-labels"><span>Medo</span><span>Neutro</span><span>Ganância</span></div>
+        </div>`;
+    });
 
-<script>
-const MARKETS={br:{currency:'BRL',suffix:'.SA',quickTags:['PETR4','VALE3','ITUB4','BBDC4','ABEV3','WEGE3','RENT3','B3SA3','IBOV'],newsQuery:'bolsa de valores B3 Brasil ações'},us:{currency:'USD',suffix:'',quickTags:['AAPL','MSFT','NVDA','GOOGL','AMZN','META','TSLA','NFLX','AMD','SPY'],newsQuery:'NYSE Nasdaq stock market US'},crypto:{currency:'USD',suffix:'-USD',quickTags:['BTC','ETH','BNB','SOL','XRP','ADA','DOGE','AVAX','DOT','MATIC'],newsQuery:'cryptocurrency bitcoin crypto market'}};
-let currentMarket='br',activeAssets={},refreshTimer=null;
-const sparklineCharts={};
-const COINGECKO_IDS={'BTC-USD':'bitcoin','ETH-USD':'ethereum','BNB-USD':'binancecoin','SOL-USD':'solana','XRP-USD':'ripple','ADA-USD':'cardano','DOGE-USD':'dogecoin','AVAX-USD':'avalanche-2','DOT-USD':'polkadot','MATIC-USD':'matic-network','LTC-USD':'litecoin'};
-const CORS_PROXIES=[(u)=>`https://api.allorigins.win/get?url=${encodeURIComponent(u)}`,(u)=>`https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`];
-setInterval(()=>{document.getElementById('nav-clock').textContent=new Date().toLocaleTimeString('pt-BR');},1000);
-document.getElementById('nav-clock').textContent=new Date().toLocaleTimeString('pt-BR');
-document.addEventListener('DOMContentLoaded',()=>{switchMarket('br');document.getElementById('ticker-input').addEventListener('keydown',e=>{if(e.key==='Enter')handleAdd();});});
-function switchMarket(market,btn){
-  currentMarket=market;
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-  if(btn)btn.classList.add('active');else document.querySelector(`[data-market="${market}"]`).classList.add('active');
-  renderQuickTags(MARKETS[market].quickTags);
-  document.getElementById('ticker-input').placeholder=market==='crypto'?'Ex: BTC, ETH, SOL':market==='br'?'Ex: PETR4, VALE3, IBOV':'Ex: AAPL, MSFT, NVDA';
-  clearDashboard();loadDefaultAssets(market);loadNews(MARKETS[market].newsQuery);
-}
-function clearDashboard(){Object.keys(sparklineCharts).forEach(t=>{if(sparklineCharts[t]){sparklineCharts[t].destroy();delete sparklineCharts[t];}});activeAssets={};renderEmptyState();}
-function renderQuickTags(tags){const wrap=document.getElementById('quick-tags');wrap.innerHTML='<span class="quick-label">Populares:</span>';tags.forEach(t=>{const btn=document.createElement('button');btn.className='quick-tag';btn.textContent=t;btn.onclick=()=>{document.getElementById('ticker-input').value=t;handleAdd();};wrap.appendChild(btn);});}
-async function handleAdd(){const input=document.getElementById('ticker-input');let raw=input.value.trim().toUpperCase();if(!raw)return;let ticker=raw;if(currentMarket==='br'&&!ticker.endsWith('.SA')&&ticker!=='IBOV')ticker=ticker+'.SA';else if(currentMarket==='crypto'&&!ticker.endsWith('-USD'))ticker=ticker+'-USD';if(activeAssets[ticker]){toast('Ativo já no dashboard','error');input.value='';return;}input.value='';addSkeletonCard(ticker,raw);await fetchAndRenderAsset(ticker,raw);}
-async function loadDefaultAssets(market){const defs={br:[['PETR4.SA','PETR4'],['VALE3.SA','VALE3'],['ITUB4.SA','ITUB4'],['IBOV','^BVSP']],us:[['AAPL','AAPL'],['MSFT','MSFT'],['NVDA','NVDA'],['SPY','SPY']],crypto:[['BTC-USD','BTC'],['ETH-USD','ETH'],['SOL-USD','SOL'],['BNB-USD','BNB']]};clearDashboard();for(const[ticker,label]of defs[market])addSkeletonCard(ticker,label);for(const[ticker,label]of defs[market]){await fetchAndRenderAsset(ticker,label);await sleep(150);}}
-async function fetchWithProxy(targetUrl){let lastErr;for(const proxyFn of CORS_PROXIES){try{const r=await fetch(proxyFn(targetUrl),{signal:AbortSignal.timeout(8000)});if(!r.ok){lastErr=new Error(`HTTP ${r.status}`);continue;}const text=await r.text();let jsonStr=text;try{const w=JSON.parse(text);if(w.contents)jsonStr=w.contents;}catch{}hideBanner();return JSON.parse(jsonStr);}catch(e){lastErr=e;showBanner('Proxy falhou. Tentando próximo...');}}showBanner('Todos os proxies falharam.',true);throw lastErr||new Error('Todos os proxies falharam');}
-function showBanner(msg,isError=false){const b=document.getElementById('proxy-banner'),m=document.getElementById('proxy-banner-msg');if(b&&m){m.textContent=msg;b.style.display='flex';}}
-function hideBanner(){const b=document.getElementById('proxy-banner');if(b)b.style.display='none';}
-async function fetchYahoo(ticker){const url=`https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(ticker)}?interval=1d&range=5d&includePrePost=false`;const data=await fetchWithProxy(url);const result=data?.chart?.result?.[0];if(!result)throw new Error('Sem dados para '+ticker);return result;}
-async function fetchCoinGecko(ticker){const id=COINGECKO_IDS[ticker];if(!id)throw new Error('Cripto não mapeada: '+ticker);const r=await fetch(`https://api.coingecko.com/api/v3/coins/${id}?localization=false&tickers=false&community_data=false&developer_data=false`,{signal:AbortSignal.timeout(8000)});if(!r.ok)throw new Error(`CoinGecko HTTP ${r.status}`);return r.json();}
-function parseYahoo(result){const meta=result.meta;const price=meta.regularMarketPrice??0;const prev=meta.previousClose??meta.chartPreviousClose??price;const change=price-prev;const changePct=prev?(change/prev)*100:0;const sparkline=(result.indicators?.quote?.[0]?.close??[]).filter(Boolean).slice(-20);return{price,prev,change,changePct,currency:meta.currency??'USD',name:meta.shortName??meta.symbol,high:meta.regularMarketDayHigh??price,low:meta.regularMarketDayLow??price,vol:meta.regularMarketVolume??0,sparkline};}
-function parseCoinGecko(data){const m=data.market_data;const price=m.current_price.usd??0;const change=m.price_change_24h??0;const changePct=m.price_change_percentage_24h??0;const sparkline=data.market_data?.sparkline_7d?.price?.slice(-20)??[];return{price,change,changePct,currency:'USD',name:data.name,high:m.high_24h.usd??price,low:m.low_24h.usd??price,vol:m.total_volume.usd??0,sparkline};}
-async function fetchAndRenderAsset(ticker,label){try{let d;if(ticker.endsWith('-USD')){const raw=await fetchCoinGecko(ticker);d=parseCoinGecko(raw);}else{const result=await fetchYahoo(ticker);d=parseYahoo(result);}activeAssets[ticker]=d;renderCard(ticker,label,d);document.getElementById('last-update').textContent='Última atualização: '+new Date().toLocaleTimeString('pt-BR');}catch(e){removeCard(ticker);toast(`Não foi possível carregar ${label}`,'error');}}
-function addSkeletonCard(ticker,label){const empty=document.querySelector('.empty-state');if(empty)empty.remove();const dashboard=document.getElementById('dashboard');const el=document.createElement('div');el.className='asset-card loading';el.id=`card-${sanitizeId(ticker)}`;el.innerHTML=`<div class="card-ticker">${label}</div><div class="skeleton" style="height:12px;width:60%;margin:8px 0"></div><div class="skeleton" style="height:26px;width:55%;margin-bottom:8px"></div><div style="height:38px;background:var(--g3);border-radius:4px;margin:8px 0;"></div><div class="skeleton" style="height:10px;width:35%"></div>`;dashboard.appendChild(el);}
-function renderCard(ticker,label,d){const id=sanitizeId(ticker);let el=document.getElementById(`card-${id}`);if(!el){const empty=document.querySelector('.empty-state');if(empty)empty.remove();el=document.createElement('div');el.id=`card-${id}`;document.getElementById('dashboard').appendChild(el);}
-  const dir=d.change>=0?'up':'down';const sign=d.change>=0?'+':'';const currSym=d.currency==='BRL'?'R$':'US$';
-  el.className=`asset-card ${dir}`;el.onclick=(e)=>{if(!e.target.classList.contains('card-remove'))window.open(`https://finance.yahoo.com/quote/${encodeURIComponent(ticker)}`,'_blank','noopener');};
-  el.innerHTML=`<button class="card-remove" onclick="event.stopPropagation();removeCard('${ticker}')">✕</button><div class="card-ticker">${label}</div><div class="card-name">${d.name}</div><div class="card-price-row"><div class="card-price"><span class="card-currency">${currSym}</span>${fmtPrice(d.price,d.currency)}</div><div class="card-change ${dir}">${dir==='up'?'▲':'▼'} ${sign}${d.changePct.toFixed(2)}%</div></div><div class="card-sparkline"><canvas id="spark-${id}" height="38"></canvas></div><div class="card-meta"><span>Mín: ${currSym}${fmtPrice(d.low,d.currency)}</span><span>Máx: ${currSym}${fmtPrice(d.high,d.currency)}</span><span>Vol: ${fmtVol(d.vol)}</span></div>`;
-  setTimeout(()=>renderSparkline(id,d.sparkline,dir),50);}
-function renderSparkline(id,data,dir){const canvas=document.getElementById(`spark-${id}`);if(!canvas||!data.length)return;if(sparklineCharts[id])sparklineCharts[id].destroy();const color=dir==='up'?'#00e676':'#ff3b3b';const ctx=canvas.getContext('2d');const g=ctx.createLinearGradient(0,0,0,38);g.addColorStop(0,dir==='up'?'rgba(0,230,118,0.25)':'rgba(255,59,59,0.25)');g.addColorStop(1,'rgba(0,0,0,0)');sparklineCharts[id]=new Chart(ctx,{type:'line',data:{labels:data.map((_,i)=>i),datasets:[{data,borderColor:color,borderWidth:1.8,pointRadius:0,tension:.4,fill:true,backgroundColor:g}]},options:{responsive:false,animation:{duration:600},plugins:{legend:{display:false},tooltip:{enabled:false}},scales:{x:{display:false},y:{display:false}}}});}
-function removeCard(ticker){const id=sanitizeId(ticker);const el=document.getElementById(`card-${id}`);if(el)el.remove();if(sparklineCharts[id]){sparklineCharts[id].destroy();delete sparklineCharts[id];}delete activeAssets[ticker];if(!document.querySelectorAll('.asset-card').length)renderEmptyState();}
-function renderEmptyState(){document.getElementById('dashboard').innerHTML='<div class="empty-state"><div style="font-size:36px;opacity:.3;">📊</div><div class="empty-title">Nenhum ativo no dashboard</div><div class="empty-sub">Digite um ticker ou clique em um dos ativos populares.</div></div>';}
-async function loadNews(query){const grid=document.getElementById('news-grid'),meta=document.getElementById('news-meta');try{const rssUrl=`https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=pt-BR&gl=BR&ceid=BR:pt-419`;const r=await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}&count=6`);const json=await r.json();if(json.status!=='ok'||!json.items?.length)throw new Error('Sem itens');const items=json.items.slice(0,6);meta.textContent=`${items.length} notícias · agora`;grid.innerHTML=items.map(item=>{const src=item.author||extractDomain(item.link)||'Fonte';const date=new Date(item.pubDate).toLocaleString('pt-BR',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});return`<div class="news-card"><div class="news-source">${escHtml(src)}</div><div class="news-title"><a href="${item.link}" target="_blank" rel="noopener">${escHtml(item.title)}</a></div><div class="news-date">${date}</div></div>`;}).join('');}catch(e){meta.textContent='Notícias indisponíveis';grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:32px;color:var(--t3);font-size:13px;">Feed de notícias indisponível no momento.</div>';}}
-function fmtPrice(p,currency){if(!p&&p!==0)return'—';return p.toLocaleString(currency==='BRL'?'pt-BR':'en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
-function fmtVol(v){if(!v)return'—';if(v>=1e9)return(v/1e9).toFixed(1)+'B';if(v>=1e6)return(v/1e6).toFixed(1)+'M';if(v>=1e3)return(v/1e3).toFixed(0)+'K';return v.toString();}
-function extractDomain(url){try{return new URL(url).hostname.replace('www.','');}catch{return'';}}
-function sanitizeId(ticker){return ticker.replace(/[^a-zA-Z0-9]/g,'_');}
-function escHtml(str){return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
-let toastTimer;
-function toast(msg,type=''){const el=document.getElementById('toast');el.textContent=msg;el.className=`show ${type}`;clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),3500);}
-setTimeout(()=>setInterval(async()=>{for(const ticker of Object.keys(activeAssets)){try{let d;const label=ticker.replace('.SA','').replace('-USD','');if(ticker.endsWith('-USD')){const raw=await fetchCoinGecko(ticker);d=parseCoinGecko(raw);}else{const result=await fetchYahoo(ticker);d=parseYahoo(result);}activeAssets[ticker]=d;renderCard(ticker,label,d);}catch{}await sleep(300);}},60000),5000);
-</script>
-</main>
-</div>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  var layout = document.getElementById('farpa-layout');
-  if (!layout) return;
-  var sidebar = window.farpaSidebar.build('mercados');
-  layout.insertBefore(sidebar, layout.firstChild);
-  var topnav = window.farpaTopnav.build([{"label": "farpa.ai", "href": "index.html"}, {"label": "Mercados"}]);
-  layout.insertBefore(topnav, sidebar.nextSibling);
-  var t = localStorage.getItem('farpa_theme');
-  if (t) document.documentElement.setAttribute('data-theme', t);
-  var lang = localStorage.getItem('farpa_lang') || 'pt';
-  document.querySelectorAll('.lang-btn').forEach(function(b) { b.classList.toggle('active', b.id === 'lang-' + lang); });
-});
-</script>
-</body></html>
+    // Render News
+    const newsFeed = document.getElementById('news-feed');
+    newsData.forEach(n => {
+      newsFeed.innerHTML += `
+        <div class="news-item">
+          <div class="news-time">${n.time}</div>
+          <div class="news-headline">
+            <span class="news-tag tag-${n.tag}">${n.tagLabel}</span>${n.headline}
+          </div>
+        </div>`;
+    });
+  </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      window.farpaSidebar.build('mercados');
+      window.farpaTopnav.build([{ label: 'Mercados ao Vivo' }]);
+    });
+  </script>
+</body>
+</html>
