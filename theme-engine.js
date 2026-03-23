@@ -82,6 +82,7 @@
       { href: 'index.html',      label: 'Início',     id: 'home' },
       { href: 'biblioteca.html', label: 'Biblioteca', id: 'biblioteca' },
       { href: 'mercados.html',   label: 'Mercado',    id: 'mercados' },
+      { href: 'noticias.html',   label: 'Notícias',   id: 'noticias' },
       { href: 'labs.html',       label: 'Labs',       id: 'labs' }
     ];
 
@@ -149,14 +150,15 @@
     { title: 'Engenharia de LLMs — Vetores e ReAct', cat: 'Módulo 7', icon: '📐', url: 'biblioteca.html#module-7' },
     { title: 'Ecossistema e Estratégia de IA', cat: 'Módulo 8', icon: '🌐', url: 'biblioteca.html#module-8' },
     { title: 'Dashboard de Mercados ao vivo', cat: 'Mercados', icon: '📈', url: 'mercados.html' },
+    { title: 'Notícias em tempo real', cat: 'Notícias', icon: '📰', url: 'noticias.html' },
+    { title: 'Radar de IA, negócios e regulação', cat: 'Notícias · Menu', icon: '⚡', url: 'noticias.html#menu-noticias' },
     { title: 'B3 — Ações brasileiras ao vivo', cat: 'Mercados · B3', icon: '🇧🇷', url: 'mercados.html' },
     { title: 'NYSE / Nasdaq — Ações americanas', cat: 'Mercados · EUA', icon: '🇺🇸', url: 'mercados.html' },
     { title: 'Criptomoedas — BTC, ETH, SOL', cat: 'Mercados · Cripto', icon: '₿', url: 'mercados.html' },
     { title: 'Farpa Labs — Dados abertos e watchlists', cat: 'Labs', icon: '⚗️', url: 'labs.html' },
-    { title: 'Radar macro com SGS + Pix + crédito', cat: 'Labs · Banco Central', icon: '🏦', url: 'labs.html#tools' },
-    { title: 'Pulso do Open Finance', cat: 'Labs · Open Finance', icon: '🔗', url: 'labs.html#tools' },
-    { title: 'Monitor de competição bancária', cat: 'Labs · SFN', icon: '📊', url: 'labs.html#tools' },
-    { title: 'Fontes oficiais priorizadas', cat: 'Labs · Fontes', icon: '🧭', url: 'labs.html#sources' },
+    { title: 'Radar de sinais prioritários', cat: 'Labs · MVPs', icon: '⚗️', url: 'labs.html#mvps' },
+    { title: 'Resumo com contexto e implicação', cat: 'Labs · MVPs', icon: '🧠', url: 'labs.html#mvps' },
+    { title: 'Arquivo vivo de MVPs', cat: 'Labs · Submenus', icon: '🧭', url: 'labs.html#submenus' },
     { title: 'LLM · Large Language Model', cat: 'Glossário', icon: '📖', url: 'biblioteca.html' },
     { title: 'RAG · Geração Aumentada por Recuperação', cat: 'Glossário', icon: '📖', url: 'biblioteca.html' },
     { title: 'Embeddings · Representações vetoriais', cat: 'Glossário', icon: '📖', url: 'biblioteca.html' },

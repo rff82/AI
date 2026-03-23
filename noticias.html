@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Farpa Notícias — menu editorial com notícias em tempo real para acompanhar os temas que importam.">
+  <title>farpa.ai — Notícias</title>
+  <link rel="icon" type="image/svg+xml" href="farpa-icon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="themes.css">
+  <script src="theme-engine.js"></script>
+  <style>
+    :root { --bg:#050505; --panel:#12161d; --panel-2:#0f1319; --border:rgba(255,255,255,.1); --border-strong:rgba(255,255,255,.18); --text:#fff; --muted:rgba(255,255,255,.82); --farpa:#00ff88; --corte:#00e5ff; --purple:#b57aff; }
+    *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font-family:'Space Grotesk',sans-serif} a{text-decoration:none;color:inherit} html{scroll-behavior:smooth}
+    .container{width:min(1180px,calc(100% - 36px));margin:0 auto}.page{padding:112px 0 80px}.hero,.content{display:grid;gap:18px}.hero{grid-template-columns:1.05fr .95fr;align-items:center;margin-bottom:42px}.content{grid-template-columns:320px 1fr;align-items:start}.panel,.hero-panel,.news-card,.menu-card{background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.025));border:1px solid var(--border);border-radius:28px;box-shadow:0 20px 70px rgba(0,0,0,.35)}
+    .hero-panel,.panel{padding:28px}.hero h1{font-size:clamp(2.5rem,5vw,4.8rem);line-height:.98;letter-spacing:-.04em;margin:0 0 14px}.hero h1 span{background:linear-gradient(135deg,var(--corte),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}.eyebrow,.meta,.tab-label{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase}.eyebrow,.tab-label{color:var(--corte)} p{color:var(--muted);line-height:1.72}
+    .hero-list{display:grid;gap:12px;margin-top:18px}.hero-list div{padding:14px 16px;border-radius:16px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08)}
+    .menu-tabs{display:grid;gap:10px;margin-top:18px}.menu-btn{width:100%;text-align:left;padding:16px 18px;border-radius:18px;border:1px solid var(--border);background:rgba(255,255,255,.02);color:#fff;cursor:pointer;transition:.2s ease}.menu-btn:hover,.menu-btn.active{border-color:var(--farpa);background:rgba(0,255,136,.08)}.menu-btn strong{display:block;font-size:1rem;margin-bottom:4px}.menu-btn span{display:block;color:var(--muted);font-size:.94rem;line-height:1.5}
+    .feed-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-end;flex-wrap:wrap;margin-bottom:22px}.feed-head h2{margin:6px 0 8px;font-size:clamp(1.8rem,3vw,2.8rem)}.live-badge{display:inline-flex;gap:8px;align-items:center;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:1px;color:var(--muted)}.live-dot{width:8px;height:8px;border-radius:999px;background:var(--farpa);animation:pulse 1.8s ease-in-out infinite}@keyframes pulse{50%{opacity:.35}}
+    .menu-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:22px}.menu-card{padding:18px}.menu-card h3{margin:10px 0 8px;font-size:1.08rem}.menu-card p{margin:0;font-size:.96rem}
+    .news-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.news-card{padding:20px;min-height:170px}.news-card-source{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--farpa);margin-bottom:10px}.news-card-title{font-size:1.08rem;font-weight:700;line-height:1.45;margin-bottom:12px}.news-card-date{font-size:.9rem;color:var(--muted)}.news-card-desc{font-size:.96rem;color:var(--muted);line-height:1.6}
+    .news-skeleton{padding:20px;border-radius:28px;border:1px solid var(--border);background:rgba(255,255,255,.03)}.skeleton{background:linear-gradient(90deg,rgba(255,255,255,.06) 25%,rgba(255,255,255,.12) 50%,rgba(255,255,255,.06) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:6px;height:12px;margin-bottom:10px}@keyframes shimmer{from{background-position:200% 0}to{background-position:-200% 0}}
+    @media (max-width:1024px){.hero,.content,.menu-summary,.news-grid{grid-template-columns:1fr}} @media (max-width:900px){.page{padding-top:96px}}
+  </style>
+</head>
+<body>
+<div id="farpa-layout">
+  <main class="farpa-content" id="farpa-main">
+    <div class="container page">
+      <section class="hero">
+        <div>
+          <div class="eyebrow">Farpa Notícias</div>
+          <h1>Uma área própria para <span>notícias em tempo real</span>.</h1>
+          <p>As notícias saem do Labs e ganham uma casa dedicada, com um menu editorial para navegar entre assuntos prioritários e acompanhar o feed vivo com mais clareza.</p>
+          <div class="hero-list">
+            <div>Menu de notícias para separar temas e reduzir mistura entre conteúdo vivo e protótipos.</div>
+            <div>Atualização rápida para acompanhar movimentos relevantes em IA, negócios, mercados e regulação.</div>
+            <div>Base ideal para transformar notícias em leitura contínua e depois evoluir para contexto mais profundo.</div>
+          </div>
+        </div>
+        <aside class="hero-panel">
+          <div class="tab-label">Como navegar</div>
+          <h3 style="margin:8px 0 12px;">Escolha um tema no menu e atualize o radar.</h3>
+          <p>Cada submenu representa uma lente editorial. O visitante pode alternar rapidamente entre áreas e ver um resumo do foco antes de mergulhar no feed.</p>
+          <div class="hero-list">
+            <div><strong style="color:#fff">IA & Produto</strong> · lançamentos, modelos, plataformas e movimentos de big tech.</div>
+            <div><strong style="color:#fff">Mercados & Negócios</strong> · empresas, capital, tecnologia e sinais econômicos.</div>
+            <div><strong style="color:#fff">Regulação & Política</strong> · leis, enforcement, geopolítica e disputas estratégicas.</div>
+          </div>
+        </aside>
+      </section>
+
+      <section class="content" id="menu-noticias">
+        <aside class="panel">
+          <div class="eyebrow">Menu de notícias</div>
+          <p>Selecione um submenu para atualizar o feed em tempo real.</p>
+          <div class="menu-tabs" id="news-menu"></div>
+        </aside>
+        <section class="panel">
+          <div class="feed-head">
+            <div>
+              <div class="eyebrow">Feed vivo</div>
+              <h2 id="feed-title">Notícias em destaque</h2>
+              <p id="feed-description">Selecione um submenu para ver o posicionamento editorial e as notícias mais recentes.</p>
+            </div>
+            <div class="live-badge"><span class="live-dot"></span><span id="news-meta">Carregando feed...</span></div>
+          </div>
+          <div class="menu-summary" id="menu-summary"></div>
+          <div class="news-grid" id="news-grid"></div>
+        </section>
+      </section>
+    </div>
+  </main>
+</div>
+<script>
+const NEWS_MENUS = [
+  {
+    id: 'ia',
+    label: 'IA & Produto',
+    query: 'inteligência artificial OR IA OR OpenAI OR Anthropic OR Google AI',
+    description: 'Modelos, plataformas, produtos, infraestrutura e disputas por liderança em IA.',
+    bullets: ['Lançamentos de modelos e produtos', 'Parcerias, chips e infraestrutura', 'Mudanças de posicionamento das plataformas']
+  },
+  {
+    id: 'mercados',
+    label: 'Mercados & Negócios',
+    query: 'mercados OR tecnologia OR startups OR investimentos OR negócios',
+    description: 'Empresas, capital, movimento competitivo, ativos e narrativas que mexem com o mercado.',
+    bullets: ['Empresas e resultados', 'Captação, M&A e estratégia', 'Movimentos econômicos com impacto imediato']
+  },
+  {
+    id: 'regulacao',
+    label: 'Regulação & Política',
+    query: 'regulação tecnologia OR política tecnologia OR antitruste OR lei IA',
+    description: 'Leis, disputas regulatórias, enforcement, diplomacia e temas institucionais.',
+    bullets: ['Projetos de lei e consultas públicas', 'Ações de reguladores', 'Geopolítica aplicada à tecnologia']
+  }
+];
+
+function formatNewsDate(dateStr) {
+  try {
+    const d = new Date(dateStr);
+    return d.toLocaleString('pt-BR', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' });
+  } catch { return dateStr; }
+}
+function extractDomain(url) { try { return new URL(url).hostname.replace('www.',''); } catch { return ''; } }
+function escHtml(str) { return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function renderMenu(activeId) {
+  const menu = document.getElementById('news-menu');
+  menu.innerHTML = NEWS_MENUS.map(item => `
+    <button class="menu-btn ${item.id === activeId ? 'active' : ''}" data-id="${item.id}">
+      <strong>${item.label}</strong>
+      <span>${item.description}</span>
+    </button>`).join('');
+  menu.querySelectorAll('.menu-btn').forEach(btn => {
+    btn.addEventListener('click', () => activateMenu(btn.dataset.id));
+  });
+}
+
+function renderSummary(item) {
+  document.getElementById('feed-title').textContent = item.label;
+  document.getElementById('feed-description').textContent = item.description;
+  document.getElementById('menu-summary').innerHTML = item.bullets.map((bullet, index) => `
+    <article class="menu-card">
+      <div class="tab-label">Foco ${index + 1}</div>
+      <h3>${bullet}</h3>
+      <p>${item.label} organiza o feed para deixar este tema fácil de encontrar.</p>
+    </article>`).join('');
+}
+
+async function loadNews(query) {
+  const newsGrid = document.getElementById('news-grid');
+  const newsMeta = document.getElementById('news-meta');
+  newsGrid.innerHTML = [1,2,3,4,5,6].map(() => `<div class="news-skeleton"><div class="skeleton" style="width:36%"></div><div class="skeleton" style="width:88%"></div><div class="skeleton" style="width:74%"></div><div class="skeleton" style="width:52%"></div></div>`).join('');
+  try {
+    const rssUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=pt-BR&gl=BR&ceid=BR:pt-419`;
+    const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}&count=9`;
+    const response = await fetch(apiUrl);
+    const json = await response.json();
+    if (json.status !== 'ok' || !json.items || !json.items.length) throw new Error('Sem itens');
+    const items = json.items.slice(0, 9);
+    newsMeta.textContent = `${items.length} notícias · atualizado agora`;
+    newsGrid.innerHTML = items.map(item => `
+      <article class="news-card">
+        <div class="news-card-source">${escHtml(item.author || extractDomain(item.link) || 'Fonte')}</div>
+        <div class="news-card-title"><a href="${item.link}" target="_blank" rel="noopener">${escHtml(item.title)}</a></div>
+        <div class="news-card-desc">Feed em tempo real para acelerar leitura, triagem e acompanhamento contínuo do tema.</div>
+        <div class="news-card-date">${formatNewsDate(item.pubDate)}</div>
+      </article>`).join('');
+  } catch (error) {
+    newsMeta.textContent = 'Não foi possível carregar notícias';
+    newsGrid.innerHTML = `<article class="news-card" style="grid-column:1/-1;"><div class="news-card-source">Aviso</div><div class="news-card-title">O feed em tempo real está indisponível no momento.</div><div class="news-card-desc">Se o navegador bloquear a consulta ao RSS, tente abrir a página servida por um host local/remoto com CORS liberado.</div></article>`;
+  }
+}
+
+function activateMenu(id) {
+  const item = NEWS_MENUS.find(entry => entry.id === id) || NEWS_MENUS[0];
+  renderMenu(item.id);
+  renderSummary(item);
+  loadNews(item.query);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  var layout = document.getElementById('farpa-layout');
+  if (layout && window.farpaTopnav) {
+    var topnav = window.farpaTopnav.build('noticias', [{label:'farpa.ai',href:'index.html'},{label:'Notícias'}]);
+    layout.insertBefore(topnav, layout.firstChild);
+  }
+  var t = localStorage.getItem('farpa_theme');
+  if (t) document.documentElement.setAttribute('data-theme', t);
+  activateMenu('ia');
+});
+</script>
+</body>
+</html>
