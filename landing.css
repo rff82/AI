@@ -366,6 +366,10 @@ a.category-card { cursor: pointer; }
 .plan-btn-primary:hover { opacity: 0.9; box-shadow: 0 0 32px rgba(0,255,136,0.25); }
 .plan-btn-ghost { background: transparent; color: var(--text-primary); border-color: var(--border-md); }
 .plan-btn-ghost:hover { border-color: var(--border-hi); background: rgba(255,255,255,0.04); }
+.single-pricing-grid { grid-template-columns: minmax(0, 760px); justify-content: center; }
+.lead-plan-card { text-align: left; }
+.plan-lead-title { font-size: clamp(24px, 3vw, 36px); font-weight: 800; letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 22px; }
+
 
 /* ── CTA ── */
 .cta-section { padding: 140px 0; text-align: center; position: relative; overflow: hidden; border-top: 1px solid var(--border); }
@@ -494,3 +498,70 @@ a.category-card { cursor: pointer; }
 /* ── HERO PADDING FIX (with sidebar + topnav) ── */
 .hero { padding-top: 0 !important; }
 .hero .container { padding-top: 80px; padding-bottom: 80px; }
+
+
+[data-theme="void"] .hero-sub,
+[data-theme="void"] .proof-chip,
+[data-theme="void"] .journey-card p,
+[data-theme="void"] .persona-card p,
+[data-theme="void"] .section-sub,
+[data-theme="void"] .feature-card p,
+[data-theme="void"] .how-step-content p,
+[data-theme="void"] .how-source,
+[data-theme="void"] .how-arrow,
+[data-theme="void"] .cat-desc,
+[data-theme="void"] .cat-count,
+[data-theme="void"] .plan-feature,
+[data-theme="void"] .cta-sub,
+[data-theme="void"] .cta-helper,
+[data-theme="void"] .cta-note,
+[data-theme="void"] .footer-brand-desc,
+[data-theme="void"] .footer-links-title,
+[data-theme="void"] .footer-links-list a,
+[data-theme="void"] .footer-copy,
+[data-theme="void"] .footer-version,
+[data-theme="void"] .hero-stat-label,
+[data-theme="void"] .mockup-url,
+[data-theme="void"] .mockup-card-sources,
+[data-theme="void"] .ticker-item,
+[data-theme="void"] .how-output-pill,
+[data-theme="void"] .ob-sub,
+[data-theme="void"] .ob-desc,
+[data-theme="void"] .ob-skip,
+[data-theme="void"] .sm-kbd,
+[data-theme="void"] .sm-result-cat,
+[data-theme="void"] .sm-footer,
+[data-theme="midnight"] .hero-sub,
+[data-theme="midnight"] .proof-chip,
+[data-theme="midnight"] .journey-card p,
+[data-theme="midnight"] .persona-card p,
+[data-theme="midnight"] .section-sub,
+[data-theme="midnight"] .feature-card p,
+[data-theme="midnight"] .how-step-content p,
+[data-theme="midnight"] .how-source,
+[data-theme="midnight"] .how-arrow,
+[data-theme="midnight"] .cat-desc,
+[data-theme="midnight"] .cat-count,
+[data-theme="midnight"] .plan-feature,
+[data-theme="midnight"] .cta-sub,
+[data-theme="midnight"] .cta-helper,
+[data-theme="midnight"] .cta-note,
+[data-theme="midnight"] .footer-brand-desc,
+[data-theme="midnight"] .footer-links-title,
+[data-theme="midnight"] .footer-links-list a,
+[data-theme="midnight"] .footer-copy,
+[data-theme="midnight"] .footer-version,
+[data-theme="midnight"] .hero-stat-label,
+[data-theme="midnight"] .mockup-url,
+[data-theme="midnight"] .mockup-card-sources,
+[data-theme="midnight"] .ticker-item,
+[data-theme="midnight"] .how-output-pill,
+[data-theme="midnight"] .ob-sub,
+[data-theme="midnight"] .ob-desc,
+[data-theme="midnight"] .ob-skip,
+[data-theme="midnight"] .sm-kbd,
+[data-theme="midnight"] .sm-result-cat,
+[data-theme="midnight"] .sm-footer {
+  color: #ffffff !important;
+  opacity: 1;
+}
