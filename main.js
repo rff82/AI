@@ -79,33 +79,43 @@
   if (form) {
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const input = form.querySelector('input[type="email"]');
-      const btn   = form.querySelector('button[type="submit"]');
-      const email = (input.value || '').trim();
+      const nameInput = form.querySelector('input[name="name"]');
+      const emailInput = form.querySelector('input[name="email"]');
+      const profileInput = form.querySelector('select[name="profile"]');
+      const btn = form.querySelector('button[type="submit"]');
+      const status = document.getElementById('waitlist-status');
+      const email = (emailInput?.value || '').trim();
+      const name = (nameInput?.value || '').trim() || 'Interessado Farpa';
+      const profile = profileInput?.value || 'Waitlist';
 
       if (!email || !email.includes('@')) {
-        input.style.borderColor = '#ff3b3b';
-        setTimeout(() => input.style.borderColor = '', 1500);
+        emailInput.style.borderColor = '#ff3b3b';
+        if (status) status.textContent = 'Digite um e-mail válido para entrar na lista.';
+        setTimeout(() => emailInput.style.borderColor = '', 1500);
         return;
       }
 
       const originalText = btn.textContent;
       btn.textContent = 'Enviando…';
       btn.disabled = true;
+      if (status) status.textContent = 'Enviando seus dados...';
 
       try {
         const response = await fetch('https://api-leads.rfelipefernandes.workers.dev/api/leads', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name: 'Interessado Farpa', email, interest: 'Waitlist' }),
+          body: JSON.stringify({ name, email, interest: 'Waitlist · ' + profile }),
         });
         const result = await response.json();
         if (response.ok) {
-          btn.textContent = '✓ Na lista!';
+          btn.textContent = '✓ Acesso solicitado';
           btn.style.background = '#0a0a0a';
           btn.style.color = 'var(--farpa)';
-          input.value = '';
-          input.placeholder = 'Você está na lista de espera!';
+          if (status) status.textContent = 'Perfeito — recebemos seus dados e vamos priorizar seu acesso.';
+          if (nameInput) nameInput.value = '';
+          emailInput.value = '';
+          if (profileInput) profileInput.selectedIndex = 0;
+          emailInput.placeholder = 'Você entrou na lista!';
         } else {
           throw new Error(result.error || 'Erro ao enviar');
         }
@@ -113,14 +123,34 @@
         console.error('Waitlist error:', error);
         btn.textContent = 'Erro. Tente novamente';
         btn.style.background = '#ff3b3b';
+        if (status) status.textContent = 'Não foi possível enviar agora. Tente novamente em instantes.';
         setTimeout(() => {
           btn.textContent = originalText;
           btn.style.background = '';
           btn.disabled = false;
         }, 3000);
+        return;
       }
+
+      setTimeout(() => {
+        btn.textContent = originalText;
+        btn.style.background = '';
+        btn.style.color = '';
+        btn.disabled = false;
+      }, 3500);
     });
   }
+
+  /* ── FAQ: keep one item open at a time ── */
+  const faqItems = document.querySelectorAll('.faq-item');
+  faqItems.forEach(item => {
+    item.addEventListener('toggle', () => {
+      if (!item.open) return;
+      faqItems.forEach(other => {
+        if (other !== item) other.open = false;
+      });
+    });
+  });
 
   /* ── Smooth scroll for anchor links ── */
   document.querySelectorAll('a[href^="#"]').forEach(link => {
