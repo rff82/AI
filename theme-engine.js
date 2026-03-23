@@ -50,7 +50,7 @@ function buildSidebar(activePage){
     {href:'index.html',      icon:iconHome,    label:'Início',           id:'home'},
     {href:'biblioteca.html', icon:iconLib,     label:'Biblioteca de IA', id:'biblioteca'},
     {href:'mercados.html',   icon:iconChart,   label:'Mercados ao vivo', id:'mercados', badge:'Ao vivo', live:true},
-    {href:'labs.html',       icon:iconLabs,    label:'Farpa Labs',       id:'labs',     badge:'Demos'},
+    {href:'labs.html',       icon:iconLabs,    label:'Labs',       id:'labs',     badge:'Demos'},
     {href:'contato.html',    icon:iconContact, label:'Contato',          id:'contato'},
   ];
   const mainNav=navItems.map(item=>{

@@ -17,17 +17,64 @@
       flex-direction: column;
       gap: var(--space-6);
     }
+    .markets-hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.45fr) minmax(280px, 0.85fr);
+      gap: var(--space-5);
+      align-items: stretch;
+    }
+    .markets-header,
+    .markets-summary,
+    .card-section,
+    .ticker-card,
+    .crypto-row,
+    .sentiment-card,
+    .ai-panel {
+      background: var(--color-surface-2);
+      border: 1px solid var(--color-border);
+      box-shadow: var(--shadow-sm);
+    }
     .markets-header {
       display: flex;
-      align-items: center;
+      flex-direction: column;
+      align-items: flex-start;
       justify-content: space-between;
-      flex-wrap: wrap;
-      gap: var(--space-3);
+      gap: var(--space-4);
+      border-radius: var(--radius-xl);
+      padding: clamp(24px, 4vw, 40px);
+      position: relative;
+      overflow: hidden;
+    }
+    .markets-header::after {
+      content: '';
+      position: absolute;
+      inset: auto -50px -100px auto;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: radial-gradient(circle, color-mix(in srgb, var(--color-accent) 20%, transparent), transparent 70%);
+      pointer-events: none;
+    }
+    .markets-kicker {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-accent);
     }
     .markets-header h1 {
-      font-size: 1.75rem;
+      font-size: clamp(2rem, 4vw, 3rem);
       font-weight: 700;
       color: var(--color-text-primary);
+      max-width: 12ch;
+      line-height: 1.05;
+    }
+    .markets-header-copy {
+      max-width: 58ch;
+      font-size: 0.96rem;
+      line-height: 1.7;
+      color: var(--color-text-secondary);
     }
     .live-badge {
       display: inline-flex;
@@ -52,10 +99,40 @@
       0%,100% { opacity:1; transform:scale(1); }
       50% { opacity:0.5; transform:scale(1.4); }
     }
+    .markets-summary {
+      border-radius: var(--radius-xl);
+      padding: clamp(24px, 3vw, 32px);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: var(--space-4);
+    }
+    .markets-summary-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-3);
+    }
+    .markets-summary-stat {
+      padding: var(--space-3);
+      border-radius: var(--radius-lg);
+      background: var(--color-surface-3);
+      border: 1px solid var(--color-border);
+    }
+    .markets-summary-stat strong {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 1rem;
+      color: var(--color-text-primary);
+      margin-bottom: 4px;
+    }
+    .markets-summary-stat span {
+      font-size: 0.75rem;
+      color: var(--color-text-muted);
+    }
     .disclaimer-bar {
       background: rgba(245,158,11,0.08);
       border: 1px solid rgba(245,158,11,0.2);
-      border-radius: var(--radius-md);
+      border-radius: var(--radius-lg);
       padding: var(--space-3) var(--space-4);
       font-size: 0.8rem;
       color: var(--color-text-secondary);
@@ -88,7 +165,7 @@
       position: relative;
       overflow: hidden;
     }
-    .ticker-card:hover { border-color: var(--color-accent); }
+    .ticker-card:hover { border-color: var(--color-accent); box-shadow: var(--shadow-md); }
     .ticker-card .symbol {
       font-family: var(--font-mono);
       font-size: 0.75rem;
@@ -135,7 +212,7 @@
       margin-bottom: var(--space-2);
       transition: border-color 0.2s;
     }
-    .crypto-row:hover { border-color: var(--color-accent); }
+    .crypto-row:hover { border-color: var(--color-accent); box-shadow: var(--shadow-md); }
     .crypto-row .left { display:flex; align-items:center; gap: var(--space-3); }
     .crypto-icon {
       width: 36px; height: 36px;
@@ -292,12 +369,28 @@
       grid-template-columns: 1fr 1fr;
       gap: var(--space-5);
     }
-    @media (max-width: 768px) { .two-col { grid-template-columns: 1fr; } }
+    @media (max-width: 980px) {
+      .markets-hero,
+      .two-col {
+        grid-template-columns: 1fr;
+      }
+    }
     .card-section {
-      background: var(--color-surface-2);
-      border: 1px solid var(--color-border);
       border-radius: var(--radius-lg);
       padding: var(--space-5);
+    }
+    @media (max-width: 640px) {
+      .markets-header,
+      .markets-summary,
+      .card-section,
+      .ai-panel,
+      .sentiment-card {
+        padding-left: var(--space-4);
+        padding-right: var(--space-4);
+      }
+      .markets-summary-grid {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
@@ -308,10 +401,26 @@
     <main class="main-content">
       <div class="markets-layout">
 
-        <div class="markets-header">
-          <h1>Mercados ao Vivo</h1>
-          <div class="live-badge"><span class="dot"></span> Dados simulados · fora do pregão</div>
-        </div>
+        <section class="markets-hero">
+          <div class="markets-header">
+            <div class="markets-kicker">📈 Mercados</div>
+            <h1>Mercados ao vivo com a linguagem visual da farpa</h1>
+            <p class="markets-header-copy">Painel demonstrativo de bolsa, cripto, sentimento e leitura macro reorganizado para seguir a mesma identidade de cards, espaçamentos e hierarquia visual adotada no restante do site.</p>
+            <div class="live-badge"><span class="dot"></span> Dados simulados · fora do pregão</div>
+          </div>
+          <aside class="markets-summary">
+            <div>
+              <div class="section-title">Resumo do painel</div>
+              <p style="font-size:0.88rem; line-height:1.6; color:var(--color-text-secondary)">Acompanhe os principais blocos do monitor em um layout mais consistente, com leitura rápida para índices, ativos digitais, notícias e sinalização automática da IA.</p>
+            </div>
+            <div class="markets-summary-grid">
+              <div class="markets-summary-stat"><strong>B3</strong><span>índices e ações-chave</span></div>
+              <div class="markets-summary-stat"><strong>Crypto</strong><span>ativos digitais líderes</span></div>
+              <div class="markets-summary-stat"><strong>Sentimento</strong><span>termômetro do mercado</span></div>
+              <div class="markets-summary-stat"><strong>IA</strong><span>resumo automatizado</span></div>
+            </div>
+          </aside>
+        </section>
 
         <div class="disclaimer-bar">
           <span class="icon">⚠️</span>

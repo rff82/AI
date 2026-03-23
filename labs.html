@@ -12,8 +12,41 @@
   <link rel="stylesheet" href="themes.css" />
   <link rel="stylesheet" href="mobile-fixes.css" />
   <style>
+    .labs-page {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+    .labs-hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.45fr) minmax(260px, 0.85fr);
+      gap: var(--space-5);
+      align-items: stretch;
+    }
+    .labs-header,
+    .labs-highlight,
+    .inline-demo,
+    .demo-card {
+      background: var(--color-surface-2);
+      border: 1px solid var(--color-border);
+      box-shadow: var(--shadow-sm);
+    }
     .labs-header {
-      margin-bottom: var(--space-8);
+      margin-bottom: 0;
+      border-radius: var(--radius-xl);
+      padding: clamp(24px, 4vw, 40px);
+      position: relative;
+      overflow: hidden;
+    }
+    .labs-header::after {
+      content: '';
+      position: absolute;
+      inset: auto -60px -90px auto;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: radial-gradient(circle, color-mix(in srgb, var(--color-accent) 22%, transparent), transparent 70%);
+      pointer-events: none;
     }
     .labs-eyebrow {
       display: inline-flex;
@@ -28,16 +61,67 @@
       margin-bottom: var(--space-3);
     }
     .labs-header h1 {
-      font-size: 2rem;
+      font-size: clamp(2rem, 4vw, 3rem);
       font-weight: 700;
       color: var(--color-text-primary);
       margin-bottom: var(--space-3);
+      max-width: 12ch;
+      line-height: 1.05;
     }
     .labs-header p {
       font-size: 1rem;
       color: var(--color-text-secondary);
       max-width: 560px;
       line-height: 1.6;
+    }
+    .labs-highlight {
+      border-radius: var(--radius-xl);
+      padding: clamp(24px, 3vw, 32px);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: var(--space-4);
+    }
+    .labs-highlight-label,
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--color-text-muted);
+    }
+    .labs-highlight h2 {
+      font-size: 1.15rem;
+      color: var(--color-text-primary);
+      margin-bottom: var(--space-2);
+    }
+    .labs-highlight p {
+      color: var(--color-text-secondary);
+      font-size: 0.88rem;
+      line-height: 1.6;
+    }
+    .labs-highlight-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-3);
+    }
+    .labs-highlight-stat {
+      padding: var(--space-3);
+      border-radius: var(--radius-lg);
+      background: var(--color-surface-3);
+      border: 1px solid var(--color-border);
+    }
+    .labs-highlight-stat strong {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 1rem;
+      color: var(--color-text-primary);
+      margin-bottom: 4px;
+    }
+    .labs-highlight-stat span {
+      font-size: 0.75rem;
+      color: var(--color-text-muted);
     }
     /* Demo cards grid */
     .demos-grid {
@@ -47,17 +131,16 @@
       margin-bottom: var(--space-10);
     }
     .demo-card {
-      background: var(--color-surface-2);
-      border: 1px solid var(--color-border);
       border-radius: var(--radius-xl);
       overflow: hidden;
-      transition: border-color 0.2s, transform 0.2s;
+      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
       display: flex;
       flex-direction: column;
     }
     .demo-card:hover {
       border-color: var(--color-accent);
       transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
     }
     .demo-card-visual {
       height: 160px;
@@ -158,8 +241,6 @@
     }
     /* Inline sentiment demo */
     .inline-demo {
-      background: var(--color-surface-2);
-      border: 1px solid var(--color-border);
       border-radius: var(--radius-xl);
       padding: var(--space-6);
       margin-bottom: var(--space-10);
@@ -262,13 +343,12 @@
     .chip:hover { border-color: var(--color-accent); color: var(--color-text-primary); }
     /* Section titles */
     .section-label {
-      font-family: var(--font-mono);
-      font-size: 0.7rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--color-text-muted);
       margin-bottom: var(--space-4);
+    }
+    @media (max-width: 960px) {
+      .labs-hero {
+        grid-template-columns: 1fr;
+      }
     }
     .loading-dots span {
       animation: blink 1.4s infinite;
@@ -277,6 +357,18 @@
     .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
     .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
     @keyframes blink { 0%,80%,100%{opacity:0} 40%{opacity:1} }
+    @media (max-width: 640px) {
+      .labs-header,
+      .labs-highlight,
+      .inline-demo,
+      .demo-card-body {
+        padding-left: var(--space-4);
+        padding-right: var(--space-4);
+      }
+      .labs-highlight-grid {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
 <body>
@@ -284,14 +376,30 @@
   <div class="page-wrapper">
     <div id="farpa-topnav"></div>
     <main class="main-content">
+      <div class="labs-page">
 
-      <div class="labs-header">
-        <div class="labs-eyebrow">⚗️ Farpa Labs</div>
-        <h1>Experimentos interativos de IA</h1>
-        <p>Demonstrações práticas de como modelos de linguagem e algoritmos de IA podem ser aplicados a problemas reais de finanças e negócios. Explore, teste, quebre.</p>
-      </div>
+        <section class="labs-hero">
+          <div class="labs-header">
+            <div class="labs-eyebrow">⚗️ Labs</div>
+            <h1>Experimentos interativos com a identidade farpa</h1>
+            <p>Demonstrações práticas de como modelos de linguagem e algoritmos de IA podem ser aplicados a problemas reais de finanças e negócios, agora com a mesma linguagem visual do restante do site.</p>
+          </div>
+          <aside class="labs-highlight">
+            <div>
+              <div class="labs-highlight-label">Visão geral</div>
+              <h2>Ambiente de testes com foco em IA aplicada</h2>
+              <p>Explore demos de sentimento, simulação e explicabilidade em cards, blocos e espaçamentos alinhados com a experiência principal da farpa.ai.</p>
+            </div>
+            <div class="labs-highlight-grid">
+              <div class="labs-highlight-stat"><strong>4</strong><span>experimentos publicados</span></div>
+              <div class="labs-highlight-stat"><strong>Ao vivo</strong><span>demonstrações navegáveis</span></div>
+              <div class="labs-highlight-stat"><strong>IA</strong><span>aplicada a finanças</span></div>
+              <div class="labs-highlight-stat"><strong>UX</strong><span>visual consistente</span></div>
+            </div>
+          </aside>
+        </section>
 
-      <!-- Inline Sentiment Analyzer -->
+        <!-- Inline Sentiment Analyzer -->
       <div class="section-label">Demo em destaque · Análise de Sentimento</div>
       <div class="inline-demo">
         <div class="inline-demo-header">
@@ -325,8 +433,9 @@
       </div>
 
       <!-- Demos Grid -->
-      <div class="section-label">Todos os experimentos</div>
-      <div class="demos-grid">
+      <div>
+        <div class="section-label">Todos os experimentos</div>
+        <div class="demos-grid">
 
         <div class="demo-card">
           <div class="demo-card-visual sentiment-bg">
@@ -483,7 +592,7 @@ Nada além do JSON. Sem markdown.`
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       window.farpaSidebar.build('labs');
-      window.farpaTopnav.build([{ label: 'Farpa Labs' }]);
+      window.farpaTopnav.build([{ label: 'Labs' }]);
     });
   </script>
 </body>
