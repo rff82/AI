@@ -333,24 +333,64 @@ async function loadCryptoChart(){
 
 async function loadProxyChart(){
   const symbol=currentMarket==='b3'?currentAsset.b3:currentAsset.nyse;
-  document.getElementById('chart-asset-name').textContent=symbol.replace('.SA','');
-  try{
-    const r=await fetchRetry(WORKER_URL+'/chart?symbol='+encodeURIComponent(symbol)+'&days='+currentPeriodDays,{},3);
-    const d=await r.json();
-    if(!d.prices||!d.prices.length)throw new Error('No data');
-    const labels=d.prices.map(p=>new Date(p.date).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'}));
-    const prices=d.prices.map(p=>p.close);
-    const first=prices[0],last=prices[prices.length-1];
-    const change=((last-first)/first)*100,up=change>=0;
-    document.getElementById('chart-price').textContent=(currentMarket==='b3'?'R$ ':'$')+last.toFixed(2);
-    const chgEl=document.getElementById('chart-change');
-    chgEl.textContent=(up?'▲ +':'▼ ')+Math.abs(change).toFixed(2)+'%';
-    chgEl.className='chart-change-badge '+(up?'up':'dn');
-    renderChart(labels,prices,up);
-  }catch(e){
-    document.getElementById('chart-price').textContent='Worker proxy necessário';
-    renderChart([],[],true);
+  const displayName=symbol.replace('.SA','');
+  let workerOk=false;
+
+  // 3 tentativas no worker proxy
+  for(let attempt=1;attempt<=3;attempt++){
+    try{
+      document.getElementById('chart-asset-name').textContent=displayName+' · tentativa '+attempt+'/3...';
+      const r=await fetch(WORKER_URL+'/chart?symbol='+encodeURIComponent(symbol)+'&days='+currentPeriodDays,{signal:AbortSignal.timeout(6000)});
+      if(!r.ok)throw new Error('HTTP '+r.status);
+      const d=await r.json();
+      if(!d.prices||!d.prices.length)throw new Error('Sem dados');
+      const labels=d.prices.map(p=>new Date(p.date).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'}));
+      const prices=d.prices.map(p=>p.close);
+      const first=prices[0],last=prices[prices.length-1];
+      const change=((last-first)/first)*100,up=change>=0;
+      document.getElementById('chart-asset-name').textContent=displayName;
+      document.getElementById('chart-price').textContent=(currentMarket==='b3'?'R$ ':'$')+last.toFixed(2);
+      const chgEl=document.getElementById('chart-change');
+      chgEl.textContent=(up?'▲ +':'▼ ')+Math.abs(change).toFixed(2)+'%';
+      chgEl.className='chart-change-badge '+(up?'up':'dn');
+      renderChart(labels,prices,up);
+      workerOk=true;break;
+    }catch(e){
+      if(attempt<3)await new Promise(r=>setTimeout(r,800*attempt));
+    }
   }
+  if(workerOk)return;
+
+  // Fallback brapi.dev para B3
+  if(currentMarket==='b3'){
+    try{
+      const ticker=symbol.replace('.SA','');
+      const rangeMap={7:'5d',28:'1mo',30:'1mo',90:'3mo',180:'6mo',365:'1y',730:'2y',1825:'5y'};
+      const range=rangeMap[currentPeriodDays]||'1mo';
+      document.getElementById('chart-asset-name').textContent=ticker+' · fallback brapi...';
+      const r=await fetch('https://brapi.dev/api/quote/'+ticker+'?range='+range+'&interval=1d&fundamental=false');
+      const d=await r.json();
+      const hist=d.results?.[0]?.historicalDataPrice;
+      if(!hist||!hist.length)throw new Error('Sem histórico');
+      const labels=hist.map(p=>new Date(p.date*1000).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'}));
+      const prices=hist.map(p=>p.close).filter(Boolean);
+      const first=prices[0],last=prices[prices.length-1];
+      const change=((last-first)/first)*100,up=change>=0;
+      document.getElementById('chart-asset-name').textContent=ticker+' (B3)';
+      document.getElementById('chart-price').textContent='R$ '+last.toFixed(2);
+      const chgEl=document.getElementById('chart-change');
+      chgEl.textContent=(up?'▲ +':'▼ ')+Math.abs(change).toFixed(2)+'%';
+      chgEl.className='chart-change-badge '+(up?'up':'dn');
+      renderChart(labels,prices,up);
+      return;
+    }catch(e2){/* cai no erro final */}
+  }
+
+  // Estado de erro final
+  document.getElementById('chart-asset-name').textContent=displayName;
+  document.getElementById('chart-price').textContent=currentMarket==='b3'?'Indisponível após 3 tentativas':'Requer configuração do Worker proxy';
+  const chgEl=document.getElementById('chart-change');chgEl.textContent='—';chgEl.className='chart-change-badge nt';
+  renderChart([],[],true);
 }
 
 function renderChart(labels,prices,up){
