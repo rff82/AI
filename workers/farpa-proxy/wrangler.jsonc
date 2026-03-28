@@ -1,0 +1,21 @@
+// wrangler.jsonc — farpa-proxy worker
+// Deploy: npx wrangler deploy
+{
+  "name": "farpa-proxy",
+  "main": "src/index.ts",
+  "compatibility_date": "2025-03-07",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1
+  },
+  "vars": {
+    "ANTHROPIC_API_KEY": ""
+  },
+  "routes": [
+    {
+      "pattern": "farpa-proxy.rfelipefernandes.workers.dev/*",
+      "zone_name": ""
+    }
+  ]
+}

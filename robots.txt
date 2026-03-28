@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /teste.html
+Disallow: /leads.html
+Sitemap: https://farpa.ai/sitemap.xml

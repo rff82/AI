@@ -1,0 +1,29 @@
+/* farpa.ai — Mobile & Cross-browser Fixes v4.0 */
+html,body{-webkit-tap-highlight-color:transparent;touch-action:manipulation;-webkit-text-size-adjust:100%;text-size-adjust:100%;overflow-x:hidden}
+@media(hover:none),(pointer:coarse){*,*::before,*::after{cursor:auto!important}}
+@media(max-width:768px){*,*::before,*::after{cursor:auto!important}}
+.farpa-sidebar{z-index:1000!important;-webkit-overflow-scrolling:touch}
+.farpa-topnav{z-index:1100!important;position:fixed;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
+.search-overlay{z-index:9999!important}
+input,textarea,select{font-size:max(16px,1em)!important}
+.sb-item{transition:background .18s,color .18s,border-color .18s,transform .12s!important}
+.sb-item:active{transform:scale(.97)}
+.reveal{transition:opacity .65s cubic-bezier(.4,0,.2,1),transform .65s cubic-bezier(.4,0,.2,1)!important}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  .hero-eyebrow,.hero-headline,.hero-sub,.hero-actions,.hero-stats,.hero-visual{animation:none!important;opacity:1!important;transform:none!important}
+}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border-md,rgba(0,0,0,.16));border-radius:2px}
+:focus-visible{outline:2px solid var(--accent,#c0392b);outline-offset:3px;border-radius:3px}
+:focus:not(:focus-visible){outline:none}
+[data-theme="alto-contraste"] :focus-visible{outline:3px solid #ffff00!important;outline-offset:2px!important;border-radius:2px!important}
+#farpa-layout>.farpa-content,.farpa-content{padding-top:52px}
+@media(max-width:900px){
+  #nav-collapse-btn{display:none!important}
+  .farpa-content{margin-left:0!important;padding-top:52px!important}
+  .farpa-topnav{left:0!important}
+}
+@media(max-width:680px){.search-text,.nav-search-kbd{display:none!important}.nav-pro{display:none}}
+@media(max-width:420px){.nav-lang{display:none}}

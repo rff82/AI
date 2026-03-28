@@ -1,0 +1,110 @@
+<!DOCTYPE html><html lang="pt-BR"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#fafaf9"><meta name="description" content="Simulador de Trading com dados reais — pratique estratégias com cotações B3 e NYSE via Yahoo Finance">
+<meta name="keywords" content="simulador trading, B3, NYSE, cotações, Yahoo Finance, prática mercado">
+<link rel="canonical" href="https://farpa.ai/trader-sim.html">
+<title>Trader Simulator — farpa.ai</title>
+<link rel="icon" type="image/svg+xml" href="farpa-icon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css"><link rel="stylesheet" href="themes.css"><link rel="stylesheet" href="mobile-fixes.css"><link rel="stylesheet" href="content-pages.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<script src="theme-engine.js"></script>
+<style>
+.sim-page{max-width:960px;margin:0 auto;padding:0 28px 80px}
+.sim-controls{display:flex;gap:10px;margin:20px 0;flex-wrap:wrap;align-items:center}
+.sim-select{background:var(--input-bg);border:1px solid var(--border-md);border-radius:var(--r-md);padding:8px 12px;color:var(--text-1);font-family:var(--font-mono);font-size:12px;outline:none}
+.sim-select:focus{border-color:var(--accent)}
+.sim-btn{padding:8px 16px;border-radius:var(--r-md);font-family:var(--font-head);font-size:13px;font-weight:700;border:1px solid var(--border-md);background:transparent;color:var(--btn-on-surface,var(--text-1));cursor:pointer;transition:all .15s}
+.sim-btn:hover{border-color:var(--accent);color:var(--accent)}
+.sim-btn.active{background:var(--accent);border-color:var(--accent);color:var(--btn-on-accent,#fff)}
+.chart-wrap{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--r-xl);padding:20px;margin-bottom:20px;position:relative}
+.sim-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+.sim-stat{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--r-lg);padding:14px;text-align:center}
+.sim-stat-label{font-family:var(--font-mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text-3);margin-bottom:4px}
+.sim-stat-val{font-size:22px;font-weight:900;color:var(--text-1);font-family:var(--font-mono)}
+.sim-stat-val.up{color:var(--accent-success)}.sim-stat-val.dn{color:var(--accent-danger)}
+@media(max-width:640px){.sim-stats{grid-template-columns:1fr 1fr}}
+</style></head><body>
+<div id="farpa-layout"><main class="farpa-content" id="farpa-main">
+<div class="sim-page">
+  <div class="content-page-header"><div class="cp-eyebrow"><a href="labs.html" class="cp-back">← Labs</a></div><h1 class="cp-title">Trader <span>Simulator</span></h1><p class="cp-subtitle">Cotações reais via Yahoo Finance — pratique estratégias sem risco</p></div>
+
+  <div class="sim-controls">
+    <select class="sim-select" id="sim-symbol">
+      <optgroup label="B3"><option value="PETR4.SA">PETR4</option><option value="VALE3.SA">VALE3</option><option value="ITUB4.SA">ITUB4</option><option value="BBDC4.SA">BBDC4</option><option value="WEGE3.SA">WEGE3</option></optgroup>
+      <optgroup label="NYSE"><option value="AAPL">AAPL</option><option value="MSFT">MSFT</option><option value="GOOGL">GOOGL</option><option value="NVDA">NVDA</option><option value="TSLA">TSLA</option></optgroup>
+    </select>
+    <button class="sim-btn active" onclick="setRange('1d','5m',this)">1D</button>
+    <button class="sim-btn" onclick="setRange('5d','15m',this)">5D</button>
+    <button class="sim-btn" onclick="setRange('1mo','1d',this)">1M</button>
+    <button class="sim-btn" onclick="setRange('3mo','1d',this)">3M</button>
+    <button class="sim-btn" onclick="setRange('1y','1wk',this)">1A</button>
+    <button class="sim-btn" style="margin-left:auto;background:var(--accent);border-color:var(--accent);color:var(--btn-on-accent,#fff)" onclick="loadChart()">Atualizar</button>
+  </div>
+
+  <div class="sim-stats">
+    <div class="sim-stat"><div class="sim-stat-label">Preço</div><div class="sim-stat-val" id="stat-price">—</div></div>
+    <div class="sim-stat"><div class="sim-stat-label">Variação</div><div class="sim-stat-val" id="stat-change">—</div></div>
+    <div class="sim-stat"><div class="sim-stat-label">Máxima</div><div class="sim-stat-val" id="stat-high">—</div></div>
+    <div class="sim-stat"><div class="sim-stat-label">Mínima</div><div class="sim-stat-val" id="stat-low">—</div></div>
+  </div>
+
+  <div class="chart-wrap"><canvas id="price-chart" height="320"></canvas></div>
+</div></main></div>
+
+<script>
+const WORKER='https://farpa-proxy.rfelipefernandes.workers.dev';
+let chart=null;let currentRange='1d';let currentInterval='5m';
+
+function setRange(r,i,btn){
+  currentRange=r;currentInterval=i;
+  document.querySelectorAll('.sim-btn').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  loadChart();
+}
+
+async function loadChart(){
+  const sym=document.getElementById('sim-symbol').value;
+  try{
+    const r=await fetch(WORKER+'/yahoo?symbol='+encodeURIComponent(sym)+'&range='+currentRange+'&interval='+currentInterval);
+    const d=await r.json();
+    if(!d.data)throw new Error('No data');
+    const ts=d.data.timestamp||[];
+    const closes=d.data.indicators?.quote?.[0]?.close||[];
+    const highs=d.data.indicators?.quote?.[0]?.high||[];
+    const lows=d.data.indicators?.quote?.[0]?.low||[];
+
+    const labels=ts.map(t=>new Date(t*1000).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}));
+    const validCloses=closes.filter(c=>c!=null);
+    const last=validCloses[validCloses.length-1]||0;
+    const first=validCloses[0]||0;
+    const change=first?((last-first)/first*100):0;
+    const high=Math.max(...highs.filter(h=>h!=null));
+    const low=Math.min(...lows.filter(l=>l!=null));
+
+    document.getElementById('stat-price').textContent=last.toFixed(2);
+    const chgEl=document.getElementById('stat-change');
+    chgEl.textContent=(change>=0?'+':'')+change.toFixed(2)+'%';
+    chgEl.className='sim-stat-val '+(change>=0?'up':'dn');
+    document.getElementById('stat-high').textContent=high.toFixed(2);
+    document.getElementById('stat-low').textContent=low.toFixed(2);
+
+    const styles=getComputedStyle(document.documentElement);
+    const accent=styles.getPropertyValue('--accent').trim();
+    const borderColor=styles.getPropertyValue('--border').trim();
+    const textColor=styles.getPropertyValue('--text-1').trim();
+
+    if(chart)chart.destroy();
+    chart=new Chart(document.getElementById('price-chart'),{type:'line',data:{labels,datasets:[{label:sym,data:closes,borderColor:accent,backgroundColor:accent+'22',fill:true,tension:.3,pointRadius:0,borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:textColor+'88',maxTicksLimit:8,font:{size:10}},grid:{color:borderColor}},y:{ticks:{color:textColor+'88',font:{size:10}},grid:{color:borderColor}}}}});
+  }catch(e){console.error('Chart error:',e)}
+}
+
+document.getElementById('sim-symbol').addEventListener('change',loadChart);
+document.addEventListener('DOMContentLoaded',function(){
+  var l=document.getElementById('farpa-layout');if(!l)return;
+  l.insertBefore(window.farpaSidebar.build('labs'),l.firstChild);
+  l.insertBefore(window.farpaTopnav.build([{label:'farpa.ai',href:'index.html'},{label:'Labs',href:'labs.html'},{label:'Trader Sim'}]),l.children[1]);
+  loadChart();
+});
+</script>
+</body></html>

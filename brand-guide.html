@@ -1,0 +1,45 @@
+<!DOCTYPE html><html lang="pt-BR"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#fafaf9"><meta name="description" content="Guia de marca farpa.ai — identidade visual, paleta, tipografia e tom de voz">
+<link rel="canonical" href="https://farpa.ai/brand-guide.html">
+<title>Brand Guide — farpa.ai</title>
+<link rel="icon" type="image/svg+xml" href="farpa-icon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css"><link rel="stylesheet" href="themes.css"><link rel="stylesheet" href="mobile-fixes.css"><link rel="stylesheet" href="content-pages.css">
+<script src="theme-engine.js"></script>
+<style>
+.color-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin:20px 0}
+.color-swatch{border-radius:var(--r-lg);padding:18px 14px;border:1px solid var(--border)}
+.color-swatch-block{width:100%;height:48px;border-radius:var(--r-md);margin-bottom:10px}
+.color-swatch-name{font-size:12px;font-weight:700;color:var(--text-1)}
+.color-swatch-hex{font-family:var(--font-mono);font-size:10px;color:var(--text-3)}
+.type-sample{margin:14px 0;padding:18px;background:var(--bg-2);border-radius:var(--r-lg);border:1px solid var(--border)}
+.type-sample h3{margin-bottom:4px}
+</style></head><body>
+<div id="farpa-layout"><main class="farpa-content" id="farpa-main">
+<div class="content-page-wrapper">
+  <div class="content-page-header"><div class="cp-eyebrow"><a href="index.html" class="cp-back">← Início</a></div><h1 class="cp-title">Brand <span>Guide</span></h1><p class="cp-subtitle">Identidade visual, paleta de cores, tipografia e princípios de design</p></div>
+  <div class="content-body">
+    <div class="content-section"><h2>Paleta de Cores</h2>
+      <div class="color-grid">
+        <div class="color-swatch"><div class="color-swatch-block" style="background:#c0392b"></div><div class="color-swatch-name">Farpa Red</div><div class="color-swatch-hex">#c0392b</div></div>
+        <div class="color-swatch"><div class="color-swatch-block" style="background:#1565c0"></div><div class="color-swatch-name">Corte Blue</div><div class="color-swatch-hex">#1565c0</div></div>
+        <div class="color-swatch"><div class="color-swatch-block" style="background:#6a1b9a"></div><div class="color-swatch-name">Purple</div><div class="color-swatch-hex">#6a1b9a</div></div>
+        <div class="color-swatch"><div class="color-swatch-block" style="background:#111111"></div><div class="color-swatch-name">Void</div><div class="color-swatch-hex">#111111</div></div>
+        <div class="color-swatch"><div class="color-swatch-block" style="background:#fafaf9;border:1px solid #e8e4db"></div><div class="color-swatch-name">Background</div><div class="color-swatch-hex">#fafaf9</div></div>
+        <div class="color-swatch"><div class="color-swatch-block" style="background:#f2efe8"></div><div class="color-swatch-name">Surface</div><div class="color-swatch-hex">#f2efe8</div></div>
+      </div>
+    </div>
+    <div class="content-section"><h2>Tipografia</h2>
+      <div class="type-sample"><h3 style="font-size:32px;font-weight:900;letter-spacing:-2px">Space Grotesk 900</h3><p style="font-family:var(--font-mono);font-size:12px;color:var(--text-3)">Headlines · Títulos · Números grandes</p></div>
+      <div class="type-sample"><p style="font-size:16px;line-height:1.7">Space Grotesk 400 — corpo de texto com boa legibilidade em todos os temas.</p><p style="font-family:var(--font-mono);font-size:12px;color:var(--text-3)">Body text · Parágrafos · Descrições</p></div>
+      <div class="type-sample"><p style="font-family:var(--font-mono);font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--text-3)">DM Mono · Labels · Tags · Badges</p></div>
+    </div>
+    <div class="content-section"><h2>Princípios</h2>
+      <div class="highlight-box"><strong>Clareza antes de tudo.</strong> Cada pixel serve para comunicar, não para decorar.</div>
+      <div class="key-points"><h4>Diretrizes</h4><ul><li><strong>Editorial:</strong> Estética de publicação premium, não SaaS genérico</li><li><strong>Contraste:</strong> Texto de botões SEMPRE invertido ao fundo — garantido por --btn-on-accent</li><li><strong>Temas:</strong> 4 temas nativos — Claro, Escuro, Sépia, Alto Contraste (WCAG AAA)</li><li><strong>Tipografia:</strong> Space Grotesk para headlines, DM Mono para dados e labels</li></ul></div>
+    </div>
+  </div>
+</div></main></div>
+<script>document.addEventListener('DOMContentLoaded',function(){var l=document.getElementById('farpa-layout');if(!l)return;l.insertBefore(window.farpaSidebar.build('home'),l.firstChild);l.insertBefore(window.farpaTopnav.build([{label:'farpa.ai',href:'index.html'},{label:'Brand Guide'}]),l.children[1])});</script>
+</body></html>

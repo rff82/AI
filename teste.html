@@ -1,0 +1,106 @@
+<!DOCTYPE html><html lang="pt-BR"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Teste — farpa.ai</title>
+<link rel="icon" type="image/svg+xml" href="farpa-icon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css"><link rel="stylesheet" href="themes.css">
+<script src="theme-engine.js"></script>
+<style>
+.test-page{max-width:800px;margin:0 auto;padding:40px 28px 80px}
+.test-section{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px;margin-bottom:16px}
+.test-section h3{font-size:14px;font-weight:700;margin-bottom:12px;color:var(--text-1)}
+.test-btn{padding:8px 14px;border-radius:var(--r-md);border:1px solid var(--border-md);background:transparent;font-family:var(--font-mono);font-size:11px;cursor:pointer;transition:all .15s;color:var(--btn-text-on-surface);margin:4px}
+.test-btn:hover{border-color:var(--accent);color:var(--accent)}
+.test-btn.primary{background:var(--accent);color:var(--btn-text-on-accent);border-color:var(--accent)}
+.test-output{margin-top:12px;padding:12px;background:var(--bg-2);border-radius:var(--r-md);font-family:var(--font-mono);font-size:11px;color:var(--text-2);max-height:300px;overflow:auto;white-space:pre-wrap}
+</style>
+</head>
+<body>
+<div id="farpa-layout">
+<main class="farpa-content" id="farpa-main">
+<div class="test-page">
+  <h1 style="font-size:28px;font-weight:900;margin-bottom:8px">Área de Testes</h1>
+  <p style="font-family:var(--font-mono);font-size:12px;color:var(--text-3);margin-bottom:28px">Apenas para desenvolvimento. Não indexado.</p>
+
+  <div class="test-section">
+    <h3>Worker Proxy — Health Check</h3>
+    <button class="test-btn primary" onclick="testHealth()">GET /health</button>
+    <div class="test-output" id="out-health">—</div>
+  </div>
+
+  <div class="test-section">
+    <h3>Market APIs</h3>
+    <button class="test-btn" onclick="testMarket('crypto')">Crypto</button>
+    <button class="test-btn" onclick="testMarket('b3')">B3</button>
+    <button class="test-btn" onclick="testMarket('nyse')">NYSE</button>
+    <button class="test-btn" onclick="testMarket('indices')">Índices</button>
+    <div class="test-output" id="out-market">—</div>
+  </div>
+
+  <div class="test-section">
+    <h3>Yahoo Finance</h3>
+    <button class="test-btn" onclick="testYahoo('PETR4.SA')">PETR4</button>
+    <button class="test-btn" onclick="testYahoo('VALE3.SA')">VALE3</button>
+    <button class="test-btn" onclick="testYahoo('AAPL')">AAPL</button>
+    <div class="test-output" id="out-yahoo">—</div>
+  </div>
+
+  <div class="test-section">
+    <h3>News RSS</h3>
+    <button class="test-btn" onclick="testNews('br')">BR</button>
+    <button class="test-btn" onclick="testNews('us')">US</button>
+    <button class="test-btn" onclick="testNews('crypto')">Crypto</button>
+    <div class="test-output" id="out-news">—</div>
+  </div>
+
+  <div class="test-section">
+    <h3>AI Proxy</h3>
+    <button class="test-btn primary" onclick="testAI()">Testar /ai</button>
+    <div class="test-output" id="out-ai">—</div>
+  </div>
+
+  <div class="test-section">
+    <h3>Leads API</h3>
+    <button class="test-btn" onclick="testLeads()">GET /api/leads</button>
+    <div class="test-output" id="out-leads">—</div>
+  </div>
+</div>
+</main>
+</div>
+<script>
+const W='https://farpa-proxy.rfelipefernandes.workers.dev';
+const L='https://api-leads.rfelipefernandes.workers.dev';
+
+async function testHealth(){
+  const o=document.getElementById('out-health');o.textContent='Testando...';
+  try{const r=await fetch(W+'/health');o.textContent=JSON.stringify(await r.json(),null,2)}catch(e){o.textContent='ERRO: '+e.message}
+}
+async function testMarket(src){
+  const o=document.getElementById('out-market');o.textContent='Carregando '+src+'... (5 retries)';
+  try{const r=await fetch(W+'/markets?source='+src);o.textContent=JSON.stringify(await r.json(),null,2)}catch(e){o.textContent='ERRO: '+e.message}
+}
+async function testYahoo(sym){
+  const o=document.getElementById('out-yahoo');o.textContent='Yahoo Finance: '+sym+'...';
+  try{const r=await fetch(W+'/yahoo?symbol='+sym);o.textContent=JSON.stringify(await r.json(),null,2)}catch(e){o.textContent='ERRO: '+e.message}
+}
+async function testNews(mkt){
+  const o=document.getElementById('out-news');o.textContent='RSS '+mkt+'...';
+  try{const r=await fetch(W+'/news?market='+mkt);o.textContent=JSON.stringify(await r.json(),null,2)}catch(e){o.textContent='ERRO: '+e.message}
+}
+async function testAI(){
+  const o=document.getElementById('out-ai');o.textContent='Enviando para Claude...';
+  try{const r=await fetch(W+'/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:[{role:'user',content:'Olá, responda em uma frase.'}],max_tokens:100})});o.textContent=JSON.stringify(await r.json(),null,2)}catch(e){o.textContent='ERRO: '+e.message}
+}
+async function testLeads(){
+  const o=document.getElementById('out-leads');o.textContent='Carregando leads...';
+  try{const r=await fetch(L+'/api/leads');o.textContent=JSON.stringify(await r.json(),null,2)}catch(e){o.textContent='ERRO: '+e.message}
+}
+
+document.addEventListener('DOMContentLoaded',function(){
+  var layout=document.getElementById('farpa-layout');if(!layout)return;
+  var sidebar=window.farpaSidebar.build('teste');layout.insertBefore(sidebar,layout.firstChild);
+  var topnav=window.farpaTopnav.build([{label:'farpa.ai',href:'index.html'},{label:'Testes'}]);layout.insertBefore(topnav,sidebar.nextSibling);
+});
+</script>
+</body></html>

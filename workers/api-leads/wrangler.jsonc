@@ -1,0 +1,19 @@
+// wrangler.jsonc — api-leads worker
+// Deploy: npx wrangler deploy
+{
+  "name": "api-leads",
+  "main": "src/index.ts",
+  "compatibility_date": "2025-03-07",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "leads-db",
+      "database_id": "17e479be-1985-416d-b475-997832449719"
+    }
+  ]
+}

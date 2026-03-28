@@ -1,0 +1,7 @@
+name = "api-leads"
+main = "src/index.js"
+compatibility_date = "2024-01-01"
+[[d1_databases]]
+binding = "DB"
+database_name = "leads-db"
+database_id = "17e479be-1985-416d-b475-997832449719"

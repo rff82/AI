@@ -1,0 +1,74 @@
+<!DOCTYPE html><html lang="pt-BR"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#fafaf9"><meta name="robots" content="noindex">
+<meta name="description" content="Cadastro de interesse — farpa.ai">
+<title>Waitlist — farpa.ai</title>
+<link rel="icon" type="image/svg+xml" href="farpa-icon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css"><link rel="stylesheet" href="themes.css"><link rel="stylesheet" href="content-pages.css">
+<script src="theme-engine.js"></script>
+<style>
+.lead-form{max-width:480px;margin:0 auto}
+.lead-form label{display:block;font-family:var(--font-mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-3);margin-bottom:6px;margin-top:18px}
+.lead-form input,.lead-form select{width:100%;padding:10px 14px;border-radius:var(--r-md);border:1px solid var(--border-md);background:var(--input-bg);font-size:14px;color:var(--text-1);font-family:var(--font-head)}
+.lead-form button{margin-top:24px;width:100%;padding:14px;border-radius:var(--r-md);border:none;background:var(--accent);color:var(--btn-text-on-accent);font-size:15px;font-weight:700;cursor:pointer;transition:all .18s}
+.lead-form button:hover{opacity:.9;transform:translateY(-1px)}
+.lead-form button:disabled{opacity:.5;cursor:not-allowed;transform:none}
+#lead-status{font-family:var(--font-mono);font-size:12px;text-align:center;margin-top:12px;min-height:20px}
+</style>
+</head>
+<body>
+<div id="farpa-layout">
+<main class="farpa-content" id="farpa-main">
+<div class="content-page-wrapper">
+  <div class="content-page-header">
+    <div class="content-eyebrow">Waitlist</div>
+    <h1 class="content-page-title">Acesso <span style="color:var(--accent)">antecipado</span></h1>
+    <p class="content-page-lead">Cadastre-se para receber acesso prioritário à plataforma farpa.ai.</p>
+  </div>
+  <form class="lead-form" id="lead-form">
+    <label for="lead-name">Nome</label>
+    <input type="text" id="lead-name" name="name" placeholder="Seu nome" required>
+    <label for="lead-email">Email</label>
+    <input type="email" id="lead-email" name="email" placeholder="voce@empresa.com" required>
+    <label for="lead-phone">Telefone (opcional)</label>
+    <input type="tel" id="lead-phone" name="phone" placeholder="(11) 99999-9999">
+    <label for="lead-interest">Interesse principal</label>
+    <select id="lead-interest" name="interest">
+      <option value="Waitlist geral">Acesso geral</option>
+      <option value="Mercados & Trading">Mercados & Trading</option>
+      <option value="Labs & IA">Labs & IA Generativa</option>
+      <option value="Consultoria empresarial">Consultoria empresarial</option>
+      <option value="API & integrações">API & integrações</option>
+    </select>
+    <button type="submit">Entrar na lista</button>
+    <div id="lead-status"></div>
+  </form>
+</div>
+</main>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+  var layout=document.getElementById('farpa-layout');if(!layout)return;
+  var sidebar=window.farpaSidebar.build('leads');layout.insertBefore(sidebar,layout.firstChild);
+  var topnav=window.farpaTopnav.build([{label:'farpa.ai',href:'index.html'},{label:'Waitlist'}]);layout.insertBefore(topnav,sidebar.nextSibling);
+});
+document.getElementById('lead-form').addEventListener('submit',async function(e){
+  e.preventDefault();
+  const btn=this.querySelector('button');const st=document.getElementById('lead-status');
+  const name=document.getElementById('lead-name').value.trim();
+  const email=document.getElementById('lead-email').value.trim();
+  const phone=document.getElementById('lead-phone').value.trim();
+  const interest=document.getElementById('lead-interest').value;
+  if(!name||!email){st.textContent='Preencha nome e email.';st.style.color='var(--accent-danger)';return}
+  const orig=btn.textContent;btn.textContent='Enviando…';btn.disabled=true;st.textContent='';
+  try{
+    const r=await fetch('https://api-leads.rfelipefernandes.workers.dev/api/leads',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,email,phone,interest})});
+    const d=await r.json();
+    if(r.ok){btn.textContent='✓ Cadastrado!';st.textContent='Você está na lista! Vamos priorizar seu acesso.';st.style.color='var(--accent-success)';this.reset()}
+    else throw new Error(d.error||'Erro');
+  }catch(err){btn.textContent='Erro';st.textContent=err.message;st.style.color='var(--accent-danger)'}
+  finally{setTimeout(()=>{btn.textContent=orig;btn.disabled=false},3000)}
+});
+</script>
+</body></html>
