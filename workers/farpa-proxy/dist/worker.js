@@ -6,32 +6,16 @@
  *   GET  /news      → Financial news via RSS feeds (BR/US/Crypto)
  *   GET  /markets   → Public market APIs proxy (B3, NYSE, Crypto, Indices)
  *   GET  /yahoo     → Yahoo Finance raw chart/quote proxy
- *   GET  /chart     → Normalized historical prices (?symbol=&days=) → {prices:[{date,open,high,low,close,volume}]}
+ *   GET  /chart     → Normalized historical prices (?symbol=&days=)
  *   GET  /health    → Health check
- * 
- * Architecture:
- *   - fetchWithRetry: 5 attempts, exponential backoff (500ms → 8s)
- *   - CORS: farpa.ai + dev origins (pages.dev, workers.dev, localhost)
- *   - Structured error responses with retry metadata
  */
-
-interface Env {
-  ANTHROPIC_API_KEY: string;
-}
-
-// ── Configuration ──
 
 const ALLOWED_ORIGINS = ['https://farpa.ai', 'https://www.farpa.ai'];
 const MAX_RETRIES = 5;
 const BASE_TIMEOUT = 8000;
 const AI_TIMEOUT = 30000;
 
-interface RSSFeed {
-  url: string;
-  label: string;
-}
-
-const RSS_FEEDS: Record<string, RSSFeed[]> = {
+const RSS_FEEDS = {
   br: [
     { url: 'https://www.infomoney.com.br/feed/', label: 'InfoMoney' },
     { url: 'https://valor.globo.com/rss/home', label: 'Valor Econômico' },
@@ -48,7 +32,7 @@ const RSS_FEEDS: Record<string, RSSFeed[]> = {
   ],
 };
 
-const DEFAULT_SYMBOLS: Record<string, string> = {
+const DEFAULT_SYMBOLS = {
   b3: 'PETR4.SA,VALE3.SA,ITUB4.SA,BBDC4.SA,ABEV3.SA,WEGE3.SA,RENT3.SA,BBAS3.SA',
   nyse: 'AAPL,MSFT,GOOGL,AMZN,NVDA,META,TSLA,JPM',
   indices: '^BVSP,^GSPC,^IXIC,^DJI,USDBRL=X',
@@ -56,7 +40,7 @@ const DEFAULT_SYMBOLS: Record<string, string> = {
 
 // ── CORS helpers ──
 
-function corsHeaders(origin: string): Record<string, string> {
+function corsHeaders(origin) {
   const allowed =
     ALLOWED_ORIGINS.includes(origin) ||
     /localhost|127\.0\.0\.1|\.pages\.dev$|\.vercel\.app$|\.workers\.dev$/.test(origin);
@@ -68,37 +52,28 @@ function corsHeaders(origin: string): Record<string, string> {
   };
 }
 
-function jsonResponse(data: unknown, status = 200, origin = '*'): Response {
+function jsonResponse(data, status = 200, origin = '*') {
   return new Response(JSON.stringify(data), {
     status,
     headers: { 'Content-Type': 'application/json', ...corsHeaders(origin) },
   });
 }
 
-// ── fetchWithRetry: 5 attempts with exponential backoff ──
+// ── fetchWithRetry ──
 
-async function fetchWithRetry(
-  url: string,
-  options: RequestInit & { timeout?: number } = {},
-  maxRetries = MAX_RETRIES
-): Promise<Response> {
-  let lastError: Error | undefined;
-
+async function fetchWithRetry(url, options = {}, maxRetries = MAX_RETRIES) {
+  let lastError;
   for (let attempt = 0; attempt < maxRetries; attempt++) {
     try {
       const controller = new AbortController();
       const timeoutMs = options.timeout || BASE_TIMEOUT;
       const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
-
-      const res = await fetch(url, { ...options, signal: controller.signal });
+      const { timeout, ...fetchOpts } = options;
+      const res = await fetch(url, { ...fetchOpts, signal: controller.signal });
       clearTimeout(timeoutId);
-
       if (res.ok) return res;
-
-      // Retry on 5xx server errors only
       if (res.status >= 500 && attempt < maxRetries - 1) {
         const delay = Math.pow(2, attempt) * 500;
-        console.log(`Retry ${attempt + 1}/${maxRetries} for ${url} — status ${res.status}, waiting ${delay}ms`);
         await new Promise(r => setTimeout(r, delay));
         continue;
       }
@@ -107,7 +82,6 @@ async function fetchWithRetry(
       lastError = e instanceof Error ? e : new Error(String(e));
       if (attempt < maxRetries - 1) {
         const delay = Math.pow(2, attempt) * 500;
-        console.log(`Retry ${attempt + 1}/${maxRetries} for ${url} — ${lastError.message}, waiting ${delay}ms`);
         await new Promise(r => setTimeout(r, delay));
       }
     }
@@ -115,24 +89,17 @@ async function fetchWithRetry(
   throw lastError || new Error(`Max retries (${maxRetries}) exceeded for ${url}`);
 }
 
-// ── POST /ai — Anthropic Claude proxy ──
+// ── POST /ai ──
 
-async function handleAI(request: Request, env: Env, origin: string): Promise<Response> {
+async function handleAI(request, env, origin) {
   if (!env.ANTHROPIC_API_KEY) {
     return jsonResponse({ error: 'ANTHROPIC_API_KEY not configured.' }, 500, origin);
   }
-
-  let body: Record<string, unknown>;
-  try {
-    body = await request.json() as Record<string, unknown>;
-  } catch {
-    return jsonResponse({ error: 'Invalid JSON body.' }, 400, origin);
-  }
-
+  let body;
+  try { body = await request.json(); } catch { return jsonResponse({ error: 'Invalid JSON body.' }, 400, origin); }
   if (!body.messages || !Array.isArray(body.messages)) {
     return jsonResponse({ error: 'Missing messages array.' }, 400, origin);
   }
-
   try {
     const res = await fetchWithRetry(
       'https://api.anthropic.com/v1/messages',
@@ -144,8 +111,8 @@ async function handleAI(request: Request, env: Env, origin: string): Promise<Res
           'anthropic-version': '2023-06-01',
         },
         body: JSON.stringify({
-          model: (body.model as string) || 'claude-sonnet-4-20250514',
-          max_tokens: (body.max_tokens as number) || 600,
+          model: body.model || 'claude-sonnet-4-20250514',
+          max_tokens: body.max_tokens || 600,
           messages: body.messages,
           ...(body.system ? { system: body.system } : {}),
         }),
@@ -156,27 +123,16 @@ async function handleAI(request: Request, env: Env, origin: string): Promise<Res
     const data = await res.json();
     return jsonResponse(data, res.ok ? 200 : res.status, origin);
   } catch (e) {
-    return jsonResponse(
-      { error: 'AI service unavailable after retries.', detail: (e as Error).message },
-      503, origin
-    );
+    return jsonResponse({ error: 'AI service unavailable after retries.', detail: e.message }, 503, origin);
   }
 }
 
-// ── GET /news — RSS financial news ──
+// ── GET /news ──
 
-interface NewsItem {
-  title: string;
-  link: string;
-  pubDate: string;
-  source: string;
-}
-
-function parseRSS(xmlText: string, label: string): NewsItem[] {
-  const items: NewsItem[] = [];
+function parseRSS(xmlText, label) {
+  const items = [];
   const itemRegex = /<item[\s>]([\s\S]*?)<\/item>/gi;
-  let match: RegExpExecArray | null;
-
+  let match;
   while ((match = itemRegex.exec(xmlText)) !== null) {
     const block = match[1];
     const titleMatch = block.match(/<title[^>]*>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/title>/i);
@@ -191,45 +147,35 @@ function parseRSS(xmlText: string, label: string): NewsItem[] {
   return items;
 }
 
-async function handleNews(request: Request, origin: string): Promise<Response> {
+async function handleNews(request, origin) {
   const url = new URL(request.url);
   const market = url.searchParams.get('market') || 'br';
   const feeds = RSS_FEEDS[market] || RSS_FEEDS.br;
-  const allItems: NewsItem[] = [];
-
+  const allItems = [];
   await Promise.allSettled(
     feeds.map(async (feed) => {
       try {
-        const res = await fetchWithRetry(
-          feed.url,
-          { headers: { 'User-Agent': 'farpa.ai/4.1 RSS Reader' }, timeout: 5000 },
-          3
-        );
+        const res = await fetchWithRetry(feed.url, { headers: { 'User-Agent': 'farpa.ai/4.2 RSS Reader' }, timeout: 5000 }, 3);
         if (!res.ok) return;
         const text = await res.text();
         allItems.push(...parseRSS(text, feed.label));
-      } catch (e) {
-        console.warn(`RSS error [${feed.label}]:`, (e as Error).message);
-      }
+      } catch (e) { console.warn(`RSS error [${feed.label}]:`, e.message); }
     })
   );
-
-  const seen = new Set<string>();
+  const seen = new Set();
   const unique = allItems
     .filter(i => { if (seen.has(i.title)) return false; seen.add(i.title); return true; })
     .sort((a, b) => (b.pubDate ? new Date(b.pubDate).getTime() : 0) - (a.pubDate ? new Date(a.pubDate).getTime() : 0))
     .slice(0, 8);
-
   return jsonResponse({ items: unique, market, count: unique.length }, 200, origin);
 }
 
-// ── GET /markets — Public market APIs (B3 / NYSE / Crypto / Indices) ──
+// ── GET /markets ──
 
-async function handleMarkets(request: Request, origin: string): Promise<Response> {
+async function handleMarkets(request, origin) {
   const url = new URL(request.url);
   const source = url.searchParams.get('source') || 'crypto';
   const symbols = url.searchParams.get('symbols') || '';
-
   try {
     if (source === 'crypto') {
       const coins = symbols || 'bitcoin,ethereum,solana,cardano,polkadot,avalanche-2,chainlink';
@@ -241,38 +187,31 @@ async function handleMarkets(request: Request, origin: string): Promise<Response
       const data = await res.json();
       return jsonResponse({ source: 'coingecko', data, timestamp: new Date().toISOString() }, 200, origin);
     }
-
     if (source === 'b3' || source === 'nyse' || source === 'indices') {
       const syms = symbols || DEFAULT_SYMBOLS[source];
       const fields = 'symbol,shortName,longName,regularMarketPrice,regularMarketChange,regularMarketChangePercent,regularMarketVolume,marketCap,currency,regularMarketDayHigh,regularMarketDayLow,regularMarketOpen,regularMarketPreviousClose,fiftyTwoWeekHigh,fiftyTwoWeekLow';
-
       const res = await fetchWithRetry(
         `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${encodeURIComponent(syms)}&fields=${fields}`,
-        { headers: { 'User-Agent': 'farpa.ai/4.1', Accept: 'application/json' } },
+        { headers: { 'User-Agent': 'farpa.ai/4.2', Accept: 'application/json' } },
         MAX_RETRIES
       );
-      const data = await res.json() as Record<string, unknown>;
-      const results = (data?.quoteResponse as Record<string, unknown>)?.result || [];
-      return jsonResponse({ source, data: results, count: (results as unknown[]).length, timestamp: new Date().toISOString() }, 200, origin);
+      const data = await res.json();
+      const results = data?.quoteResponse?.result || [];
+      return jsonResponse({ source, data: results, count: results.length, timestamp: new Date().toISOString() }, 200, origin);
     }
-
     return jsonResponse({ error: 'Unknown source. Use: crypto, b3, nyse, indices' }, 400, origin);
   } catch (e) {
-    return jsonResponse(
-      { error: `Market data unavailable after ${MAX_RETRIES} retries.`, detail: (e as Error).message },
-      503, origin
-    );
+    return jsonResponse({ error: `Market data unavailable after ${MAX_RETRIES} retries.`, detail: e.message }, 503, origin);
   }
 }
 
-// ── GET /chart — Normalized historical price data (days → Yahoo Finance) ──
+// ── GET /chart ──
 
-async function handleChart(request: Request, origin: string): Promise<Response> {
+async function handleChart(request, origin) {
   const url = new URL(request.url);
   const symbol = url.searchParams.get('symbol') || 'PETR4.SA';
   const days = parseInt(url.searchParams.get('days') || '30', 10);
 
-  // Map days to Yahoo Finance range + interval
   let range = '1mo', interval = '1d';
   if (days <= 1)        { range = '1d';  interval = '5m';  }
   else if (days <= 7)   { range = '5d';  interval = '1h';  }
@@ -289,72 +228,61 @@ async function handleChart(request: Request, origin: string): Promise<Response> 
       { headers: { 'User-Agent': 'farpa.ai/4.2', Accept: 'application/json' } },
       MAX_RETRIES
     );
-    const raw = await res.json() as Record<string, unknown>;
-    const result = (raw?.chart as Record<string, unknown>)?.result?.[0] as Record<string, unknown> | null;
+    const raw = await res.json();
+    const result = raw?.chart?.result?.[0] || null;
+    if (!result) return jsonResponse({ error: 'No chart data for symbol.', symbol }, 404, origin);
 
-    if (!result) {
-      return jsonResponse({ error: 'No chart data for symbol.', symbol }, 404, origin);
-    }
-
-    const timestamps = (result.timestamp as number[]) || [];
-    const q = ((result.indicators as Record<string, unknown>)?.quote as Record<string, unknown>[])?.[0] || {};
-    const opens   = (q.open   as (number|null)[]) || [];
-    const highs   = (q.high   as (number|null)[]) || [];
-    const lows    = (q.low    as (number|null)[]) || [];
-    const closes  = (q.close  as (number|null)[]) || [];
-    const volumes = (q.volume as (number|null)[]) || [];
+    const timestamps = result.timestamp || [];
+    const q = result.indicators?.quote?.[0] || {};
 
     const prices = timestamps
       .map((t, i) => ({
-        date: new Date(t * 1000).toISOString(),
-        open:   opens[i]   ?? null,
-        high:   highs[i]   ?? null,
-        low:    lows[i]    ?? null,
-        close:  closes[i]  ?? null,
-        volume: volumes[i] ?? null,
+        date:   new Date(t * 1000).toISOString(),
+        open:   q.open?.[i]   ?? null,
+        high:   q.high?.[i]   ?? null,
+        low:    q.low?.[i]    ?? null,
+        close:  q.close?.[i]  ?? null,
+        volume: q.volume?.[i] ?? null,
       }))
       .filter(p => p.close !== null);
 
     return jsonResponse({ symbol, range, interval, prices, count: prices.length, timestamp: new Date().toISOString() }, 200, origin);
   } catch (e) {
-    return jsonResponse({ error: 'Chart data unavailable.', detail: (e as Error).message }, 503, origin);
+    return jsonResponse({ error: 'Chart data unavailable.', detail: e.message }, 503, origin);
   }
 }
 
-// ── GET /yahoo — Yahoo Finance chart/quote proxy ──
+// ── GET /yahoo ──
 
-async function handleYahoo(request: Request, origin: string): Promise<Response> {
+async function handleYahoo(request, origin) {
   const url = new URL(request.url);
   const symbol = url.searchParams.get('symbol') || 'PETR4.SA';
   const range = url.searchParams.get('range') || '1d';
   const interval = url.searchParams.get('interval') || '5m';
   const type = url.searchParams.get('type') || 'chart';
-
   try {
     const apiUrl = type === 'quote'
       ? `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${encodeURIComponent(symbol)}`
       : `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?range=${range}&interval=${interval}&includePrePost=false`;
-
     const res = await fetchWithRetry(
       apiUrl,
-      { headers: { 'User-Agent': 'farpa.ai/4.1', Accept: 'application/json' } },
+      { headers: { 'User-Agent': 'farpa.ai/4.2', Accept: 'application/json' } },
       MAX_RETRIES
     );
-    const data = await res.json() as Record<string, unknown>;
+    const data = await res.json();
     const result = type === 'quote'
-      ? (data?.quoteResponse as Record<string, unknown>)?.result || []
-      : (data?.chart as Record<string, unknown>)?.result?.[0] || null;
-
+      ? data?.quoteResponse?.result || []
+      : data?.chart?.result?.[0] || null;
     return jsonResponse({ symbol, type, range, interval, data: result, timestamp: new Date().toISOString() }, 200, origin);
   } catch (e) {
-    return jsonResponse({ error: 'Yahoo Finance unavailable.', detail: (e as Error).message }, 503, origin);
+    return jsonResponse({ error: 'Yahoo Finance unavailable.', detail: e.message }, 503, origin);
   }
 }
 
 // ── Main Export ──
 
 export default {
-  async fetch(request: Request, env: Env): Promise<Response> {
+  async fetch(request, env) {
     const origin = request.headers.get('Origin') || '';
     const { pathname } = new URL(request.url);
 
@@ -387,4 +315,4 @@ export default {
         );
     }
   },
-} satisfies ExportedHandler<Env>;
+};

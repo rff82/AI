@@ -176,7 +176,7 @@
       Adicionar ativo
     </button>
     <div class="add-asset-form" id="add-asset-form">
-      <input id="add-symbol-input" class="add-input" type="text" placeholder="Símbolo (BTC, PETR4, AAPL...)" autocomplete="off" onkeydown="if(event.key==='Enter')confirmAdd();if(event.key==='Escape')toggleAddForm()">
+      <input id="add-symbol-input" class="add-input" type="text" placeholder="Símbolo (BTC, PETR4, AAPL...)" autocomplete="off" onkeydown="handleAddKeydown(event)">
       <button class="add-confirm" onclick="confirmAdd()">Adicionar</button>
       <button class="add-cancel" onclick="toggleAddForm()">Cancelar</button>
       <span class="add-status" id="add-status"></span>
@@ -228,14 +228,15 @@
   </div>
 
 </div>
-<div class="version-badge">v2.2.0</div>
+<div class="version-badge">v2.3.0</div>
 
 <script>
 const WORKER_URL='https://farpa-proxy.rfelipefernandes.workers.dev';
 let currentTab='crypto';
 let fxChart=null;
 let fxPeriodDays=7;
-let fxLastData=null; // cache to avoid refetch on theme change
+let fxLastData=null;
+let loadTabAbort=null; // Track current tab load for abort on switch
 
 // ─── ASSET REGISTRY ───
 const CRYPTO_IDS={btc:'bitcoin',eth:'ethereum',sol:'solana',bnb:'binancecoin',xrp:'ripple',ada:'cardano',dot:'polkadot',avax:'avalanche-2',link:'chainlink',uni:'uniswap',doge:'dogecoin',ltc:'litecoin',atom:'cosmos',near:'near',matic:'matic-network',shib:'shiba-inu'};
@@ -269,15 +270,27 @@ function addAssetToTab(tab,id){
   if(!list.includes(id)){list.push(id);saveTabAssets(tab,list)}
 }
 
-// ─── ADD FORM ───
+// ─── ADD FORM — FIXED ───
 function toggleAddForm(){
   const f=document.getElementById('add-asset-form');
   const isOpen=f.classList.toggle('open');
   document.getElementById('add-toggle-btn').style.display=isOpen?'none':'';
   if(isOpen){
-    document.getElementById('add-symbol-input').focus();
-    document.getElementById('add-symbol-input').value='';
+    const inp=document.getElementById('add-symbol-input');
+    inp.value='';
+    inp.focus();
     document.getElementById('add-status').textContent='';
+  }
+}
+
+// FIX: Proper keydown handler that also handles Escape
+function handleAddKeydown(event){
+  if(event.key==='Enter'){
+    event.preventDefault();
+    confirmAdd();
+  }else if(event.key==='Escape'){
+    event.preventDefault();
+    toggleAddForm();
   }
 }
 
@@ -285,48 +298,148 @@ async function confirmAdd(){
   const input=document.getElementById('add-symbol-input');
   const status=document.getElementById('add-status');
   const raw=input.value.trim();
-  if(!raw){status.textContent='Digite um símbolo.';return}
-  const val=raw.toLowerCase();
+
+  // FIX: Validate input is not empty or whitespace-only
+  if(!raw||!/\S/.test(raw)){
+    status.textContent='Digite um símbolo válido.';
+    status.style.color='var(--accent-danger)';
+    return;
+  }
+
+  const val=raw.toLowerCase().replace(/\s+/g,'');
   status.textContent='Verificando...';
+  status.style.color='var(--text-3)';
 
   if(currentTab==='crypto'){
-    const coinId=CRYPTO_IDS[val]||val;
-    try{
-      const r=await fetch('https://api.coingecko.com/api/v3/simple/price?ids='+coinId+'&vs_currencies=usd');
-      const d=await r.json();
-      if(d[coinId]){
-        addAssetToTab('crypto',coinId);status.textContent='';toggleAddForm();loadTab();return;
+    // FIX: Better crypto resolution — check CRYPTO_IDS first, then try direct, then search
+    let coinId=CRYPTO_IDS[val]||null;
+
+    // If not in our map, try using the raw value as a CoinGecko ID
+    if(!coinId){
+      try{
+        const r=await fetch('https://api.coingecko.com/api/v3/simple/price?ids='+encodeURIComponent(val)+'&vs_currencies=usd');
+        if(r.ok){
+          const d=await r.json();
+          if(d[val]&&d[val].usd!==undefined){
+            coinId=val;
+          }
+        }
+      }catch(e){/* continue to search */}
+    }
+
+    // If still not found, search by symbol/name
+    if(!coinId){
+      try{
+        const sr=await fetch('https://api.coingecko.com/api/v3/search?query='+encodeURIComponent(raw));
+        if(sr.ok){
+          const sd=await sr.json();
+          const coin=sd.coins?.[0];
+          if(coin){
+            coinId=coin.id;
+            // Also register the symbol mapping for future use
+            CRYPTO_IDS[coin.symbol.toLowerCase()]=coin.id;
+            CRYPTO_SYM[coin.id]=coin.symbol.toUpperCase();
+            CRYPTO_NAME[coin.id]=coin.name;
+          }
+        }
+      }catch(e){
+        status.textContent='Erro de conexão.';
+        status.style.color='var(--accent-danger)';
+        return;
       }
-      // Try search by symbol/name
-      const sr=await fetch('https://api.coingecko.com/api/v3/search?query='+encodeURIComponent(raw));
-      const sd=await sr.json();
-      const coin=sd.coins?.[0];
-      if(!coin){status.textContent='Ativo não encontrado no CoinGecko.';return}
-      addAssetToTab('crypto',coin.id);status.textContent='';toggleAddForm();loadTab();
-    }catch(e){status.textContent='Erro de conexão.';}
+    }
+
+    if(!coinId){
+      status.textContent='Ativo não encontrado no CoinGecko.';
+      status.style.color='var(--accent-danger)';
+      return;
+    }
+
+    // FIX: Check for duplicates before adding
+    const existing=getTabAssets('crypto');
+    if(existing.includes(coinId)){
+      status.textContent='Ativo já adicionado.';
+      status.style.color='var(--accent-warn)';
+      return;
+    }
+
+    addAssetToTab('crypto',coinId);
+    status.textContent='';
+    toggleAddForm();
+    loadTab();
 
   }else if(currentTab==='b3'){
-    const ticker=raw.toUpperCase().replace('.SA','');
+    const ticker=raw.toUpperCase().replace(/\.SA$/i,'').replace(/\s+/g,'');
+
+    // FIX: Validate ticker format
+    if(!/^[A-Z]{3,6}\d{1,2}[FBL]?$/i.test(ticker)){
+      status.textContent='Formato inválido. Ex: PETR4, VALE3';
+      status.style.color='var(--accent-danger)';
+      return;
+    }
+
+    // FIX: Check for duplicates
+    const existing=getTabAssets('b3');
+    if(existing.includes(ticker)){
+      status.textContent='Ativo já adicionado.';
+      status.style.color='var(--accent-warn)';
+      return;
+    }
+
     status.textContent='Verificando na B3...';
     try{
-      const r=await fetch('https://brapi.dev/api/quote/'+ticker+'?fundamental=false');
-      const d=await r.json();
-      if(!d.results?.[0]?.regularMarketPrice&&d.results?.[0]?.regularMarketPrice!==0){
-        status.textContent='Ticker não encontrado na B3.';return;
+      const r=await fetch('https://brapi.dev/api/quote/'+encodeURIComponent(ticker)+'?fundamental=false');
+      if(r.ok){
+        const d=await r.json();
+        // FIX: Correct validation — check that results exist and have a valid response
+        // regularMarketPrice can be 0 for some assets, so we check for the existence of the property
+        if(d.results&&d.results.length>0&&d.results[0].symbol){
+          addAssetToTab('b3',ticker);
+          status.textContent='';
+          toggleAddForm();
+          loadTab();
+          return;
+        }
       }
-      addAssetToTab('b3',ticker);status.textContent='';toggleAddForm();loadTab();
+      // If brapi fails, still add (worker proxy might work)
+      addAssetToTab('b3',ticker);
+      status.textContent='';
+      toggleAddForm();
+      loadTab();
     }catch(e){
-      // Accept anyway (might work via worker later)
-      addAssetToTab('b3',ticker);status.textContent='';toggleAddForm();loadTab();
+      // Accept anyway — might work via worker later
+      addAssetToTab('b3',ticker);
+      status.textContent='';
+      toggleAddForm();
+      loadTab();
     }
 
   }else if(currentTab==='nyse'){
-    const ticker=raw.toUpperCase();
+    const ticker=raw.toUpperCase().replace(/\s+/g,'');
+
+    // FIX: Basic validation
+    if(!/^[A-Z]{1,5}$/.test(ticker)){
+      status.textContent='Formato inválido. Ex: AAPL, MSFT';
+      status.style.color='var(--accent-danger)';
+      return;
+    }
+
+    // FIX: Check for duplicates
+    const existing=getTabAssets('nyse');
+    if(existing.includes(ticker)){
+      status.textContent='Ativo já adicionado.';
+      status.style.color='var(--accent-warn)';
+      return;
+    }
+
     addAssetToTab('nyse',ticker);
-    status.textContent='';toggleAddForm();loadTab();
+    status.textContent='';
+    toggleAddForm();
+    loadTab();
 
   }else{
     status.textContent='Não é possível adicionar ativos de índices manualmente.';
+    status.style.color='var(--accent-warn)';
   }
 }
 
@@ -463,18 +576,20 @@ function renderCards(cards,tab){
     </div>`).join('');
 }
 
-// ─── TAB NAVIGATION ───
+// ─── TAB NAVIGATION — FIXED race condition ───
 function switchTab(tab,btn){
   currentTab=tab;
   document.querySelectorAll('.mkt-tab').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   document.getElementById('tab-label').textContent={crypto:'Cripto',b3:'B3 · Brasil',nyse:'NYSE · EUA',indices:'Índices Globais'}[tab];
-  // Hide add button for indices
+  // FIX: Hide add button for indices, show for others
   document.getElementById('add-toggle-btn').style.display=tab==='indices'?'none':'';
+  // FIX: Close add form on tab switch
   const f=document.getElementById('add-asset-form');
   if(f.classList.contains('open'))toggleAddForm();
   loadTab();
 }
+
 function loadTab(){
   if(currentTab==='crypto')loadCrypto();
   else if(currentTab==='b3')loadB3();
@@ -491,9 +606,10 @@ async function loadCrypto(){
     return;
   }
   try{
-    const r=await fetchRetry('https://api.coingecko.com/api/v3/simple/price?ids='+assets.join(',')+'&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true',{},3);
+    const r=await fetchRetry('https://api.coingecko.com/api/v3/simple/price?ids='+encodeURIComponent(assets.join(','))+'&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true',{},3);
     const d=await r.json();
-    const cards=assets.filter(a=>d[a]).map(a=>({
+    // FIX: Filter out assets that returned no data and don't crash
+    const cards=assets.filter(a=>d[a]&&d[a].usd!==undefined).map(a=>({
       id:a,
       symbol:CRYPTO_SYM[a]||a.toUpperCase().slice(0,6),
       name:CRYPTO_NAME[a]||a.replace(/-/g,' ').replace(/\b\w/g,l=>l.toUpperCase()),
@@ -501,8 +617,11 @@ async function loadCrypto(){
       change:d[a].usd_24h_change||0,
       volume:d[a].usd_24h_vol?fmt(d[a].usd_24h_vol):''
     }));
+
+    if(currentTab!=='crypto')return; // FIX: Abort if tab changed during fetch
     renderCards(cards,'crypto');
   }catch(e){
+    if(currentTab!=='crypto')return;
     document.getElementById('prices-grid').innerHTML=`<div class="error-msg" style="grid-column:1/-1">CoinGecko indisponível após 3 tentativas.<div class="retry-info">${e.message}</div></div>`;
   }
 }
@@ -517,31 +636,36 @@ async function loadB3(){
   }
   const tickers=assets.join(',');
 
-  // Tentativa 1: brapi.dev (direto, sem CORS)
+  // Attempt 1: brapi.dev
   try{
-    const r=await fetch('https://brapi.dev/api/quote/'+tickers+'?fundamental=false');
-    const d=await r.json();
-    if(d.results&&d.results.length){
-      renderCards(d.results.map(s=>({
-        id:s.symbol,
-        symbol:s.symbol,
-        name:B3_NAME[s.symbol]||s.longName||s.symbol,
-        price:'R$ '+(s.regularMarketPrice||0).toFixed(2),
-        change:s.regularMarketChangePercent||0,
-        volume:s.regularMarketVolume?fmt(s.regularMarketVolume,'BRL'):''
-      })),'b3');
-      return;
+    const r=await fetch('https://brapi.dev/api/quote/'+encodeURIComponent(tickers)+'?fundamental=false');
+    if(r.ok){
+      const d=await r.json();
+      if(d.results&&d.results.length){
+        if(currentTab!=='b3')return;
+        renderCards(d.results.map(s=>({
+          id:s.symbol,
+          symbol:s.symbol,
+          name:B3_NAME[s.symbol]||s.longName||s.symbol,
+          price:'R$ '+(s.regularMarketPrice||0).toFixed(2),
+          change:s.regularMarketChangePercent||0,
+          volume:s.regularMarketVolume?fmt(s.regularMarketVolume,'BRL'):''
+        })),'b3');
+        return;
+      }
     }
-  }catch(e){/* tenta worker */}
+  }catch(e){/* try worker */}
 
-  // Tentativas 2-4: worker proxy
+  // Fallback: worker proxy
   for(let attempt=1;attempt<=3;attempt++){
     try{
+      if(currentTab!=='b3')return;
       showLoading(`Worker proxy · tentativa ${attempt}/3...`);
       const r=await fetch(WORKER_URL+'/markets?source=b3&symbols='+encodeURIComponent(assets.map(t=>t+'.SA').join(',')),{signal:AbortSignal.timeout(6000)});
       if(!r.ok)throw new Error('HTTP '+r.status);
       const d=await r.json();
       if(!d.data||!d.data.length)throw new Error('Sem dados');
+      if(currentTab!=='b3')return;
       renderCards(d.data.map(s=>({
         id:s.symbol.replace('.SA',''),
         symbol:s.symbol.replace('.SA',''),
@@ -553,12 +677,15 @@ async function loadB3(){
       return;
     }catch(e){
       if(attempt<3)await new Promise(r=>setTimeout(r,700*attempt));
-      else document.getElementById('prices-grid').innerHTML=`<div class="error-msg" style="grid-column:1/-1">B3 indisponível após 4 tentativas (brapi + worker).<div class="retry-info">${e.message}</div></div>`;
+      else{
+        if(currentTab!=='b3')return;
+        document.getElementById('prices-grid').innerHTML=`<div class="error-msg" style="grid-column:1/-1">B3 indisponível após 4 tentativas (brapi + worker).<div class="retry-info">${e.message}</div></div>`;
+      }
     }
   }
 }
 
-// ─── NYSE — worker proxy (3 tentativas) ───
+// ─── NYSE — worker proxy ───
 async function loadNYSE(){
   showLoading();
   const assets=getTabAssets('nyse');
@@ -568,11 +695,13 @@ async function loadNYSE(){
   }
   for(let attempt=1;attempt<=3;attempt++){
     try{
+      if(currentTab!=='nyse')return;
       showLoading(`Worker proxy · tentativa ${attempt}/3...`);
       const r=await fetch(WORKER_URL+'/markets?source=nyse&symbols='+encodeURIComponent(assets.join(',')),{signal:AbortSignal.timeout(6000)});
       if(!r.ok)throw new Error('HTTP '+r.status);
       const d=await r.json();
       if(!d.data||!d.data.length)throw new Error('Sem dados');
+      if(currentTab!=='nyse')return;
       renderCards(d.data.map(s=>({
         id:s.symbol,
         symbol:s.symbol,
@@ -584,7 +713,10 @@ async function loadNYSE(){
       return;
     }catch(e){
       if(attempt<3)await new Promise(r=>setTimeout(r,700*attempt));
-      else document.getElementById('prices-grid').innerHTML=`<div class="error-msg" style="grid-column:1/-1">NYSE requer Worker proxy configurado (3 tentativas esgotadas).<div class="retry-info">${e.message}</div></div>`;
+      else{
+        if(currentTab!=='nyse')return;
+        document.getElementById('prices-grid').innerHTML=`<div class="error-msg" style="grid-column:1/-1">NYSE requer Worker proxy configurado (3 tentativas esgotadas).<div class="retry-info">${e.message}</div></div>`;
+      }
     }
   }
 }
@@ -596,6 +728,7 @@ async function loadIndices(){
     const r=await fetchRetry(WORKER_URL+'/markets?source=indices',{},3);
     const d=await r.json();
     if(!d.data||!d.data.length)throw new Error('Sem dados');
+    if(currentTab!=='indices')return;
     renderCards(d.data.map(s=>({
       id:s.symbol,symbol:s.symbol,
       name:s.shortName||s.symbol,
@@ -609,6 +742,7 @@ async function loadIndices(){
       if(s.symbol==='USDBRL=X')setIdx('usd',s);
     });
   }catch(e){
+    if(currentTab!=='indices')return;
     document.getElementById('prices-grid').innerHTML=`<div class="error-msg" style="grid-column:1/-1">Índices indisponíveis. Worker proxy necessário.<div class="retry-info">${e.message}</div></div>`;
   }
 }
