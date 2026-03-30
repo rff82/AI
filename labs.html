@@ -1,4 +1,4 @@
-<!-- farpa.ai · labs.html · v2.0 · 2026-03-30 -->
+<!-- farpa.ai · labs.html · v2.1 · 2026-03-30 -->
 <!DOCTYPE html><html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#0a0a0a">
@@ -83,8 +83,9 @@
 .drag-handle:hover{background:var(--accent-bg-2);border-color:var(--accent-2);color:var(--accent-2)}
 
 /* ── Card internals ── */
-.lab-icon{width:46px;height:46px;border-radius:var(--r-lg);display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:16px;background:var(--accent-bg);position:relative;z-index:1}
-.lab-icon.b{background:var(--accent-bg-2)}.lab-icon.p{background:var(--accent-bg-3)}
+.lab-icon{width:46px;height:46px;border-radius:var(--r-lg);display:flex;align-items:center;justify-content:center;margin-bottom:16px;background:var(--accent-bg);position:relative;z-index:1;color:var(--accent)}
+.lab-icon.b{background:var(--accent-bg-2);color:var(--accent-2)}.lab-icon.p{background:var(--accent-bg-3);color:#b06fff}
+.lab-icon svg{width:22px;height:22px;flex-shrink:0}
 .lab-card h3{font-size:17px;font-weight:700;margin-bottom:6px;color:var(--text-1);position:relative;z-index:1}
 .lab-card p{font-size:13px;color:var(--text-2);line-height:1.65;margin-bottom:14px;position:relative;z-index:1}
 .lab-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:14px;position:relative;z-index:1}
@@ -149,7 +150,7 @@
     <button class="sort-btn" data-sort="type" onclick="sortCards('type',this)">Tipo</button>
     <div class="controls-divider"></div>
     <button class="reorder-btn" id="reorder-toggle" onclick="toggleReorder()">
-      <span>⠿</span> Reordenar
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><circle cx="3.5" cy="2" r="1.1"/><circle cx="8.5" cy="2" r="1.1"/><circle cx="3.5" cy="6" r="1.1"/><circle cx="8.5" cy="6" r="1.1"/><circle cx="3.5" cy="10" r="1.1"/><circle cx="8.5" cy="10" r="1.1"/></svg> Reordenar
     </button>
     <span class="reorder-hint" id="reorder-hint">Arraste os cards para reordenar · <button style="background:none;border:none;color:var(--accent);cursor:pointer;font-family:var(--font-mono);font-size:11px;padding:0" onclick="resetOrder()">Resetar</button></span>
   </div>
@@ -158,8 +159,8 @@
   <div class="labs-grid" id="labs-grid">
 
     <div class="lab-card live" data-id="sentimento" data-type="ia" data-label="Análise de Sentimento">
-      <div class="drag-handle" title="Arrastar">⠿</div>
-      <div class="lab-icon">🎭</div>
+      <div class="drag-handle" title="Arrastar"><svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><circle cx="3.5" cy="2" r="1.1"/><circle cx="8.5" cy="2" r="1.1"/><circle cx="3.5" cy="6" r="1.1"/><circle cx="8.5" cy="6" r="1.1"/><circle cx="3.5" cy="10" r="1.1"/><circle cx="8.5" cy="10" r="1.1"/></svg></div>
+      <div class="lab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h3l2-8 4 16 2-10 2 5 1-3h4"/></svg></div>
       <h3>Análise de Sentimento</h3>
       <p>Cole um texto e receba análise de sentimento instantânea via Claude — tom, confiança e palavras-chave.</p>
       <div class="lab-meta">
@@ -177,8 +178,8 @@
     </div>
 
     <div class="lab-card live" data-id="resumo" data-type="ia" data-label="Resumo Inteligente">
-      <div class="drag-handle" title="Arrastar">⠿</div>
-      <div class="lab-icon">📝</div>
+      <div class="drag-handle" title="Arrastar"><svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><circle cx="3.5" cy="2" r="1.1"/><circle cx="8.5" cy="2" r="1.1"/><circle cx="3.5" cy="6" r="1.1"/><circle cx="8.5" cy="6" r="1.1"/><circle cx="3.5" cy="10" r="1.1"/><circle cx="8.5" cy="10" r="1.1"/></svg></div>
+      <div class="lab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 10h16M4 14h10"/><polyline points="14 17 17 20 20 17"/><line x1="17" y1="12" x2="17" y2="20"/></svg></div>
       <h3>Resumo Inteligente</h3>
       <p>Reduza qualquer texto longo em 3 frases executivas — foco no que importa para decisão.</p>
       <div class="lab-meta">
@@ -196,8 +197,8 @@
     </div>
 
     <div class="lab-card live" data-id="vies" data-type="ia" data-label="Detector de Viés">
-      <div class="drag-handle" title="Arrastar">⠿</div>
-      <div class="lab-icon">⚖️</div>
+      <div class="drag-handle" title="Arrastar"><svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><circle cx="3.5" cy="2" r="1.1"/><circle cx="8.5" cy="2" r="1.1"/><circle cx="3.5" cy="6" r="1.1"/><circle cx="8.5" cy="6" r="1.1"/><circle cx="3.5" cy="10" r="1.1"/><circle cx="8.5" cy="10" r="1.1"/></svg></div>
+      <div class="lab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="3" x2="12" y2="21"/><path d="M8 21h8"/><path d="M4 8l4 8a4 4 0 01-8 0l4-8z"/><path d="M20 4l4 8a4 4 0 01-8 0l4-8z"/><line x1="4" y1="8" x2="20" y2="4"/></svg></div>
       <h3>Detector de Viés</h3>
       <p>Identifique viés editorial em manchetes e textos jornalísticos com nível, evidências e versão neutra sugerida.</p>
       <div class="lab-meta">
@@ -215,8 +216,8 @@
     </div>
 
     <div class="lab-card live" data-id="trader" data-type="tool" data-label="Simulador de Trading">
-      <div class="drag-handle" title="Arrastar">⠿</div>
-      <div class="lab-icon">📈</div>
+      <div class="drag-handle" title="Arrastar"><svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><circle cx="3.5" cy="2" r="1.1"/><circle cx="8.5" cy="2" r="1.1"/><circle cx="3.5" cy="6" r="1.1"/><circle cx="8.5" cy="6" r="1.1"/><circle cx="3.5" cy="10" r="1.1"/><circle cx="8.5" cy="10" r="1.1"/></svg></div>
+      <div class="lab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="3" x2="6" y2="6"/><rect x="4" y="6" width="4" height="7" rx="0.5"/><line x1="6" y1="13" x2="6" y2="17"/><line x1="12" y1="6" x2="12" y2="8"/><rect x="10" y="8" width="4" height="5" rx="0.5"/><line x1="12" y1="13" x2="12" y2="21"/><line x1="18" y1="2" x2="18" y2="7"/><rect x="16" y="7" width="4" height="6" rx="0.5"/><line x1="18" y1="13" x2="18" y2="18"/></svg></div>
       <h3>Simulador de Trading</h3>
       <p>Simule estratégias com dados históricos. Teste entradas, saídas e gestão de risco sem capital real — 16 criptoativos.</p>
       <div class="lab-meta">
@@ -229,8 +230,8 @@
     </div>
 
     <div class="lab-card live" data-id="devtools" data-type="tool" data-label="Teste de APIs">
-      <div class="drag-handle" title="Arrastar">⠿</div>
-      <div class="lab-icon b">🔧</div>
+      <div class="drag-handle" title="Arrastar"><svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><circle cx="3.5" cy="2" r="1.1"/><circle cx="8.5" cy="2" r="1.1"/><circle cx="3.5" cy="6" r="1.1"/><circle cx="8.5" cy="6" r="1.1"/><circle cx="3.5" cy="10" r="1.1"/><circle cx="8.5" cy="10" r="1.1"/></svg></div>
+      <div class="lab-icon b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="18" rx="2"/><path d="M8 10l4 4-4 4"/><line x1="14" y1="18" x2="18" y2="18"/></svg></div>
       <h3>Dev Tools · APIs</h3>
       <p>Ambiente de teste para desenvolvedores. Explore e valide endpoints de APIs financeiras, de IA e do Worker proxy no browser.</p>
       <div class="lab-meta">
