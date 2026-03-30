@@ -1,8 +1,9 @@
+<!-- farpa.ai · labs.html · v2.0 · 2026-03-30 -->
 <!DOCTYPE html><html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#fafaf9">
-<meta name="description" content="Farpa Labs — Demos interativos de IA: análise de sentimento, comparador de LLMs, gerador PDF, chatbot RAG e monitor de concorrentes">
-<meta name="keywords" content="IA generativa demo, análise sentimento, comparador LLM, chatbot RAG, monitor concorrentes IA">
+<meta name="theme-color" content="#0a0a0a">
+<meta name="description" content="Farpa Labs — Demos interativos de IA: análise de sentimento, resumo inteligente, detector de viés, simulador de trading e dev tools.">
+<meta name="keywords" content="IA generativa demo, análise sentimento, resumo IA, detector viés, trading simulator">
 <link rel="canonical" href="https://farpa.ai/labs.html">
 <title>Farpa Labs — Demos de IA — farpa.ai</title>
 <link rel="icon" type="image/svg+xml" href="farpa-icon.svg">
@@ -10,172 +11,408 @@
 <link rel="stylesheet" href="tokens.css"><link rel="stylesheet" href="themes.css"><link rel="stylesheet" href="mobile-fixes.css"><link rel="stylesheet" href="content-pages.css">
 <script src="theme-engine.js"></script>
 <style>
+/* ── Layout ── */
+.labs-header-meta{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:32px;flex-wrap:wrap}
+.labs-stats{display:flex;gap:20px;flex-wrap:wrap}
+.labs-stat{display:flex;flex-direction:column;gap:2px}
+.labs-stat-val{font-family:var(--font-mono);font-size:22px;font-weight:700;color:var(--accent);line-height:1}
+.labs-stat-lbl{font-family:var(--font-mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text-3)}
+
+/* ── Controls bar ── */
+.labs-controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:24px;padding:14px 16px;background:var(--bg-2);border:1px solid var(--border);border-radius:var(--r-lg)}
+.labs-controls-label{font-family:var(--font-mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-3);margin-right:4px}
+.sort-btn{padding:5px 12px;border-radius:var(--r-pill);font-family:var(--font-mono);font-size:11px;letter-spacing:1px;text-transform:uppercase;border:1px solid var(--border);background:transparent;color:var(--text-2);cursor:pointer;transition:all .15s}
+.sort-btn:hover{border-color:var(--accent);color:var(--accent)}
+.sort-btn.active{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
+.controls-divider{width:1px;height:20px;background:var(--border);flex-shrink:0}
+.reorder-btn{padding:6px 14px;border-radius:var(--r-pill);font-family:var(--font-mono);font-size:11px;letter-spacing:1px;text-transform:uppercase;border:1px solid var(--border);background:transparent;color:var(--text-2);cursor:pointer;transition:all .18s;display:flex;align-items:center;gap:6px}
+.reorder-btn:hover{border-color:var(--accent-2);color:var(--accent-2)}
+.reorder-btn.active{background:rgba(255,215,0,.08);border-color:var(--accent-2);color:var(--accent-2)}
+.reorder-hint{font-size:11px;color:var(--text-3);font-family:var(--font-mono);margin-left:auto;display:none}
+.reorder-mode .reorder-hint{display:block}
+
+/* ── Grid ── */
 .labs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;margin-bottom:48px}
-.lab-card{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--r-xl);padding:28px;position:relative;overflow:hidden;transition:transform .18s,border-color .18s}
-.lab-card:hover{transform:translateY(-3px);border-color:var(--accent);box-shadow:var(--shadow-lg)}
-.lab-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
-.lab-card.live::before{background:var(--accent)}.lab-card.new::before{background:var(--accent-2)}.lab-card.soon::before{background:var(--bg-3)}
-.lab-icon{width:44px;height:44px;border-radius:var(--r-lg);display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:14px;background:var(--accent-bg)}
+
+/* ── Card ── */
+.lab-card{
+  background:var(--card-bg);
+  border:1px solid var(--border);
+  border-radius:var(--r-xl);
+  padding:26px;
+  position:relative;
+  overflow:hidden;
+  transition:transform .18s,border-color .18s,box-shadow .18s,opacity .15s;
+  cursor:default;
+}
+.lab-card::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  border-radius:inherit;
+  background:linear-gradient(135deg,var(--accent-bg) 0%,transparent 60%);
+  opacity:0;
+  transition:opacity .22s;
+  pointer-events:none;
+}
+.lab-card:hover::after{opacity:1}
+.lab-card:hover{transform:translateY(-4px);border-color:var(--accent);box-shadow:0 8px 32px rgba(0,255,136,.08)}
+.lab-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--r-xl) var(--r-xl) 0 0}
+.lab-card.live::before{background:linear-gradient(90deg,var(--accent),var(--accent-2))}
+.lab-card.new::before{background:linear-gradient(90deg,var(--accent-2),#ff6b6b)}
+
+/* Drag states */
+.lab-card.draggable{cursor:grab}
+.lab-card.draggable:active{cursor:grabbing}
+.lab-card.drag-over{border-color:var(--accent-2)!important;border-style:dashed!important;transform:scale(.98)!important;box-shadow:0 0 0 2px rgba(0,229,255,.18)!important}
+.lab-card.dragging{opacity:.4;transform:scale(.97)}
+
+/* Drag handle */
+.drag-handle{
+  position:absolute;top:14px;right:14px;
+  width:24px;height:24px;
+  display:none;align-items:center;justify-content:center;
+  border-radius:var(--r-sm);
+  background:var(--bg-2);border:1px solid var(--border);
+  color:var(--text-3);font-size:14px;
+  cursor:grab;z-index:10;
+  transition:all .15s;
+  user-select:none;
+}
+.reorder-mode .drag-handle{display:flex}
+.drag-handle:hover{background:var(--accent-bg-2);border-color:var(--accent-2);color:var(--accent-2)}
+
+/* ── Card internals ── */
+.lab-icon{width:46px;height:46px;border-radius:var(--r-lg);display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:16px;background:var(--accent-bg);position:relative;z-index:1}
 .lab-icon.b{background:var(--accent-bg-2)}.lab-icon.p{background:var(--accent-bg-3)}
-.lab-card h3{font-size:17px;font-weight:700;margin-bottom:6px;color:var(--text-1)}
-.lab-card p{font-size:13px;color:var(--text-2);line-height:1.6;margin-bottom:14px}
+.lab-card h3{font-size:17px;font-weight:700;margin-bottom:6px;color:var(--text-1);position:relative;z-index:1}
+.lab-card p{font-size:13px;color:var(--text-2);line-height:1.65;margin-bottom:14px;position:relative;z-index:1}
+.lab-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:14px;position:relative;z-index:1}
+
+/* Status badge */
 .lab-status{font-family:var(--font-mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:3px 8px;border-radius:var(--r-pill);display:inline-flex;align-items:center;gap:5px}
-.lab-status.live{color:var(--accent);background:var(--accent-bg);border:1px solid var(--accent-bg)}
-.lab-status.new{color:var(--accent-2);background:var(--accent-bg-2);border:1px solid var(--accent-bg-2)}
-.lab-status.soon{color:var(--text-3);background:var(--bg-2);border:1px solid var(--border)}
+.lab-status.live{color:var(--accent);background:var(--accent-bg);border:1px solid rgba(0,255,136,.2)}
 .lab-status .dot{width:5px;height:5px;border-radius:50%;background:currentColor;animation:ldot 2s ease-in-out infinite}
 @keyframes ldot{0%,100%{opacity:1}50%{opacity:.3}}
-.lab-actions{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
-.run-btn{padding:8px 16px;border-radius:var(--r-md);font-family:var(--font-head);font-size:13px;font-weight:700;border:none;cursor:pointer;transition:all .15s;background:var(--accent);color:var(--btn-on-accent,#fff)!important}
-.run-btn:hover{opacity:.88;transform:translateY(-1px)}
-.run-btn.b{background:var(--accent-2)}.run-btn.p{background:var(--accent-3)}
-.run-btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+
+/* Category tag */
+.lab-tag{font-family:var(--font-mono);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;padding:3px 8px;border-radius:var(--r-pill);background:var(--bg-3);color:var(--text-3);border:1px solid var(--border)}
+
+/* Actions */
+.lab-actions{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;position:relative;z-index:1}
+.run-btn{padding:8px 18px;border-radius:var(--r-md);font-family:var(--font-head);font-size:13px;font-weight:700;border:none;cursor:pointer;transition:all .15s;background:var(--accent);color:#000;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.run-btn:hover{opacity:.88;transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,255,136,.2)}
+.run-btn.b{background:var(--accent-2);color:#000}
+.run-btn.b:hover{box-shadow:0 4px 16px rgba(0,229,255,.2)}
+.run-btn.outline{background:transparent;color:var(--accent);border:1px solid var(--border-md)}
+.run-btn.outline:hover{border-color:var(--accent);background:var(--accent-bg)}
 
 /* Demo area */
-.demo-area{display:none;margin-top:18px;padding:18px;background:var(--bg-2);border:1px solid var(--border);border-radius:var(--r-lg)}
+.demo-area{display:none;margin-top:18px;padding:18px;background:var(--bg-2);border:1px solid var(--border);border-radius:var(--r-lg);position:relative;z-index:1}
 .demo-area.open{display:block}
-.demo-input{width:100%;background:var(--input-bg);border:1px solid var(--border-md);border-radius:var(--r-md);padding:10px 14px;color:var(--text-1);font-family:var(--font-head);font-size:14px;outline:none;resize:vertical;min-height:60px;margin-bottom:10px}
+.demo-input{width:100%;box-sizing:border-box;background:var(--bg-3,var(--input-bg));border:1px solid var(--border-md);border-radius:var(--r-md);padding:10px 14px;color:var(--text-1);font-family:var(--font-head);font-size:14px;outline:none;resize:vertical;min-height:64px;margin-bottom:10px;transition:border-color .15s}
 .demo-input:focus{border-color:var(--accent)}
-.demo-output{padding:12px;background:var(--card-bg);border:1px solid var(--border);border-radius:var(--r-md);font-size:13px;color:var(--text-2);line-height:1.6;min-height:40px;white-space:pre-wrap}
+.demo-output{padding:14px;background:var(--card-bg);border:1px solid var(--border);border-radius:var(--r-md);font-size:13px;color:var(--text-2);line-height:1.7;min-height:44px;white-space:pre-wrap;transition:all .2s}
 .demo-output.loading{color:var(--text-3);font-style:italic}
+.demo-output.has-result{border-color:var(--accent-bg);background:rgba(0,255,136,.03)}
+
+/* Responsive */
+@media(max-width:600px){
+  .labs-controls{gap:8px}
+  .reorder-hint{display:none!important}
+  .labs-stat-val{font-size:18px}
+}
 </style></head><body>
 <div id="farpa-layout"><main class="farpa-content" id="farpa-main">
-<div class="content-page-wrapper" style="max-width:1060px">
-  <div class="content-page-header"><div class="cp-eyebrow"><a href="index.html" class="cp-back">← Início</a></div><h1 class="cp-title">Farpa <span>Labs</span></h1><p class="cp-subtitle">Demos interativos de IA Generativa. Teste ao vivo — todos usando o Worker proxy para evitar CORS.</p></div>
+<div class="content-page-wrapper" style="max-width:1100px">
 
-  <div class="labs-grid">
-    <!-- LIVE DEMOS -->
-    <div class="lab-card live" id="card-sentimento">
+  <div class="content-page-header">
+    <div class="cp-eyebrow"><a href="index.html" class="cp-back">← Início</a></div>
+    <h1 class="cp-title">Farpa <span>Labs</span></h1>
+    <p class="cp-subtitle">Demos interativos de IA Generativa. Teste ao vivo — todos funcionando via Worker proxy.</p>
+  </div>
+
+  <!-- Stats + reorder -->
+  <div class="labs-header-meta">
+    <div class="labs-stats">
+      <div class="labs-stat"><span class="labs-stat-val" id="stat-live">5</span><span class="labs-stat-lbl">ao vivo</span></div>
+      <div class="labs-stat"><span class="labs-stat-val" id="stat-ia">3</span><span class="labs-stat-lbl">demos IA</span></div>
+      <div class="labs-stat"><span class="labs-stat-val" id="stat-tools">2</span><span class="labs-stat-lbl">ferramentas</span></div>
+    </div>
+  </div>
+
+  <!-- Controls bar -->
+  <div class="labs-controls" id="labs-controls">
+    <span class="labs-controls-label">Ordenar</span>
+    <button class="sort-btn active" data-sort="default" onclick="sortCards('default',this)">Padrão</button>
+    <button class="sort-btn" data-sort="az" onclick="sortCards('az',this)">A–Z</button>
+    <button class="sort-btn" data-sort="type" onclick="sortCards('type',this)">Tipo</button>
+    <div class="controls-divider"></div>
+    <button class="reorder-btn" id="reorder-toggle" onclick="toggleReorder()">
+      <span>⠿</span> Reordenar
+    </button>
+    <span class="reorder-hint" id="reorder-hint">Arraste os cards para reordenar · <button style="background:none;border:none;color:var(--accent);cursor:pointer;font-family:var(--font-mono);font-size:11px;padding:0" onclick="resetOrder()">Resetar</button></span>
+  </div>
+
+  <!-- Grid -->
+  <div class="labs-grid" id="labs-grid">
+
+    <div class="lab-card live" data-id="sentimento" data-type="ia" data-label="Análise de Sentimento">
+      <div class="drag-handle" title="Arrastar">⠿</div>
       <div class="lab-icon">🎭</div>
       <h3>Análise de Sentimento</h3>
-      <p>Cole um texto e receba análise de sentimento instantânea via Claude.</p>
-      <span class="lab-status live"><span class="dot"></span>Ao vivo</span>
-      <div class="lab-actions"><button class="run-btn" onclick="toggleDemo('sentimento')">Testar →</button></div>
+      <p>Cole um texto e receba análise de sentimento instantânea via Claude — tom, confiança e palavras-chave.</p>
+      <div class="lab-meta">
+        <span class="lab-status live"><span class="dot"></span>Ao vivo</span>
+        <span class="lab-tag">IA · Claude</span>
+      </div>
+      <div class="lab-actions">
+        <button class="run-btn" onclick="toggleDemo('sentimento',this)">Testar →</button>
+      </div>
       <div class="demo-area" id="demo-sentimento">
-        <textarea class="demo-input" id="input-sentimento" placeholder="Cole um parágrafo de notícia aqui...">O Ibovespa fechou em alta de 2,3% hoje após dados positivos do PIB brasileiro surpreenderem analistas.</textarea>
+        <textarea class="demo-input" id="input-sentimento" placeholder="Cole um parágrafo de notícia financeira aqui...">O Ibovespa fechou em alta de 2,3% hoje após dados positivos do PIB brasileiro surpreenderem analistas.</textarea>
         <button class="run-btn" onclick="runSentimento()" id="btn-sentimento">Analisar Sentimento</button>
         <div class="demo-output" id="output-sentimento"></div>
       </div>
     </div>
 
-    <div class="lab-card live" id="card-resumo">
+    <div class="lab-card live" data-id="resumo" data-type="ia" data-label="Resumo Inteligente">
+      <div class="drag-handle" title="Arrastar">⠿</div>
       <div class="lab-icon">📝</div>
       <h3>Resumo Inteligente</h3>
-      <p>Resuma qualquer texto longo em 3 frases objetivas com IA.</p>
-      <span class="lab-status live"><span class="dot"></span>Ao vivo</span>
-      <div class="lab-actions"><button class="run-btn" onclick="toggleDemo('resumo')">Testar →</button></div>
+      <p>Reduza qualquer texto longo em 3 frases executivas — foco no que importa para decisão.</p>
+      <div class="lab-meta">
+        <span class="lab-status live"><span class="dot"></span>Ao vivo</span>
+        <span class="lab-tag">IA · Claude</span>
+      </div>
+      <div class="lab-actions">
+        <button class="run-btn" onclick="toggleDemo('resumo',this)">Testar →</button>
+      </div>
       <div class="demo-area" id="demo-resumo">
-        <textarea class="demo-input" id="input-resumo" placeholder="Cole um artigo longo aqui..."></textarea>
+        <textarea class="demo-input" id="input-resumo" placeholder="Cole um artigo, relatório ou comunicado aqui..."></textarea>
         <button class="run-btn" onclick="runResumo()" id="btn-resumo">Resumir</button>
         <div class="demo-output" id="output-resumo"></div>
       </div>
     </div>
 
-    <div class="lab-card live" id="card-vies">
+    <div class="lab-card live" data-id="vies" data-type="ia" data-label="Detector de Viés">
+      <div class="drag-handle" title="Arrastar">⠿</div>
       <div class="lab-icon">⚖️</div>
       <h3>Detector de Viés</h3>
-      <p>Identifique viés editorial em manchetes e textos jornalísticos.</p>
-      <span class="lab-status live"><span class="dot"></span>Ao vivo</span>
-      <div class="lab-actions"><button class="run-btn" onclick="toggleDemo('vies')">Testar →</button></div>
+      <p>Identifique viés editorial em manchetes e textos jornalísticos com nível, evidências e versão neutra sugerida.</p>
+      <div class="lab-meta">
+        <span class="lab-status live"><span class="dot"></span>Ao vivo</span>
+        <span class="lab-tag">IA · Jornalismo</span>
+      </div>
+      <div class="lab-actions">
+        <button class="run-btn" onclick="toggleDemo('vies',this)">Testar →</button>
+      </div>
       <div class="demo-area" id="demo-vies">
-        <textarea class="demo-input" id="input-vies" placeholder="Cole uma manchete ou parágrafo..."></textarea>
+        <textarea class="demo-input" id="input-vies" placeholder="Cole uma manchete ou parágrafo jornalístico..."></textarea>
         <button class="run-btn" onclick="runVies()" id="btn-vies">Detectar Viés</button>
         <div class="demo-output" id="output-vies"></div>
       </div>
     </div>
 
-    <!-- NEW MVPs -->
-    <div class="lab-card new">
-      <div class="lab-icon b">🔬</div>
-      <h3>Comparador de LLMs</h3>
-      <p>Compare respostas de GPT-4, Claude e Gemini lado a lado para o mesmo prompt.</p>
-      <span class="lab-status new">Novo · MVP</span>
-      <div class="lab-actions"><button class="run-btn b" disabled>Em desenvolvimento</button></div>
-    </div>
-
-    <div class="lab-card new">
-      <div class="lab-icon b">📄</div>
-      <h3>Gerador de Relatórios PDF</h3>
-      <p>Gere relatórios profissionais em PDF com análise de mercado powered by IA.</p>
-      <span class="lab-status new">Novo · MVP</span>
-      <div class="lab-actions"><button class="run-btn b" disabled>Em desenvolvimento</button></div>
-    </div>
-
-    <div class="lab-card new">
-      <div class="lab-icon p">💬</div>
-      <h3>Chatbot RAG</h3>
-      <p>Chatbot que responde baseado nos seus próprios documentos — RAG em tempo real.</p>
-      <span class="lab-status new">Novo · MVP</span>
-      <div class="lab-actions"><button class="run-btn p" disabled>Em desenvolvimento</button></div>
-    </div>
-
-    <div class="lab-card new">
-      <div class="lab-icon p">📡</div>
-      <h3>Monitor de Concorrentes</h3>
-      <p>Monitore menções, preços e movimentos de concorrentes com alertas IA.</p>
-      <span class="lab-status new">Novo · MVP</span>
-      <div class="lab-actions"><button class="run-btn p" disabled>Em desenvolvimento</button></div>
-    </div>
-
-    <div class="lab-card live">
+    <div class="lab-card live" data-id="trader" data-type="tool" data-label="Simulador de Trading">
+      <div class="drag-handle" title="Arrastar">⠿</div>
       <div class="lab-icon">📈</div>
       <h3>Simulador de Trading</h3>
-      <p>Simule estratégias de trading com dados históricos. Teste entradas, saídas e gestão de risco sem arriscar capital real.</p>
-      <span class="lab-status live"><span class="dot"></span>Ao vivo</span>
-      <div class="lab-actions"><a href="trader-sim.html" class="run-btn" style="text-decoration:none;display:inline-flex;align-items:center">Abrir Simulador →</a></div>
+      <p>Simule estratégias com dados históricos. Teste entradas, saídas e gestão de risco sem capital real — 16 criptoativos.</p>
+      <div class="lab-meta">
+        <span class="lab-status live"><span class="dot"></span>Ao vivo</span>
+        <span class="lab-tag">Mercados · Cripto</span>
+      </div>
+      <div class="lab-actions">
+        <a href="trader-sim.html" class="run-btn" style="text-decoration:none">Abrir Simulador →</a>
+      </div>
     </div>
 
-    <div class="lab-card live">
+    <div class="lab-card live" data-id="devtools" data-type="tool" data-label="Teste de APIs">
+      <div class="drag-handle" title="Arrastar">⠿</div>
       <div class="lab-icon b">🔧</div>
-      <h3>Teste de APIs</h3>
-      <p>Ambiente de teste para desenvolvedores. Explore e valide endpoints de APIs financeiras, de IA e do Worker proxy diretamente no browser.</p>
-      <span class="lab-status live"><span class="dot"></span>Ao vivo</span>
-      <div class="lab-actions"><a href="teste.html" class="run-btn b" style="text-decoration:none;display:inline-flex;align-items:center">Abrir Dev Tools →</a></div>
+      <h3>Dev Tools · APIs</h3>
+      <p>Ambiente de teste para desenvolvedores. Explore e valide endpoints de APIs financeiras, de IA e do Worker proxy no browser.</p>
+      <div class="lab-meta">
+        <span class="lab-status live"><span class="dot"></span>Ao vivo</span>
+        <span class="lab-tag">Dev · APIs</span>
+      </div>
+      <div class="lab-actions">
+        <a href="teste.html" class="run-btn b" style="text-decoration:none">Abrir Dev Tools →</a>
+      </div>
     </div>
+
   </div>
 </div></main></div>
 
 <script>
-const WORKER='https://farpa-proxy.rfelipefernandes.workers.dev';
+const WORKER = 'https://farpa-proxy.rfelipefernandes.workers.dev';
+const STORAGE_KEY = 'farpa-labs-order';
+let reorderActive = false;
+let dragSrc = null;
 
-function toggleDemo(id){
-  const d=document.getElementById('demo-'+id);
-  if(d)d.classList.toggle('open');
+/* ── Demo toggle ── */
+function toggleDemo(id, btn) {
+  const d = document.getElementById('demo-' + id);
+  if (!d) return;
+  const isOpen = d.classList.toggle('open');
+  if (btn) btn.textContent = isOpen ? 'Fechar ✕' : 'Testar →';
 }
 
-async function callAI(prompt,btnId,outputId){
-  const btn=document.getElementById(btnId);
-  const out=document.getElementById(outputId);
-  const orig=btn.textContent;
-  btn.textContent='Processando…';btn.disabled=true;
-  out.textContent='Aguardando resposta da IA...';out.classList.add('loading');
-  try{
-    // Uses Worker proxy to avoid CORS issues
-    const r=await fetch(WORKER+'/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:[{role:'user',content:prompt}],max_tokens:400})});
-    const d=await r.json();
-    const text=d.content?.[0]?.text||d.error||'Sem resposta';
-    out.textContent=text;out.classList.remove('loading');
-  }catch(e){
-    out.textContent='Erro: '+e.message;out.classList.remove('loading');
+/* ── AI call ── */
+async function callAI(prompt, btnId, outputId) {
+  const btn = document.getElementById(btnId);
+  const out = document.getElementById(outputId);
+  const orig = btn.textContent;
+  btn.textContent = 'Processando…'; btn.disabled = true;
+  out.textContent = 'Aguardando resposta da IA…'; out.className = 'demo-output loading';
+  try {
+    const r = await fetch(WORKER + '/ai', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: [{ role: 'user', content: prompt }], max_tokens: 400 })
+    });
+    const data = await r.json();
+    const text = data.content?.[0]?.text || data.error || 'Sem resposta';
+    out.textContent = text;
+    out.className = 'demo-output has-result';
+  } catch (e) {
+    out.textContent = 'Erro: ' + e.message;
+    out.className = 'demo-output';
   }
-  btn.textContent=orig;btn.disabled=false;
+  btn.textContent = orig; btn.disabled = false;
 }
 
-function runSentimento(){
-  const text=document.getElementById('input-sentimento').value;
-  if(!text.trim())return;
-  callAI('Analise o sentimento deste texto de notícia financeira. Responda em português com: 1) Sentimento geral (positivo/negativo/neutro) 2) Confiança (0-100%) 3) Palavras-chave. Texto: '+text,'btn-sentimento','output-sentimento');
+function runSentimento() {
+  const text = document.getElementById('input-sentimento').value;
+  if (!text.trim()) return;
+  callAI('Analise o sentimento deste texto de notícia financeira. Responda em português com: 1) Sentimento geral (positivo/negativo/neutro) 2) Confiança (0-100%) 3) Palavras-chave. Texto: ' + text, 'btn-sentimento', 'output-sentimento');
 }
-function runResumo(){
-  const text=document.getElementById('input-resumo').value;
-  if(!text.trim())return;
-  callAI('Resuma este texto em exatamente 3 frases objetivas em português. Foque no que é mais importante para um executivo: '+text,'btn-resumo','output-resumo');
+function runResumo() {
+  const text = document.getElementById('input-resumo').value;
+  if (!text.trim()) return;
+  callAI('Resuma este texto em exatamente 3 frases objetivas em português. Foque no que é mais importante para um executivo: ' + text, 'btn-resumo', 'output-resumo');
 }
-function runVies(){
-  const text=document.getElementById('input-vies').value;
-  if(!text.trim())return;
-  callAI('Analise o viés editorial deste texto jornalístico. Responda em português com: 1) Tipo de viés detectado 2) Nível (baixo/médio/alto) 3) Evidências no texto 4) Versão neutra sugerida. Texto: '+text,'btn-vies','output-vies');
+function runVies() {
+  const text = document.getElementById('input-vies').value;
+  if (!text.trim()) return;
+  callAI('Analise o viés editorial deste texto jornalístico. Responda em português com: 1) Tipo de viés detectado 2) Nível (baixo/médio/alto) 3) Evidências no texto 4) Versão neutra sugerida. Texto: ' + text, 'btn-vies', 'output-vies');
 }
+
+/* ── Sort ── */
+function sortCards(mode, btn) {
+  document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const grid = document.getElementById('labs-grid');
+  const cards = Array.from(grid.querySelectorAll('.lab-card'));
+  if (mode === 'default') {
+    const saved = getSavedOrder();
+    if (saved.length) {
+      saved.forEach(id => {
+        const c = grid.querySelector(`[data-id="${id}"]`);
+        if (c) grid.appendChild(c);
+      });
+    }
+  } else if (mode === 'az') {
+    cards.sort((a, b) => a.dataset.label.localeCompare(b.dataset.label, 'pt-BR'));
+    cards.forEach(c => grid.appendChild(c));
+  } else if (mode === 'type') {
+    cards.sort((a, b) => {
+      const order = { ia: 0, tool: 1 };
+      return (order[a.dataset.type] ?? 99) - (order[b.dataset.type] ?? 99);
+    });
+    cards.forEach(c => grid.appendChild(c));
+  }
+}
+
+/* ── Reorder (drag & drop) ── */
+function toggleReorder() {
+  reorderActive = !reorderActive;
+  const btn = document.getElementById('reorder-toggle');
+  const ctrl = document.getElementById('labs-controls');
+  const grid = document.getElementById('labs-grid');
+  btn.classList.toggle('active', reorderActive);
+  ctrl.classList.toggle('reorder-mode', reorderActive);
+  grid.querySelectorAll('.lab-card').forEach(card => {
+    card.classList.toggle('draggable', reorderActive);
+    card.draggable = reorderActive;
+  });
+}
+
+function getSavedOrder() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch { return []; }
+}
+function saveOrder() {
+  const ids = Array.from(document.querySelectorAll('#labs-grid .lab-card')).map(c => c.dataset.id);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(ids));
+}
+function resetOrder() {
+  localStorage.removeItem(STORAGE_KEY);
+  location.reload();
+}
+function applyOrder() {
+  const saved = getSavedOrder();
+  if (!saved.length) return;
+  const grid = document.getElementById('labs-grid');
+  saved.forEach(id => {
+    const c = grid.querySelector(`[data-id="${id}"]`);
+    if (c) grid.appendChild(c);
+  });
+}
+
+/* Drag events */
+document.addEventListener('DOMContentLoaded', () => {
+  applyOrder();
+  const grid = document.getElementById('labs-grid');
+
+  grid.addEventListener('dragstart', e => {
+    dragSrc = e.target.closest('.lab-card');
+    if (!dragSrc) return;
+    dragSrc.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', dragSrc.dataset.id);
+  });
+
+  grid.addEventListener('dragover', e => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    const target = e.target.closest('.lab-card');
+    if (target && target !== dragSrc) {
+      grid.querySelectorAll('.lab-card').forEach(c => c.classList.remove('drag-over'));
+      target.classList.add('drag-over');
+    }
+  });
+
+  grid.addEventListener('dragleave', e => {
+    const target = e.target.closest('.lab-card');
+    if (target) target.classList.remove('drag-over');
+  });
+
+  grid.addEventListener('drop', e => {
+    e.preventDefault();
+    const target = e.target.closest('.lab-card');
+    if (!target || target === dragSrc || !dragSrc) return;
+    const cards = Array.from(grid.querySelectorAll('.lab-card'));
+    const srcIdx = cards.indexOf(dragSrc);
+    const tgtIdx = cards.indexOf(target);
+    if (srcIdx < tgtIdx) {
+      target.after(dragSrc);
+    } else {
+      target.before(dragSrc);
+    }
+    grid.querySelectorAll('.lab-card').forEach(c => c.classList.remove('drag-over'));
+    saveOrder();
+    // Switch sort to "Padrão" visually
+    document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector('[data-sort="default"]').classList.add('active');
+  });
+
+  grid.addEventListener('dragend', () => {
+    if (dragSrc) dragSrc.classList.remove('dragging');
+    grid.querySelectorAll('.lab-card').forEach(c => c.classList.remove('drag-over'));
+    dragSrc = null;
+  });
+});
 </script>
 <script>document.addEventListener('DOMContentLoaded',function(){var l=document.getElementById('farpa-layout');if(!l)return;l.insertBefore(window.farpaSidebar.build('labs'),l.firstChild);l.insertBefore(window.farpaTopnav.build([{label:'farpa.ai',href:'index.html'},{label:'Farpa Labs'}]),l.children[1])});</script>
 </body></html>
