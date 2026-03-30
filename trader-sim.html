@@ -1,3 +1,4 @@
+<!-- farpa.ai · trader-sim.html · v4.0.0 · 2026-03-30 -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -18,8 +19,8 @@
 <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-financial@0.2.1/dist/chartjs-chart-financial.min.js" onerror="console.warn('Financial chart plugin unavailable — line fallback active');window._noFinancial=true"></script>
 <style>
 /* ═══════════════════════════════════════════════════════
-   TRADER SIM v3.1.0 — farpa.ai Terminal Dark Theme
-   Override site theme: .trader-app is always terminal-dark
+   TRADER SIM v4.0 — farpa.ai Terminal Dark Theme
+   feat: scroll, SVG icons, legible fonts, full forum
 ═══════════════════════════════════════════════════════ */
 /* ── Dark Terminal Vars (scoped to .trader-app) ── */
 .trader-app,
@@ -67,7 +68,7 @@
 }
 #farpa-main.farpa-content {
   flex: 1;
-  overflow: hidden;
+  overflow: visible;
   display: flex;
   flex-direction: column;
 }
@@ -75,8 +76,8 @@
 /* ── Trader App Shell ── */
 .trader-app {
   display: grid;
-  grid-template-columns: 56px 1fr 300px;
-  grid-template-rows: 40px 1fr;
+  grid-template-columns: 80px 1fr 340px;
+  grid-template-rows: 44px 1fr;
   height: calc(100vh - 48px);
   max-height: calc(100vh - 48px);
   overflow: hidden;
@@ -149,19 +150,21 @@
   background: var(--ts-bg1);
   border-right: 1px solid var(--ts-bdr);
   display: flex; flex-direction: column; align-items: center;
-  padding: 10px 0; gap: 3px; overflow-y: auto;
+  padding: 8px 0; gap: 2px; overflow-y: auto;
 }
 .ts-sb-btn {
-  width: 38px; height: 38px; border-radius: var(--ts-r);
-  display: flex; align-items: center; justify-content: center;
-  background: transparent; border: none; color: var(--ts-t3);
-  cursor: pointer; transition: var(--ts-trn); font-size: 15px;
-  position: relative;
+  width: 68px; min-height: 52px; border-radius: var(--ts-r);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  background: transparent; border: 1px solid transparent; color: var(--ts-t3);
+  cursor: pointer; transition: var(--ts-trn); gap: 4px;
+  position: relative; padding: 6px 4px;
 }
+.ts-sb-btn svg { width: 20px; height: 20px; flex-shrink: 0; }
+.ts-sb-btn span { font-family: var(--ts-mono); font-size: 9px; letter-spacing: .5px; text-transform: uppercase; line-height: 1; }
 .ts-sb-btn:hover { background: var(--ts-bg3); color: var(--ts-t2); }
-.ts-sb-btn.active { background: var(--ts-green-bg); color: var(--ts-green); border: 1px solid var(--ts-green-bd); }
-.ts-sb-divider { width: 22px; height: 1px; background: var(--ts-bdr2); margin: 5px 0; }
-.ts-sb-bottom { margin-top: auto; display: flex; flex-direction: column; gap: 3px; align-items: center; }
+.ts-sb-btn.active { background: var(--ts-green-bg); color: var(--ts-green); border-color: var(--ts-green-bd); }
+.ts-sb-divider { width: 44px; height: 1px; background: var(--ts-bdr2); margin: 4px 0; }
+.ts-sb-bottom { margin-top: auto; display: flex; flex-direction: column; gap: 2px; align-items: center; }
 
 /* ── Panel Left ── */
 .ts-panel-left {
@@ -190,15 +193,15 @@
 }
 .ts-stat:last-child { border-right: none; }
 .ts-stat-lbl {
-  font-family: var(--ts-mono); font-size: 8px; letter-spacing: 1.5px;
-  text-transform: uppercase; color: var(--ts-t3); margin-bottom: 2px;
+  font-family: var(--ts-mono); font-size: 10px; letter-spacing: 1px;
+  text-transform: uppercase; color: var(--ts-t3); margin-bottom: 3px;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .ts-stat-val {
-  font-family: var(--ts-mono); font-size: 13px; font-weight: 700;
+  font-family: var(--ts-mono); font-size: 15px; font-weight: 700;
   letter-spacing: -.3px; white-space: nowrap;
 }
-.ts-stat-sub { font-family: var(--ts-mono); font-size: 8px; color: var(--ts-t3); margin-top: 1px; }
+.ts-stat-sub { font-family: var(--ts-mono); font-size: 10px; color: var(--ts-t3); margin-top: 2px; }
 
 /* ── Chart Area ── */
 .ts-chart-area {
@@ -273,9 +276,9 @@
   flex: 1; padding: 7px 10px; border-right: 1px solid var(--ts-bdr);
 }
 .ts-ind-cell:last-child { border-right: none; }
-.ts-ind-name { font-family: var(--ts-mono); font-size: 8px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--ts-t3); margin-bottom: 2px; }
-.ts-ind-val { font-family: var(--ts-mono); font-size: 12px; font-weight: 600; }
-.ts-ind-sig { font-family: var(--ts-mono); font-size: 8px; letter-spacing: .5px; margin-top: 2px; }
+.ts-ind-name { font-family: var(--ts-mono); font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: var(--ts-t3); margin-bottom: 2px; }
+.ts-ind-val { font-family: var(--ts-mono); font-size: 13px; font-weight: 700; }
+.ts-ind-sig { font-family: var(--ts-mono); font-size: 10px; letter-spacing: .5px; margin-top: 2px; }
 .sig-buy { color: var(--ts-green); }
 .sig-sell { color: var(--ts-red); }
 .sig-neutral { color: var(--ts-t3); }
@@ -326,13 +329,13 @@
   background: var(--ts-bg2); flex-shrink: 0;
 }
 .ts-r-tab {
-  flex: 1; padding: 9px 4px; font-family: var(--ts-mono); font-size: 8px;
-  letter-spacing: 1px; text-transform: uppercase; text-align: center;
+  flex: 1; padding: 10px 4px; font-family: var(--ts-mono); font-size: 10px;
+  letter-spacing: .5px; text-transform: uppercase; text-align: center;
   border: none; background: transparent; color: var(--ts-t3); cursor: pointer;
   transition: var(--ts-trn); border-bottom: 2px solid transparent;
 }
-.ts-r-tab:hover { color: var(--ts-t2); }
-.ts-r-tab.active { color: var(--ts-t1); border-bottom-color: var(--ts-green); }
+.ts-r-tab:hover { color: var(--ts-t2); background: rgba(255,255,255,.02); }
+.ts-r-tab.active { color: var(--ts-t1); border-bottom-color: var(--ts-green); background: rgba(0,230,118,.04); }
 .ts-r-panel { display: none; flex: 1; overflow-y: auto; flex-direction: column; }
 .ts-r-panel.active { display: flex; }
 
@@ -349,49 +352,49 @@
 }
 .ts-side-btn.buy.active { background: var(--ts-green); color: #000; }
 .ts-side-btn.sell.active { background: var(--ts-red); color: #fff; }
-.ts-ff { display: flex; flex-direction: column; gap: 3px; }
-.ts-ff-lbl { font-family: var(--ts-mono); font-size: 8px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--ts-t3); }
+.ts-ff { display: flex; flex-direction: column; gap: 4px; }
+.ts-ff-lbl { font-family: var(--ts-mono); font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--ts-t2); font-weight: 600; }
 .ts-ff-input {
   background: var(--ts-bg3); border: 1px solid var(--ts-bdr2); border-radius: var(--ts-r);
-  padding: 7px 10px; font-family: var(--ts-mono); font-size: 11px; color: var(--ts-t1);
+  padding: 9px 12px; font-family: var(--ts-mono); font-size: 13px; color: var(--ts-t1);
   outline: none; transition: border-color var(--ts-trn); width: 100%;
 }
-.ts-ff-input:focus { border-color: var(--ts-blue); }
+.ts-ff-input:focus { border-color: var(--ts-blue); box-shadow: 0 0 0 2px rgba(68,138,255,.12); }
 .ts-ff-input::placeholder { color: var(--ts-t4); }
-.ts-ff-row { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+.ts-ff-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .ts-ff-select {
   background: var(--ts-bg3); border: 1px solid var(--ts-bdr2); border-radius: var(--ts-r);
-  padding: 7px 10px; font-family: var(--ts-mono); font-size: 10px; color: var(--ts-t1);
+  padding: 9px 12px; font-family: var(--ts-mono); font-size: 13px; color: var(--ts-t1);
   outline: none; cursor: pointer; appearance: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235c5c70' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
-  background-repeat: no-repeat; background-position: right 8px center;
+  background-repeat: no-repeat; background-position: right 10px center;
 }
-.ts-presets { display: grid; grid-template-columns: repeat(4,1fr); gap: 3px; }
+.ts-presets { display: grid; grid-template-columns: repeat(4,1fr); gap: 4px; }
 .ts-preset {
-  padding: 5px; font-family: var(--ts-mono); font-size: 9px; border-radius: 5px;
-  border: 1px solid var(--ts-bdr2); background: transparent; color: var(--ts-t3);
-  cursor: pointer; transition: var(--ts-trn); text-align: center;
+  padding: 7px 4px; font-family: var(--ts-mono); font-size: 11px; border-radius: 6px;
+  border: 1px solid var(--ts-bdr2); background: transparent; color: var(--ts-t2);
+  cursor: pointer; transition: var(--ts-trn); text-align: center; font-weight: 600;
 }
-.ts-preset:hover { border-color: var(--ts-blue-bd); color: var(--ts-blue); }
+.ts-preset:hover { border-color: var(--ts-blue-bd); color: var(--ts-blue); background: var(--ts-blue-bg); }
 .ts-trade-summary {
   background: var(--ts-bg3); border: 1px solid var(--ts-bdr); border-radius: var(--ts-r);
-  padding: 9px; display: flex; flex-direction: column; gap: 4px;
+  padding: 10px 12px; display: flex; flex-direction: column; gap: 6px;
 }
-.ts-sum-row { display: flex; justify-content: space-between; font-family: var(--ts-mono); font-size: 9px; }
+.ts-sum-row { display: flex; justify-content: space-between; font-family: var(--ts-mono); font-size: 11px; }
 .ts-sum-lbl { color: var(--ts-t3); }
 .ts-sum-val { color: var(--ts-t2); }
-.ts-sum-row.total .ts-sum-val { color: var(--ts-green); font-weight: 700; font-size: 10px; }
+.ts-sum-row.total .ts-sum-val { color: var(--ts-green); font-weight: 700; font-size: 13px; }
 .ts-exec-btn {
-  padding: 11px; border-radius: var(--ts-r); border: none;
-  font-family: var(--ts-mono); font-size: 12px; font-weight: 700;
-  cursor: pointer; transition: var(--ts-trn); letter-spacing: .5px;
+  padding: 13px; border-radius: var(--ts-r); border: none;
+  font-family: var(--ts-mono); font-size: 14px; font-weight: 700;
+  cursor: pointer; transition: var(--ts-trn); letter-spacing: 1px;
 }
 .ts-exec-btn.buy { background: var(--ts-green); color: #000; }
-.ts-exec-btn.buy:hover { background: var(--ts-green2); box-shadow: 0 0 24px rgba(0,230,118,.2); }
+.ts-exec-btn.buy:hover { background: var(--ts-green2); box-shadow: 0 0 24px rgba(0,230,118,.25); }
 .ts-exec-btn.sell { background: var(--ts-red); color: #fff; }
-.ts-exec-btn.sell:hover { background: var(--ts-red2); box-shadow: 0 0 24px rgba(255,23,68,.2); }
+.ts-exec-btn.sell:hover { background: var(--ts-red2); box-shadow: 0 0 24px rgba(255,23,68,.25); }
 .ts-disc {
-  font-family: var(--ts-mono); font-size: 8px; color: var(--ts-t4); text-align: center;
+  font-family: var(--ts-mono); font-size: 9px; color: var(--ts-t4); text-align: center;
   letter-spacing: .3px; line-height: 1.8;
 }
 
@@ -401,12 +404,12 @@
   padding: 9px 12px; border-bottom: 1px solid var(--ts-bdr);
   display: flex; align-items: center; justify-content: space-between;
 }
-.ts-ob-title { font-family: var(--ts-mono); font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--ts-t2); }
-.ts-ob-spread { font-family: var(--ts-mono); font-size: 9px; color: var(--ts-yellow); }
-.ts-ob-body { flex: 1; overflow-y: auto; font-family: var(--ts-mono); font-size: 9px; }
+.ts-ob-title { font-family: var(--ts-mono); font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--ts-t2); }
+.ts-ob-spread { font-family: var(--ts-mono); font-size: 11px; color: var(--ts-yellow); font-weight: 600; }
+.ts-ob-body { flex: 1; overflow-y: auto; font-family: var(--ts-mono); font-size: 11px; }
 .ts-ob-row {
-  display: grid; grid-template-columns: 1fr 75px 75px;
-  padding: 3px 12px; position: relative; cursor: pointer; transition: background var(--ts-trn);
+  display: grid; grid-template-columns: 1fr 80px 80px;
+  padding: 4px 12px; position: relative; cursor: pointer; transition: background var(--ts-trn);
 }
 .ts-ob-row:hover { background: rgba(255,255,255,.03); }
 .ts-ob-row .bar { position: absolute; top: 0; bottom: 0; right: 0; pointer-events: none; opacity: .12; }
@@ -427,11 +430,11 @@
 .ts-hist-wrap { flex: 1; overflow-y: auto; }
 .ts-hist-table { width: 100%; border-collapse: collapse; font-family: var(--ts-mono); font-size: 9px; }
 .ts-hist-table th {
-  padding: 7px 10px; text-align: left; font-size: 8px; letter-spacing: 1px;
+  padding: 8px 10px; text-align: left; font-size: 10px; letter-spacing: .8px;
   text-transform: uppercase; color: var(--ts-t3); border-bottom: 1px solid var(--ts-bdr);
   position: sticky; top: 0; background: var(--ts-bg2); z-index: 5;
 }
-.ts-hist-table td { padding: 5px 10px; border-bottom: 1px solid var(--ts-bdr); color: var(--ts-t2); }
+.ts-hist-table td { padding: 7px 10px; border-bottom: 1px solid var(--ts-bdr); color: var(--ts-t2); font-size: 11px; }
 .ts-hist-table tr:hover td { background: rgba(255,255,255,.02); }
 .ts-ht-buy { color: var(--ts-green); }
 .ts-ht-sell { color: var(--ts-red); }
@@ -587,7 +590,7 @@
 
 /* ── Responsive ── */
 @media (max-width: 1100px) {
-  .trader-app { grid-template-columns: 56px 1fr 280px; }
+  .trader-app { grid-template-columns: 80px 1fr 280px; }
 }
 @media (max-width: 900px) {
   .trader-app { grid-template-columns: 1fr; grid-template-rows: 40px 1fr; }
@@ -596,6 +599,189 @@
   .ts-drawer-toggle { display: flex; }
   .ts-hotkey-hint { display: none; }
   .ts-pos-row { grid-template-columns: 50px 1fr 60px 60px 50px 45px; }
+}
+
+/* ══════════════════════════════════════════
+   COMMUNITY SECTION (full-width, below app)
+══════════════════════════════════════════ */
+.ts-community {
+  max-width: 1400px; margin: 0 auto; padding: 32px 24px 64px;
+  display: grid; grid-template-columns: 300px 1fr; gap: 24px;
+}
+.ts-community-anchor { display: block; height: 1px; }
+
+/* Community left column */
+.ts-comm-left { display: flex; flex-direction: column; gap: 16px; }
+
+/* Profile card (full-width version) */
+.ts-comm-profile {
+  background: var(--ts-bg1); border: 1px solid var(--ts-bdr); border-radius: 10px;
+  padding: 20px; display: flex; flex-direction: column; gap: 12px;
+}
+.ts-comm-profile-top { display: flex; align-items: center; gap: 14px; }
+.ts-comm-avatar {
+  width: 52px; height: 52px; border-radius: 50%; background: var(--ts-bg3);
+  border: 2px solid var(--ts-green-bd); display: flex; align-items: center;
+  justify-content: center; font-size: 24px; flex-shrink: 0;
+}
+.ts-comm-profile-info { flex: 1; min-width: 0; }
+.ts-comm-profile-name { font-family: var(--ts-mono); font-size: 14px; font-weight: 700; color: var(--ts-t1); margin-bottom: 4px; }
+.ts-comm-level-badge {
+  display: inline-block; font-family: var(--ts-mono); font-size: 10px; letter-spacing: 1px;
+  padding: 2px 8px; border-radius: 4px; background: var(--ts-green-bg);
+  color: var(--ts-green); border: 1px solid var(--ts-green-bd); font-weight: 600;
+}
+.ts-comm-xp-bar-wrap { margin-top: 6px; height: 4px; background: var(--ts-bg4); border-radius: 2px; overflow: hidden; }
+.ts-comm-xp-bar-fill { height: 100%; background: var(--ts-green); border-radius: 2px; transition: width .4s ease; }
+.ts-comm-xp-label { font-family: var(--ts-mono); font-size: 10px; color: var(--ts-t3); margin-top: 4px; }
+
+/* Achievements */
+.ts-comm-ach {
+  background: var(--ts-bg1); border: 1px solid var(--ts-bdr); border-radius: 10px; padding: 16px;
+}
+.ts-comm-section-title {
+  font-family: var(--ts-mono); font-size: 10px; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--ts-t3); margin-bottom: 10px;
+  display: flex; align-items: center; gap: 8px;
+}
+.ts-comm-section-title::after { content: ''; flex: 1; height: 1px; background: var(--ts-bdr); }
+.ts-comm-ach-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+.ts-comm-ach-badge {
+  padding: 4px 10px; border-radius: 99px; font-family: var(--ts-mono); font-size: 10px;
+  border: 1px solid var(--ts-bdr2); color: var(--ts-t3); background: transparent;
+  white-space: nowrap; transition: var(--ts-trn);
+}
+.ts-comm-ach-badge.unlocked { border-color: var(--ts-yellow); color: var(--ts-yellow); background: rgba(255,214,0,.07); }
+
+/* Leaderboard */
+.ts-comm-lb {
+  background: var(--ts-bg1); border: 1px solid var(--ts-bdr); border-radius: 10px; padding: 16px;
+}
+.ts-comm-lb-row {
+  display: grid; grid-template-columns: 28px 1fr 70px;
+  padding: 7px 6px; font-family: var(--ts-mono); font-size: 11px;
+  border-bottom: 1px solid var(--ts-bdr); align-items: center; gap: 4px;
+}
+.ts-comm-lb-row:last-child { border-bottom: none; }
+.ts-comm-lb-row.user-row {
+  background: var(--ts-green-bg); border-radius: 6px; color: var(--ts-green);
+  border-color: var(--ts-green-bd); padding: 7px 8px;
+}
+.ts-comm-lb-rank { color: var(--ts-t3); font-size: 10px; font-weight: 700; }
+.ts-comm-lb-rank.gold   { color: #ffd700; }
+.ts-comm-lb-rank.silver { color: #c0c0c0; }
+.ts-comm-lb-rank.bronze { color: #cd7f32; }
+.ts-comm-lb-name { color: var(--ts-t2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 11px; }
+.ts-comm-lb-pnl { text-align: right; font-weight: 700; font-size: 12px; }
+
+/* Community right column */
+.ts-comm-right { display: flex; flex-direction: column; gap: 16px; }
+
+/* Post composer */
+.ts-comm-composer {
+  background: var(--ts-bg1); border: 1px solid var(--ts-bdr); border-radius: 10px; padding: 16px;
+}
+.ts-comm-composer-input {
+  width: 100%; background: var(--ts-bg3); border: 1px solid var(--ts-bdr2);
+  border-radius: 8px; padding: 12px 14px; color: var(--ts-t1);
+  font-family: var(--ts-mono); font-size: 12px; resize: none; outline: none;
+  transition: border-color .18s; line-height: 1.6; box-sizing: border-box;
+}
+.ts-comm-composer-input:focus { border-color: var(--ts-green-bd); }
+.ts-comm-composer-input::placeholder { color: var(--ts-t4); }
+.ts-comm-composer-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; gap: 10px; }
+.ts-comm-composer-hint { font-family: var(--ts-mono); font-size: 10px; color: var(--ts-t4); }
+.ts-comm-post-btn {
+  padding: 8px 18px; border-radius: 6px; border: 1px solid var(--ts-green-bd);
+  background: var(--ts-green-bg); color: var(--ts-green);
+  font-family: var(--ts-mono); font-size: 11px; font-weight: 700;
+  letter-spacing: 1px; cursor: pointer; transition: var(--ts-trn);
+}
+.ts-comm-post-btn:hover { background: rgba(0,230,118,.15); }
+
+/* Posts list */
+.ts-comm-posts { display: flex; flex-direction: column; gap: 12px; }
+.ts-comm-post {
+  background: var(--ts-bg1); border: 1px solid var(--ts-bdr); border-radius: 10px;
+  padding: 16px; transition: border-color .18s;
+}
+.ts-comm-post:hover { border-color: var(--ts-bdr2); }
+.ts-comm-post.trade-result { border-left: 3px solid var(--ts-green); }
+.ts-comm-post.trade-result.loss { border-left-color: var(--ts-red); }
+.ts-comm-post-head {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 10px;
+}
+.ts-comm-post-avatar {
+  width: 32px; height: 32px; border-radius: 50%; background: var(--ts-bg3);
+  border: 1px solid var(--ts-bdr2); display: flex; align-items: center;
+  justify-content: center; font-size: 14px; flex-shrink: 0;
+}
+.ts-comm-post-meta { flex: 1; min-width: 0; }
+.ts-comm-post-user { font-family: var(--ts-mono); font-size: 12px; font-weight: 700; color: var(--ts-t1); }
+.ts-comm-post-time { font-family: var(--ts-mono); font-size: 10px; color: var(--ts-t4); margin-top: 1px; }
+.ts-comm-post-tag {
+  font-family: var(--ts-mono); font-size: 9px; letter-spacing: 1px;
+  padding: 2px 8px; border-radius: 99px; font-weight: 600;
+}
+.ts-comm-post-tag.win { background: rgba(0,230,118,.1); color: var(--ts-green); border: 1px solid var(--ts-green-bd); }
+.ts-comm-post-tag.loss { background: rgba(255,23,68,.1); color: var(--ts-red); border: 1px solid var(--ts-red-bd); }
+.ts-comm-post-tag.info { background: var(--ts-bg3); color: var(--ts-t3); border: 1px solid var(--ts-bdr2); }
+.ts-comm-post-body { font-family: var(--ts-mono); font-size: 12px; color: var(--ts-t2); line-height: 1.6; margin-bottom: 12px; }
+.ts-comm-post-footer {
+  display: flex; align-items: center; gap: 16px; padding-top: 10px;
+  border-top: 1px solid var(--ts-bdr);
+}
+.ts-comm-post-action {
+  font-family: var(--ts-mono); font-size: 10px; color: var(--ts-t4);
+  background: none; border: none; cursor: pointer; padding: 0;
+  transition: color .15s; display: flex; align-items: center; gap: 5px;
+}
+.ts-comm-post-action:hover { color: var(--ts-t2); }
+.ts-comm-post-action.liked { color: var(--ts-green); }
+.ts-comm-post-action svg { width: 12px; height: 12px; }
+
+/* Comments */
+.ts-comm-comments { margin-top: 12px; border-top: 1px solid var(--ts-bdr); padding-top: 12px; display: flex; flex-direction: column; gap: 8px; }
+.ts-comm-comment { display: flex; gap: 10px; }
+.ts-comm-comment-avatar { width: 22px; height: 22px; border-radius: 50%; background: var(--ts-bg3); border: 1px solid var(--ts-bdr); display: flex; align-items: center; justify-content: center; font-size: 10px; flex-shrink: 0; }
+.ts-comm-comment-body { flex: 1; }
+.ts-comm-comment-user { font-family: var(--ts-mono); font-size: 10px; font-weight: 700; color: var(--ts-blue); }
+.ts-comm-comment-text { font-family: var(--ts-mono); font-size: 11px; color: var(--ts-t2); line-height: 1.5; margin-top: 2px; }
+.ts-comm-comment-form { display: flex; gap: 8px; margin-top: 10px; }
+.ts-comm-comment-input {
+  flex: 1; background: var(--ts-bg3); border: 1px solid var(--ts-bdr);
+  border-radius: 6px; padding: 7px 10px; color: var(--ts-t1);
+  font-family: var(--ts-mono); font-size: 11px; outline: none;
+  transition: border-color .18s;
+}
+.ts-comm-comment-input:focus { border-color: var(--ts-bdr2); }
+.ts-comm-comment-input::placeholder { color: var(--ts-t4); }
+.ts-comm-comment-submit {
+  padding: 7px 14px; border-radius: 6px; border: 1px solid var(--ts-bdr2);
+  background: var(--ts-bg3); color: var(--ts-t2); font-family: var(--ts-mono);
+  font-size: 10px; cursor: pointer; transition: var(--ts-trn); white-space: nowrap;
+}
+.ts-comm-comment-submit:hover { border-color: var(--ts-green-bd); color: var(--ts-green); }
+
+/* Trade results banner */
+.ts-comm-results {
+  background: var(--ts-bg1); border: 1px solid var(--ts-bdr); border-radius: 10px; padding: 16px;
+}
+.ts-comm-results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 12px; }
+.ts-comm-result-card {
+  background: var(--ts-bg3); border: 1px solid var(--ts-bdr); border-radius: 8px;
+  padding: 12px; text-align: center;
+}
+.ts-comm-result-lbl { font-family: var(--ts-mono); font-size: 9px; letter-spacing: 1px; text-transform: uppercase; color: var(--ts-t3); margin-bottom: 5px; }
+.ts-comm-result-val { font-family: var(--ts-mono); font-size: 16px; font-weight: 700; }
+
+@media (max-width: 1000px) {
+  .ts-community { grid-template-columns: 1fr; }
+  .ts-comm-results-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 600px) {
+  .ts-community { padding: 16px 12px 48px; gap: 12px; }
+  .ts-comm-results-grid { grid-template-columns: 1fr; }
 }
 </style>
 </head>
@@ -635,12 +821,40 @@
 
       <!-- ── APP SIDEBAR ── -->
       <aside class="ts-sidebar">
-        <button class="ts-sb-btn active" onclick="tsShowTab('trade')" data-tab="trade" title="Operar (D)">📊</button>
-        <button class="ts-sb-btn" onclick="tsShowTab('book')" data-tab="book" title="Order Book (O)">📋</button>
-        <button class="ts-sb-btn" onclick="tsShowTab('hist')" data-tab="hist" title="Journal (H)">📜</button>
-        <button class="ts-sb-btn" onclick="tsShowTab('eq')" data-tab="eq" title="Equity (E)">📈</button>
+        <button class="ts-sb-btn active" onclick="tsShowTab('trade')" data-tab="trade" title="Operar (D)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+          </svg>
+          <span>OPERAR</span>
+        </button>
+        <button class="ts-sb-btn" onclick="tsShowTab('book')" data-tab="book" title="Order Book (O)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/>
+            <line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>
+          </svg>
+          <span>BOOK</span>
+        </button>
+        <button class="ts-sb-btn" onclick="tsShowTab('hist')" data-tab="hist" title="Journal (H)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+          </svg>
+          <span>JOURNAL</span>
+        </button>
+        <button class="ts-sb-btn" onclick="tsShowTab('eq')" data-tab="eq" title="Equity (E)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>
+          </svg>
+          <span>EQUITY</span>
+        </button>
         <div class="ts-sb-divider"></div>
-        <button class="ts-sb-btn" onclick="tsShowTab('forum')" data-tab="forum" title="Comunidade">🏆</button>
+        <button class="ts-sb-btn" onclick="tsScrollToCommunity()" data-tab="community" title="Comunidade (C)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+          <span>SOCIAL</span>
+        </button>
         <div class="ts-sb-bottom">
           <!-- intentionally minimal -->
         </div>
@@ -770,7 +984,6 @@
           <button class="ts-r-tab" data-rt="book" onclick="tsShowTab('book')">BOOK</button>
           <button class="ts-r-tab" data-rt="hist" onclick="tsShowTab('hist')">JOURNAL</button>
           <button class="ts-r-tab" data-rt="eq" onclick="tsShowTab('eq')">EQUITY</button>
-          <button class="ts-r-tab" data-rt="forum" onclick="tsShowTab('forum')">FÓRUM</button>
         </div>
 
         <!-- TRADE PANEL -->
@@ -871,39 +1084,96 @@
           </div>
         </div>
 
-        <!-- FORUM / COMMUNITY -->
-        <div class="ts-r-panel" id="tsrp-forum">
-          <div class="ts-forum-panel">
-            <!-- Profile Card -->
-            <div class="ts-profile-card">
-              <div class="ts-avatar" id="ts-avatar">🧑‍💻</div>
-              <div class="ts-profile-info">
-                <div class="ts-profile-name" id="ts-profile-name">Trader #0000</div>
-                <span class="ts-level-badge" id="ts-level-badge">Iniciante</span>
-                <div class="ts-xp-bar-wrap"><div class="ts-xp-bar-fill" id="ts-xp-bar" style="width:0%"></div></div>
-                <div class="ts-xp-label" id="ts-xp-label">0 XP · próximo nível: 100</div>
-              </div>
-            </div>
-            <!-- Achievements -->
-            <div class="ts-achievements">
-              <div class="ts-ach-title">Conquistas</div>
-              <div class="ts-ach-grid" id="ts-ach-grid"></div>
-            </div>
-            <!-- Leaderboard -->
-            <div class="ts-lb-section">
-              <div class="ts-lb-title">Ranking da Semana</div>
-              <div id="ts-lb-list"></div>
-            </div>
-            <!-- Feed -->
-            <div class="ts-feed-section">
-              <div class="ts-feed-title">Comunidade</div>
-              <div id="ts-feed-list"></div>
-            </div>
-          </div>
-        </div>
       </div>
 
     </div><!-- /.trader-app -->
+
+    <!-- ══════════════════════════════════════════
+         COMMUNITY SECTION (full-width scroll)
+    ══════════════════════════════════════════ -->
+    <span class="ts-community-anchor" id="ts-community"></span>
+    <section class="ts-community">
+
+      <!-- LEFT COLUMN: profile + achievements + leaderboard -->
+      <div class="ts-comm-left">
+
+        <!-- Profile Card -->
+        <div class="ts-comm-profile">
+          <div class="ts-comm-profile-top">
+            <div class="ts-comm-avatar" id="ts-comm-avatar">🧑‍💻</div>
+            <div class="ts-comm-profile-info">
+              <div class="ts-comm-profile-name" id="ts-comm-profile-name">Trader #0000</div>
+              <span class="ts-comm-level-badge" id="ts-comm-level-badge">Iniciante</span>
+              <div class="ts-comm-xp-bar-wrap"><div class="ts-comm-xp-bar-fill" id="ts-comm-xp-bar" style="width:0%"></div></div>
+              <div class="ts-comm-xp-label" id="ts-comm-xp-label">0 XP · próximo nível: 100</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Achievements -->
+        <div class="ts-comm-ach">
+          <div class="ts-comm-section-title">Conquistas</div>
+          <div class="ts-comm-ach-grid" id="ts-comm-ach-grid"></div>
+        </div>
+
+        <!-- Trade Results -->
+        <div class="ts-comm-results">
+          <div class="ts-comm-section-title">Resultados</div>
+          <div class="ts-comm-results-grid">
+            <div class="ts-comm-result-card">
+              <div class="ts-comm-result-lbl">Trades</div>
+              <div class="ts-comm-result-val" id="ts-cr-trades" style="color:var(--ts-yellow)">0</div>
+            </div>
+            <div class="ts-comm-result-card">
+              <div class="ts-comm-result-lbl">Win Rate</div>
+              <div class="ts-comm-result-val" id="ts-cr-wr" style="color:var(--ts-cyan)">—</div>
+            </div>
+            <div class="ts-comm-result-card">
+              <div class="ts-comm-result-lbl">P&amp;L Total</div>
+              <div class="ts-comm-result-val" id="ts-cr-pnl" style="color:var(--ts-green)">$0</div>
+            </div>
+            <div class="ts-comm-result-card">
+              <div class="ts-comm-result-lbl">Melhor Trade</div>
+              <div class="ts-comm-result-val" id="ts-cr-best" style="color:var(--ts-green)">—</div>
+            </div>
+            <div class="ts-comm-result-card">
+              <div class="ts-comm-result-lbl">Pior Trade</div>
+              <div class="ts-comm-result-val" id="ts-cr-worst" style="color:var(--ts-red)">—</div>
+            </div>
+            <div class="ts-comm-result-card">
+              <div class="ts-comm-result-lbl">Sequência</div>
+              <div class="ts-comm-result-val" id="ts-cr-streak" style="color:var(--ts-purple)">0</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Leaderboard -->
+        <div class="ts-comm-lb">
+          <div class="ts-comm-section-title">Ranking da Semana</div>
+          <div id="ts-comm-lb-list"></div>
+        </div>
+
+      </div><!-- /.ts-comm-left -->
+
+      <!-- RIGHT COLUMN: composer + posts feed -->
+      <div class="ts-comm-right">
+
+        <!-- Post Composer -->
+        <div class="ts-comm-composer">
+          <div class="ts-comm-section-title">Publicar</div>
+          <textarea class="ts-comm-composer-input" id="ts-comm-input" rows="3" placeholder="Compartilhe sua análise, estratégia ou resultado de trade…" maxlength="280"></textarea>
+          <div class="ts-comm-composer-footer">
+            <span class="ts-comm-composer-hint" id="ts-comm-char-hint">280 caracteres restantes</span>
+            <button class="ts-comm-post-btn" onclick="tsCreatePost()">PUBLICAR</button>
+          </div>
+        </div>
+
+        <!-- Posts Feed -->
+        <div class="ts-comm-posts" id="ts-comm-posts"></div>
+
+      </div><!-- /.ts-comm-right -->
+
+    </section><!-- /.ts-community -->
 
     <!-- Mobile drawer for right panel -->
     <button class="ts-drawer-toggle" id="ts-drawer-toggle" onclick="tsToggleDrawer()">⚙</button>
@@ -918,16 +1188,16 @@
 
 <div id="ts-toast"></div>
 <div class="ts-hotkey-hint">
-  <kbd>B</kbd> Comprar &nbsp;<kbd>S</kbd> Vender &nbsp;<kbd>1-8</kbd> Ativo<br>
-  <kbd>D</kbd> Operar &nbsp;<kbd>O</kbd> Book &nbsp;<kbd>H</kbd> Journal &nbsp;<kbd>E</kbd> Equity &nbsp;<kbd>F</kbd> Fórum
+  <kbd>B</kbd> Comprar &nbsp;<kbd>S</kbd> Vender &nbsp;<kbd>1-9</kbd> Ativo<br>
+  <kbd>D</kbd> Operar &nbsp;<kbd>O</kbd> Book &nbsp;<kbd>H</kbd> Journal &nbsp;<kbd>E</kbd> Equity &nbsp;<kbd>C</kbd> Social
 </div>
-<div class="ts-version">v3.1.0</div>
+<div class="ts-version">v4.0.0</div>
 
 <script>
 /* ═══════════════════════════════════════════════════════════
-   TRADER SIM v3.1.0 — farpa.ai Engine
+   TRADER SIM v4.0.0 — farpa.ai Engine
    Multi-market · Multi-chart · Gamification · Community
-   feat: BB overlay · signal score · alloc donut · price flash · sharpe/pf
+   feat: SVG sidebar · community forum · leaderboard · auto-post · 16 cryptos
 ═══════════════════════════════════════════════════════════ */
 'use strict';
 
@@ -942,14 +1212,22 @@ const MARKETS = {
   crypto: {
     label: '₿ Cripto', source: 'coingecko',
     assets: [
-      { id:'bitcoin',      sym:'BTC', name:'Bitcoin',   color:'#f7931a', cgId:'bitcoin' },
-      { id:'ethereum',     sym:'ETH', name:'Ethereum',  color:'#627eea', cgId:'ethereum' },
-      { id:'solana',       sym:'SOL', name:'Solana',    color:'#9945ff', cgId:'solana' },
-      { id:'binancecoin',  sym:'BNB', name:'BNB',       color:'#f3ba2f', cgId:'binancecoin' },
-      { id:'ripple',       sym:'XRP', name:'XRP',       color:'#00aae4', cgId:'ripple' },
-      { id:'cardano',      sym:'ADA', name:'Cardano',   color:'#0033ad', cgId:'cardano' },
-      { id:'dogecoin',     sym:'DOGE',name:'Dogecoin',  color:'#c2a633', cgId:'dogecoin' },
-      { id:'avalanche-2',  sym:'AVAX',name:'Avalanche', color:'#e84142', cgId:'avalanche-2' },
+      { id:'bitcoin',           sym:'BTC',  name:'Bitcoin',    color:'#f7931a', cgId:'bitcoin' },
+      { id:'ethereum',          sym:'ETH',  name:'Ethereum',   color:'#627eea', cgId:'ethereum' },
+      { id:'solana',            sym:'SOL',  name:'Solana',     color:'#9945ff', cgId:'solana' },
+      { id:'binancecoin',       sym:'BNB',  name:'BNB',        color:'#f3ba2f', cgId:'binancecoin' },
+      { id:'ripple',            sym:'XRP',  name:'XRP',        color:'#00aae4', cgId:'ripple' },
+      { id:'cardano',           sym:'ADA',  name:'Cardano',    color:'#0033ad', cgId:'cardano' },
+      { id:'dogecoin',          sym:'DOGE', name:'Dogecoin',   color:'#c2a633', cgId:'dogecoin' },
+      { id:'avalanche-2',       sym:'AVAX', name:'Avalanche',  color:'#e84142', cgId:'avalanche-2' },
+      { id:'polkadot',          sym:'DOT',  name:'Polkadot',   color:'#e6007a', cgId:'polkadot' },
+      { id:'chainlink',         sym:'LINK', name:'Chainlink',  color:'#2a5ada', cgId:'chainlink' },
+      { id:'uniswap',           sym:'UNI',  name:'Uniswap',    color:'#ff007a', cgId:'uniswap' },
+      { id:'cosmos',            sym:'ATOM', name:'Cosmos',     color:'#2e3148', cgId:'cosmos' },
+      { id:'near',              sym:'NEAR', name:'NEAR',       color:'#00c08b', cgId:'near' },
+      { id:'litecoin',          sym:'LTC',  name:'Litecoin',   color:'#bfbbbb', cgId:'litecoin' },
+      { id:'tron',              sym:'TRX',  name:'TRON',       color:'#eb0029', cgId:'tron' },
+      { id:'stellar',           sym:'XLM',  name:'Stellar',    color:'#14b6e7', cgId:'stellar' },
     ]
   },
   b3: {
@@ -1023,6 +1301,7 @@ let S = {
   maxDD: 0,
   xp: 0,
   achievements: [],
+  posts: [],
 };
 
 let chartInst = null;
@@ -1054,6 +1333,7 @@ function tsLoad() {
       if (!S.winStreak)   S.winStreak = 0;
       if (!S.selMkt)      S.selMkt = 'crypto';
       if (!S.selChartType) S.selChartType = 'line';
+      if (!S.posts)       S.posts = [];
     }
   } catch(e) {}
 }
@@ -1623,9 +1903,16 @@ function tsClosePosById(id) {
   if (pnl >= 0) { S.wins++; S.grossProfit += pnl; S.winStreak++; tsAwardXP(35); }
   else { S.grossLoss += Math.abs(pnl); S.winStreak = 0; tsAwardXP(5); }
   delete S.positions[id];
-  tsSave(); tsRefreshAll(); tsCheckAchievements();
+  tsSave(); tsRefreshAll(); tsCheckAchievements(); tsRenderCommunity();
   const pp = (pnl >= 0 ? '+' : '') + fU(pnl);
   tsToast(pnl >= 0 ? `🎉 ${pos.sym}: ${pp}` : `📉 ${pos.sym}: ${pp}`, pnl >= 0 ? 'tw' : 'tl');
+  // Auto-post trade result to community
+  const pct = ((price - pos.avg) / pos.avg * 100).toFixed(2);
+  const tag = pnl >= 0 ? 'win' : 'loss';
+  const autoText = pnl >= 0
+    ? `✅ Trade fechado: ${pos.sym} · Entrada ${fU(pos.avg)} → Saída ${fU(price)} · P&L ${pp} (+${pct}%) 🎉`
+    : `❌ Trade fechado: ${pos.sym} · Entrada ${fU(pos.avg)} → Saída ${fU(price)} · P&L ${pp} (${pct}%)`;
+  tsCreatePost(autoText, tag);
 }
 
 function tsCloseAll() { Object.keys(S.positions).forEach(tsClosePosById); }
@@ -1816,85 +2103,212 @@ function tsCheckAchievements() {
   });
 }
 
-function tsRenderForum() {
-  // Profile
+/* ── Community / Forum ── */
+function tsGetUserId() {
+  let uid = localStorage.getItem('farpa_ts_uid');
+  if (!uid) { uid = Math.random().toString(36).slice(-4).toUpperCase(); localStorage.setItem('farpa_ts_uid', uid); }
+  return uid;
+}
+
+function tsScrollToCommunity() {
+  const el = document.getElementById('ts-community');
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function tsCreatePost(autoText, autoTag) {
+  const input = document.getElementById('ts-comm-input');
+  const text = autoText || (input ? input.value.trim() : '');
+  if (!text) { tsToast('Escreva algo antes de publicar.', 'ti'); return; }
+  const uid = tsGetUserId();
+  const post = {
+    id: Date.now(),
+    user: `Trader #${uid}`,
+    time: 'agora',
+    body: text,
+    tag: autoTag || 'info',
+    likes: 0,
+    liked: false,
+    comments: [],
+  };
+  S.posts.unshift(post);
+  if (S.posts.length > 50) S.posts.pop();
+  tsSave();
+  if (input) input.value = '';
+  const hint = document.getElementById('ts-comm-char-hint');
+  if (hint) hint.textContent = '280 caracteres restantes';
+  tsRenderPosts();
+  tsToast('Post publicado!', 'tw');
+}
+
+function tsLikePost(postId) {
+  const post = S.posts.find(p => p.id === postId);
+  if (!post) return;
+  post.liked = !post.liked;
+  post.likes += post.liked ? 1 : -1;
+  tsSave();
+  tsRenderPosts();
+}
+
+function tsAddComment(postId, inputEl) {
+  const text = inputEl ? inputEl.value.trim() : '';
+  if (!text) return;
+  const post = S.posts.find(p => p.id === postId);
+  if (!post) return;
+  const uid = tsGetUserId();
+  post.comments.push({ user: `Trader #${uid}`, text, time: 'agora' });
+  tsSave();
+  inputEl.value = '';
+  tsRenderPosts();
+}
+
+function tsRenderPosts() {
+  const container = document.getElementById('ts-comm-posts');
+  if (!container) return;
+  const allPosts = [
+    ...S.posts,
+    ...FEED_POSTS.map((p, i) => ({
+      id: 'seed_' + i, user: p.user, time: p.time, body: p.body,
+      tag: 'info', likes: Math.floor(Math.random() * 12 + 2), liked: false, comments: [],
+    }))
+  ];
+  if (!allPosts.length) {
+    container.innerHTML = `<div style="font-family:var(--ts-mono);font-size:12px;color:var(--ts-t4);text-align:center;padding:32px">Nenhum post ainda. Seja o primeiro!</div>`;
+    return;
+  }
+  container.innerHTML = allPosts.map(p => {
+    const isOwn = !String(p.id).startsWith('seed_');
+    const tagClass = p.tag === 'win' ? 'win' : p.tag === 'loss' ? 'loss' : 'info';
+    const tagLabel = p.tag === 'win' ? '▲ GAIN' : p.tag === 'loss' ? '▼ LOSS' : '● ANÁLISE';
+    const likeIcon = `<svg viewBox="0 0 24 24" fill="${p.liked ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>`;
+    const commentIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>`;
+    const commentsHtml = p.comments.length ? `
+      <div class="ts-comm-comments">
+        ${p.comments.map(c => `
+          <div class="ts-comm-comment">
+            <div class="ts-comm-comment-avatar">💬</div>
+            <div class="ts-comm-comment-body">
+              <div class="ts-comm-comment-user">${c.user} <span style="color:var(--ts-t4);font-weight:400">${c.time}</span></div>
+              <div class="ts-comm-comment-text">${c.text}</div>
+            </div>
+          </div>`).join('')}
+      </div>` : '';
+    const commentForm = isOwn ? '' : `
+      <div class="ts-comm-comment-form">
+        <input class="ts-comm-comment-input" placeholder="Responder…" maxlength="140"
+          onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();tsAddComment(${p.id},this)}">
+        <button class="ts-comm-comment-submit" onclick="tsAddComment(${p.id},this.previousElementSibling)">↵</button>
+      </div>`;
+    return `<div class="ts-comm-post${p.tag === 'loss' ? ' trade-result loss' : p.tag === 'win' ? ' trade-result' : ''}">
+      <div class="ts-comm-post-head">
+        <div class="ts-comm-post-avatar">🧑‍💻</div>
+        <div class="ts-comm-post-meta">
+          <div class="ts-comm-post-user">${p.user}</div>
+          <div class="ts-comm-post-time">${p.time}</div>
+        </div>
+        <span class="ts-comm-post-tag ${tagClass}">${tagLabel}</span>
+      </div>
+      <div class="ts-comm-post-body">${p.body}</div>
+      ${commentsHtml}
+      ${commentForm}
+      <div class="ts-comm-post-footer">
+        <button class="ts-comm-post-action${p.liked ? ' liked' : ''}" onclick="tsLikePost(${p.id})">${likeIcon} ${p.likes}</button>
+        <button class="ts-comm-post-action">${commentIcon} ${p.comments.length}</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function tsRenderCommunity() {
+  const uid = tsGetUserId();
   const xp = S.xp || 0;
   const lvl = tsGetLevel(xp);
   const nextLvl = LEVELS[LEVELS.indexOf(lvl) + 1];
-  const xpInLvl = xp - lvl.min;
-  const xpRange = (nextLvl ? nextLvl.min : lvl.min + 1) - lvl.min;
-  const xpPct = Math.min(100, (xpInLvl / xpRange) * 100);
+  const xpPct = Math.min(100, ((xp - lvl.min) / ((nextLvl ? nextLvl.min : lvl.min + 1) - lvl.min)) * 100);
 
-  // Generate stable user ID from localStorage key
-  let userId = localStorage.getItem('farpa_ts_uid');
-  if (!userId) { userId = Math.random().toString(36).slice(-4).toUpperCase(); localStorage.setItem('farpa_ts_uid', userId); }
-
-  sv('ts-profile-name', `Trader #${userId}`);
-  const badge = document.getElementById('ts-level-badge');
+  sv('ts-comm-profile-name', `Trader #${uid}`);
+  const badge = document.getElementById('ts-comm-level-badge');
   if (badge) badge.textContent = lvl.name;
-  const bar = document.getElementById('ts-xp-bar');
+  const bar = document.getElementById('ts-comm-xp-bar');
   if (bar) bar.style.width = xpPct + '%';
-  sv('ts-xp-label', `${xp} XP · próximo: ${nextLvl ? nextLvl.min + ' XP (' + nextLvl.name + ')' : 'Master Max'}`);
+  sv('ts-comm-xp-label', `${xp} XP · próximo: ${nextLvl ? nextLvl.min + ' XP (' + nextLvl.name + ')' : 'Master Max'}`);
 
   // Achievements
-  const achGrid = document.getElementById('ts-ach-grid');
+  const achGrid = document.getElementById('ts-comm-ach-grid');
   if (achGrid) {
     achGrid.innerHTML = ACHIEVEMENTS.map(ach => {
       const unlocked = S.achievements.includes(ach.id);
-      return `<span class="ts-ach-badge${unlocked ? ' unlocked' : ''}" title="${ach.desc}">${ach.label}</span>`;
+      return `<span class="ts-comm-ach-badge${unlocked ? ' unlocked' : ''}" title="${ach.desc}">${ach.label}</span>`;
     }).join('');
   }
 
-  // Leaderboard: 10 simulated traders + user
-  const lbEl = document.getElementById('ts-lb-list');
+  // Trade results
+  const inv = tsCalcInv(), total = S.cash + inv;
+  const pnl = total - INIT_CASH;
+  const wr = S.totalTrades > 0 ? ((S.wins / S.totalTrades) * 100).toFixed(0) + '%' : '—';
+  sv('ts-cr-trades', S.totalTrades);
+  sv('ts-cr-wr', wr);
+  const pnlEl = document.getElementById('ts-cr-pnl');
+  if (pnlEl) { pnlEl.textContent = fU(pnl); pnlEl.style.color = pnl >= 0 ? 'var(--ts-green)' : 'var(--ts-red)'; }
+  // Best/worst from history
+  if (S.history.length) {
+    const vals = S.history.map(h => h.pnl);
+    const best = Math.max(...vals), worst = Math.min(...vals);
+    const bestEl = document.getElementById('ts-cr-best');
+    const worstEl = document.getElementById('ts-cr-worst');
+    if (bestEl) { bestEl.textContent = fU(best); bestEl.style.color = 'var(--ts-green)'; }
+    if (worstEl) { worstEl.textContent = fU(worst); worstEl.style.color = 'var(--ts-red)'; }
+  }
+  sv('ts-cr-streak', S.winStreak);
+
+  // Leaderboard
+  const lbEl = document.getElementById('ts-comm-lb-list');
   if (lbEl) {
-    const inv = tsCalcInv(), total = S.cash + inv;
-    const userPnl = ((total - INIT_CASH) / INIT_CASH * 100);
+    const userPnl = (pnl / INIT_CASH * 100);
     const fakeTraders = [
-      { name:'Trader #A12F', pnl: 34.2 },
-      { name:'Trader #9B3E', pnl: 28.7 },
-      { name:'Trader #CC40', pnl: 21.1 },
-      { name:'Trader #5F1A', pnl: 16.4 },
-      { name:'Trader #E87B', pnl: 12.9 },
-      { name:'Trader #30DA', pnl: 8.3 },
-      { name:'Trader #112C', pnl: 3.1 },
-      { name:'Trader #4480', pnl: -1.2 },
-      { name:'Trader #78B9', pnl: -6.5 },
-      { name:'Trader #F002', pnl: -11.7 },
+      { name:'Trader #A12F', pnl:34.2 }, { name:'Trader #9B3E', pnl:28.7 },
+      { name:'Trader #CC40', pnl:21.1 }, { name:'Trader #5F1A', pnl:16.4 },
+      { name:'Trader #E87B', pnl:12.9 }, { name:'Trader #30DA', pnl:8.3 },
+      { name:'Trader #112C', pnl:3.1 },  { name:'Trader #4480', pnl:-1.2 },
+      { name:'Trader #78B9', pnl:-6.5 }, { name:'Trader #F002', pnl:-11.7 },
     ];
-    const allRows = [...fakeTraders, { name: `Trader #${userId}`, pnl: userPnl, isUser: true }]
+    const allRows = [...fakeTraders, { name:`Trader #${uid}`, pnl:userPnl, isUser:true }]
       .sort((a, b) => b.pnl - a.pnl);
+    const medals = ['🥇','🥈','🥉'];
     lbEl.innerHTML = allRows.slice(0, 11).map((t, i) => {
       const up = t.pnl >= 0;
       const pnlColor = up ? 'var(--ts-green)' : 'var(--ts-red)';
-      return `<div class="ts-lb-row${t.isUser ? ' user-row' : ''}">
-        <span class="ts-lb-rank">${i + 1}</span>
-        <span class="ts-lb-name">${t.name}${t.isUser ? ' ← você' : ''}</span>
-        <span class="ts-lb-pnl" style="color:${t.isUser ? '' : pnlColor}">${up ? '+' : ''}${t.pnl.toFixed(1)}%</span>
+      const rankClass = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
+      const rankLabel = medals[i] || (i + 1);
+      return `<div class="ts-comm-lb-row${t.isUser ? ' user-row' : ''}">
+        <span class="ts-comm-lb-rank ${rankClass}">${rankLabel}</span>
+        <span class="ts-comm-lb-name">${t.name}${t.isUser ? ' ← você' : ''}</span>
+        <span class="ts-comm-lb-pnl" style="color:${t.isUser ? (up ? 'var(--ts-green)' : 'var(--ts-red)') : pnlColor}">${up ? '+' : ''}${t.pnl.toFixed(1)}%</span>
       </div>`;
     }).join('');
   }
 
-  // Community feed
-  const feedEl = document.getElementById('ts-feed-list');
-  if (feedEl && !feedEl.children.length) {
-    feedEl.innerHTML = FEED_POSTS.map(p =>
-      `<div class="ts-feed-post">
-        <div class="ts-fp-head"><span class="ts-fp-user">${p.user}</span><span class="ts-fp-time">${p.time}</span></div>
-        <div class="ts-fp-body">${p.body}</div>
-      </div>`
-    ).join('');
+  // Char counter for composer
+  const input = document.getElementById('ts-comm-input');
+  const hint = document.getElementById('ts-comm-char-hint');
+  if (input && hint) {
+    input.addEventListener('input', () => {
+      hint.textContent = (280 - input.value.length) + ' caracteres restantes';
+    });
   }
+
+  tsRenderPosts();
 }
+
+// Legacy alias (called by DOMContentLoaded)
+function tsRenderForum() { tsRenderCommunity(); }
 
 /* ── Tab Navigation ── */
 function tsShowTab(id) {
   document.querySelectorAll('.ts-r-tab').forEach(t => t.classList.toggle('active', t.dataset.rt === id));
   document.querySelectorAll('.ts-r-panel').forEach(p => p.classList.toggle('active', p.id === 'tsrp-' + id));
-  document.querySelectorAll('.ts-sb-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === id));
-  if (id === 'eq')    tsRenderEquity();
-  if (id === 'book')  tsUpdateOrderBook();
-  if (id === 'forum') tsRenderForum();
+  document.querySelectorAll('.ts-sb-btn[data-tab]').forEach(b => b.classList.toggle('active', b.dataset.tab === id));
+  if (id === 'eq')   tsRenderEquity();
+  if (id === 'book') tsUpdateOrderBook();
 }
 
 /* ── Mobile Drawer ── */
@@ -1920,8 +2334,8 @@ document.addEventListener('keydown', e => {
   else if (k === 'o') tsShowTab('book');
   else if (k === 'h') tsShowTab('hist');
   else if (k === 'e') tsShowTab('eq');
-  else if (k === 'f') tsShowTab('forum');
-  else if (k >= '1' && k <= '8') {
+  else if (k === 'c' || k === 'f') tsScrollToCommunity();
+  else if (k >= '1' && k <= '9') {
     const i = parseInt(k) - 1;
     if (i < tsCurMkt().assets.length) tsSelAsset(i);
   }
