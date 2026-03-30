@@ -1,0 +1,48 @@
+name: Deploy farpa.ai
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Build & Deploy
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Generate version.json
+        run: |
+          VERSION="v$(date +'%Y.%m.%d')-${{ github.run_number }}"
+          DATE="$(date +'%b %Y')"
+          SHORT_COMMIT="${{ github.sha }}"
+          SHORT_COMMIT="${SHORT_COMMIT:0:7}"
+          cat > version.json << EOF
+          {
+            "version": "${VERSION}",
+            "date": "${DATE}",
+            "commit": "${SHORT_COMMIT}",
+            "run": "${{ github.run_number }}",
+            "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          }
+          EOF
+          echo "Generated: ${VERSION}"
+          cat version.json
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CF_PAGES_API_TOKEN }}
+          accountId: ${{ secrets.CF_PAGES_ACCOUNT_ID }}
+          projectName: rff82-ai
+          directory: .
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          branch: main
+          wranglerVersion: '3'

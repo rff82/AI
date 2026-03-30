@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 80" width="320" height="80">
+  <rect width="320" height="80" fill="#f0f0ef"/>
+  <g transform="translate(16, 12)">
+    <polygon points="28,4 44,18 36,28 48,44 28,52 8,44 20,28 12,18" fill="none" stroke="#0a0a0a" stroke-width="1.5" stroke-linejoin="round"/>
+    <polygon points="28,12 38,22 32,28 40,40 28,46 16,40 24,28 18,22" fill="rgba(0,0,0,0.06)" stroke="#0a0a0a" stroke-width="0.8" stroke-linejoin="round"/>
+    <circle cx="28" cy="28" r="2.5" fill="#0a0a0a"/>
+    <line x1="28" y1="4" x2="28" y2="12" stroke="#333" stroke-width="0.8" opacity="0.5"/>
+    <line x1="44" y1="18" x2="38" y2="22" stroke="#333" stroke-width="0.8" opacity="0.5"/>
+    <line x1="48" y1="44" x2="40" y2="40" stroke="#333" stroke-width="0.8" opacity="0.5"/>
+    <line x1="8" y1="44" x2="16" y2="40" stroke="#333" stroke-width="0.8" opacity="0.5"/>
+    <line x1="12" y1="18" x2="18" y2="22" stroke="#333" stroke-width="0.8" opacity="0.5"/>
+  </g>
+  <text x="84" y="50" font-family="'Space Grotesk', 'Arial Black', sans-serif" font-size="38" font-weight="900" letter-spacing="-2" fill="#0a0a0a">farpa</text>
+  <text x="222" y="50" font-family="'Space Grotesk', 'Arial', sans-serif" font-size="38" font-weight="300" letter-spacing="-1" fill="#141414">.ai</text>
+  <text x="84" y="66" font-family="'DM Mono', 'Courier New', monospace" font-size="8" letter-spacing="2.5" fill="rgba(10,10,10,0.35)">NOTÍCIAS QUE CORTAM · INSIGHTS QUE FICAM</text>
+</svg>
