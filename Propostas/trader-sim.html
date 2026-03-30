@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0a0e17">
+  <title>Trader Simulator | farpa.ai</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- CSS -->
+  <link rel="stylesheet" href="./css/tokens.css">
+  <link rel="stylesheet" href="./css/themes.css">
+  <link rel="stylesheet" href="./css/components.css">
+  <link rel="stylesheet" href="./css/trader-sim.css">
+  
+  <style>
+    /* Force trader theme */
+    :root { color-scheme: dark; }
+  </style>
+</head>
+<body data-theme="trader">
+  <div class="trader-app">
+    <!-- Header -->
+    <header class="trader-header">
+      <a href="./index.html" class="trader-logo">
+        <svg class="trader-logo-icon" viewBox="0 0 32 32" fill="none">
+          <rect width="32" height="32" rx="8" fill="currentColor"/>
+          <path d="M8 22L14 12L18 16L24 8" stroke="#0a0e17" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>farpa.ai</span>
+      </a>
+      
+      <div class="trader-header-info">
+        <div class="trader-balance">
+          <span class="trader-balance-label">Saldo</span>
+          <span class="trader-balance-value" id="balanceDisplay">R$ 100.000,00</span>
+        </div>
+        
+        <div class="trader-balance">
+          <span class="trader-balance-label">P&L Total</span>
+          <span class="trader-balance-value positive" id="pnlDisplay">+R$ 0,00</span>
+        </div>
+        
+        <button class="btn btn-secondary btn-sm" id="resetBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+            <path d="M3 3v5h5"/>
+          </svg>
+          Reset
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="trader-main">
+      <!-- Sidebar Left - Assets -->
+      <aside class="trader-sidebar-left" id="sidebarLeft">
+        <div class="asset-search">
+          <div class="asset-search-wrapper">
+            <svg class="asset-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/>
+              <path d="m21 21-4.35-4.35"/>
+            </svg>
+            <input type="text" class="asset-search-input" placeholder="Buscar ativo..." id="assetSearch">
+          </div>
+        </div>
+        
+        <div class="asset-categories">
+          <button class="asset-category-btn active" data-category="crypto">🪙 Crypto</button>
+          <button class="asset-category-btn" data-category="b3">🇧🇷 B3</button>
+          <button class="asset-category-btn" data-category="nyse">🇺🇸 NYSE</button>
+        </div>
+        
+        <div class="asset-list" id="assetList">
+          <!-- Populated by JS -->
+        </div>
+      </aside>
+
+      <!-- Center - Chart -->
+      <section class="trader-center">
+        <div class="chart-header">
+          <div class="chart-asset-info">
+            <span class="chart-asset-name" id="chartAssetName">BTC/USD</span>
+            <span class="chart-asset-price" id="chartAssetPrice">$0.00</span>
+            <span class="chart-asset-change positive" id="chartAssetChange">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="m18 15-6-6-6 6"/>
+              </svg>
+              <span>0.00%</span>
+            </span>
+          </div>
+          
+          <div class="chart-toolbar">
+            <div class="chart-type-selector">
+              <button class="chart-type-btn active" data-type="candle" title="Candlestick">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M9 4v4M9 16v4M15 4v4M15 16v4"/>
+                  <rect x="7" y="8" width="4" height="8" rx="1"/>
+                  <rect x="13" y="8" width="4" height="8" rx="1"/>
+                </svg>
+              </button>
+              <button class="chart-type-btn" data-type="line" title="Linha">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M3 16l5-5 4 4 9-9"/>
+                </svg>
+              </button>
+              <button class="chart-type-btn" data-type="area" title="Área">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M3 20h18"/>
+                  <path d="M3 16l5-5 4 4 9-9v14H3z" fill="currentColor" opacity="0.2"/>
+                  <path d="M3 16l5-5 4 4 9-9"/>
+                </svg>
+              </button>
+              <button class="chart-type-btn" data-type="bars" title="Barras">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M3 20h18M6 16V8M10 16V4M14 16v-6M18 16v-2"/>
+                </svg>
+              </button>
+            </div>
+            
+            <div class="chart-timeframe-selector">
+              <button class="chart-timeframe-btn" data-tf="1m">1m</button>
+              <button class="chart-timeframe-btn" data-tf="5m">5m</button>
+              <button class="chart-timeframe-btn" data-tf="15m">15m</button>
+              <button class="chart-timeframe-btn active" data-tf="1h">1H</button>
+              <button class="chart-timeframe-btn" data-tf="4h">4H</button>
+              <button class="chart-timeframe-btn" data-tf="1d">1D</button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="chart-container">
+          <canvas id="chartCanvas"></canvas>
+        </div>
+        
+        <div class="chart-indicators" id="indicatorsPanel">
+          <button class="btn btn-ghost btn-sm" id="addIndicatorBtn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 5v14M5 12h14"/>
+            </svg>
+            Indicador
+          </button>
+        </div>
+      </section>
+
+      <!-- Sidebar Right - Trading -->
+      <aside class="trader-sidebar-right" id="sidebarRight">
+        <!-- Order Panel -->
+        <div class="order-panel">
+          <div class="order-tabs">
+            <button class="order-tab buy active" data-side="buy">Comprar</button>
+            <button class="order-tab sell" data-side="sell">Vender</button>
+          </div>
+          
+          <div class="order-type-selector">
+            <button class="order-type-btn active" data-ordertype="market">Market</button>
+            <button class="order-type-btn" data-ordertype="limit">Limit</button>
+            <button class="order-type-btn" data-ordertype="stop">Stop</button>
+          </div>
+          
+          <form class="order-form" id="orderForm">
+            <div class="order-field" id="limitPriceField" style="display: none;">
+              <label class="order-field-label">Preço Limite</label>
+              <input type="number" class="order-field-input" id="limitPrice" placeholder="0.00" step="0.01">
+            </div>
+            
+            <div class="order-field">
+              <label class="order-field-label">Quantidade (R$)</label>
+              <input type="number" class="order-field-input" id="orderAmount" placeholder="0.00" step="0.01" min="0">
+            </div>
+            
+            <div class="order-quick-amounts">
+              <button type="button" class="order-quick-btn" data-pct="25">25%</button>
+              <button type="button" class="order-quick-btn" data-pct="50">50%</button>
+              <button type="button" class="order-quick-btn" data-pct="75">75%</button>
+              <button type="button" class="order-quick-btn" data-pct="100">100%</button>
+            </div>
+            
+            <div class="order-sl-tp">
+              <div class="order-sl-tp-field">
+                <label class="order-sl-tp-label stop-loss">Stop Loss</label>
+                <input type="number" class="order-sl-tp-input" id="stopLoss" placeholder="Opcional" step="0.01">
+              </div>
+              <div class="order-sl-tp-field">
+                <label class="order-sl-tp-label take-profit">Take Profit</label>
+                <input type="number" class="order-sl-tp-input" id="takeProfit" placeholder="Opcional" step="0.01">
+              </div>
+            </div>
+            
+            <div class="order-summary">
+              <div class="order-summary-row">
+                <span class="order-summary-label">Preço atual</span>
+                <span class="order-summary-value" id="summaryPrice">$0.00</span>
+              </div>
+              <div class="order-summary-row">
+                <span class="order-summary-label">Quantidade</span>
+                <span class="order-summary-value" id="summaryQty">0</span>
+              </div>
+              <div class="order-summary-row">
+                <span class="order-summary-label">Taxa (~0.1%)</span>
+                <span class="order-summary-value" id="summaryFee">R$ 0.00</span>
+              </div>
+            </div>
+            
+            <button type="submit" class="order-submit buy" id="submitOrder">
+              Comprar BTC
+            </button>
+          </form>
+        </div>
+        
+        <!-- Order Book -->
+        <div class="orderbook-panel">
+          <div class="orderbook-header">
+            <span class="orderbook-title">Order Book</span>
+            <span class="orderbook-spread" id="obSpread">Spread: 0.01%</span>
+          </div>
+          
+          <div class="orderbook-columns">
+            <span>Preço</span>
+            <span style="text-align: right;">Qtd</span>
+            <span style="text-align: right;">Total</span>
+          </div>
+          
+          <div class="orderbook-rows" id="orderbookAsks">
+            <!-- Asks (vendas) -->
+          </div>
+          
+          <div class="orderbook-divider" id="orderbookMid">
+            --
+          </div>
+          
+          <div class="orderbook-rows" id="orderbookBids">
+            <!-- Bids (compras) -->
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <!-- Bottom Panels -->
+    <div class="trader-bottom">
+      <!-- Positions -->
+      <div class="positions-panel">
+        <div class="panel-header">
+          <span class="panel-title">Posições Abertas</span>
+          <span class="panel-subtitle" id="positionsCount">0 posições</span>
+        </div>
+        
+        <div id="positionsContainer">
+          <div class="empty-positions" id="emptyPositions">
+            <svg class="empty-positions-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/>
+              <rect x="9" y="3" width="6" height="4" rx="1"/>
+              <path d="M12 11v6M9 14h6"/>
+            </svg>
+            <p class="empty-positions-title">Sem posições abertas</p>
+            <p class="empty-positions-text">Suas operações aparecerão aqui</p>
+          </div>
+          
+          <table class="positions-table" id="positionsTable" style="display: none;">
+            <thead>
+              <tr>
+                <th>Ativo</th>
+                <th>Tipo</th>
+                <th>Entrada</th>
+                <th>Atual</th>
+                <th>Qtd</th>
+                <th>P&L</th>
+                <th>Ação</th>
+              </tr>
+            </thead>
+            <tbody id="positionsBody">
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+      <!-- Trade Journal -->
+      <div class="journal-panel">
+        <div class="panel-header">
+          <span class="panel-title">Trade Journal</span>
+          <span class="panel-subtitle" id="journalCount">0 trades</span>
+        </div>
+        
+        <div class="journal-list" id="journalList">
+          <div class="empty-positions">
+            <p class="empty-positions-text">Histórico de trades aparecerá aqui</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Panel -->
+    <div class="stats-panel">
+      <div class="stat-card">
+        <div class="stat-label">Win Rate</div>
+        <div class="stat-value" id="statWinRate">0%</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Sharpe Ratio</div>
+        <div class="stat-value" id="statSharpe">0.00</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Profit Factor</div>
+        <div class="stat-value" id="statProfitFactor">0.00</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Max Drawdown</div>
+        <div class="stat-value negative" id="statDrawdown">0%</div>
+      </div>
+    </div>
+
+    <!-- Keyboard Hints -->
+    <div class="keyboard-hints">
+      <div class="keyboard-hint"><kbd>B</kbd> Comprar</div>
+      <div class="keyboard-hint"><kbd>S</kbd> Vender</div>
+      <div class="keyboard-hint"><kbd>Esc</kbd> Cancelar</div>
+      <div class="keyboard-hint"><kbd>1-9</kbd> Timeframes</div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+  </div>
+
+  <!-- Theme Engine -->
+  <script src="./js/theme-engine.js"></script>
+  
+  <!-- Trader Simulator Logic -->
+  <script>
+    (function() {
+      'use strict';
+
+      // ═══════════════════════════════════════════════════════════════════════
+      // STATE
+      // ═══════════════════════════════════════════════════════════════════════
+      const INITIAL_BALANCE = 100000;
+      const FEE_RATE = 0.001; // 0.1%
+      
+      let state = {
+        balance: INITIAL_BALANCE,
+        totalPnL: 0,
+        positions: [],
+        journal: [],
+        stats: { wins: 0, losses: 0, totalProfit: 0, totalLoss: 0, returns: [] },
+        selectedAsset: null,
+        currentPrice: 0,
+        orderSide: 'buy',
+        orderType: 'market',
+        chartType: 'candle',
+        timeframe: '1h',
+        priceHistory: []
+      };
+
+      // Assets list
+      const ASSETS = {
+        crypto: [
+          { id: 'bitcoin', symbol: 'BTC', name: 'Bitcoin' },
+          { id: 'ethereum', symbol: 'ETH', name: 'Ethereum' },
+          { id: 'solana', symbol: 'SOL', name: 'Solana' },
+          { id: 'cardano', symbol: 'ADA', name: 'Cardano' },
+          { id: 'ripple', symbol: 'XRP', name: 'Ripple' }
+        ],
+        b3: [
+          { id: 'PETR4', symbol: 'PETR4', name: 'Petrobras' },
+          { id: 'VALE3', symbol: 'VALE3', name: 'Vale' },
+          { id: 'ITUB4', symbol: 'ITUB4', name: 'Itaú' },
+          { id: 'BBDC4', symbol: 'BBDC4', name: 'Bradesco' },
+          { id: 'ABEV3', symbol: 'ABEV3', name: 'Ambev' }
+        ],
+        nyse: [
+          { id: 'AAPL', symbol: 'AAPL', name: 'Apple' },
+          { id: 'GOOGL', symbol: 'GOOGL', name: 'Google' },
+          { id: 'MSFT', symbol: 'MSFT', name: 'Microsoft' },
+          { id: 'AMZN', symbol: 'AMZN', name: 'Amazon' },
+          { id: 'NVDA', symbol: 'NVDA', name: 'NVIDIA' }
+        ]
+      };
+
+      // ═══════════════════════════════════════════════════════════════════════
+      // DOM ELEMENTS
+      // ═══════════════════════════════════════════════════════════════════════
+      const $ = (sel) => document.querySelector(sel);
+      const $$ = (sel) => document.querySelectorAll(sel);
+
+      // ═══════════════════════════════════════════════════════════════════════
+      // UTILITIES
+      // ═══════════════════════════════════════════════════════════════════════
+      function formatCurrency(value, currency = 'BRL') {
+        const formatter = new Intl.NumberFormat('pt-BR', {
+          style: 'currency',
+          currency: currency,
+          minimumFractionDigits: 2
+        });
+        return formatter.format(value);
+      }
+
+      function formatNumber(value, decimals = 2) {
+        return new Intl.NumberFormat('pt-BR', {
+          minimumFractionDigits: decimals,
+          maximumFractionDigits: decimals
+        }).format(value);
+      }
+
+      function formatPercent(value) {
+        const sign = value >= 0 ? '+' : '';
+        return sign + formatNumber(value, 2) + '%';
+      }
+
+      function showToast(title, message, type = 'info') {
+        const container = $('#toastContainer');
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+        toast.innerHTML = `
+          <div class="toast-content">
+            <div class="toast-title">${title}</div>
+            <div class="toast-message">${message}</div>
+          </div>
+          <button class="toast-close">&times;</button>
+        `;
+        container.appendChild(toast);
+        
+        toast.querySelector('.toast-close').onclick = () => toast.remove();
+        setTimeout(() => toast.remove(), 5000);
+      }
+
+      // ═══════════════════════════════════════════════════════════════════════
+      // PERSISTENCE
+      // ═══════════════════════════════════════════════════════════════════════
+      function saveState() {
+        try {
+          localStorage.setItem('farpa-trader-state', JSON.stringify(state));
+        } catch (e) {}
+      }
+
+      function loadState() {
+        try {
+          const saved = localStorage.getItem('farpa-trader-state');
+          if (saved) {
+            const parsed = JSON.parse(saved);
+            state = { ...state, ...parsed };
+          }
+        } catch (e) {}
+      }
+
+      function resetState() {
+        state = {
+          balance: INITIAL_BALANCE,
+          totalPnL: 0,
+          positions: [],
+          journal: [],
+          stats: { wins: 0, losses: 0, totalProfit: 0, totalLoss: 0, returns: [] },
+          selectedAsset: state.selectedAsset,
+          currentPrice: state.currentPrice,
+          orderSide: 'buy',
+          orderType: 'market',
+          chartType: state.chartType,
+          timeframe: state.timeframe,
+          priceHistory: state.priceHistory
+        };
+        saveState();
+        updateUI();
+        showToast('Reset', 'Simulador resetado com sucesso', 'info');
+      }
+
+      // ═══════════════════════════════════════════════════════════════════════
+      // API - Price Fetching
+      // ═══════════════════════════════════════════════════════════════════════
+      let currentCategory = 'crypto';
+
+      async function fetchCryptoPrice(coinId) {
+        try {
+          const res = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${coinId}&vs_currencies=usd&include_24hr_change=true`);
+          const data = await res.json();
+          if (data[coinId]) {
+            return {
+              price: data[coinId].usd,
+              change24h: data[coinId].usd_24h_change || 0,
+              currency: 'USD'
+            };
+          }
+        } catch (e) {
+          console.warn('CoinGecko fetch error:', e);
+        }
+        return null;
+      }
+
+      async function fetchStockPrice(symbol, market = 'b3') {
+        // For demo, generate simulated prices
+        const basePrice = market === 'b3' ? 30 + Math.random() * 50 : 100 + Math.random() * 200;
+        const change = (Math.random() - 0.5) * 5;
+        return {
+          price: basePrice,
+          change24h: change,
+          currency: market === 'b3' ? 'BRL' : 'USD'
+        };
+      }
+
+      async function fetchPrice(asset, category) {
+        if (category === 'crypto') {
+          return await fetchCryptoPrice(asset.id);
+        } else {
+          return await fetchStockPrice(asset.id, category);
+        }
+      }
+
+      // ═══════════════════════════════════════════════════════════════════════
+      // UI UPDATES
+      // ═══════════════════════════════════════════════════════════════════════
+      function updateUI() {
+        // Balance
+        $('#balanceDisplay').textContent = formatCurrency(state.balance);
+        
+        // P&L
+        const pnlEl = $('#pnlDisplay');
+        pnlEl.textContent = (state.totalPnL >= 0 ? '+' : '') + formatCurrency(state.totalPnL);
+        pnlEl.className = 'trader-balance-value ' + (state.totalPnL >= 0 ? 'positive' : 'negative');
+        
+        // Positions
+        updatePositionsUI();
+        
+        // Journal
+        updateJournalUI();
+        
+        // Stats
+        updateStatsUI();
+      }
+
+      function updatePositionsUI() {
+        const container = $('#positionsContainer');
+        const emptyEl = $('#emptyPositions');
+        const tableEl = $('#positionsTable');
+        const tbody = $('#positionsBody');
+        const countEl = $('#positionsCount');
+        
+        countEl.textContent = `${state.positions.length} posições`;
+        
+        if (state.positions.length === 0) {
+          emptyEl.style.display = 'flex';
+          tableEl.style.display = 'none';
+          return;
+        }
+        
+        emptyEl.style.display = 'none';
+        tableEl.style.display = 'table';
+        
+        tbody.innerHTML = state.positions.map((pos, idx) => {
+          const pnl = (state.currentPrice - pos.entryPrice) * pos.quantity * (pos.side === 'buy' ? 1 : -1);
+          const pnlPct = ((state.currentPrice / pos.entryPrice - 1) * 100 * (pos.side === 'buy' ? 1 : -1));
+          
+          return `
+            <tr>
+              <td><strong>${pos.symbol}</strong></td>
+              <td><span class="position-type ${pos.side === 'buy' ? 'long' : 'short'}">${pos.side === 'buy' ? 'LONG' : 'SHORT'}</span></td>
+              <td>${formatCurrency(pos.entryPrice, pos.currency)}</td>
+              <td>${formatCurrency(state.currentPrice, pos.currency)}</td>
+              <td>${formatNumber(pos.quantity, 6)}</td>
+              <td class="position-pnl ${pnl >= 0 ? 'positive' : 'negative'}">${formatCurrency(pnl)} (${formatPercent(pnlPct)})</td>
+              <td><button class="position-close-btn" data-idx="${idx}">Fechar</button></td>
+            </tr>
+          `;
+        }).join('');
+        
+        // Close buttons
+        tbody.querySelectorAll('.position-close-btn').forEach(btn => {
+          btn.onclick = () => closePosition(parseInt(btn.dataset.idx));
+        });
+      }
+
+      function updateJournalUI() {
+        const list = $('#journalList');
+        const countEl = $('#journalCount');
+        
+        countEl.textContent = `${state.journal.length} trades`;
+        
+        if (state.journal.length === 0) {
+          list.innerHTML = '<div class="empty-positions"><p class="empty-positions-text">Histórico de trades aparecerá aqui</p></div>';
+          return;
+        }
+        
+        list.innerHTML = state.journal.slice(-10).reverse().map(trade => `
+          <div class="journal-entry">
+            <div class="journal-entry-info">
+              <span class="journal-entry-type ${trade.side}">${trade.side === 'buy' ? 'COMPRA' : 'VENDA'}</span>
+              <span class="journal-entry-asset">${trade.symbol}</span>
+              <span class="journal-entry-details">@ ${formatCurrency(trade.price, trade.currency)}</span>
+            </div>
+            <div class="journal-entry-result">
+              <div class="journal-entry-pnl ${trade.pnl >= 0 ? 'positive' : 'negative'}">${formatCurrency(trade.pnl)}</div>
+              <div class="journal-entry-time">${new Date(trade.timestamp).toLocaleTimeString('pt-BR')}</div>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      function updateStatsUI() {
+        const totalTrades = state.stats.wins + state.stats.losses;
+        const winRate = totalTrades > 0 ? (state.stats.wins / totalTrades * 100) : 0;
+        const profitFactor = state.stats.totalLoss > 0 ? (state.stats.totalProfit / state.stats.totalLoss) : 0;
+        
+        // Sharpe (simplified)
+        let sharpe = 0;
+        if (state.stats.returns.length > 1) {
+          const avg = state.stats.returns.reduce((a, b) => a + b, 0) / state.stats.returns.length;
+          const variance = state.stats.returns.reduce((sum, r) => sum + Math.pow(r - avg, 2), 0) / state.stats.returns.length;
+          const std = Math.sqrt(variance);
+          sharpe = std > 0 ? avg / std : 0;
+        }
+        
+        // Max drawdown
+        let maxDrawdown = 0;
+        let peak = INITIAL_BALANCE;
+        let equity = INITIAL_BALANCE;
+        state.journal.forEach(trade => {
+          equity += trade.pnl;
+          if (equity > peak) peak = equity;
+          const dd = (peak - equity) / peak * 100;
+          if (dd > maxDrawdown) maxDrawdown = dd;
+        });
+        
+        $('#statWinRate').textContent = formatNumber(winRate, 1) + '%';
+        $('#statSharpe').textContent = formatNumber(sharpe, 2);
+        $('#statProfitFactor').textContent = formatNumber(profitFactor, 2);
+        $('#statDrawdown').textContent = formatNumber(maxDrawdown, 1) + '%';
+      }
+
+      function updateOrderPanel() {
+        const submitBtn = $('#submitOrder');
+        const symbol = state.selectedAsset?.symbol || 'BTC';
+        
+        if (state.orderSide === 'buy') {
+          submitBtn.textContent = `Comprar ${symbol}`;
+          submitBtn.className = 'order-submit buy';
+        } else {
+          submitBtn.textContent = `Vender ${symbol}`;
+          submitBtn.className = 'order-submit sell';
+        }
+        
+        // Limit price field
+        const limitField = $('#limitPriceField');
+        limitField.style.display = state.orderType !== 'market' ? 'flex' : 'none';
+      }
+
+      function updateChartHeader() {
+        if (!state.selectedAsset) return;
+        
+        $('#chartAssetName').textContent = state.selectedAsset.symbol;
+        $('#chartAssetPrice').textContent = formatCurrency(state.currentPrice, currentCategory === 'b3' ? 'BRL' : 'USD');
+        
+        const changeEl = $('#chartAssetChange');
+        const change = state.priceHistory.length > 1 ? 
+          ((state.currentPrice / state.priceHistory[0] - 1) * 100) : 0;
+        changeEl.querySelector('span').textContent = formatPercent(change);
+        changeEl.className = 'chart-asset-change ' + (change >= 0 ? 'positive' : 'negative');
+        
+        // Summary
+        $('#summaryPrice').textContent = formatCurrency(state.currentPrice, currentCategory === 'b3' ? 'BRL' : 'USD');
+      }
+
+      function updateOrderSummary() {
+        const amount = parseFloat($('#orderAmount').value) || 0;
+        const price = state.currentPrice;
+        const qty = price > 0 ? amount / price : 0;
+        const fee = amount * FEE_RATE;
+        
+        $('#summaryQty').textContent = formatNumber(qty, 6);
+        $('#summaryFee').textContent = formatCurrency(fee);
+      }
+
+      // ═══════════════════════════════════════════════════════════════════════
+      // ORDER BOOK (Simulated)
+      // ═══════════════════════════════════════════════════════════════════════
+      function updateOrderBook() {
+        const price = state.currentPrice;
+        const asksEl = $('#orderbookAsks');
+        const bidsEl = $('#orderbookBids');
+        const midEl = $('#orderbookMid');
+        
+        if (!price) return;
+        
+        // Generate simulated order book
+        const asks = [];
+        const bids = [];
+        
+        for (let i = 5; i >= 1; i--) {
+          const askPrice = price * (1 + 0.001 * i);
+          const askQty = Math.random() * 10;
+          asks.push({ price: askPrice, qty: askQty, total: askQty * askPrice, depth: 20 + Math.random() * 60 });
+        }
+        
+        for (let i = 1; i <= 5; i++) {
+          const bidPrice = price * (1 - 0.001 * i);
+          const bidQty = Math.random() * 10;
+          bids.push({ price: bidPrice, qty: bidQty, total: bidQty * bidPrice, depth: 20 + Math.random() * 60 });
+        }
+        
+        const currency = currentCategory === 'b3' ? 'BRL' : 'USD';
+        
+        asksEl.innerHTML = asks.map(a => `
+          <div class="orderbook-row ask" style="--depth: ${a.depth}%;">
+            <span class="orderbook-price ask">${formatNumber(a.price, 2)}</span>
+            <span class="orderbook-amount">${formatNumber(a.qty, 4)}</span>
+            <span class="orderbook-total">${formatNumber(a.total, 0)}</span>
+          </div>
+        `).join('');
+        
+        midEl.textContent = formatCurrency(price, currency);
+        
+        bidsEl.innerHTML = bids.map(b => `
+          <div class="orderbook-row bid" style="--depth: ${b.depth}%;">
+            <span class="orderbook-price bid">${formatNumber(b.price, 2)}</span>
+            <span class="orderbook-amount">${formatNumber(b.qty, 4)}</span>
+            <span class="orderbook-total">${formatNumber(b.total, 0)}</span>
+          </div>
+        `).join('');
+        
+        // Spread
+        const spread = ((asks[asks.length - 1].price / bids[0].price - 1) * 100);
+        $('#obSpread').textContent = `Spread: ${formatNumber(spread, 3)}%`;
+      }
+
+      // ═══════════════════════════════════════════════════════════════════════
+      // CHART (Simple Canvas)
+      // ═══════════════════════════════════════════════════════════════════════
+      function drawChart() {
+        const canvas = $('#chartCanvas');
+        const ctx = canvas.getContext('2d');
+        const rect = canvas.parentElement.getBoundingClientRect();
+        
+        canvas.width = rect.width;
+        canvas.height = rect.height;
+        
+        const data = state.priceHistory;
+        if (data.length < 2) {
+          ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--text-4');
+          ctx.font = '14px JetBrains Mono';
+          ctx.textAlign = 'center';
+          ctx.fillText('Carregando dados...', canvas.width / 2, canvas.height / 2);
+          return;
+        }
+        
+        const padding = 40;
+        const width = canvas.width - padding * 2;
+        const height = canvas.height - padding * 2;
+        
+        const min = Math.min(...data) * 0.995;
+        const max = Math.max(...data) * 1.005;
+        const range = max - min;
+        
+        const scaleX = width / (data.length - 1);
+        const scaleY = height / range;
+        
+        // Grid
+        ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--chart-grid');
+        ctx.lineWidth = 0.5;
+        for (let i = 0; i <= 5; i++) {
+          const y = padding + (height / 5) * i;
+          ctx.beginPath();
+          ctx.moveTo(padding, y);
+          ctx.lineTo(canvas.width - padding, y);
+          ctx.stroke();
+          
+          const price = max - (range / 5) * i;
+          ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--chart-axis');
+          ctx.font = '10px JetBrains Mono';
+          ctx.textAlign = 'right';
+          ctx.fillText(formatNumber(price, 2), padding - 5, y + 4);
+        }
+        
+        // Line chart
+        ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--accent-1');
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        
+        data.forEach((price, i) => {
+          const x = padding + i * scaleX;
+          const y = padding + (max - price) * scaleY;
+          if (i === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        });
+        
+        ctx.stroke();
+        
+        // Area fill
+        if (state.chartType === 'area') {
+          ctx.lineTo(padding + (data.length - 1) * scaleX, canvas.height - padding);
+          ctx.lineTo(padding, canvas.height - padding);
+          ctx.closePath();
+          ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--accent-1') + '20';
+          ctx.fill();
+        }
+        
+        // Current price line
+        const currentY = padding + (max - state.currentPrice) * scaleY;
+        ctx.setLineDash([5, 5]);
+        ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--warning');
+        ctx.beginPath();
+        ctx.moveTo(padding, currentY);
+        ctx.lineTo(canvas.width - padding, currentY);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        
+        // Price label
+        ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--warning');
+        ctx.font = 'bold 11px JetBrains Mono';
+        ctx.textAlign = 'left';
+        ctx.fillText(formatNumber(state.currentPrice, 2), canvas.width - padding + 5, currentY + 4);
+      }
+
+      // ═══════════════════════════════════════════════════════════════════════
+      // TRADING LOGIC
+      // ═══════════════════════════════════════════════════════════════════════
+      function executeOrder(amount, side) {
+        if (!state.selectedAsset || !state.currentPrice) {
+          showToast('Erro', 'Selecione um ativo primeiro', 'error');
+          return false;
+        }
+        
+        if (amount <= 0 || amount > state.balance) {
+          showToast('Erro', 'Quantidade inválida', 'error');
+          return false;
+        }
+        
+        const fee = amount * FEE_RATE;
+        const quantity = (amount - fee) / state.currentPrice;
+        
+        // Open position
+        state.positions.push({
+          id: Date.now(),
+          symbol: state.selectedAsset.symbol,
+          side: side,
+          entryPrice: state.currentPrice,
+          quantity: quantity,
+          amount: amount,
+          currency: currentCategory === 'b3' ? 'BRL' : 'USD',
+          timestamp: new Date().toISOString()
+        });
+        
+        state.balance -= amount;
+        
+        saveState();
+        updateUI();
+        showToast('Ordem Executada', `${side === 'buy' ? 'Compra' : 'Venda'} de ${state.selectedAsset.symbol} executada`, 'success');
+        
+        return true;
+      }
+
+      function closePosition(idx) {
+        const pos = state.positions[idx];
+        if (!pos) return;
+        
+        const exitPrice = state.currentPrice;
+        const pnl = (exitPrice - pos.entryPrice) * pos.quantity * (pos.side === 'buy' ? 1 : -1);
+        const fee = Math.abs(pnl) * FEE_RATE;
+        const netPnl = pnl - fee;
+        
+        // Update stats
+        if (netPnl >= 0) {
+          state.stats.wins++;
+          state.stats.totalProfit += netPnl;
+        } else {
+          state.stats.losses++;
+          state.stats.totalLoss += Math.abs(netPnl);
+        }
+        state.stats.returns.push(netPnl / pos.amount);
+        
+        // Journal
+        state.journal.push({
+          symbol: pos.symbol,
+          side: pos.side,
+          entryPrice: pos.entryPrice,
+          exitPrice: exitPrice,
+          quantity: pos.quantity,
+          price: exitPrice,
+          pnl: netPnl,
+          currency: pos.currency,
+          timestamp: new Date().toISOString()
+        });
+        
+        // Update balance
+        state.balance += pos.amount + netPnl;
+        state.totalPnL += netPnl;
+        
+        // Remove position
+        state.positions.splice(idx, 1);
+        
+        saveState();
+        updateUI();
+        showToast('Posição Fechada', `P&L: ${formatCurrency(netPnl)}`, netPnl >= 0 ? 'success' : 'error');
+      }
+
+      // ═══════════════════════════════════════════════════════════════════════
+      // ASSET LIST
+      // ═══════════════════════════════════════════════════════════════════════
+      function renderAssetList(category) {
+        const list = $('#assetList');
+        const assets = ASSETS[category] || [];
+        
+        list.innerHTML = assets.map(asset => `
+          <div class="asset-item ${state.selectedAsset?.id === asset.id ? 'selected' : ''}" data-id="${asset.id}">
+            <div class="asset-item-info">
+              <div class="asset-item-icon">${asset.symbol.slice(0, 2)}</div>
+              <div>
+                <div class="asset-item-name">${asset.name}</div>
+                <div class="asset-item-symbol">${asset.symbol}</div>
+              </div>
+            </div>
+            <div class="asset-item-price">
+              <div class="asset-item-price-value">--</div>
+              <div class="asset-item-change">--</div>
+            </div>
+          </div>
+        `).join('');
+        
+        // Click handlers
+        list.querySelectorAll('.asset-item').forEach(item => {
+          item.onclick = () => selectAsset(assets.find(a => a.id === item.dataset.id), category);
+        });
+        
+        // Load prices
+        assets.forEach(async (asset) => {
+          const data = await fetchPrice(asset, category);
+          if (data) {
+            const el = list.querySelector(`[data-id="${asset.id}"]`);
+            if (el) {
+              el.querySelector('.asset-item-price-value').textContent = formatCurrency(data.price, data.currency);
+              const changeEl = el.querySelector('.asset-item-change');
+              changeEl.textContent = formatPercent(data.change24h);
+              changeEl.className = 'asset-item-change ' + (data.change24h >= 0 ? 'positive' : 'negative');
+            }
+          }
+        });
+      }
+
+      async function selectAsset(asset, category) {
+        if (!asset) return;
+        
+        currentCategory = category;
+        state.selectedAsset = asset;
+        
+        // Update UI
+        $$('.asset-item').forEach(el => el.classList.remove('selected'));
+        document.querySelector(`[data-id="${asset.id}"]`)?.classList.add('selected');
+        
+        // Fetch price
+        const data = await fetchPrice(asset, category);
+        if (data) {
+          state.currentPrice = data.price;
+          
+          // Generate price history (simulated)
+          state.priceHistory = [];
+          let price = data.price * (0.9 + Math.random() * 0.2);
+          for (let i = 0; i < 50; i++) {
+            price = price * (0.995 + Math.random() * 0.01);
+            state.priceHistory.push(price);
+          }
+          state.priceHistory.push(data.price);
+          
+          updateChartHeader();
+          updateOrderPanel();
+          updateOrderBook();
+          drawChart();
+        }
+        
+        saveState();
+      }
+
+      // ═══════════════════════════════════════════════════════════════════════
+      // EVENT LISTENERS
+      // ═══════════════════════════════════════════════════════════════════════
+      function initEventListeners() {
+        // Category tabs
+        $$('.asset-category-btn').forEach(btn => {
+          btn.onclick = () => {
+            $$('.asset-category-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const cat = btn.dataset.category;
+            currentCategory = cat;
+            renderAssetList(cat);
+          };
+        });
+        
+        // Order side tabs
+        $$('.order-tab').forEach(tab => {
+          tab.onclick = () => {
+            $$('.order-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            state.orderSide = tab.dataset.side;
+            updateOrderPanel();
+          };
+        });
+        
+        // Order type buttons
+        $$('.order-type-btn').forEach(btn => {
+          btn.onclick = () => {
+            $$('.order-type-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            state.orderType = btn.dataset.ordertype;
+            updateOrderPanel();
+          };
+        });
+        
+        // Quick amount buttons
+        $$('.order-quick-btn').forEach(btn => {
+          btn.onclick = () => {
+            const pct = parseInt(btn.dataset.pct) / 100;
+            const amount = state.balance * pct;
+            $('#orderAmount').value = amount.toFixed(2);
+            updateOrderSummary();
+          };
+        });
+        
+        // Amount input
+        $('#orderAmount').addEventListener('input', updateOrderSummary);
+        
+        // Order form submit
+        $('#orderForm').onsubmit = (e) => {
+          e.preventDefault();
+          const amount = parseFloat($('#orderAmount').value) || 0;
+          if (executeOrder(amount, state.orderSide)) {
+            $('#orderAmount').value = '';
+            updateOrderSummary();
+          }
+        };
+        
+        // Reset button
+        $('#resetBtn').onclick = () => {
+          if (confirm('Tem certeza que deseja resetar o simulador?')) {
+            resetState();
+          }
+        };
+        
+        // Chart type buttons
+        $$('.chart-type-btn').forEach(btn => {
+          btn.onclick = () => {
+            $$('.chart-type-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            state.chartType = btn.dataset.type;
+            drawChart();
+          };
+        });
+        
+        // Timeframe buttons
+        $$('.chart-timeframe-btn').forEach(btn => {
+          btn.onclick = () => {
+            $$('.chart-timeframe-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            state.timeframe = btn.dataset.tf;
+            // Would fetch new data here
+          };
+        });
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+          if (e.target.tagName === 'INPUT') return;
+          
+          switch (e.key.toLowerCase()) {
+            case 'b':
+              state.orderSide = 'buy';
+              $$('.order-tab').forEach(t => t.classList.toggle('active', t.dataset.side === 'buy'));
+              updateOrderPanel();
+              break;
+            case 's':
+              state.orderSide = 'sell';
+              $$('.order-tab').forEach(t => t.classList.toggle('active', t.dataset.side === 'sell'));
+              updateOrderPanel();
+              break;
+            case 'escape':
+              $('#orderAmount').value = '';
+              $('#limitPrice').value = '';
+              $('#stopLoss').value = '';
+              $('#takeProfit').value = '';
+              updateOrderSummary();
+              break;
+          }
+        });
+        
+        // Window resize
+        window.addEventListener('resize', () => {
+          drawChart();
+        });
+      }
+
+      // ═══════════════════════════════════════════════════════════════════════
+      // PRICE UPDATES (Auto-refresh)
+      // ═══════════════════════════════════════════════════════════════════════
+      async function refreshPrice() {
+        if (!state.selectedAsset) return;
+        
+        const data = await fetchPrice(state.selectedAsset, currentCategory);
+        if (data) {
+          state.currentPrice = data.price;
+          state.priceHistory.push(data.price);
+          if (state.priceHistory.length > 100) state.priceHistory.shift();
+          
+          updateChartHeader();
+          updateOrderBook();
+          updatePositionsUI();
+          drawChart();
+        }
+      }
+
+      // ═══════════════════════════════════════════════════════════════════════
+      // INIT
+      // ═══════════════════════════════════════════════════════════════════════
+      function init() {
+        loadState();
+        initEventListeners();
+        renderAssetList('crypto');
+        
+        // Select default asset
+        if (!state.selectedAsset) {
+          selectAsset(ASSETS.crypto[0], 'crypto');
+        } else {
+          selectAsset(state.selectedAsset, currentCategory);
+        }
+        
+        updateUI();
+        
+        // Auto-refresh every 30s
+        setInterval(refreshPrice, 30000);
+      }
+
+      // Start
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+      } else {
+        init();
+      }
+    })();
+  </script>
+</body>
+</html>

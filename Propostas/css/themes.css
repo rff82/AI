@@ -1,0 +1,625 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   FARPA.AI - Sistema de Temas v5.0
+   5 temas: Claro (default), Escuro, Sépia, Alto Contraste, Trader
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   TEMA CLARO (Default)
+   ───────────────────────────────────────────────────────────────────────────── */
+:root,
+[data-theme="claro"] {
+  /* Backgrounds */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8fafc;
+  --bg-tertiary: #f1f5f9;
+  --bg-elevated: #ffffff;
+  --bg-overlay: rgba(0, 0, 0, 0.5);
+
+  /* Surfaces */
+  --surface-1: #ffffff;
+  --surface-2: #f8fafc;
+  --surface-3: #f1f5f9;
+  --surface-hover: #e2e8f0;
+  --surface-active: #cbd5e1;
+
+  /* Text */
+  --text-1: #0f172a;
+  --text-2: #334155;
+  --text-3: #64748b;
+  --text-4: #94a3b8;
+  --text-inverse: #ffffff;
+  --text-link: #2563eb;
+  --text-link-hover: #1d4ed8;
+
+  /* Borders */
+  --border-1: #e2e8f0;
+  --border-2: #cbd5e1;
+  --border-3: #94a3b8;
+  --border-focus: #3b82f6;
+
+  /* Primary Accent (Blue) */
+  --accent-1: #2563eb;
+  --accent-1-hover: #1d4ed8;
+  --accent-1-light: #dbeafe;
+  --accent-1-text: #ffffff;
+
+  /* Secondary Accent (Emerald) */
+  --accent-2: #10b981;
+  --accent-2-hover: #059669;
+  --accent-2-light: #d1fae5;
+  --accent-2-text: #ffffff;
+
+  /* Tertiary Accent (Purple) */
+  --accent-3: #8b5cf6;
+  --accent-3-hover: #7c3aed;
+  --accent-3-light: #ede9fe;
+  --accent-3-text: #ffffff;
+
+  /* Semantic Colors */
+  --success: #22c55e;
+  --success-light: #dcfce7;
+  --success-text: #166534;
+  
+  --warning: #f59e0b;
+  --warning-light: #fef3c7;
+  --warning-text: #92400e;
+  
+  --error: #ef4444;
+  --error-light: #fee2e2;
+  --error-text: #991b1b;
+  
+  --info: #3b82f6;
+  --info-light: #dbeafe;
+  --info-text: #1e40af;
+
+  /* Chart Colors */
+  --chart-1: #2563eb;
+  --chart-2: #10b981;
+  --chart-3: #f59e0b;
+  --chart-4: #8b5cf6;
+  --chart-5: #ec4899;
+  --chart-6: #06b6d4;
+  --chart-up: #22c55e;
+  --chart-down: #ef4444;
+  --chart-grid: #e2e8f0;
+  --chart-axis: #94a3b8;
+
+  /* Form Elements */
+  --input-bg: #ffffff;
+  --input-border: #e2e8f0;
+  --input-border-focus: #3b82f6;
+  --input-placeholder: #94a3b8;
+
+  /* Shadows (theme-aware) */
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-dropdown: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-modal: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+
+  /* Scrollbar */
+  --scrollbar-track: #f1f5f9;
+  --scrollbar-thumb: #cbd5e1;
+  --scrollbar-thumb-hover: #94a3b8;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   TEMA ESCURO
+   ───────────────────────────────────────────────────────────────────────────── */
+[data-theme="escuro"] {
+  /* Backgrounds */
+  --bg-primary: #0f172a;
+  --bg-secondary: #1e293b;
+  --bg-tertiary: #334155;
+  --bg-elevated: #1e293b;
+  --bg-overlay: rgba(0, 0, 0, 0.7);
+
+  /* Surfaces */
+  --surface-1: #1e293b;
+  --surface-2: #334155;
+  --surface-3: #475569;
+  --surface-hover: #475569;
+  --surface-active: #64748b;
+
+  /* Text */
+  --text-1: #f8fafc;
+  --text-2: #e2e8f0;
+  --text-3: #94a3b8;
+  --text-4: #64748b;
+  --text-inverse: #0f172a;
+  --text-link: #60a5fa;
+  --text-link-hover: #93c5fd;
+
+  /* Borders */
+  --border-1: #334155;
+  --border-2: #475569;
+  --border-3: #64748b;
+  --border-focus: #60a5fa;
+
+  /* Primary Accent (Blue) */
+  --accent-1: #3b82f6;
+  --accent-1-hover: #60a5fa;
+  --accent-1-light: rgba(59, 130, 246, 0.2);
+  --accent-1-text: #ffffff;
+
+  /* Secondary Accent (Emerald) */
+  --accent-2: #34d399;
+  --accent-2-hover: #6ee7b7;
+  --accent-2-light: rgba(52, 211, 153, 0.2);
+  --accent-2-text: #0f172a;
+
+  /* Tertiary Accent (Purple) */
+  --accent-3: #a78bfa;
+  --accent-3-hover: #c4b5fd;
+  --accent-3-light: rgba(167, 139, 250, 0.2);
+  --accent-3-text: #0f172a;
+
+  /* Semantic Colors */
+  --success: #4ade80;
+  --success-light: rgba(74, 222, 128, 0.15);
+  --success-text: #86efac;
+  
+  --warning: #fbbf24;
+  --warning-light: rgba(251, 191, 36, 0.15);
+  --warning-text: #fcd34d;
+  
+  --error: #f87171;
+  --error-light: rgba(248, 113, 113, 0.15);
+  --error-text: #fca5a5;
+  
+  --info: #60a5fa;
+  --info-light: rgba(96, 165, 250, 0.15);
+  --info-text: #93c5fd;
+
+  /* Chart Colors */
+  --chart-1: #60a5fa;
+  --chart-2: #34d399;
+  --chart-3: #fbbf24;
+  --chart-4: #a78bfa;
+  --chart-5: #f472b6;
+  --chart-6: #22d3ee;
+  --chart-up: #4ade80;
+  --chart-down: #f87171;
+  --chart-grid: #334155;
+  --chart-axis: #64748b;
+
+  /* Form Elements */
+  --input-bg: #1e293b;
+  --input-border: #475569;
+  --input-border-focus: #60a5fa;
+  --input-placeholder: #64748b;
+
+  /* Shadows */
+  --shadow-color: rgba(0, 0, 0, 0.4);
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
+  --shadow-dropdown: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+  --shadow-modal: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+
+  /* Scrollbar */
+  --scrollbar-track: #1e293b;
+  --scrollbar-thumb: #475569;
+  --scrollbar-thumb-hover: #64748b;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   TEMA SÉPIA
+   ───────────────────────────────────────────────────────────────────────────── */
+[data-theme="sepia"] {
+  /* Backgrounds */
+  --bg-primary: #faf7f2;
+  --bg-secondary: #f5f0e6;
+  --bg-tertiary: #ebe4d6;
+  --bg-elevated: #ffffff;
+  --bg-overlay: rgba(62, 48, 31, 0.5);
+
+  /* Surfaces */
+  --surface-1: #faf7f2;
+  --surface-2: #f5f0e6;
+  --surface-3: #ebe4d6;
+  --surface-hover: #e0d7c5;
+  --surface-active: #d4c9b3;
+
+  /* Text */
+  --text-1: #3e301f;
+  --text-2: #5c4a32;
+  --text-3: #8b7355;
+  --text-4: #a89880;
+  --text-inverse: #faf7f2;
+  --text-link: #8b5a2b;
+  --text-link-hover: #704821;
+
+  /* Borders */
+  --border-1: #e0d7c5;
+  --border-2: #d4c9b3;
+  --border-3: #bfb19a;
+  --border-focus: #8b5a2b;
+
+  /* Primary Accent (Warm Brown) */
+  --accent-1: #8b5a2b;
+  --accent-1-hover: #704821;
+  --accent-1-light: #f5e6d3;
+  --accent-1-text: #ffffff;
+
+  /* Secondary Accent (Olive) */
+  --accent-2: #6b7c3f;
+  --accent-2-hover: #566432;
+  --accent-2-light: #e8ecd8;
+  --accent-2-text: #ffffff;
+
+  /* Tertiary Accent (Burgundy) */
+  --accent-3: #8b3a3a;
+  --accent-3-hover: #722e2e;
+  --accent-3-light: #f5e0e0;
+  --accent-3-text: #ffffff;
+
+  /* Semantic Colors */
+  --success: #6b7c3f;
+  --success-light: #e8ecd8;
+  --success-text: #4a5729;
+  
+  --warning: #b8860b;
+  --warning-light: #fef3d1;
+  --warning-text: #8b6508;
+  
+  --error: #a52a2a;
+  --error-light: #f5dede;
+  --error-text: #7a1f1f;
+  
+  --info: #6b8e8e;
+  --info-light: #e0eded;
+  --info-text: #4a6363;
+
+  /* Chart Colors */
+  --chart-1: #8b5a2b;
+  --chart-2: #6b7c3f;
+  --chart-3: #b8860b;
+  --chart-4: #8b3a3a;
+  --chart-5: #6b5b8e;
+  --chart-6: #6b8e8e;
+  --chart-up: #6b7c3f;
+  --chart-down: #a52a2a;
+  --chart-grid: #e0d7c5;
+  --chart-axis: #a89880;
+
+  /* Form Elements */
+  --input-bg: #faf7f2;
+  --input-border: #d4c9b3;
+  --input-border-focus: #8b5a2b;
+  --input-placeholder: #a89880;
+
+  /* Shadows */
+  --shadow-color: rgba(62, 48, 31, 0.1);
+  --shadow-card: 0 1px 3px rgba(62, 48, 31, 0.1), 0 1px 2px rgba(62, 48, 31, 0.06);
+  --shadow-dropdown: 0 10px 15px -3px rgba(62, 48, 31, 0.1), 0 4px 6px -2px rgba(62, 48, 31, 0.05);
+  --shadow-modal: 0 25px 50px -12px rgba(62, 48, 31, 0.25);
+
+  /* Scrollbar */
+  --scrollbar-track: #f5f0e6;
+  --scrollbar-thumb: #d4c9b3;
+  --scrollbar-thumb-hover: #bfb19a;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   TEMA ALTO CONTRASTE (WCAG AAA)
+   ───────────────────────────────────────────────────────────────────────────── */
+[data-theme="alto-contraste"] {
+  /* Backgrounds */
+  --bg-primary: #000000;
+  --bg-secondary: #1a1a1a;
+  --bg-tertiary: #2d2d2d;
+  --bg-elevated: #1a1a1a;
+  --bg-overlay: rgba(0, 0, 0, 0.9);
+
+  /* Surfaces */
+  --surface-1: #1a1a1a;
+  --surface-2: #2d2d2d;
+  --surface-3: #404040;
+  --surface-hover: #404040;
+  --surface-active: #525252;
+
+  /* Text - High contrast ratios (7:1+) */
+  --text-1: #ffffff;
+  --text-2: #f0f0f0;
+  --text-3: #d4d4d4;
+  --text-4: #a3a3a3;
+  --text-inverse: #000000;
+  --text-link: #ffff00;
+  --text-link-hover: #ffffff;
+
+  /* Borders - Visible */
+  --border-1: #ffffff;
+  --border-2: #d4d4d4;
+  --border-3: #a3a3a3;
+  --border-focus: #ffff00;
+
+  /* Primary Accent (Yellow - maximum visibility) */
+  --accent-1: #ffff00;
+  --accent-1-hover: #ffffff;
+  --accent-1-light: rgba(255, 255, 0, 0.2);
+  --accent-1-text: #000000;
+
+  /* Secondary Accent (Cyan) */
+  --accent-2: #00ffff;
+  --accent-2-hover: #ffffff;
+  --accent-2-light: rgba(0, 255, 255, 0.2);
+  --accent-2-text: #000000;
+
+  /* Tertiary Accent (Magenta) */
+  --accent-3: #ff00ff;
+  --accent-3-hover: #ffffff;
+  --accent-3-light: rgba(255, 0, 255, 0.2);
+  --accent-3-text: #000000;
+
+  /* Semantic Colors */
+  --success: #00ff00;
+  --success-light: rgba(0, 255, 0, 0.2);
+  --success-text: #00ff00;
+  
+  --warning: #ffff00;
+  --warning-light: rgba(255, 255, 0, 0.2);
+  --warning-text: #ffff00;
+  
+  --error: #ff0000;
+  --error-light: rgba(255, 0, 0, 0.2);
+  --error-text: #ff6666;
+  
+  --info: #00ffff;
+  --info-light: rgba(0, 255, 255, 0.2);
+  --info-text: #00ffff;
+
+  /* Chart Colors */
+  --chart-1: #ffff00;
+  --chart-2: #00ffff;
+  --chart-3: #ff00ff;
+  --chart-4: #00ff00;
+  --chart-5: #ff8800;
+  --chart-6: #8888ff;
+  --chart-up: #00ff00;
+  --chart-down: #ff0000;
+  --chart-grid: #404040;
+  --chart-axis: #ffffff;
+
+  /* Form Elements */
+  --input-bg: #000000;
+  --input-border: #ffffff;
+  --input-border-focus: #ffff00;
+  --input-placeholder: #a3a3a3;
+
+  /* Shadows - minimal for clean look */
+  --shadow-color: rgba(255, 255, 255, 0.1);
+  --shadow-card: 0 0 0 1px #ffffff;
+  --shadow-dropdown: 0 0 0 2px #ffffff;
+  --shadow-modal: 0 0 0 3px #ffff00;
+
+  /* Scrollbar */
+  --scrollbar-track: #1a1a1a;
+  --scrollbar-thumb: #ffffff;
+  --scrollbar-thumb-hover: #ffff00;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   TEMA TRADER (Terminal Dark)
+   ───────────────────────────────────────────────────────────────────────────── */
+[data-theme="trader"] {
+  /* Backgrounds */
+  --bg-primary: #0a0e17;
+  --bg-secondary: #0f1419;
+  --bg-tertiary: #151c25;
+  --bg-elevated: #1a2332;
+  --bg-overlay: rgba(0, 0, 0, 0.8);
+
+  /* Surfaces */
+  --surface-1: #0f1419;
+  --surface-2: #151c25;
+  --surface-3: #1a2332;
+  --surface-hover: #1e2a3a;
+  --surface-active: #243245;
+
+  /* Text */
+  --text-1: #e6edf3;
+  --text-2: #b8c5d3;
+  --text-3: #7d8a98;
+  --text-4: #565e69;
+  --text-inverse: #0a0e17;
+  --text-link: #58a6ff;
+  --text-link-hover: #79c0ff;
+
+  /* Borders */
+  --border-1: #21262d;
+  --border-2: #30363d;
+  --border-3: #484f58;
+  --border-focus: #58a6ff;
+
+  /* Primary Accent (Electric Blue) */
+  --accent-1: #58a6ff;
+  --accent-1-hover: #79c0ff;
+  --accent-1-light: rgba(88, 166, 255, 0.15);
+  --accent-1-text: #0a0e17;
+
+  /* Secondary Accent (Success Green) */
+  --accent-2: #3fb950;
+  --accent-2-hover: #56d364;
+  --accent-2-light: rgba(63, 185, 80, 0.15);
+  --accent-2-text: #0a0e17;
+
+  /* Tertiary Accent (Warning Orange) */
+  --accent-3: #d29922;
+  --accent-3-hover: #e3b341;
+  --accent-3-light: rgba(210, 153, 34, 0.15);
+  --accent-3-text: #0a0e17;
+
+  /* Semantic Colors - Trading specific */
+  --success: #3fb950;
+  --success-light: rgba(63, 185, 80, 0.15);
+  --success-text: #56d364;
+  
+  --warning: #d29922;
+  --warning-light: rgba(210, 153, 34, 0.15);
+  --warning-text: #e3b341;
+  
+  --error: #f85149;
+  --error-light: rgba(248, 81, 73, 0.15);
+  --error-text: #ff7b72;
+  
+  --info: #58a6ff;
+  --info-light: rgba(88, 166, 255, 0.15);
+  --info-text: #79c0ff;
+
+  /* Trading specific colors */
+  --buy: #3fb950;
+  --buy-hover: #56d364;
+  --buy-bg: rgba(63, 185, 80, 0.1);
+  --sell: #f85149;
+  --sell-hover: #ff7b72;
+  --sell-bg: rgba(248, 81, 73, 0.1);
+  --long: #3fb950;
+  --short: #f85149;
+
+  /* Chart Colors - Terminal style */
+  --chart-1: #58a6ff;
+  --chart-2: #3fb950;
+  --chart-3: #d29922;
+  --chart-4: #a371f7;
+  --chart-5: #f778ba;
+  --chart-6: #56d4dd;
+  --chart-up: #3fb950;
+  --chart-down: #f85149;
+  --chart-grid: #21262d;
+  --chart-axis: #484f58;
+  --chart-candle-up: #3fb950;
+  --chart-candle-down: #f85149;
+  --chart-wick: #7d8a98;
+  --chart-volume: rgba(88, 166, 255, 0.3);
+
+  /* Form Elements */
+  --input-bg: #0f1419;
+  --input-border: #30363d;
+  --input-border-focus: #58a6ff;
+  --input-placeholder: #565e69;
+
+  /* Shadows */
+  --shadow-color: rgba(0, 0, 0, 0.5);
+  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-dropdown: 0 8px 24px rgba(0, 0, 0, 0.4);
+  --shadow-modal: 0 16px 48px rgba(0, 0, 0, 0.5);
+
+  /* Scrollbar */
+  --scrollbar-track: #0f1419;
+  --scrollbar-thumb: #30363d;
+  --scrollbar-thumb-hover: #484f58;
+
+  /* Glow effects */
+  --glow-buy: 0 0 20px rgba(63, 185, 80, 0.3);
+  --glow-sell: 0 0 20px rgba(248, 81, 73, 0.3);
+  --glow-accent: 0 0 20px rgba(88, 166, 255, 0.3);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   REGRAS GLOBAIS DE BOTÕES
+   Contraste correto para todos os temas
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Botões com background claro = texto escuro */
+.btn-light,
+.btn-secondary,
+.btn-ghost,
+[data-theme="claro"] .btn-outline,
+[data-theme="sepia"] .btn-outline {
+  color: var(--text-1);
+}
+
+/* Botões com background accent/escuro = texto branco */
+.btn-primary,
+.btn-success,
+.btn-danger,
+.btn-warning,
+.btn-info,
+[class*="btn-accent"] {
+  color: #ffffff;
+}
+
+/* Exceção: Alto contraste - accent tem texto preto */
+[data-theme="alto-contraste"] .btn-primary,
+[data-theme="alto-contraste"] .btn-accent-1,
+[data-theme="alto-contraste"] .btn-accent-2,
+[data-theme="alto-contraste"] .btn-warning {
+  color: #000000;
+}
+
+/* Trader theme - buy/sell buttons */
+[data-theme="trader"] .btn-buy {
+  background: var(--buy);
+  color: #ffffff;
+}
+
+[data-theme="trader"] .btn-buy:hover {
+  background: var(--buy-hover);
+}
+
+[data-theme="trader"] .btn-sell {
+  background: var(--sell);
+  color: #ffffff;
+}
+
+[data-theme="trader"] .btn-sell:hover {
+  background: var(--sell-hover);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SCROLLBAR STYLING (Cross-browser)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Webkit browsers (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: var(--radius-full);
+  border: 2px solid var(--scrollbar-track);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SELECTION STYLING
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+::selection {
+  background: var(--accent-1);
+  color: var(--accent-1-text);
+}
+
+::-moz-selection {
+  background: var(--accent-1);
+  color: var(--accent-1-text);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   FOCUS STYLES (Accessibility)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+/* Alto contraste - focus mais visível */
+[data-theme="alto-contraste"] :focus-visible {
+  outline: 3px solid var(--border-focus);
+  outline-offset: 3px;
+}
