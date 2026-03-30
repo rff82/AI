@@ -1,263 +1,106 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#0a0a0a">
+<!DOCTYPE html><html lang="pt-BR"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
-<title>farpa.ai — Área de Testes</title>
+<title>Teste — farpa.ai</title>
 <link rel="icon" type="image/svg+xml" href="farpa-icon.svg">
-<link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="tokens.css">
-<link rel="stylesheet" href="themes.css">
-<link rel="stylesheet" href="mobile-fixes.css">
+<link rel="stylesheet" href="tokens.css"><link rel="stylesheet" href="themes.css">
 <script src="theme-engine.js"></script>
 <style>
-.test-page { max-width: 1100px; margin: 0 auto; padding: 40px 32px 80px; }
-.test-banner { background: rgba(255,184,0,0.1); border: 1px solid rgba(255,184,0,0.3); border-radius: 12px; padding: 14px 20px; margin-bottom: 32px; display: flex; align-items: center; gap: 12px; }
-.test-banner-icon { font-size: 20px; flex-shrink: 0; }
-.test-banner-text { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--accent-warn); letter-spacing: 0.5px; line-height: 1.5; }
-.test-title { font-size: 28px; font-weight: 900; letter-spacing: -0.03em; margin-bottom: 8px; }
-.test-sub { font-size: 14px; color: var(--text-3); margin-bottom: 40px; }
-.test-section { margin-bottom: 40px; }
-.test-section-title { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); margin-bottom: 16px; }
-.test-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; margin-bottom: 16px; }
-.test-card { background: var(--bg-layer2); border: 1px solid var(--border-lo); border-radius: 14px; padding: 18px 20px; }
-.test-card h4 { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
-.test-card p { font-size: 12px; color: var(--text-3); line-height: 1.55; }
-.test-result { background: var(--bg-layer2); border: 1px solid var(--border-lo); border-radius: 10px; padding: 14px 18px; margin-top: 10px; font-family: 'DM Mono', monospace; font-size: 12px; color: var(--text-2); line-height: 1.7; white-space: pre-wrap; max-height: 300px; overflow-y: auto; }
-.test-btn { background: var(--accent); color: var(--bg-base, #0a0a0a); border: none; border-radius: 8px; padding: 9px 18px; font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; margin-right: 8px; margin-bottom: 8px; transition: opacity .18s; }
-.test-btn:hover { opacity: 0.88; }
-.test-btn.secondary { background: transparent; color: var(--text-1); border: 1px solid var(--border-md); }
-.test-btn.secondary:hover { border-color: var(--border-hi); background: rgba(255,255,255,0.04); }
-.test-btn.danger { background: rgba(255,59,59,0.12); color: var(--accent-danger); border: 1px solid rgba(255,59,59,0.2); }
-.status-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
-.status-dot.ok { background: var(--accent); }
-.status-dot.warn { background: var(--accent-warn); }
-.status-dot.err { background: var(--accent-danger); }
-.status-row { display: flex; align-items: center; font-family: 'DM Mono', monospace; font-size: 12px; color: var(--text-2); padding: 8px 0; border-bottom: 1px solid var(--border-lo); }
-.status-row:last-child { border-bottom: none; }
-.status-label { flex: 1; }
-.status-value { color: var(--text-3); font-size: 11px; }
+.test-page{max-width:800px;margin:0 auto;padding:40px 28px 80px}
+.test-section{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px;margin-bottom:16px}
+.test-section h3{font-size:14px;font-weight:700;margin-bottom:12px;color:var(--text-1)}
+.test-btn{padding:8px 14px;border-radius:var(--r-md);border:1px solid var(--border-md);background:transparent;font-family:var(--font-mono);font-size:11px;cursor:pointer;transition:all .15s;color:var(--btn-text-on-surface);margin:4px}
+.test-btn:hover{border-color:var(--accent);color:var(--accent)}
+.test-btn.primary{background:var(--accent);color:var(--btn-text-on-accent);border-color:var(--accent)}
+.test-output{margin-top:12px;padding:12px;background:var(--bg-2);border-radius:var(--r-md);font-family:var(--font-mono);font-size:11px;color:var(--text-2);max-height:300px;overflow:auto;white-space:pre-wrap}
 </style>
 </head>
 <body>
 <div id="farpa-layout">
 <main class="farpa-content" id="farpa-main">
 <div class="test-page">
+  <h1 style="font-size:28px;font-weight:900;margin-bottom:8px">Área de Testes</h1>
+  <p style="font-family:var(--font-mono);font-size:12px;color:var(--text-3);margin-bottom:28px">Apenas para desenvolvimento. Não indexado.</p>
 
-  <div class="test-banner">
-    <div class="test-banner-icon">⚠️</div>
-    <div class="test-banner-text">ÁREA DE TESTES — Esta página não é indexada pelos motores de busca.<br>Use para validar integrações, APIs e componentes antes do deploy.</div>
-  </div>
-
-  <h1 class="test-title">Área de Testes</h1>
-  <p class="test-sub">Ferramentas de diagnóstico e validação do ambiente farpa.ai</p>
-
-  <!-- Status do ambiente -->
   <div class="test-section">
-    <div class="test-section-title">Status do ambiente</div>
-    <div class="test-card" style="padding:0;overflow:hidden;">
-      <div id="env-status" style="padding:4px 18px;">
-        <div class="status-row"><span class="status-dot ok"></span><span class="status-label">JavaScript</span><span class="status-value">OK</span></div>
-        <div class="status-row"><span class="status-dot" id="dot-theme"></span><span class="status-label">Theme Engine</span><span class="status-value" id="val-theme">...</span></div>
-        <div class="status-row"><span class="status-dot" id="dot-fonts"></span><span class="status-label">Google Fonts</span><span class="status-value" id="val-fonts">...</span></div>
-        <div class="status-row"><span class="status-dot" id="dot-storage"></span><span class="status-label">localStorage</span><span class="status-value" id="val-storage">...</span></div>
-        <div class="status-row"><span class="status-dot" id="dot-api"></span><span class="status-label">API Leads</span><span class="status-value" id="val-api">Verificando...</span></div>
-      </div>
-    </div>
+    <h3>Worker Proxy — Health Check</h3>
+    <button class="test-btn primary" onclick="testHealth()">GET /health</button>
+    <div class="test-output" id="out-health">—</div>
   </div>
 
-  <!-- Teste de API -->
   <div class="test-section">
-    <div class="test-section-title">Teste da API de Leads</div>
-    <div>
-      <button class="test-btn" onclick="testApiGet()">GET /leads</button>
-      <button class="test-btn secondary" onclick="testApiPost()">POST /leads (teste)</button>
-      <button class="test-btn danger" onclick="clearResult()">Limpar</button>
-    </div>
-    <div class="test-result" id="api-result">Clique em um botão para testar a API...</div>
+    <h3>Market APIs</h3>
+    <button class="test-btn" onclick="testMarket('crypto')">Crypto</button>
+    <button class="test-btn" onclick="testMarket('b3')">B3</button>
+    <button class="test-btn" onclick="testMarket('nyse')">NYSE</button>
+    <button class="test-btn" onclick="testMarket('indices')">Índices</button>
+    <div class="test-output" id="out-market">—</div>
   </div>
 
-  <!-- Tema -->
   <div class="test-section">
-    <div class="test-section-title">Troca de temas</div>
-    <div>
-      <button class="test-btn" onclick="window.farpaTheme.set('void')">Void (escuro)</button>
-      <button class="test-btn secondary" onclick="window.farpaTheme.set('ivory')">Ivory (claro)</button>
-      <button class="test-btn secondary" onclick="window.farpaTheme.set('midnight')">Midnight (azul)</button>
-    </div>
-    <div class="test-result" id="theme-result">Tema atual: <span id="theme-current">...</span></div>
+    <h3>Yahoo Finance</h3>
+    <button class="test-btn" onclick="testYahoo('PETR4.SA')">PETR4</button>
+    <button class="test-btn" onclick="testYahoo('VALE3.SA')">VALE3</button>
+    <button class="test-btn" onclick="testYahoo('AAPL')">AAPL</button>
+    <div class="test-output" id="out-yahoo">—</div>
   </div>
 
-  <!-- Componentes -->
   <div class="test-section">
-    <div class="test-section-title">Componentes visuais</div>
-    <div class="test-grid">
-      <div class="test-card" style="border-color:rgba(0,255,136,0.2);">
-        <h4 style="color:var(--accent)">✓ Card com borda accent</h4>
-        <p>Teste de border-color, background e text renderizando corretamente.</p>
-      </div>
-      <div class="test-card" style="border-color:rgba(0,229,255,0.2);">
-        <h4 style="color:var(--accent-2)">✓ Card cyan</h4>
-        <p>Verificação do token --accent-2 aplicado a heading e border.</p>
-      </div>
-      <div class="test-card" style="border-color:rgba(181,122,255,0.2);">
-        <h4 style="color:var(--accent-3)">✓ Card purple</h4>
-        <p>Token --accent-3 — uso em elementos Pro e glossário.</p>
-      </div>
-      <div class="test-card" style="border-color:rgba(255,215,100,0.2);">
-        <h4 style="color:var(--accent-gold)">★ Card gold</h4>
-        <p>Token --accent-gold — exclusivo para elementos do plano Pro.</p>
-      </div>
-      <div class="test-card" style="border-color:rgba(255,59,59,0.2);">
-        <h4 style="color:var(--accent-danger)">⚠ Card urgente</h4>
-        <p>Token --accent-danger — alertas, erros e urgências.</p>
-      </div>
-      <div class="test-card">
-        <h4>Tipografia mista</h4>
-        <p>Body <code style="font-family:'DM Mono',monospace;font-size:11px;color:var(--accent-2);">+ DM Mono</code></p>
-      </div>
-    </div>
+    <h3>News RSS</h3>
+    <button class="test-btn" onclick="testNews('br')">BR</button>
+    <button class="test-btn" onclick="testNews('us')">US</button>
+    <button class="test-btn" onclick="testNews('crypto')">Crypto</button>
+    <div class="test-output" id="out-news">—</div>
   </div>
 
-  <!-- Responsive test -->
   <div class="test-section">
-    <div class="test-section-title">Informações do viewport</div>
-    <div class="test-result" id="viewport-info">Carregando...</div>
+    <h3>AI Proxy</h3>
+    <button class="test-btn primary" onclick="testAI()">Testar /ai</button>
+    <div class="test-output" id="out-ai">—</div>
   </div>
 
-  <!-- Navegação -->
   <div class="test-section">
-    <div class="test-section-title">Navegação rápida</div>
-    <div>
-      <a href="index.html" class="test-btn secondary">Home</a>
-      <a href="biblioteca.html" class="test-btn secondary">Biblioteca</a>
-      <a href="labs.html" class="test-btn secondary">Labs</a>
-      <a href="mercados.html" class="test-btn secondary">Mercados</a>
-      <a href="pro.html" class="test-btn secondary">Pro</a>
-      <a href="leads.html" class="test-btn secondary">Leads</a>
-      <a href="admin/index.html" class="test-btn secondary">Admin</a>
-      <a href="brand-guide.html" class="test-btn secondary">Brand Guide</a>
-    </div>
+    <h3>Leads API</h3>
+    <button class="test-btn" onclick="testLeads()">GET /api/leads</button>
+    <div class="test-output" id="out-leads">—</div>
   </div>
-
 </div>
 </main>
 </div>
-
 <script>
-const API = 'https://api-leads.rfelipefernandes.workers.dev/api';
+const W='https://farpa-proxy.rfelipefernandes.workers.dev';
+const L='https://api-leads.rfelipefernandes.workers.dev';
 
-document.addEventListener('DOMContentLoaded', function() {
-  // Layout
-  var layout = document.getElementById('farpa-layout');
-  if (layout) {
-    var sidebar = window.farpaSidebar.build('teste');
-    layout.insertBefore(sidebar, layout.firstChild);
-    var topnav = window.farpaTopnav.build([{label:'farpa.ai',href:'index.html'},{label:'Testes'}]);
-    layout.insertBefore(topnav, sidebar.nextSibling);
-  }
-  var t = localStorage.getItem('farpa_theme') || 'void';
-  document.documentElement.setAttribute('data-theme', t);
+async function testHealth(){
+  const o=document.getElementById('out-health');o.textContent='Testando...';
+  try{const r=await fetch(W+'/health');o.textContent=JSON.stringify(await r.json(),null,2)}catch(e){o.textContent='ERRO: '+e.message}
+}
+async function testMarket(src){
+  const o=document.getElementById('out-market');o.textContent='Carregando '+src+'... (5 retries)';
+  try{const r=await fetch(W+'/markets?source='+src);o.textContent=JSON.stringify(await r.json(),null,2)}catch(e){o.textContent='ERRO: '+e.message}
+}
+async function testYahoo(sym){
+  const o=document.getElementById('out-yahoo');o.textContent='Yahoo Finance: '+sym+'...';
+  try{const r=await fetch(W+'/yahoo?symbol='+sym);o.textContent=JSON.stringify(await r.json(),null,2)}catch(e){o.textContent='ERRO: '+e.message}
+}
+async function testNews(mkt){
+  const o=document.getElementById('out-news');o.textContent='RSS '+mkt+'...';
+  try{const r=await fetch(W+'/news?market='+mkt);o.textContent=JSON.stringify(await r.json(),null,2)}catch(e){o.textContent='ERRO: '+e.message}
+}
+async function testAI(){
+  const o=document.getElementById('out-ai');o.textContent='Enviando para Claude...';
+  try{const r=await fetch(W+'/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:[{role:'user',content:'Olá, responda em uma frase.'}],max_tokens:100})});o.textContent=JSON.stringify(await r.json(),null,2)}catch(e){o.textContent='ERRO: '+e.message}
+}
+async function testLeads(){
+  const o=document.getElementById('out-leads');o.textContent='Carregando leads...';
+  try{const r=await fetch(L+'/api/leads');o.textContent=JSON.stringify(await r.json(),null,2)}catch(e){o.textContent='ERRO: '+e.message}
+}
 
-  // Status checks
-  checkTheme();
-  checkFonts();
-  checkStorage();
-  checkApi();
-  updateViewport();
-  window.addEventListener('resize', updateViewport);
-  window.addEventListener('farpaThemeChange', e => {
-    document.getElementById('theme-current').textContent = e.detail.theme;
-    document.getElementById('theme-result').textContent = 'Tema atual: ' + e.detail.theme;
-  });
-  document.getElementById('theme-current').textContent = t;
+document.addEventListener('DOMContentLoaded',function(){
+  var layout=document.getElementById('farpa-layout');if(!layout)return;
+  var sidebar=window.farpaSidebar.build('teste');layout.insertBefore(sidebar,layout.firstChild);
+  var topnav=window.farpaTopnav.build([{label:'farpa.ai',href:'index.html'},{label:'Testes'}]);layout.insertBefore(topnav,sidebar.nextSibling);
 });
-
-function checkTheme() {
-  try {
-    const ok = typeof window.farpaTheme === 'object';
-    setStatus('dot-theme', 'val-theme', ok, ok ? 'Ativo — tema: ' + (localStorage.getItem('farpa_theme') || 'void') : 'Não encontrado');
-  } catch(e) { setStatus('dot-theme', 'val-theme', false, 'Erro'); }
-}
-
-function checkFonts() {
-  try {
-    document.fonts.ready.then(() => {
-      const sg = document.fonts.check('900 16px "Space Grotesk"');
-      const dm = document.fonts.check('400 16px "DM Mono"');
-      setStatus('dot-fonts', 'val-fonts', sg && dm, sg && dm ? 'Space Grotesk + DM Mono carregados' : 'Falha parcial');
-    });
-  } catch(e) { setStatus('dot-fonts', 'val-fonts', null, 'Não verificável'); }
-}
-
-function checkStorage() {
-  try {
-    localStorage.setItem('farpa_test', '1');
-    localStorage.removeItem('farpa_test');
-    setStatus('dot-storage', 'val-storage', true, 'Disponível');
-  } catch(e) { setStatus('dot-storage', 'val-storage', false, 'Bloqueado'); }
-}
-
-async function checkApi() {
-  try {
-    const res = await fetch(`${API}/leads`, { signal: AbortSignal.timeout(5000) });
-    setStatus('dot-api', 'val-api', res.ok, res.ok ? `OK ${res.status}` : `Erro HTTP ${res.status}`);
-  } catch(e) { setStatus('dot-api', 'val-api', false, 'Timeout / CORS'); }
-}
-
-function setStatus(dotId, valId, ok, text) {
-  const dot = document.getElementById(dotId);
-  const val = document.getElementById(valId);
-  if (dot) dot.className = 'status-dot ' + (ok === true ? 'ok' : ok === false ? 'err' : 'warn');
-  if (val) val.textContent = text;
-}
-
-async function testApiGet() {
-  const el = document.getElementById('api-result');
-  el.textContent = 'GET /leads → aguardando...';
-  try {
-    const res = await fetch(`${API}/leads`);
-    const json = await res.json();
-    el.textContent = `Status: ${res.status} ${res.statusText}\n\nResposta:\n${JSON.stringify(json, null, 2).slice(0, 800)}${JSON.stringify(json).length > 800 ? '\n...' : ''}`;
-  } catch(e) { el.textContent = `Erro: ${e.message}`; }
-}
-
-async function testApiPost() {
-  const el = document.getElementById('api-result');
-  el.textContent = 'POST /leads → enviando payload de teste...';
-  try {
-    const res = await fetch(`${API}/leads`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: 'Teste Automático', email: `teste_${Date.now()}@farpa.ai`, interest: 'teste' })
-    });
-    const json = await res.json();
-    el.textContent = `Status: ${res.status} ${res.statusText}\n\nResposta:\n${JSON.stringify(json, null, 2)}`;
-  } catch(e) { el.textContent = `Erro: ${e.message}`; }
-}
-
-function clearResult() { document.getElementById('api-result').textContent = 'Resultado limpo.'; }
-
-function updateViewport() {
-  const el = document.getElementById('viewport-info');
-  const ua = navigator.userAgent;
-  const isMobile = /Mobi|Android/i.test(ua);
-  const isIOS = /iPhone|iPad|iPod/i.test(ua);
-  el.textContent = [
-    `Viewport: ${window.innerWidth}px × ${window.innerHeight}px`,
-    `Device pixel ratio: ${window.devicePixelRatio}`,
-    `Touch: ${('ontouchstart' in window) ? 'Sim' : 'Não'}`,
-    `Mobile UA: ${isMobile ? 'Sim' : 'Não'}`,
-    `iOS: ${isIOS ? 'Sim' : 'Não'}`,
-    `Tema ativo: ${document.documentElement.getAttribute('data-theme') || 'void'}`,
-    `localStorage farpa_theme: ${localStorage.getItem('farpa_theme') || '(não definido)'}`,
-    `Sidebar collapsed: ${localStorage.getItem('farpa_sidebar_collapsed') || 'false'}`,
-    `User agent: ${ua.slice(0, 80)}...`,
-  ].join('\n');
-}
 </script>
-</body>
-</html>
+</body></html>

@@ -1,599 +1,181 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Farpa Labs · farpa.ai</title>
-  <link rel="icon" type="image/svg+xml" href="farpa-icon.svg" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="tokens.css" />
-  <link rel="stylesheet" href="themes.css" />
-  <link rel="stylesheet" href="mobile-fixes.css" />
-  <style>
-    .labs-page {
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-8);
-    }
-    .labs-hero {
-      display: grid;
-      grid-template-columns: minmax(0, 1.45fr) minmax(260px, 0.85fr);
-      gap: var(--space-5);
-      align-items: stretch;
-    }
-    .labs-header,
-    .labs-highlight,
-    .inline-demo,
-    .demo-card {
-      background: var(--color-surface-2);
-      border: 1px solid var(--color-border);
-      box-shadow: var(--shadow-sm);
-    }
-    .labs-header {
-      margin-bottom: 0;
-      border-radius: var(--radius-xl);
-      padding: clamp(24px, 4vw, 40px);
-      position: relative;
-      overflow: hidden;
-    }
-    .labs-header::after {
-      content: '';
-      position: absolute;
-      inset: auto -60px -90px auto;
-      width: 220px;
-      height: 220px;
-      border-radius: 50%;
-      background: radial-gradient(circle, color-mix(in srgb, var(--color-accent) 22%, transparent), transparent 70%);
-      pointer-events: none;
-    }
-    .labs-eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-family: var(--font-mono);
-      font-size: 0.7rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--color-accent);
-      margin-bottom: var(--space-3);
-    }
-    .labs-header h1 {
-      font-size: clamp(2rem, 4vw, 3rem);
-      font-weight: 700;
-      color: var(--color-text-primary);
-      margin-bottom: var(--space-3);
-      max-width: 12ch;
-      line-height: 1.05;
-    }
-    .labs-header p {
-      font-size: 1rem;
-      color: var(--color-text-secondary);
-      max-width: 560px;
-      line-height: 1.6;
-    }
-    .labs-highlight {
-      border-radius: var(--radius-xl);
-      padding: clamp(24px, 3vw, 32px);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: var(--space-4);
-    }
-    .labs-highlight-label,
-    .section-label {
-      font-family: var(--font-mono);
-      font-size: 0.7rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--color-text-muted);
-    }
-    .labs-highlight h2 {
-      font-size: 1.15rem;
-      color: var(--color-text-primary);
-      margin-bottom: var(--space-2);
-    }
-    .labs-highlight p {
-      color: var(--color-text-secondary);
-      font-size: 0.88rem;
-      line-height: 1.6;
-    }
-    .labs-highlight-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: var(--space-3);
-    }
-    .labs-highlight-stat {
-      padding: var(--space-3);
-      border-radius: var(--radius-lg);
-      background: var(--color-surface-3);
-      border: 1px solid var(--color-border);
-    }
-    .labs-highlight-stat strong {
-      display: block;
-      font-family: var(--font-mono);
-      font-size: 1rem;
-      color: var(--color-text-primary);
-      margin-bottom: 4px;
-    }
-    .labs-highlight-stat span {
-      font-size: 0.75rem;
-      color: var(--color-text-muted);
-    }
-    /* Demo cards grid */
-    .demos-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: var(--space-5);
-      margin-bottom: var(--space-10);
-    }
-    .demo-card {
-      border-radius: var(--radius-xl);
-      overflow: hidden;
-      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
-      display: flex;
-      flex-direction: column;
-    }
-    .demo-card:hover {
-      border-color: var(--color-accent);
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-md);
-    }
-    .demo-card-visual {
-      height: 160px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 3rem;
-      position: relative;
-      overflow: hidden;
-    }
-    .demo-card-visual.sentiment-bg {
-      background: linear-gradient(135deg, rgba(99,102,241,0.15), rgba(16,185,129,0.1));
-    }
-    .demo-card-visual.trader-bg {
-      background: linear-gradient(135deg, rgba(245,158,11,0.12), rgba(239,68,68,0.1));
-    }
-    .demo-card-visual.explain-bg {
-      background: linear-gradient(135deg, rgba(6,182,212,0.12), rgba(99,102,241,0.1));
-    }
-    .demo-card-visual.portfolio-bg {
-      background: linear-gradient(135deg, rgba(16,185,129,0.12), rgba(6,182,212,0.1));
-    }
-    .demo-badge {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      font-family: var(--font-mono);
-      font-size: 0.62rem;
-      font-weight: 600;
-      padding: 3px 8px;
-      border-radius: 4px;
-    }
-    .badge-live {
-      background: rgba(16,185,129,0.15);
-      color: #10b981;
-      border: 1px solid rgba(16,185,129,0.3);
-    }
-    .badge-beta {
-      background: rgba(245,158,11,0.15);
-      color: #f59e0b;
-      border: 1px solid rgba(245,158,11,0.3);
-    }
-    .badge-soon {
-      background: rgba(156,163,175,0.12);
-      color: var(--color-text-muted);
-      border: 1px solid var(--color-border);
-    }
-    .demo-card-body {
-      padding: var(--space-5);
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-    }
-    .demo-card-body h3 {
-      font-size: 1rem;
-      font-weight: 700;
-      color: var(--color-text-primary);
-      margin-bottom: var(--space-2);
-    }
-    .demo-card-body p {
-      font-size: 0.85rem;
-      color: var(--color-text-secondary);
-      line-height: 1.6;
-      flex: 1;
-      margin-bottom: var(--space-4);
-    }
-    .demo-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: var(--space-1);
-      margin-bottom: var(--space-4);
-    }
-    .demo-tag {
-      font-family: var(--font-mono);
-      font-size: 0.62rem;
-      font-weight: 500;
-      padding: 2px 7px;
-      border-radius: 3px;
-      background: var(--color-surface-3);
-      color: var(--color-text-muted);
-      border: 1px solid var(--color-border);
-    }
-    .demo-cta {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--color-accent);
-      text-decoration: none;
-      transition: gap 0.2s;
-    }
-    .demo-cta:hover { gap: 10px; }
-    .demo-cta.disabled {
-      color: var(--color-text-muted);
-      cursor: default;
-      pointer-events: none;
-    }
-    /* Inline sentiment demo */
-    .inline-demo {
-      border-radius: var(--radius-xl);
-      padding: var(--space-6);
-      margin-bottom: var(--space-10);
-    }
-    .inline-demo-header {
-      display: flex;
-      align-items: center;
-      gap: var(--space-3);
-      margin-bottom: var(--space-5);
-    }
-    .inline-demo-header h2 {
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: var(--color-text-primary);
-    }
-    .demo-input-area {
-      display: flex;
-      gap: var(--space-3);
-      margin-bottom: var(--space-4);
-      flex-wrap: wrap;
-    }
-    .demo-input-area textarea {
-      flex: 1;
-      min-width: 240px;
-      padding: var(--space-3) var(--space-4);
-      background: var(--color-surface-3);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-md);
-      color: var(--color-text-primary);
-      font-family: var(--font-body);
-      font-size: 0.88rem;
-      resize: vertical;
-      min-height: 90px;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-    .demo-input-area textarea:focus { border-color: var(--color-accent); }
-    .demo-input-area textarea::placeholder { color: var(--color-text-muted); }
-    .btn-analyze {
-      align-self: flex-end;
-      padding: var(--space-3) var(--space-5);
-      background: var(--color-accent);
-      color: #fff;
-      border: none;
-      border-radius: var(--radius-md);
-      font-family: var(--font-body);
-      font-size: 0.88rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: opacity 0.2s;
-      white-space: nowrap;
-    }
-    .btn-analyze:hover { opacity: 0.85; }
-    .btn-analyze:disabled { opacity: 0.5; cursor: default; }
-    .sentiment-result {
-      display: none;
-      background: var(--color-surface-3);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-md);
-      padding: var(--space-4);
-    }
-    .sentiment-result.visible { display: block; }
-    .result-score {
-      display: flex;
-      align-items: center;
-      gap: var(--space-3);
-      margin-bottom: var(--space-3);
-    }
-    .score-pill {
-      font-family: var(--font-mono);
-      font-size: 1rem;
-      font-weight: 700;
-      padding: var(--space-2) var(--space-4);
-      border-radius: var(--radius-md);
-    }
-    .score-positive { background: rgba(16,185,129,0.15); color: #10b981; }
-    .score-negative { background: rgba(239,68,68,0.15); color: #ef4444; }
-    .score-neutral { background: rgba(156,163,175,0.12); color: var(--color-text-muted); }
-    .result-explanation {
-      font-size: 0.85rem;
-      color: var(--color-text-secondary);
-      line-height: 1.6;
-    }
-    .example-chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: var(--space-2);
-      margin-bottom: var(--space-4);
-    }
-    .chip {
-      font-size: 0.78rem;
-      padding: var(--space-1) var(--space-3);
-      background: var(--color-surface-3);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-md);
-      color: var(--color-text-secondary);
-      cursor: pointer;
-      transition: border-color 0.2s;
-    }
-    .chip:hover { border-color: var(--color-accent); color: var(--color-text-primary); }
-    /* Section titles */
-    .section-label {
-      margin-bottom: var(--space-4);
-    }
-    @media (max-width: 960px) {
-      .labs-hero {
-        grid-template-columns: 1fr;
-      }
-    }
-    .loading-dots span {
-      animation: blink 1.4s infinite;
-      font-size: 1.2rem;
-    }
-    .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
-    .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
-    @keyframes blink { 0%,80%,100%{opacity:0} 40%{opacity:1} }
-    @media (max-width: 640px) {
-      .labs-header,
-      .labs-highlight,
-      .inline-demo,
-      .demo-card-body {
-        padding-left: var(--space-4);
-        padding-right: var(--space-4);
-      }
-      .labs-highlight-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
-</head>
-<body>
-  <div id="farpa-sidebar"></div>
-  <div class="page-wrapper">
-    <div id="farpa-topnav"></div>
-    <main class="main-content">
-      <div class="labs-page">
+<!DOCTYPE html><html lang="pt-BR"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#fafaf9">
+<meta name="description" content="Farpa Labs — Demos interativos de IA: análise de sentimento, comparador de LLMs, gerador PDF, chatbot RAG e monitor de concorrentes">
+<meta name="keywords" content="IA generativa demo, análise sentimento, comparador LLM, chatbot RAG, monitor concorrentes IA">
+<link rel="canonical" href="https://farpa.ai/labs.html">
+<title>Farpa Labs — Demos de IA — farpa.ai</title>
+<link rel="icon" type="image/svg+xml" href="farpa-icon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css"><link rel="stylesheet" href="themes.css"><link rel="stylesheet" href="mobile-fixes.css"><link rel="stylesheet" href="content-pages.css">
+<script src="theme-engine.js"></script>
+<style>
+.labs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;margin-bottom:48px}
+.lab-card{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--r-xl);padding:28px;position:relative;overflow:hidden;transition:transform .18s,border-color .18s}
+.lab-card:hover{transform:translateY(-3px);border-color:var(--accent);box-shadow:var(--shadow-lg)}
+.lab-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.lab-card.live::before{background:var(--accent)}.lab-card.new::before{background:var(--accent-2)}.lab-card.soon::before{background:var(--bg-3)}
+.lab-icon{width:44px;height:44px;border-radius:var(--r-lg);display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:14px;background:var(--accent-bg)}
+.lab-icon.b{background:var(--accent-bg-2)}.lab-icon.p{background:var(--accent-bg-3)}
+.lab-card h3{font-size:17px;font-weight:700;margin-bottom:6px;color:var(--text-1)}
+.lab-card p{font-size:13px;color:var(--text-2);line-height:1.6;margin-bottom:14px}
+.lab-status{font-family:var(--font-mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:3px 8px;border-radius:var(--r-pill);display:inline-flex;align-items:center;gap:5px}
+.lab-status.live{color:var(--accent);background:var(--accent-bg);border:1px solid var(--accent-bg)}
+.lab-status.new{color:var(--accent-2);background:var(--accent-bg-2);border:1px solid var(--accent-bg-2)}
+.lab-status.soon{color:var(--text-3);background:var(--bg-2);border:1px solid var(--border)}
+.lab-status .dot{width:5px;height:5px;border-radius:50%;background:currentColor;animation:ldot 2s ease-in-out infinite}
+@keyframes ldot{0%,100%{opacity:1}50%{opacity:.3}}
+.lab-actions{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.run-btn{padding:8px 16px;border-radius:var(--r-md);font-family:var(--font-head);font-size:13px;font-weight:700;border:none;cursor:pointer;transition:all .15s;background:var(--accent);color:var(--btn-on-accent,#fff)!important}
+.run-btn:hover{opacity:.88;transform:translateY(-1px)}
+.run-btn.b{background:var(--accent-2)}.run-btn.p{background:var(--accent-3)}
+.run-btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
 
-        <section class="labs-hero">
-          <div class="labs-header">
-            <div class="labs-eyebrow">⚗️ Labs</div>
-            <h1>Experimentos interativos com a identidade farpa</h1>
-            <p>Demonstrações práticas de como modelos de linguagem e algoritmos de IA podem ser aplicados a problemas reais de finanças e negócios, agora com a mesma linguagem visual do restante do site.</p>
-          </div>
-          <aside class="labs-highlight">
-            <div>
-              <div class="labs-highlight-label">Visão geral</div>
-              <h2>Ambiente de testes com foco em IA aplicada</h2>
-              <p>Explore demos de sentimento, simulação e explicabilidade em cards, blocos e espaçamentos alinhados com a experiência principal da farpa.ai.</p>
-            </div>
-            <div class="labs-highlight-grid">
-              <div class="labs-highlight-stat"><strong>4</strong><span>experimentos publicados</span></div>
-              <div class="labs-highlight-stat"><strong>Ao vivo</strong><span>demonstrações navegáveis</span></div>
-              <div class="labs-highlight-stat"><strong>IA</strong><span>aplicada a finanças</span></div>
-              <div class="labs-highlight-stat"><strong>UX</strong><span>visual consistente</span></div>
-            </div>
-          </aside>
-        </section>
+/* Demo area */
+.demo-area{display:none;margin-top:18px;padding:18px;background:var(--bg-2);border:1px solid var(--border);border-radius:var(--r-lg)}
+.demo-area.open{display:block}
+.demo-input{width:100%;background:var(--input-bg);border:1px solid var(--border-md);border-radius:var(--r-md);padding:10px 14px;color:var(--text-1);font-family:var(--font-head);font-size:14px;outline:none;resize:vertical;min-height:60px;margin-bottom:10px}
+.demo-input:focus{border-color:var(--accent)}
+.demo-output{padding:12px;background:var(--card-bg);border:1px solid var(--border);border-radius:var(--r-md);font-size:13px;color:var(--text-2);line-height:1.6;min-height:40px;white-space:pre-wrap}
+.demo-output.loading{color:var(--text-3);font-style:italic}
+</style></head><body>
+<div id="farpa-layout"><main class="farpa-content" id="farpa-main">
+<div class="content-page-wrapper" style="max-width:1060px">
+  <div class="content-page-header"><div class="cp-eyebrow"><a href="index.html" class="cp-back">← Início</a></div><h1 class="cp-title">Farpa <span>Labs</span></h1><p class="cp-subtitle">Demos interativos de IA Generativa. Teste ao vivo — todos usando o Worker proxy para evitar CORS.</p></div>
 
-        <!-- Inline Sentiment Analyzer -->
-      <div class="section-label">Demo em destaque · Análise de Sentimento</div>
-      <div class="inline-demo">
-        <div class="inline-demo-header">
-          <span style="font-size:1.5rem">🧠</span>
-          <div>
-            <h2>Analisador de Sentimento de Mercado</h2>
-            <span style="font-size:0.78rem; color:var(--color-text-muted)">Cole uma notícia, tweet ou comentário financeiro para análise instantânea</span>
-          </div>
-        </div>
-
-        <div class="example-chips">
-          <span class="chip" onclick="fillExample(0)">Ibovespa sobe 1,5%</span>
-          <span class="chip" onclick="fillExample(1)">Fed mantém juros altos</span>
-          <span class="chip" onclick="fillExample(2)">Petrobras bate recorde</span>
-          <span class="chip" onclick="fillExample(3)">Inflação surpreende negativa</span>
-          <span class="chip" onclick="fillExample(4)">Bitcoin despenca 8%</span>
-        </div>
-
-        <div class="demo-input-area">
-          <textarea id="sentiment-input" placeholder="Ex: 'O Ibovespa fechou em alta de 1,2% impulsionado por commodities e entrada de capital estrangeiro, refletindo otimismo com a política monetária do Fed...'"></textarea>
-          <button class="btn-analyze" id="analyze-btn" onclick="analyzeSentiment()">Analisar ✦</button>
-        </div>
-
-        <div class="sentiment-result" id="sentiment-result">
-          <div class="result-score">
-            <div class="score-pill" id="score-pill">—</div>
-            <div style="font-family:var(--font-mono);font-size:0.75rem;color:var(--color-text-muted)">Confiança: <span id="confidence-val">—</span></div>
-          </div>
-          <div class="result-explanation" id="result-explanation"></div>
-        </div>
+  <div class="labs-grid">
+    <!-- LIVE DEMOS -->
+    <div class="lab-card live" id="card-sentimento">
+      <div class="lab-icon">🎭</div>
+      <h3>Análise de Sentimento</h3>
+      <p>Cole um texto e receba análise de sentimento instantânea via Claude.</p>
+      <span class="lab-status live"><span class="dot"></span>Ao vivo</span>
+      <div class="lab-actions"><button class="run-btn" onclick="toggleDemo('sentimento')">Testar →</button></div>
+      <div class="demo-area" id="demo-sentimento">
+        <textarea class="demo-input" id="input-sentimento" placeholder="Cole um parágrafo de notícia aqui...">O Ibovespa fechou em alta de 2,3% hoje após dados positivos do PIB brasileiro surpreenderem analistas.</textarea>
+        <button class="run-btn" onclick="runSentimento()" id="btn-sentimento">Analisar Sentimento</button>
+        <div class="demo-output" id="output-sentimento"></div>
       </div>
+    </div>
 
-      <!-- Demos Grid -->
-      <div>
-        <div class="section-label">Todos os experimentos</div>
-        <div class="demos-grid">
-
-        <div class="demo-card">
-          <div class="demo-card-visual sentiment-bg">
-            🧠
-            <span class="demo-badge badge-live">● AO VIVO</span>
-          </div>
-          <div class="demo-card-body">
-            <h3>Análise de Sentimento</h3>
-            <p>Classifique notícias e textos financeiros em positivo, negativo ou neutro usando LLM. Entenda como modelos de linguagem interpretam o tom de mercado.</p>
-            <div class="demo-tags">
-              <span class="demo-tag">NLP</span>
-              <span class="demo-tag">LLM</span>
-              <span class="demo-tag">Finanças</span>
-              <span class="demo-tag">Classificação</span>
-            </div>
-            <span class="demo-cta" onclick="document.querySelector('#sentiment-input').scrollIntoView({behavior:'smooth'})">Testar agora →</span>
-          </div>
-        </div>
-
-        <div class="demo-card">
-          <div class="demo-card-visual trader-bg">
-            📈
-            <span class="demo-badge badge-live">● AO VIVO</span>
-          </div>
-          <div class="demo-card-body">
-            <h3>Simulador de Trader</h3>
-            <p>Tome decisões de compra e venda em um ambiente simulado. Veja como diferentes estratégias performam contra o mercado ao longo do tempo.</p>
-            <div class="demo-tags">
-              <span class="demo-tag">Simulação</span>
-              <span class="demo-tag">Estratégia</span>
-              <span class="demo-tag">B3</span>
-              <span class="demo-tag">Backtesting</span>
-            </div>
-            <a href="trader-sim.html" class="demo-cta">Abrir simulador →</a>
-          </div>
-        </div>
-
-        <div class="demo-card">
-          <div class="demo-card-visual explain-bg">
-            💬
-            <span class="demo-badge badge-beta">BETA</span>
-          </div>
-          <div class="demo-card-body">
-            <h3>Explainability Engine</h3>
-            <p>Insira qualquer conceito financeiro ou de IA e receba uma explicação adaptada ao seu nível — do leigo ao especialista. Baseado em RAG sobre a Biblioteca farpa.</p>
-            <div class="demo-tags">
-              <span class="demo-tag">RAG</span>
-              <span class="demo-tag">Explicabilidade</span>
-              <span class="demo-tag">Educação</span>
-            </div>
-            <span class="demo-cta disabled">Em breve →</span>
-          </div>
-        </div>
-
-        <div class="demo-card">
-          <div class="demo-card-visual portfolio-bg">
-            🗂️
-            <span class="demo-badge badge-soon">EM BREVE</span>
-          </div>
-          <div class="demo-card-body">
-            <h3>Otimizador de Portfólio</h3>
-            <p>Digite seus ativos e percentuais atuais. Nosso modelo de otimização baseado em Markowitz sugere rebalanceamentos para maximizar retorno ajustado ao risco.</p>
-            <div class="demo-tags">
-              <span class="demo-tag">Markowitz</span>
-              <span class="demo-tag">Portfólio</span>
-              <span class="demo-tag">Risco</span>
-            </div>
-            <span class="demo-cta disabled">Em desenvolvimento →</span>
-          </div>
-        </div>
-
+    <div class="lab-card live" id="card-resumo">
+      <div class="lab-icon">📝</div>
+      <h3>Resumo Inteligente</h3>
+      <p>Resuma qualquer texto longo em 3 frases objetivas com IA.</p>
+      <span class="lab-status live"><span class="dot"></span>Ao vivo</span>
+      <div class="lab-actions"><button class="run-btn" onclick="toggleDemo('resumo')">Testar →</button></div>
+      <div class="demo-area" id="demo-resumo">
+        <textarea class="demo-input" id="input-resumo" placeholder="Cole um artigo longo aqui..."></textarea>
+        <button class="run-btn" onclick="runResumo()" id="btn-resumo">Resumir</button>
+        <div class="demo-output" id="output-resumo"></div>
       </div>
+    </div>
 
-    </main>
+    <div class="lab-card live" id="card-vies">
+      <div class="lab-icon">⚖️</div>
+      <h3>Detector de Viés</h3>
+      <p>Identifique viés editorial em manchetes e textos jornalísticos.</p>
+      <span class="lab-status live"><span class="dot"></span>Ao vivo</span>
+      <div class="lab-actions"><button class="run-btn" onclick="toggleDemo('vies')">Testar →</button></div>
+      <div class="demo-area" id="demo-vies">
+        <textarea class="demo-input" id="input-vies" placeholder="Cole uma manchete ou parágrafo..."></textarea>
+        <button class="run-btn" onclick="runVies()" id="btn-vies">Detectar Viés</button>
+        <div class="demo-output" id="output-vies"></div>
+      </div>
+    </div>
+
+    <!-- NEW MVPs -->
+    <div class="lab-card new">
+      <div class="lab-icon b">🔬</div>
+      <h3>Comparador de LLMs</h3>
+      <p>Compare respostas de GPT-4, Claude e Gemini lado a lado para o mesmo prompt.</p>
+      <span class="lab-status new">Novo · MVP</span>
+      <div class="lab-actions"><button class="run-btn b" disabled>Em desenvolvimento</button></div>
+    </div>
+
+    <div class="lab-card new">
+      <div class="lab-icon b">📄</div>
+      <h3>Gerador de Relatórios PDF</h3>
+      <p>Gere relatórios profissionais em PDF com análise de mercado powered by IA.</p>
+      <span class="lab-status new">Novo · MVP</span>
+      <div class="lab-actions"><button class="run-btn b" disabled>Em desenvolvimento</button></div>
+    </div>
+
+    <div class="lab-card new">
+      <div class="lab-icon p">💬</div>
+      <h3>Chatbot RAG</h3>
+      <p>Chatbot que responde baseado nos seus próprios documentos — RAG em tempo real.</p>
+      <span class="lab-status new">Novo · MVP</span>
+      <div class="lab-actions"><button class="run-btn p" disabled>Em desenvolvimento</button></div>
+    </div>
+
+    <div class="lab-card new">
+      <div class="lab-icon p">📡</div>
+      <h3>Monitor de Concorrentes</h3>
+      <p>Monitore menções, preços e movimentos de concorrentes com alertas IA.</p>
+      <span class="lab-status new">Novo · MVP</span>
+      <div class="lab-actions"><button class="run-btn p" disabled>Em desenvolvimento</button></div>
+    </div>
+
+    <div class="lab-card live">
+      <div class="lab-icon">📈</div>
+      <h3>Simulador de Trading</h3>
+      <p>Simule estratégias de trading com dados históricos. Teste entradas, saídas e gestão de risco sem arriscar capital real.</p>
+      <span class="lab-status live"><span class="dot"></span>Ao vivo</span>
+      <div class="lab-actions"><a href="trader-sim.html" class="run-btn" style="text-decoration:none;display:inline-flex;align-items:center">Abrir Simulador →</a></div>
+    </div>
+
+    <div class="lab-card live">
+      <div class="lab-icon b">🔧</div>
+      <h3>Teste de APIs</h3>
+      <p>Ambiente de teste para desenvolvedores. Explore e valide endpoints de APIs financeiras, de IA e do Worker proxy diretamente no browser.</p>
+      <span class="lab-status live"><span class="dot"></span>Ao vivo</span>
+      <div class="lab-actions"><a href="teste.html" class="run-btn b" style="text-decoration:none;display:inline-flex;align-items:center">Abrir Dev Tools →</a></div>
+    </div>
   </div>
+</div></main></div>
 
-  <script src="theme-engine.js"></script>
-  <script>
-    const examples = [
-      'Ibovespa sobe 1,5% impulsionado por alta das commodities e entrada de capital estrangeiro no pregão desta quinta-feira.',
-      'Federal Reserve mantém juros elevados e sinaliza que cortes podem demorar mais do que o esperado pelo mercado.',
-      'Petrobras bate recorde de produção no trimestre e anuncia dividendos extraordinários acima das estimativas.',
-      'Inflação de março surpreende negativamente, ficando abaixo das projeções do mercado e abrindo espaço para corte na Selic.',
-      'Bitcoin despenca 8% em 24 horas após rumores de regulação mais dura nos EUA e liquidações em cascata nas corretoras.'
-    ];
+<script>
+const WORKER='https://farpa-proxy.rfelipefernandes.workers.dev';
 
-    function fillExample(i) {
-      document.getElementById('sentiment-input').value = examples[i];
-    }
-
-    async function analyzeSentiment() {
-      const text = document.getElementById('sentiment-input').value.trim();
-      if (!text) return;
-
-      const btn = document.getElementById('analyze-btn');
-      const result = document.getElementById('sentiment-result');
-      btn.disabled = true;
-      btn.innerHTML = '<span class="loading-dots"><span>·</span><span>·</span><span>·</span></span>';
-
-      try {
-        const response = await fetch('https://api.anthropic.com/v1/messages', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            model: 'claude-sonnet-4-20250514',
-            max_tokens: 1000,
-            messages: [{
-              role: 'user',
-              content: `Analise o sentimento de mercado do seguinte texto financeiro em português brasileiro.
-
-Texto: "${text}"
-
-Responda APENAS com JSON no formato:
-{
-  "sentiment": "positivo" | "negativo" | "neutro",
-  "confidence": "alto" | "médio" | "baixo",
-  "score": número de -100 a +100,
-  "explanation": "Explicação em 2-3 frases sobre o sentimento identificado e os principais sinais no texto."
+function toggleDemo(id){
+  const d=document.getElementById('demo-'+id);
+  if(d)d.classList.toggle('open');
 }
 
-Nada além do JSON. Sem markdown.`
-            }]
-          })
-        });
+async function callAI(prompt,btnId,outputId){
+  const btn=document.getElementById(btnId);
+  const out=document.getElementById(outputId);
+  const orig=btn.textContent;
+  btn.textContent='Processando…';btn.disabled=true;
+  out.textContent='Aguardando resposta da IA...';out.classList.add('loading');
+  try{
+    // Uses Worker proxy to avoid CORS issues
+    const r=await fetch(WORKER+'/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:[{role:'user',content:prompt}],max_tokens:400})});
+    const d=await r.json();
+    const text=d.content?.[0]?.text||d.error||'Sem resposta';
+    out.textContent=text;out.classList.remove('loading');
+  }catch(e){
+    out.textContent='Erro: '+e.message;out.classList.remove('loading');
+  }
+  btn.textContent=orig;btn.disabled=false;
+}
 
-        const data = await response.json();
-        const raw = data.content?.find(b => b.type === 'text')?.text || '{}';
-        const parsed = JSON.parse(raw.replace(/```json|```/g, '').trim());
-
-        const pill = document.getElementById('score-pill');
-        const conf = document.getElementById('confidence-val');
-        const expl = document.getElementById('result-explanation');
-
-        const cls = parsed.sentiment === 'positivo' ? 'score-positive' :
-                    parsed.sentiment === 'negativo' ? 'score-negative' : 'score-neutral';
-        const emoji = parsed.sentiment === 'positivo' ? '▲' :
-                      parsed.sentiment === 'negativo' ? '▼' : '▸';
-
-        pill.className = `score-pill ${cls}`;
-        pill.textContent = `${emoji} ${parsed.sentiment?.toUpperCase()} (${parsed.score > 0 ? '+' : ''}${parsed.score})`;
-        conf.textContent = `${parsed.confidence}`;
-        expl.textContent = parsed.explanation;
-
-        result.classList.add('visible');
-      } catch(e) {
-        document.getElementById('result-explanation').textContent = 'Erro ao conectar à API. Tente novamente.';
-        document.getElementById('sentiment-result').classList.add('visible');
-      }
-
-      btn.disabled = false;
-      btn.innerHTML = 'Analisar ✦';
-    }
-  </script>
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      window.farpaSidebar.build('labs');
-      window.farpaTopnav.build([{ label: 'Labs' }]);
-    });
-  </script>
-</body>
-</html>
+function runSentimento(){
+  const text=document.getElementById('input-sentimento').value;
+  if(!text.trim())return;
+  callAI('Analise o sentimento deste texto de notícia financeira. Responda em português com: 1) Sentimento geral (positivo/negativo/neutro) 2) Confiança (0-100%) 3) Palavras-chave. Texto: '+text,'btn-sentimento','output-sentimento');
+}
+function runResumo(){
+  const text=document.getElementById('input-resumo').value;
+  if(!text.trim())return;
+  callAI('Resuma este texto em exatamente 3 frases objetivas em português. Foque no que é mais importante para um executivo: '+text,'btn-resumo','output-resumo');
+}
+function runVies(){
+  const text=document.getElementById('input-vies').value;
+  if(!text.trim())return;
+  callAI('Analise o viés editorial deste texto jornalístico. Responda em português com: 1) Tipo de viés detectado 2) Nível (baixo/médio/alto) 3) Evidências no texto 4) Versão neutra sugerida. Texto: '+text,'btn-vies','output-vies');
+}
+</script>
+<script>document.addEventListener('DOMContentLoaded',function(){var l=document.getElementById('farpa-layout');if(!l)return;l.insertBefore(window.farpaSidebar.build('labs'),l.firstChild);l.insertBefore(window.farpaTopnav.build([{label:'farpa.ai',href:'index.html'},{label:'Farpa Labs'}]),l.children[1])});</script>
+</body></html>

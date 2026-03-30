@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guia de Comandos — Claude Code & Bash</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Syne:wght@400;700;800&display=swap');
+
+  :root {
+    --bg: #0a0a0a;
+    --surface: #111111;
+    --border: #222222;
+    --green: #00ff88;
+    --cyan: #00e5ff;
+    --yellow: #ffe600;
+    --red: #ff4444;
+    --text: #f0f0f0;
+    --muted: #888888;
+    --card: #161616;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    padding: 40px 24px 80px;
+  }
+
+  header {
+    max-width: 860px;
+    margin: 0 auto 48px;
+    border-left: 4px solid var(--green);
+    padding-left: 20px;
+  }
+
+  header .tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--green);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  header h1 {
+    font-size: clamp(28px, 5vw, 48px);
+    font-weight: 800;
+    line-height: 1.1;
+    color: #ffffff;
+  }
+
+  header p {
+    margin-top: 10px;
+    color: var(--muted);
+    font-size: 14px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .section {
+    max-width: 860px;
+    margin: 0 auto 48px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .section-header .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .dot-green { background: var(--green); box-shadow: 0 0 10px var(--green); }
+  .dot-cyan  { background: var(--cyan);  box-shadow: 0 0 10px var(--cyan); }
+
+  .section-header h2 {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text);
+  }
+
+  .explainer {
+    background: #0f1a14;
+    border: 1px solid #1a3a28;
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    line-height: 1.7;
+    color: #aaccbb;
+  }
+
+  .explainer strong {
+    color: var(--green);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+  }
+
+  thead tr {
+    border-bottom: 1px solid var(--border);
+  }
+
+  thead th {
+    text-align: left;
+    padding: 10px 16px;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid #1a1a1a;
+    transition: background 0.15s;
+  }
+
+  tbody tr:hover {
+    background: #1a1a1a;
+  }
+
+  tbody td {
+    padding: 14px 16px;
+    vertical-align: top;
+  }
+
+  .cmd {
+    color: var(--green);
+    font-weight: 700;
+    white-space: nowrap;
+    letter-spacing: 0.02em;
+  }
+
+  .cmd-cyan {
+    color: var(--cyan);
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .desc {
+    color: #cccccc;
+    line-height: 1.5;
+  }
+
+  .badge {
+    display: inline-block;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 3px;
+    font-weight: 700;
+    vertical-align: middle;
+    margin-left: 6px;
+  }
+
+  .badge-warn {
+    background: #3a1a00;
+    color: var(--yellow);
+    border: 1px solid #5a2a00;
+  }
+
+  .badge-danger {
+    background: #2a0000;
+    color: var(--red);
+    border: 1px solid #4a0000;
+  }
+
+  .bash-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .bash-box .bar {
+    background: #1a1a1a;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .bar-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+  }
+
+  .code-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .what-is {
+    max-width: 860px;
+    margin: 0 auto 48px;
+    background: #0d1520;
+    border: 1px solid #1a2d45;
+    border-radius: 12px;
+    padding: 28px 28px;
+  }
+
+  .what-is h2 {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--cyan);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .what-is h2::before {
+    content: '';
+    display: block;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--cyan);
+    box-shadow: 0 0 10px var(--cyan);
+  }
+
+  .what-is p {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.85;
+    color: #aac8e0;
+    margin-bottom: 12px;
+  }
+
+  .what-is p:last-child { margin-bottom: 0; }
+
+  .what-is strong { color: var(--cyan); }
+
+  .analogy {
+    background: #0a1a0a;
+    border-left: 3px solid var(--green);
+    padding: 14px 18px;
+    border-radius: 0 6px 6px 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: #99cc99;
+    line-height: 1.7;
+    margin-top: 16px;
+  }
+
+  footer {
+    max-width: 860px;
+    margin: 0 auto;
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: #444;
+    padding-top: 32px;
+    border-top: 1px solid #1a1a1a;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="tag">// Referência Rápida</div>
+  <h1>Claude Code<br>& Bash</h1>
+  <p>Comandos essenciais para desenvolvimento eficiente</p>
+</header>
+
+<!-- O QUE É BASH -->
+<div class="what-is">
+  <h2>O que é o Bash?</h2>
+  <p><strong>Bash</strong> é a linguagem do terminal — o interpretador que lê os comandos que você digita e os executa no sistema operacional.</p>
+  <p>Quando você abre o Terminal (Mac/Linux) ou o PowerShell (Windows), o que está rodando por baixo é o Bash. Ele é como um <strong>idioma universal</strong> para conversar com o computador sem usar interface gráfica.</p>
+  <p>Todo comando bash é basicamente: <strong>verbo + objeto + opções</strong>. Ex: <code style="color:var(--green)">cat</code> (ler) + <code style="color:var(--green)">arquivo.txt</code> (o quê).</p>
+  <div class="analogy">
+    💡 Analogia: Se o computador é uma cidade, o Bash é o rádio que você usa pra dar ordens diretas — sem precisar dirigir até cada lugar manualmente.
+  </div>
+</div>
+
+<!-- BASH COMANDOS -->
+<div class="section">
+  <div class="section-header">
+    <div class="dot dot-green"></div>
+    <h2>Comandos Bash — Terminal</h2>
+  </div>
+
+  <div class="explainer">
+    Funcionam em qualquer terminal: <strong>Mac (zsh/bash)</strong>, <strong>Linux</strong>, <strong>WSL no Windows</strong>.<br>
+    São comandos do sistema operacional, não do Claude Code.
+  </div>
+
+  <div class="bash-box">
+    <div class="bar">
+      <div class="bar-dot" style="background:#ff5f57"></div>
+      <div class="bar-dot" style="background:#ffbd2e"></div>
+      <div class="bar-dot" style="background:#28c840"></div>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#666;margin-left:8px;">~/farpa.ai</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th style="width:200px">Comando</th>
+          <th>O que faz</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="cmd">ls</span></td>
+          <td class="desc">Lista arquivos e pastas do diretório atual</td>
+        </tr>
+        <tr>
+          <td><span class="cmd">ls -la</span></td>
+          <td class="desc">Lista tudo — incluindo arquivos ocultos (ex: .env) com permissões e tamanhos</td>
+        </tr>
+        <tr>
+          <td><span class="cmd">pwd</span></td>
+          <td class="desc">Mostra o caminho completo da pasta onde você está</td>
+        </tr>
+        <tr>
+          <td><span class="cmd">cd pasta/</span></td>
+          <td class="desc">Entra numa pasta</td>
+        </tr>
+        <tr>
+          <td><span class="cmd">cd ..</span></td>
+          <td class="desc">Volta uma pasta acima</td>
+        </tr>
+        <tr>
+          <td><span class="cmd">cat arquivo</span></td>
+          <td class="desc">Exibe o conteúdo de um arquivo no terminal</td>
+        </tr>
+        <tr>
+          <td><span class="cmd">touch arquivo.js</span></td>
+          <td class="desc">Cria um arquivo vazio</td>
+        </tr>
+        <tr>
+          <td><span class="cmd">mkdir nome</span></td>
+          <td class="desc">Cria uma nova pasta</td>
+        </tr>
+        <tr>
+          <td><span class="cmd">cp origem destino</span></td>
+          <td class="desc">Copia um arquivo</td>
+        </tr>
+        <tr>
+          <td><span class="cmd">mv origem destino</span></td>
+          <td class="desc">Move ou renomeia um arquivo</td>
+        </tr>
+        <tr>
+          <td><span class="cmd">rm arquivo</span></td>
+          <td class="desc">Apaga um arquivo <span class="badge badge-warn">irreversível</span></td>
+        </tr>
+        <tr>
+          <td><span class="cmd">rm -rf pasta/</span></td>
+          <td class="desc">Apaga uma pasta inteira com tudo dentro <span class="badge badge-danger">cuidado</span></td>
+        </tr>
+        <tr>
+          <td><span class="cmd">clear</span></td>
+          <td class="desc">Limpa a tela do terminal</td>
+        </tr>
+        <tr>
+          <td><span class="cmd">history</span></td>
+          <td class="desc">Lista os últimos comandos usados</td>
+        </tr>
+        <tr>
+          <td><span class="cmd">grep "texto" arq</span></td>
+          <td class="desc">Busca um texto dentro de um arquivo</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- CLAUDE CODE COMANDOS -->
+<div class="section">
+  <div class="section-header">
+    <div class="dot dot-cyan"></div>
+    <h2>Comandos Internos — Claude Code</h2>
+  </div>
+
+  <div class="explainer">
+    Usados <strong>dentro de uma sessão ativa do Claude Code</strong> (após rodar <code>claude</code> no terminal).<br>
+    Controlam contexto, memória e consumo de tokens da sessão.
+  </div>
+
+  <div class="code-box">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:200px">Comando</th>
+          <th>O que faz</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="cmd-cyan">/help</span></td>
+          <td class="desc">Lista todos os comandos disponíveis na sessão atual</td>
+        </tr>
+        <tr>
+          <td><span class="cmd-cyan">/compact</span></td>
+          <td class="desc">Comprime o histórico da conversa para liberar espaço no contexto sem perder o fio</td>
+        </tr>
+        <tr>
+          <td><span class="cmd-cyan">/clear</span></td>
+          <td class="desc">Limpa todo o contexto da sessão — ideal ao trocar de tarefa</td>
+        </tr>
+        <tr>
+          <td><span class="cmd-cyan">/cost</span></td>
+          <td class="desc">Mostra quantos tokens foram consumidos na sessão atual</td>
+        </tr>
+        <tr>
+          <td><span class="cmd-cyan">/status</span></td>
+          <td class="desc">Estado atual da sessão e arquivos abertos no contexto</td>
+        </tr>
+        <tr>
+          <td><span class="cmd-cyan">/memory</span></td>
+          <td class="desc">Exibe o conteúdo do CLAUDE.md carregado automaticamente</td>
+        </tr>
+        <tr>
+          <td><span class="cmd-cyan">/add arquivo</span></td>
+          <td class="desc">Adiciona um arquivo específico ao contexto ativo da sessão</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- GIT BONUS -->
+<div class="section">
+  <div class="section-header">
+    <div class="dot" style="background:#ffe600;box-shadow:0 0 10px #ffe600"></div>
+    <h2>Git — Bônus Essencial</h2>
+  </div>
+
+  <div class="explainer">
+    Comandos Git que você vai usar junto com o Claude Code para versionar e publicar o <strong>farpa.ai</strong>.
+  </div>
+
+  <div class="code-box">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:200px">Comando</th>
+          <th>O que faz</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="cmd" style="color:var(--yellow)">git status</span></td>
+          <td class="desc">Mostra quais arquivos foram modificados</td>
+        </tr>
+        <tr>
+          <td><span class="cmd" style="color:var(--yellow)">git add .</span></td>
+          <td class="desc">Adiciona todas as mudanças para o próximo commit</td>
+        </tr>
+        <tr>
+          <td><span class="cmd" style="color:var(--yellow)">git commit -m "msg"</span></td>
+          <td class="desc">Salva um checkpoint com mensagem descritiva</td>
+        </tr>
+        <tr>
+          <td><span class="cmd" style="color:var(--yellow)">git push</span></td>
+          <td class="desc">Envia as mudanças para o GitHub (dispara deploy no Cloudflare)</td>
+        </tr>
+        <tr>
+          <td><span class="cmd" style="color:var(--yellow)">git pull</span></td>
+          <td class="desc">Baixa as mudanças mais recentes do repositório remoto</td>
+        </tr>
+        <tr>
+          <td><span class="cmd" style="color:var(--yellow)">git log --oneline</span></td>
+          <td class="desc">Histórico de commits em formato compacto</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- CLOUDFLARE WRANGLER CLI -->
+<div class="section">
+  <div class="section-header">
+    <div class="dot" style="background:#f6821f;box-shadow:0 0 10px #f6821f"></div>
+    <h2>Cloudflare — Wrangler CLI</h2>
+  </div>
+
+  <div class="explainer">
+    <strong>wrangler</strong> é a CLI oficial da Cloudflare. Instale com: <code>npm install -g wrangler</code><br>
+    Use no terminal para gerenciar Workers, D1, Pages e KV diretamente.
+  </div>
+
+  <div class="code-box">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:280px">Comando</th>
+          <th>O que faz</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="cmd" style="color:#f6821f">wrangler login</span></td>
+          <td class="desc">Autentica sua conta Cloudflare no terminal</td>
+        </tr>
+        <tr>
+          <td><span class="cmd" style="color:#f6821f">wrangler whoami</span></td>
+          <td class="desc">Confirma qual conta está logada</td>
+        </tr>
+        <tr>
+          <td><span class="cmd" style="color:#f6821f">wrangler deploy</span></td>
+          <td class="desc">Publica o Worker atual na Cloudflare</td>
+        </tr>
+        <tr>
+          <td><span class="cmd" style="color:#f6821f">wrangler dev</span></td>
+          <td class="desc">Roda o Worker localmente para testar antes de publicar</td>
+        </tr>
+        <tr>
+          <td><span class="cmd" style="color:#f6821f">wrangler tail</span></td>
+          <td class="desc">Exibe logs em tempo real do Worker em produção</td>
+        </tr>
+        <tr>
+          <td><span class="cmd" style="color:#f6821f">wrangler d1 create nome</span></td>
+          <td class="desc">Cria um banco de dados D1</td>
+        </tr>
+        <tr>
+          <td><span class="cmd" style="color:#f6821f">wrangler d1 execute nome --file=schema.sql</span></td>
+          <td class="desc">Executa um arquivo SQL no banco D1</td>
+        </tr>
+        <tr>
+          <td><span class="cmd" style="color:#f6821f">wrangler d1 execute nome --command="SELECT * FROM leads"</span></td>
+          <td class="desc">Roda uma query SQL direta no D1</td>
+        </tr>
+        <tr>
+          <td><span class="cmd" style="color:#f6821f">wrangler pages deploy ./dist</span></td>
+          <td class="desc">Publica uma pasta estática no Cloudflare Pages</td>
+        </tr>
+        <tr>
+          <td><span class="cmd" style="color:#f6821f">wrangler kv:namespace create "nome"</span></td>
+          <td class="desc">Cria um namespace KV para armazenar chave-valor</td>
+        </tr>
+        <tr>
+          <td><span class="cmd" style="color:#f6821f">wrangler secret put NOME</span></td>
+          <td class="desc">Adiciona uma variável secreta ao Worker (ex: API keys)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- LINGUAGEM NATURAL — PROMPTS -->
+<div class="section">
+  <div class="section-header">
+    <div class="dot" style="background:#cc88ff;box-shadow:0 0 10px #cc88ff"></div>
+    <h2>Linguagem Natural — Templates de Prompt</h2>
+  </div>
+
+  <div class="explainer">
+    Use estes modelos com <strong>Claude Code</strong> ou <strong>Claude + MCP Cloudflare</strong>.<br>
+    A chave é: <strong>contexto + arquivo de referência + objetivo específico + restrições</strong>.
+  </div>
+
+  <div class="code-box">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:160px">Intenção</th>
+          <th>Template de Prompt</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="desc" style="color:#cc88ff;font-weight:700">Criar banco D1</td>
+          <td class="desc">"Com base nos campos do formulário em <code>orcamento.html</code>, crie um banco D1 chamado <code>leads-db</code> com a tabela correta e me dê o SQL de criação."</td>
+        </tr>
+        <tr>
+          <td class="desc" style="color:#cc88ff;font-weight:700">Criar Worker</td>
+          <td class="desc">"Crie um Cloudflare Worker que recebe um POST com os campos do formulário de <code>contato.html</code>, valida os dados e salva no D1 <code>leads-db</code>. Use CORS para aceitar requisições do domínio farpa.ai."</td>
+        </tr>
+        <tr>
+          <td class="desc" style="color:#cc88ff;font-weight:700">Ver leads</td>
+          <td class="desc">"Execute um SELECT na tabela leads do banco <code>leads-db</code> e me mostre os últimos 10 registros em formato de tabela."</td>
+        </tr>
+        <tr>
+          <td class="desc" style="color:#cc88ff;font-weight:700">Debug Worker</td>
+          <td class="desc">"O Worker <code>api-leads</code> está retornando erro 500. Veja os logs com wrangler tail e identifique a causa. O código está em <code>worker.js</code>."</td>
+        </tr>
+        <tr>
+          <td class="desc" style="color:#cc88ff;font-weight:700">Deploy Pages</td>
+          <td class="desc">"Publique os arquivos da raiz do repositório no Cloudflare Pages. O projeto se chama farpa-ai e o branch principal é main."</td>
+        </tr>
+        <tr>
+          <td class="desc" style="color:#cc88ff;font-weight:700">Adicionar secret</td>
+          <td class="desc">"Adicione a variável de ambiente <code>WEBHOOK_URL</code> como secret no Worker <code>api-leads</code> sem expor o valor no código."</td>
+        </tr>
+        <tr>
+          <td class="desc" style="color:#cc88ff;font-weight:700">Estrutura completa</td>
+          <td class="desc">"A página <code>simulador.html</code> precisa salvar os resultados do usuário. Crie toda a infraestrutura: tabela D1, Worker com endpoint POST, e integre o fetch no JavaScript da página."</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ANATOMIA DO BOM PROMPT -->
+<div class="what-is" style="background:#150d20;border-color:#2d1a45;margin-bottom:48px">
+  <h2 style="color:#cc88ff">Anatomia de um Bom Prompt Técnico</h2>
+  <p>Todo prompt eficiente tem <strong>4 elementos</strong>:</p>
+  <p><strong>1. Arquivo de referência</strong> → "Com base em <code>orcamento.html</code>..."<br>
+  <strong>2. Ferramenta/serviço</strong> → "...crie um Worker na Cloudflare..."<br>
+  <strong>3. Objetivo específico</strong> → "...que salva os dados no D1 leads-db..."<br>
+  <strong>4. Restrição ou contexto</strong> → "...sem alterar o CSS existente / usando CORS / em português."</p>
+  <div class="analogy" style="border-color:#cc88ff;background:#0f0a1a;color:#bb99dd">
+    💡 Quanto mais específico o contexto, menos o Claude precisa adivinhar — e menos tokens você gasta.
+  </div>
+</div>
+
+<footer>
+  farpa.ai · Referência gerada via Claude · 2026
+</footer>
+
+</body>
+</html>

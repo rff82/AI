@@ -1,76 +1,40 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
+<!DOCTYPE html><html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#0a0a0a">
-<meta name="description" content="Conecte-se com especialistas em IA para sua estratégia organizacional">
+<meta name="theme-color" content="#fafaf9"><meta name="description" content="Conecte-se com especialistas em IA — consultoria, implementação e treinamento para empresas">
+<meta name="keywords" content="consultoria IA empresas, contato farpa.ai, estratégia IA"><meta property="og:title" content="Contato — farpa.ai">
+<link rel="canonical" href="https://farpa.ai/contato.html">
 <title>Contato — farpa.ai</title>
 <link rel="icon" type="image/svg+xml" href="farpa-icon.svg">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="tokens.css"><link rel="stylesheet" href="themes.css">
-<link rel="stylesheet" href="mobile-fixes.css"><link rel="stylesheet" href="content-pages.css">
+<link rel="stylesheet" href="tokens.css"><link rel="stylesheet" href="themes.css"><link rel="stylesheet" href="mobile-fixes.css"><link rel="stylesheet" href="content-pages.css">
 <script src="theme-engine.js"></script>
-</head>
-<body>
-<div id="farpa-layout">
-<main class="farpa-content" id="farpa-main">
+<style>
+.form-field{display:flex;flex-direction:column;gap:6px}
+.form-label{font-family:var(--font-mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-3)}
+.form-input,.form-textarea,.form-select{width:100%;background:var(--bg-2);border:1px solid var(--border-md);border-radius:var(--r-md);padding:11px 14px;color:var(--text-1);font-family:var(--font-head);font-size:14px;outline:none;transition:border-color .18s}
+.form-input:focus,.form-textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-bg)}
+.form-textarea{resize:vertical;min-height:110px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.form-submit{width:100%;background:var(--accent);color:var(--btn-on-accent,#fff);border:none;border-radius:var(--r-md);padding:13px;font-family:var(--font-head);font-size:15px;font-weight:700;cursor:pointer;transition:opacity .18s}
+.form-submit:hover{opacity:.88}
+.form-success{display:none;background:var(--accent-bg);border:1px solid var(--accent);border-radius:var(--r-md);padding:14px 18px;color:var(--accent);font-family:var(--font-mono);font-size:13px;margin-bottom:20px}
+@media(max-width:600px){.form-grid{grid-template-columns:1fr}}
+</style></head><body>
+<div id="farpa-layout"><main class="farpa-content" id="farpa-main">
 <div class="content-page-wrapper">
-  <div class="content-page-header">
-    <div class="cp-eyebrow"><a href="index.html" class="cp-back">← Voltar</a></div>
-    <h1 class="cp-title">Conecte-se com Especialistas</h1>
-    <p class="cp-subtitle">Agende uma conversa estratégica e explore como a IA pode transformar sua organização</p>
-  </div>
-  <div class="content-body">
-    <div class="content-section">
-      <h2>Agende Sua Conversa Estratégica</h2>
-      <p>Preencha o formulário abaixo para agendar uma conversa e explorar como a IA pode transformar sua organização.</p>
-      <div id="contact-success" style="display:none;background:var(--accent-bg);border:1px solid var(--accent);border-radius:10px;padding:16px 20px;margin-bottom:24px;color:var(--accent);font-family:'DM Mono',monospace;font-size:13px;">✓ Solicitação recebida! Entraremos em contato em breve.</div>
-      <form id="contact-form" style="display:flex;flex-direction:column;gap:20px;">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-          <div><label style="display:block;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-3);margin-bottom:8px;">Nome Completo</label><input type="text" id="cf-name" required placeholder="Seu nome" style="width:100%;background:var(--bg-layer2);border:1px solid var(--border-md);border-radius:8px;padding:11px 14px;color:var(--text-1);font-family:inherit;font-size:14px;outline:none;transition:border-color 0.18s;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border-md)'"></div>
-          <div><label style="display:block;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-3);margin-bottom:8px;">Email</label><input type="email" id="cf-email" required placeholder="seu@empresa.com" style="width:100%;background:var(--bg-layer2);border:1px solid var(--border-md);border-radius:8px;padding:11px 14px;color:var(--text-1);font-family:inherit;font-size:14px;outline:none;transition:border-color 0.18s;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border-md)'"></div>
-        </div>
-        <div><label style="display:block;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-3);margin-bottom:8px;">Principal Desafio em IA</label>
-          <select id="cf-interest" required style="width:100%;background:var(--bg-layer2);border:1px solid var(--border-md);border-radius:8px;padding:11px 14px;color:var(--text-1);font-family:inherit;font-size:14px;outline:none;">
-            <option value="">Selecione uma opção</option>
-            <option value="estrategia">Definição de Estratégia de IA</option>
-            <option value="implementacao">Implementação de Soluções</option>
-            <option value="governanca">Governança e Ética em IA</option>
-            <option value="treinamento">Treinamento de Equipes</option>
-            <option value="outro">Outro</option>
-          </select>
-        </div>
-        <div><label style="display:block;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-3);margin-bottom:8px;">Mensagem</label>
-          <textarea id="cf-message" placeholder="Descreva brevemente seu desafio ou interesse..." style="width:100%;background:var(--bg-layer2);border:1px solid var(--border-md);border-radius:8px;padding:11px 14px;color:var(--text-1);font-family:inherit;font-size:14px;outline:none;resize:vertical;min-height:120px;transition:border-color 0.18s;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border-md)'"></textarea>
-        </div>
-        <button type="submit" style="background:var(--accent);color:var(--bg-base,#0a0a0a);border:none;border-radius:10px;padding:14px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;transition:opacity 0.18s;">Agendar Conversa →</button>
-      </form>
-    </div>
-    <script>
-    document.getElementById('contact-form').addEventListener('submit',async function(e){
-      e.preventDefault();
-      const btn=this.querySelector('button[type="submit"]');
-      const orig=btn.textContent;btn.textContent='Enviando…';btn.disabled=true;
-      try{
-        const res=await fetch('https://api-leads.rfelipefernandes.workers.dev/api/leads',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:document.getElementById('cf-name').value,email:document.getElementById('cf-email').value,interest:document.getElementById('cf-interest').value,phone:'',message:document.getElementById('cf-message').value})});
-        if(res.ok){document.getElementById('contact-success').style.display='block';this.reset();}
-        else{btn.textContent='Erro. Tente novamente';setTimeout(()=>{btn.textContent=orig;btn.disabled=false;},3000);}
-      }catch(err){btn.textContent=orig;btn.disabled=false;}
-    });
-    </script>
+  <div class="content-page-header"><div class="cp-eyebrow"><a href="index.html" class="cp-back">← Voltar</a></div><h1 class="cp-title">Conecte-se com <span>Especialistas</span></h1><p class="cp-subtitle">Agende uma conversa estratégica sobre IA para sua organização</p></div>
+  <div class="content-body"><div class="content-section">
+    <h2>Agende Sua Conversa</h2>
+    <div id="contact-success" class="form-success">✓ Solicitação recebida!</div>
+    <form id="contact-form" style="display:flex;flex-direction:column;gap:18px">
+      <div class="form-grid"><div class="form-field"><label class="form-label">Nome</label><input type="text" id="cf-name" class="form-input" required placeholder="Seu nome"></div><div class="form-field"><label class="form-label">Email</label><input type="email" id="cf-email" class="form-input" required placeholder="seu@empresa.com"></div></div>
+      <div class="form-field"><label class="form-label">Desafio em IA</label><select id="cf-interest" class="form-select" required><option value="">Selecione</option><option value="estrategia">Estratégia de IA</option><option value="implementacao">Implementação</option><option value="governanca">Governança e Ética</option><option value="treinamento">Treinamento</option><option value="outro">Outro</option></select></div>
+      <div class="form-field"><label class="form-label">Mensagem</label><textarea id="cf-message" class="form-textarea" placeholder="Descreva seu desafio..."></textarea></div>
+      <button type="submit" class="form-submit">Agendar Conversa →</button>
+    </form></div>
+    <script>document.getElementById('contact-form').addEventListener('submit',async function(e){e.preventDefault();const btn=this.querySelector('button[type="submit"]');const orig=btn.textContent;btn.textContent='Enviando…';btn.disabled=true;try{const res=await fetch('https://api-leads.rfelipefernandes.workers.dev/api/leads',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:document.getElementById('cf-name').value,email:document.getElementById('cf-email').value,interest:document.getElementById('cf-interest').value})});if(res.ok){document.getElementById('contact-success').style.display='block';this.reset()}else{btn.textContent='Erro. Tente novamente'}btn.textContent=orig;btn.disabled=false}catch(err){btn.textContent=orig;btn.disabled=false}});</script>
     <div class="nav-buttons"><a href="index.html" class="nav-btn-cp nav-btn-primary-cp">Voltar para Home →</a></div>
   </div>
-</div>
-</main>
-</div>
-<script>
-document.addEventListener('DOMContentLoaded',function(){
-  var layout=document.getElementById('farpa-layout');if(!layout)return;
-  var sidebar=window.farpaSidebar.build('contato');layout.insertBefore(sidebar,layout.firstChild);
-  var topnav=window.farpaTopnav.build([{label:'farpa.ai',href:'index.html'},{label:'Contato'}]);layout.insertBefore(topnav,sidebar.nextSibling);
-  var t=localStorage.getItem('farpa_theme');if(t)document.documentElement.setAttribute('data-theme',t);
-  var lang=localStorage.getItem('farpa_lang')||'pt';document.querySelectorAll('.lang-btn').forEach(function(b){b.classList.toggle('active',b.id==='lang-'+lang);});
-});
-</script>
-</body>
-</html>
+</div></main></div>
+<script>document.addEventListener('DOMContentLoaded',function(){var layout=document.getElementById('farpa-layout');if(!layout)return;var sidebar=window.farpaSidebar.build('contato');layout.insertBefore(sidebar,layout.firstChild);var topnav=window.farpaTopnav.build([{label:'farpa.ai',href:'index.html'},{label:'Contato'}]);layout.insertBefore(topnav,sidebar.nextSibling)});</script>
+</body></html>

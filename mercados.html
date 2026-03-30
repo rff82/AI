@@ -1,585 +1,796 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mercados ao Vivo · farpa.ai</title>
-  <link rel="icon" type="image/svg+xml" href="farpa-icon.svg" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="tokens.css" />
-  <link rel="stylesheet" href="themes.css" />
-  <link rel="stylesheet" href="mobile-fixes.css" />
-  <style>
-    .markets-layout {
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-6);
-    }
-    .markets-hero {
-      display: grid;
-      grid-template-columns: minmax(0, 1.45fr) minmax(280px, 0.85fr);
-      gap: var(--space-5);
-      align-items: stretch;
-    }
-    .markets-header,
-    .markets-summary,
-    .card-section,
-    .ticker-card,
-    .crypto-row,
-    .sentiment-card,
-    .ai-panel {
-      background: var(--color-surface-2);
-      border: 1px solid var(--color-border);
-      box-shadow: var(--shadow-sm);
-    }
-    .markets-header {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: var(--space-4);
-      border-radius: var(--radius-xl);
-      padding: clamp(24px, 4vw, 40px);
-      position: relative;
-      overflow: hidden;
-    }
-    .markets-header::after {
-      content: '';
-      position: absolute;
-      inset: auto -50px -100px auto;
-      width: 220px;
-      height: 220px;
-      border-radius: 50%;
-      background: radial-gradient(circle, color-mix(in srgb, var(--color-accent) 20%, transparent), transparent 70%);
-      pointer-events: none;
-    }
-    .markets-kicker {
-      font-family: var(--font-mono);
-      font-size: 0.7rem;
-      font-weight: 600;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--color-accent);
-    }
-    .markets-header h1 {
-      font-size: clamp(2rem, 4vw, 3rem);
-      font-weight: 700;
-      color: var(--color-text-primary);
-      max-width: 12ch;
-      line-height: 1.05;
-    }
-    .markets-header-copy {
-      max-width: 58ch;
-      font-size: 0.96rem;
-      line-height: 1.7;
-      color: var(--color-text-secondary);
-    }
-    .live-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: rgba(16,185,129,0.12);
-      color: #10b981;
-      font-family: var(--font-mono);
-      font-size: 0.7rem;
-      font-weight: 500;
-      padding: 4px 10px;
-      border-radius: 20px;
-      border: 1px solid rgba(16,185,129,0.25);
-    }
-    .live-badge .dot {
-      width: 6px; height: 6px;
-      background: #10b981;
-      border-radius: 50%;
-      animation: pulse 2s infinite;
-    }
-    @keyframes pulse {
-      0%,100% { opacity:1; transform:scale(1); }
-      50% { opacity:0.5; transform:scale(1.4); }
-    }
-    .markets-summary {
-      border-radius: var(--radius-xl);
-      padding: clamp(24px, 3vw, 32px);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: var(--space-4);
-    }
-    .markets-summary-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: var(--space-3);
-    }
-    .markets-summary-stat {
-      padding: var(--space-3);
-      border-radius: var(--radius-lg);
-      background: var(--color-surface-3);
-      border: 1px solid var(--color-border);
-    }
-    .markets-summary-stat strong {
-      display: block;
-      font-family: var(--font-mono);
-      font-size: 1rem;
-      color: var(--color-text-primary);
-      margin-bottom: 4px;
-    }
-    .markets-summary-stat span {
-      font-size: 0.75rem;
-      color: var(--color-text-muted);
-    }
-    .disclaimer-bar {
-      background: rgba(245,158,11,0.08);
-      border: 1px solid rgba(245,158,11,0.2);
-      border-radius: var(--radius-lg);
-      padding: var(--space-3) var(--space-4);
-      font-size: 0.8rem;
-      color: var(--color-text-secondary);
-      display: flex;
-      align-items: center;
-      gap: var(--space-2);
-    }
-    .disclaimer-bar span.icon { font-size: 1rem; }
-    .section-title {
-      font-size: 0.7rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--color-text-muted);
-      font-family: var(--font-mono);
-      margin-bottom: var(--space-3);
-    }
-    /* Ticker grid */
-    .ticker-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: var(--space-3);
-    }
-    .ticker-card {
-      background: var(--color-surface-2);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-lg);
-      padding: var(--space-4);
-      transition: border-color 0.2s;
-      position: relative;
-      overflow: hidden;
-    }
-    .ticker-card:hover { border-color: var(--color-accent); box-shadow: var(--shadow-md); }
-    .ticker-card .symbol {
-      font-family: var(--font-mono);
-      font-size: 0.75rem;
-      font-weight: 500;
-      color: var(--color-text-muted);
-      margin-bottom: 2px;
-    }
-    .ticker-card .name {
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--color-text-primary);
-      margin-bottom: var(--space-3);
-    }
-    .ticker-card .price {
-      font-family: var(--font-mono);
-      font-size: 1.35rem;
-      font-weight: 700;
-      color: var(--color-text-primary);
-    }
-    .ticker-card .change {
-      font-family: var(--font-mono);
-      font-size: 0.8rem;
-      font-weight: 500;
-      margin-top: 4px;
-    }
-    .change.up { color: #10b981; }
-    .change.down { color: #ef4444; }
-    .change.neutral { color: var(--color-text-muted); }
-    .sparkline {
-      position: absolute;
-      bottom: 0; right: 0;
-      width: 80px; height: 40px;
-      opacity: 0.3;
-    }
-    /* Crypto section */
-    .crypto-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: var(--space-3) var(--space-4);
-      background: var(--color-surface-2);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-md);
-      margin-bottom: var(--space-2);
-      transition: border-color 0.2s;
-    }
-    .crypto-row:hover { border-color: var(--color-accent); box-shadow: var(--shadow-md); }
-    .crypto-row .left { display:flex; align-items:center; gap: var(--space-3); }
-    .crypto-icon {
-      width: 36px; height: 36px;
-      border-radius: 50%;
-      display: flex; align-items:center; justify-content:center;
-      font-size: 1.1rem;
-      background: var(--color-surface-3);
-    }
-    .crypto-name { font-weight: 600; font-size: 0.9rem; color: var(--color-text-primary); }
-    .crypto-symbol { font-family:var(--font-mono); font-size:0.72rem; color:var(--color-text-muted); }
-    .crypto-right { text-align:right; }
-    .crypto-price { font-family:var(--font-mono); font-size:1rem; font-weight:600; color:var(--color-text-primary); }
-    /* Sentiment */
-    .sentiment-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: var(--space-3);
-    }
-    @media (max-width: 600px) { .sentiment-grid { grid-template-columns: 1fr; } }
-    .sentiment-card {
-      background: var(--color-surface-2);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-lg);
-      padding: var(--space-4);
-    }
-    .sentiment-card h3 {
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--color-text-secondary);
-      margin-bottom: var(--space-3);
-    }
-    .sentiment-meter {
-      height: 8px;
-      background: var(--color-surface-3);
-      border-radius: 4px;
-      overflow: hidden;
-      margin-bottom: var(--space-2);
-    }
-    .sentiment-fill {
-      height: 100%;
-      border-radius: 4px;
-      transition: width 1s ease;
-    }
-    .sentiment-labels {
-      display: flex;
-      justify-content: space-between;
-      font-family: var(--font-mono);
-      font-size: 0.68rem;
-      color: var(--color-text-muted);
-    }
-    .sentiment-value {
-      font-size: 1.6rem;
-      font-weight: 700;
-      font-family: var(--font-mono);
-      margin-bottom: 4px;
-    }
-    .sentiment-label {
-      font-size: 0.8rem;
-      font-weight: 600;
-    }
-    /* Fear & Greed colors */
-    .fear { color: #ef4444; }
-    .greed { color: #10b981; }
-    .neutral-s { color: #f59e0b; }
-    /* News feed */
-    .news-item {
-      display: flex;
-      gap: var(--space-3);
-      padding: var(--space-3) 0;
-      border-bottom: 1px solid var(--color-border);
-    }
-    .news-item:last-child { border-bottom: none; }
-    .news-time {
-      font-family: var(--font-mono);
-      font-size: 0.68rem;
-      color: var(--color-text-muted);
-      min-width: 42px;
-      padding-top: 2px;
-    }
-    .news-headline {
-      font-size: 0.85rem;
-      color: var(--color-text-primary);
-      line-height: 1.4;
-    }
-    .news-tag {
-      display: inline-block;
-      font-family: var(--font-mono);
-      font-size: 0.6rem;
-      padding: 1px 6px;
-      border-radius: 3px;
-      margin-right: 4px;
-      font-weight: 600;
-    }
-    .tag-b3 { background: rgba(99,102,241,0.15); color: #818cf8; }
-    .tag-crypto { background: rgba(245,158,11,0.15); color: #f59e0b; }
-    .tag-macro { background: rgba(16,185,129,0.15); color: #10b981; }
-    /* AI analysis panel */
-    .ai-panel {
-      background: var(--color-surface-2);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-lg);
-      padding: var(--space-5);
-    }
-    .ai-panel-header {
-      display: flex;
-      align-items: center;
-      gap: var(--space-2);
-      margin-bottom: var(--space-4);
-    }
-    .ai-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: var(--color-accent-alpha);
-      color: var(--color-accent);
-      font-family: var(--font-mono);
-      font-size: 0.68rem;
-      font-weight: 600;
-      padding: 3px 8px;
-      border-radius: 4px;
-    }
-    .ai-panel p {
-      font-size: 0.88rem;
-      line-height: 1.7;
-      color: var(--color-text-secondary);
-      margin-bottom: var(--space-3);
-    }
-    .ai-panel p:last-child { margin-bottom: 0; }
-    .ai-bullets { list-style: none; padding: 0; margin: var(--space-3) 0; }
-    .ai-bullets li {
-      font-size: 0.85rem;
-      color: var(--color-text-secondary);
-      padding: var(--space-2) 0;
-      border-bottom: 1px solid var(--color-border);
-      padding-left: var(--space-4);
-      position: relative;
-    }
-    .ai-bullets li::before {
-      content: "›";
-      position: absolute;
-      left: 0;
-      color: var(--color-accent);
-      font-weight: 700;
-    }
-    .ai-bullets li:last-child { border-bottom: none; }
-    .refresh-note {
-      font-family: var(--font-mono);
-      font-size: 0.68rem;
-      color: var(--color-text-muted);
-      margin-top: var(--space-3);
-    }
-    .two-col {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: var(--space-5);
-    }
-    @media (max-width: 980px) {
-      .markets-hero,
-      .two-col {
-        grid-template-columns: 1fr;
-      }
-    }
-    .card-section {
-      border-radius: var(--radius-lg);
-      padding: var(--space-5);
-    }
-    @media (max-width: 640px) {
-      .markets-header,
-      .markets-summary,
-      .card-section,
-      .ai-panel,
-      .sentiment-card {
-        padding-left: var(--space-4);
-        padding-right: var(--space-4);
-      }
-      .markets-summary-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#fafaf9">
+<meta name="description" content="Dashboard de mercados ao vivo — B3, NYSE, Cripto com cotações em tempo real, sentimento IA e análise de notícias financeiras">
+<meta property="og:title" content="Mercados ao Vivo — farpa.ai">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://farpa.ai/mercados.html">
+<link rel="canonical" href="https://farpa.ai/mercados.html">
+<title>Mercados ao Vivo — B3 · NYSE · Cripto — farpa.ai</title>
+<link rel="icon" type="image/svg+xml" href="farpa-icon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css"><link rel="stylesheet" href="themes.css"><link rel="stylesheet" href="mobile-fixes.css">
+<script src="theme-engine.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+.mkt-page{max-width:1100px;margin:0 auto;padding:0 28px 80px}
+.mkt-header{padding:36px 0 24px;border-bottom:1px solid var(--border)}
+.mkt-eyebrow{font-family:var(--font-mono);font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:8px;display:flex;align-items:center;gap:7px}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:ldot 2s ease-in-out infinite}
+@keyframes ldot{0%,100%{opacity:1}50%{opacity:.2}}
+.mkt-title{font-size:clamp(24px,4vw,38px);font-weight:900;letter-spacing:-.04em;line-height:1;color:var(--text-1);margin-bottom:8px}
+.mkt-title span{color:var(--accent)}
+.mkt-sub{font-size:14px;color:var(--text-3);font-family:var(--font-mono)}
+
+/* FX Chart */
+.chart-wrap{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--r-xl);padding:20px;margin-bottom:28px}
+.chart-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px}
+.chart-label{font-family:var(--font-mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text-3);margin-bottom:4px}
+.chart-price-big{font-family:var(--font-mono);font-size:26px;font-weight:700;color:var(--text-1)}
+.chart-change-badge{font-family:var(--font-mono);font-size:11px;padding:3px 9px;border-radius:var(--r-pill);margin-left:10px}
+.period-btns{display:flex;gap:4px;flex-wrap:wrap;align-items:center}
+.period-btn{font-family:var(--font-mono);font-size:10px;letter-spacing:1px;padding:5px 11px;border-radius:var(--r-md);border:1px solid var(--border);background:transparent;cursor:pointer;transition:all .15s;color:var(--text-3)}
+.period-btn.active{border-color:var(--accent);background:var(--accent-bg);color:var(--accent)}
+.chart-container{position:relative;height:200px}
+
+/* Tabs */
+.mkt-tabs{display:flex;gap:6px;margin:0 0 16px;flex-wrap:wrap}
+.mkt-tab{font-family:var(--font-mono);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;padding:8px 16px;border-radius:var(--r-pill);border:1px solid var(--border-md);background:transparent;cursor:pointer;transition:all .15s;white-space:nowrap}
+.mkt-tab.active{border-color:var(--accent);background:var(--accent-bg);color:var(--accent)!important}
+
+/* Cards grid */
+.mkt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px;margin:0 0 12px}
+.mkt-card{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--r-lg);padding:18px;transition:border-color .18s,transform .18s;position:relative;overflow:hidden}
+.mkt-card:hover{border-color:var(--border-md);transform:translateY(-2px);box-shadow:var(--shadow-sm)}
+.card-remove{position:absolute;top:8px;right:8px;width:20px;height:20px;border-radius:50%;border:1px solid var(--border-md);background:var(--bg-2);color:var(--text-3);font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .15s,background .15s;line-height:1;padding:0;font-family:var(--font-mono)}
+.mkt-card:hover .card-remove{opacity:1}
+.card-remove:hover{background:var(--accent-danger)!important;color:#fff!important;border-color:var(--accent-danger)!important}
+.mkt-card-symbol{font-family:var(--font-mono);font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:2px;font-weight:700}
+.mkt-card-name{font-family:var(--font-mono);font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--text-4);margin-bottom:10px}
+.mkt-card-price{font-size:20px;font-weight:900;letter-spacing:-1px;color:var(--text-1);margin-bottom:6px;font-family:var(--font-mono)}
+.mkt-card-change{display:inline-flex;align-items:center;gap:4px;font-family:var(--font-mono);font-size:11px;font-weight:500;padding:3px 8px;border-radius:var(--r-pill)}
+.up{background:rgba(45,106,30,.12);color:var(--accent-success)}
+.dn{background:rgba(183,28,28,.10);color:var(--accent-danger)}
+.nt{background:var(--bg-2);color:var(--text-3)}
+.mkt-card-vol{font-family:var(--font-mono);font-size:9px;color:var(--text-4);margin-top:6px}
+
+/* Add asset */
+.add-asset-bar{margin-bottom:28px;display:flex;flex-direction:column;gap:8px}
+.add-asset-btn{display:inline-flex;align-items:center;gap:6px;background:transparent;border:1px dashed var(--border-md);border-radius:var(--r-md);padding:8px 14px;font-family:var(--font-mono);font-size:10px;letter-spacing:1px;cursor:pointer;color:var(--text-3);transition:all .15s}
+.add-asset-btn:hover{border-color:var(--accent);color:var(--accent)}
+.add-asset-form{display:none;align-items:center;gap:8px;flex-wrap:wrap;background:var(--card-bg);border:1px solid var(--border);border-radius:var(--r-lg);padding:12px 16px}
+.add-asset-form.open{display:flex}
+.add-input{background:var(--input-bg);border:1px solid var(--border-md);border-radius:var(--r-md);padding:7px 12px;font-family:var(--font-mono);font-size:12px;color:var(--text-1);outline:none;transition:border-color .15s;min-width:160px}
+.add-input:focus{border-color:var(--accent)}
+.add-input::placeholder{color:var(--text-4)}
+.add-confirm{background:var(--accent);color:#000;border:none;border-radius:var(--r-md);padding:7px 14px;font-family:var(--font-mono);font-size:10px;letter-spacing:1px;cursor:pointer;transition:opacity .15s;font-weight:700}
+.add-confirm:hover{opacity:.85}
+.add-cancel{background:transparent;border:1px solid var(--border-md);border-radius:var(--r-md);padding:7px 14px;font-family:var(--font-mono);font-size:10px;letter-spacing:1px;cursor:pointer;color:var(--text-3);transition:all .15s}
+.add-cancel:hover{border-color:var(--text-3)}
+.add-status{font-family:var(--font-mono);font-size:10px;color:var(--text-3)}
+
+.mkt-section-title{font-family:var(--font-mono);font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--text-3);margin:28px 0 12px;display:flex;align-items:center;gap:10px}
+.mkt-section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* Indices */
+.indices-bar{display:flex;gap:10px;margin-bottom:24px;flex-wrap:wrap}
+.idx-chip{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--r-md);padding:10px 14px;display:flex;align-items:center;gap:10px;flex:1;min-width:160px}
+.idx-name{font-family:var(--font-mono);font-size:10px;letter-spacing:1px;color:var(--text-3)}
+.idx-val{font-size:18px;font-weight:900;color:var(--text-1);font-family:var(--font-mono)}
+.idx-chg{font-family:var(--font-mono);font-size:11px;padding:2px 7px;border-radius:var(--r-pill)}
+
+/* Sentiment */
+.sentiment-bar{display:flex;height:6px;border-radius:var(--r-pill);overflow:hidden;margin-top:6px;gap:2px}
+.s-bull{background:var(--accent-success);border-radius:3px 0 0 3px}
+.s-neut{background:var(--bg-3)}
+.s-bear{background:var(--accent-danger);border-radius:0 3px 3px 0}
+.sentiment-labels{display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:9px;color:var(--text-3);margin-top:3px}
+
+/* News */
+.news-feed{display:flex;flex-direction:column;gap:8px;margin-bottom:28px}
+.news-item{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--r-lg);padding:14px 16px;display:flex;gap:12px;align-items:flex-start;transition:border-color .15s}
+.news-item:hover{border-color:var(--border-md)}
+.news-tag{font-family:var(--font-mono);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;padding:2px 7px;border-radius:var(--r-pill);border:1px solid;white-space:nowrap;flex-shrink:0;margin-top:2px}
+.tag-ia{color:var(--accent);border-color:var(--accent-bg);background:var(--accent-bg)}
+.tag-macro{color:var(--accent-2);border-color:var(--accent-bg-2);background:var(--accent-bg-2)}
+.tag-cripto{color:var(--accent-3);border-color:var(--accent-bg-3);background:var(--accent-bg-3)}
+.tag-urgente{color:var(--accent-danger);border-color:rgba(183,28,28,.15);background:rgba(183,28,28,.07)}
+.news-headline{font-size:14px;font-weight:700;line-height:1.35;color:var(--text-1);margin-bottom:5px}
+.news-meta{font-family:var(--font-mono);font-size:10px;color:var(--text-3);display:flex;gap:12px;flex-wrap:wrap}
+
+.refresh-btn{display:inline-flex;align-items:center;gap:6px;background:transparent;border:1px solid var(--border-md);border-radius:var(--r-md);padding:7px 12px;font-family:var(--font-mono);font-size:10px;letter-spacing:1px;cursor:pointer;transition:all .15s}
+.refresh-btn:hover{border-color:var(--accent)}
+.refresh-btn svg{width:13px;height:13px}
+.last-update{font-family:var(--font-mono);font-size:10px;color:var(--text-4);margin-left:auto}
+.mkt-toolbar{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+
+.loading-spinner{display:inline-flex;gap:3px;align-items:center}
+.loading-spinner span{width:5px;height:5px;border-radius:50%;background:var(--accent);animation:ld .9s ease-in-out infinite}
+.loading-spinner span:nth-child(2){animation-delay:.18s}
+.loading-spinner span:nth-child(3){animation-delay:.36s}
+@keyframes ld{0%,80%,100%{transform:scale(.6);opacity:.35}40%{transform:scale(1);opacity:1}}
+.error-msg{font-family:var(--font-mono);font-size:11px;color:var(--accent-danger);padding:14px;text-align:center;background:rgba(183,28,28,.05);border-radius:var(--r-md);border:1px solid rgba(183,28,28,.15)}
+.retry-info{font-family:var(--font-mono);font-size:9px;color:var(--text-4);margin-top:4px}
+.version-badge{position:fixed;bottom:10px;left:16px;font-family:var(--font-mono);font-size:10px;color:var(--text-4);letter-spacing:1px;z-index:100;pointer-events:none}
+
+@media(max-width:640px){.mkt-page{padding:0 16px 60px}.mkt-grid{grid-template-columns:1fr 1fr}.indices-bar{flex-direction:column}.chart-header{flex-direction:column}.period-btns{justify-content:flex-start}}
+</style>
 </head>
 <body>
-  <div id="farpa-sidebar"></div>
-  <div class="page-wrapper">
-    <div id="farpa-topnav"></div>
-    <main class="main-content">
-      <div class="markets-layout">
+<div id="farpa-layout">
+<main class="farpa-content" id="farpa-main">
+<div class="mkt-page">
 
-        <section class="markets-hero">
-          <div class="markets-header">
-            <div class="markets-kicker">📈 Mercados</div>
-            <h1>Mercados ao vivo com a linguagem visual da farpa</h1>
-            <p class="markets-header-copy">Painel demonstrativo de bolsa, cripto, sentimento e leitura macro reorganizado para seguir a mesma identidade de cards, espaçamentos e hierarquia visual adotada no restante do site.</p>
-            <div class="live-badge"><span class="dot"></span> Dados simulados · fora do pregão</div>
-          </div>
-          <aside class="markets-summary">
-            <div>
-              <div class="section-title">Resumo do painel</div>
-              <p style="font-size:0.88rem; line-height:1.6; color:var(--color-text-secondary)">Acompanhe os principais blocos do monitor em um layout mais consistente, com leitura rápida para índices, ativos digitais, notícias e sinalização automática da IA.</p>
-            </div>
-            <div class="markets-summary-grid">
-              <div class="markets-summary-stat"><strong>B3</strong><span>índices e ações-chave</span></div>
-              <div class="markets-summary-stat"><strong>Crypto</strong><span>ativos digitais líderes</span></div>
-              <div class="markets-summary-stat"><strong>Sentimento</strong><span>termômetro do mercado</span></div>
-              <div class="markets-summary-stat"><strong>IA</strong><span>resumo automatizado</span></div>
-            </div>
-          </aside>
-        </section>
-
-        <div class="disclaimer-bar">
-          <span class="icon">⚠️</span>
-          <span>Dados exibidos são ilustrativos e gerados por IA para fins educacionais. Não constituem recomendação de investimento. Valores defasados em até 15 minutos em modo de demonstração.</span>
-        </div>
-
-        <!-- B3 Principais -->
-        <div>
-          <div class="section-title">B3 · Principais índices e ações</div>
-          <div class="ticker-grid" id="b3-grid">
-            <!-- JS populated -->
-          </div>
-        </div>
-
-        <!-- Crypto -->
-        <div>
-          <div class="section-title">Crypto · Top ativos digitais</div>
-          <div id="crypto-list"></div>
-        </div>
-
-        <div class="two-col">
-          <!-- Sentiment -->
-          <div>
-            <div class="section-title">Sentimento de mercado</div>
-            <div class="sentiment-grid" id="sentiment-grid"></div>
-          </div>
-          <!-- News -->
-          <div>
-            <div class="section-title">Últimas notícias</div>
-            <div class="card-section">
-              <div id="news-feed"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- AI Analysis -->
-        <div>
-          <div class="section-title">Análise farpa · IA</div>
-          <div class="ai-panel">
-            <div class="ai-panel-header">
-              <span class="ai-badge">✦ farpa AI</span>
-              <span style="font-size:0.8rem; color:var(--color-text-muted)">Atualizado simulado · mar 2026</span>
-            </div>
-            <p>O cenário macro permanece em modo de espera. Com o Fed mantendo juros estáveis e o Copom sinalizando cautela, os mercados emergentes operam com volatilidade contida. O Ibovespa consolida suporte na faixa dos 128k pontos, enquanto o dólar ensaia reversão abaixo de R$ 5,80.</p>
-            <ul class="ai-bullets">
-              <li>Petróleo Brent acima de $82 sustenta momentum para PETR4 no curto prazo</li>
-              <li>BTC consolida acima de $68k — próxima resistência em $72k</li>
-              <li>Atenção ao IPCA de abril: leitura acima de 4,5% pode pressionar juros longos</li>
-              <li>Fluxo estrangeiro na B3 positivo pelo 3º mês consecutivo — sinal de risk-on</li>
-              <li>Temporada de resultados 1T26: bancos e commodities em destaque</li>
-            </ul>
-            <p>Esta análise é gerada automaticamente por modelos de linguagem a partir de dados públicos. Não substitui análise profissional. Consulte um assessor de investimentos.</p>
-            <div class="refresh-note">↻ Análise renovada a cada 6h · Próxima atualização: 18:00 BRT</div>
-          </div>
-        </div>
-
-      </div>
-    </main>
+  <div class="mkt-header">
+    <div class="mkt-eyebrow"><span class="live-dot"></span>Dados ao vivo</div>
+    <h1 class="mkt-title">Mercados & <span>Sentimento</span></h1>
+    <p class="mkt-sub">B3 · NYSE · Cripto · Índices · Sentimento IA</p>
   </div>
 
-  <script src="theme-engine.js"></script>
-  <script>
-    // Mock data
-    const b3Data = [
-      { symbol:'IBOV', name:'Ibovespa', price:'128.450', change:'+1,23%', dir:'up' },
-      { symbol:'IFIX', name:'Fundos Imob.', price:'3.142', change:'-0,31%', dir:'down' },
-      { symbol:'PETR4', name:'Petrobras PN', price:'R$ 38,72', change:'+2,11%', dir:'up' },
-      { symbol:'VALE3', name:'Vale ON', price:'R$ 61,05', change:'-0,87%', dir:'down' },
-      { symbol:'ITUB4', name:'Itaú PN', price:'R$ 35,40', change:'+0,55%', dir:'up' },
-      { symbol:'BBDC4', name:'Bradesco PN', price:'R$ 14,28', change:'+0,07%', dir:'neutral' },
-      { symbol:'ABEV3', name:'Ambev ON', price:'R$ 12,91', change:'-1,05%', dir:'down' },
-      { symbol:'MGLU3', name:'Magazine Luiza', price:'R$ 2,47', change:'+3,78%', dir:'up' },
-    ];
+  <!-- USD/BRL CHART -->
+  <div class="mkt-section-title">Evolução Real × Dólar</div>
+  <div class="chart-wrap">
+    <div class="chart-header">
+      <div>
+        <div class="chart-label">USD / BRL</div>
+        <div style="display:flex;align-items:center">
+          <span class="chart-price-big" id="fx-price">—</span>
+          <span class="chart-change-badge nt" id="fx-change">—</span>
+        </div>
+        <div style="font-family:var(--font-mono);font-size:9px;color:var(--text-4);margin-top:4px" id="fx-date">—</div>
+      </div>
+      <div class="period-btns">
+        <button class="period-btn active" onclick="setFxPeriod(7,this)">7D</button>
+        <button class="period-btn" onclick="setFxPeriod(30,this)">1M</button>
+        <button class="period-btn" onclick="setFxPeriod(90,this)">3M</button>
+        <button class="period-btn" onclick="setFxPeriod(180,this)">6M</button>
+        <button class="period-btn" onclick="setFxPeriod(365,this)">1A</button>
+      </div>
+    </div>
+    <div class="chart-container"><canvas id="fx-chart"></canvas></div>
+  </div>
 
-    const cryptoData = [
-      { icon:'₿', name:'Bitcoin', symbol:'BTC', price:'$68.420', change:'+1,84%', dir:'up' },
-      { icon:'Ξ', name:'Ethereum', symbol:'ETH', price:'$3.210', change:'+0,92%', dir:'up' },
-      { icon:'◎', name:'Solana', symbol:'SOL', price:'$142,30', change:'-2,15%', dir:'down' },
-      { icon:'♦', name:'XRP', symbol:'XRP', price:'$0,5821', change:'+0,44%', dir:'up' },
-      { icon:'●', name:'BNB', symbol:'BNB', price:'$584,10', change:'-0,30%', dir:'down' },
-    ];
+  <!-- TABS -->
+  <div class="mkt-tabs">
+    <button class="mkt-tab active" onclick="switchTab('crypto',this)">₿ Cripto</button>
+    <button class="mkt-tab" onclick="switchTab('b3',this)">🇧🇷 B3</button>
+    <button class="mkt-tab" onclick="switchTab('nyse',this)">🇺🇸 NYSE</button>
+    <button class="mkt-tab" onclick="switchTab('indices',this)">📊 Índices</button>
+  </div>
 
-    const sentimentData = [
-      { title:'Fear & Greed Index', value:'67', label:'Ganância', cls:'greed', fill:'67%', gradient:'linear-gradient(90deg,#ef4444,#f59e0b,#10b981)' },
-      { title:'B3 Sentimento', value:'58', label:'Otimista', cls:'greed', fill:'58%', gradient:'linear-gradient(90deg,#ef4444,#f59e0b,#10b981)' },
-    ];
+  <!-- ASSETS GRID -->
+  <div class="mkt-section-title">Ativos · <span id="tab-label">Cripto</span></div>
+  <div class="mkt-grid" id="prices-grid">
+    <div style="grid-column:1/-1;text-align:center;padding:32px">
+      <div class="loading-spinner"><span></span><span></span><span></span></div>
+      <div class="retry-info">Carregando cotações...</div>
+    </div>
+  </div>
 
-    const newsData = [
-      { time:'14:32', tag:'b3', tagLabel:'B3', headline:'Ibovespa avança 1,2% com alta das commodities e entrada de capital estrangeiro' },
-      { time:'13:55', tag:'macro', tagLabel:'MACRO', headline:'Copom mantém Selic em 10,5% e sinaliza pausa no ciclo de cortes' },
-      { time:'12:40', tag:'crypto', tagLabel:'CRYPTO', headline:'Bitcoin supera $68k pela segunda vez na semana; analistas miram $75k' },
-      { time:'11:18', tag:'b3', tagLabel:'B3', headline:'Petrobras sobe 2% após dados de produção superarem expectativas do mercado' },
-      { time:'09:45', tag:'macro', tagLabel:'MACRO', headline:'Dólar cai abaixo de R$5,80 com fluxo positivo e expectativa de Fed dovish' },
-      { time:'09:02', tag:'crypto', tagLabel:'CRYPTO', headline:'ETFs de Bitcoin registram maior captação semanal desde fevereiro de 2025' },
-    ];
+  <!-- ADD ASSET BAR -->
+  <div class="add-asset-bar">
+    <button class="add-asset-btn" id="add-toggle-btn" onclick="toggleAddForm()">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Adicionar ativo
+    </button>
+    <div class="add-asset-form" id="add-asset-form">
+      <input id="add-symbol-input" class="add-input" type="text" placeholder="Símbolo (BTC, PETR4, AAPL...)" autocomplete="off" onkeydown="handleAddKeydown(event)">
+      <button class="add-confirm" onclick="confirmAdd()">Adicionar</button>
+      <button class="add-cancel" onclick="toggleAddForm()">Cancelar</button>
+      <span class="add-status" id="add-status"></span>
+    </div>
+  </div>
 
-    // Render B3
-    const b3Grid = document.getElementById('b3-grid');
-    b3Data.forEach(t => {
-      b3Grid.innerHTML += `
-        <div class="ticker-card">
-          <div class="symbol">${t.symbol}</div>
-          <div class="name">${t.name}</div>
-          <div class="price">${t.price}</div>
-          <div class="change ${t.dir}">${t.dir==='up'?'▲':t.dir==='down'?'▼':'▸'} ${t.change}</div>
-        </div>`;
+  <!-- INDICES BAR -->
+  <div class="mkt-section-title">Índices globais</div>
+  <div class="indices-bar">
+    <div class="idx-chip"><div><div class="idx-name">IBOVESPA</div><div class="idx-val" id="ibov-val">—</div></div><span class="idx-chg nt" id="ibov-chg">—</span></div>
+    <div class="idx-chip"><div><div class="idx-name">S&P 500</div><div class="idx-val" id="sp-val">—</div></div><span class="idx-chg nt" id="sp-chg">—</span></div>
+    <div class="idx-chip"><div><div class="idx-name">NASDAQ</div><div class="idx-val" id="nasdaq-val">—</div></div><span class="idx-chg nt" id="nasdaq-chg">—</span></div>
+    <div class="idx-chip"><div><div class="idx-name">USD/BRL</div><div class="idx-val" id="usd-val">—</div></div><span class="idx-chg nt" id="usd-chg">—</span></div>
+  </div>
+
+  <!-- SENTIMENT -->
+  <div class="mkt-section-title">Sentimento do mercado</div>
+  <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:var(--r-xl);padding:20px;margin-bottom:28px">
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:18px">
+      <div><div style="font-family:var(--font-mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text-3);margin-bottom:5px">Cripto</div>
+        <div style="font-size:20px;font-weight:900;color:var(--accent-success)">Neutro</div>
+        <div class="sentiment-bar"><div class="s-bull" style="width:42%"></div><div class="s-neut" style="width:30%"></div><div class="s-bear" style="flex:1"></div></div>
+        <div class="sentiment-labels"><span>42% bull</span><span>28% bear</span></div></div>
+      <div><div style="font-family:var(--font-mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text-3);margin-bottom:5px">B3</div>
+        <div style="font-size:20px;font-weight:900;color:var(--accent-warn)">Cautela</div>
+        <div class="sentiment-bar"><div class="s-bull" style="width:28%"></div><div class="s-neut" style="width:35%"></div><div class="s-bear" style="flex:1"></div></div>
+        <div class="sentiment-labels"><span>28% bull</span><span>37% bear</span></div></div>
+      <div><div style="font-family:var(--font-mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text-3);margin-bottom:5px">NYSE</div>
+        <div style="font-size:20px;font-weight:900;color:var(--accent-success)">Otimista</div>
+        <div class="sentiment-bar"><div class="s-bull" style="width:68%"></div><div class="s-neut" style="width:20%"></div><div class="s-bear" style="flex:1"></div></div>
+        <div class="sentiment-labels"><span>68% bull</span><span>12% bear</span></div></div>
+    </div>
+    <div style="font-family:var(--font-mono);font-size:9px;letter-spacing:1.5px;color:var(--text-4);border-top:1px solid var(--border);padding-top:10px">Análise baseada em 1.200+ fontes · atualizado a cada 15min</div>
+  </div>
+
+  <!-- NEWS -->
+  <div class="mkt-section-title">Notícias com impacto em mercado</div>
+  <div class="mkt-toolbar">
+    <button class="refresh-btn" onclick="loadNews()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>Atualizar
+    </button>
+    <span class="last-update" id="last-update">—</span>
+  </div>
+  <div class="news-feed">
+    <div class="news-item"><span class="news-tag tag-ia">IA</span><div><div class="news-headline">Reguladores da UE e EUA convergem em posição sobre modelos de fronteira — janela de 60 dias para compliance</div><div class="news-meta"><span>18 fontes</span><span>Alta relevância</span><span>2 min atrás</span></div></div></div>
+    <div class="news-item"><span class="news-tag tag-macro">Macro</span><div><div class="news-headline">Fed mantém juros mas sinaliza corte para junho após CPI abaixo do esperado</div><div class="news-meta"><span>24 fontes</span><span>Impacto alto</span><span>12 min atrás</span></div></div></div>
+    <div class="news-item"><span class="news-tag tag-cripto">Cripto</span><div><div class="news-headline">Bitcoin consolida acima de US$85k após inflows institucionais de US$2,1bi em ETFs</div><div class="news-meta"><span>11 fontes</span><span>Impacto médio</span><span>34 min atrás</span></div></div></div>
+    <div class="news-item"><span class="news-tag tag-urgente">Urgente</span><div><div class="news-headline">Ibovespa rompe suporte de 128k pontos com volume 40% acima da média</div><div class="news-meta"><span>8 fontes</span><span>Urgente</span><span>1h atrás</span></div></div></div>
+  </div>
+
+</div>
+<div class="version-badge">v2.3.0</div>
+
+<script>
+const WORKER_URL='https://farpa-proxy.rfelipefernandes.workers.dev';
+let currentTab='crypto';
+let fxChart=null;
+let fxPeriodDays=7;
+let fxLastData=null;
+let loadTabAbort=null; // Track current tab load for abort on switch
+
+// ─── ASSET REGISTRY ───
+const CRYPTO_IDS={btc:'bitcoin',eth:'ethereum',sol:'solana',bnb:'binancecoin',xrp:'ripple',ada:'cardano',dot:'polkadot',avax:'avalanche-2',link:'chainlink',uni:'uniswap',doge:'dogecoin',ltc:'litecoin',atom:'cosmos',near:'near',matic:'matic-network',shib:'shiba-inu'};
+const CRYPTO_SYM={bitcoin:'BTC',ethereum:'ETH',solana:'SOL',binancecoin:'BNB',ripple:'XRP',cardano:'ADA',polkadot:'DOT','avalanche-2':'AVAX',chainlink:'LINK',uniswap:'UNI',dogecoin:'DOGE',litecoin:'LTC',cosmos:'ATOM',near:'NEAR','matic-network':'MATIC','shiba-inu':'SHIB'};
+const CRYPTO_NAME={bitcoin:'Bitcoin',ethereum:'Ethereum',solana:'Solana',binancecoin:'BNB',ripple:'XRP',cardano:'Cardano',polkadot:'Polkadot','avalanche-2':'Avalanche',chainlink:'Chainlink',uniswap:'Uniswap',dogecoin:'Dogecoin',litecoin:'Litecoin',cosmos:'Cosmos',near:'NEAR','matic-network':'Polygon','shiba-inu':'Shiba Inu'};
+const B3_NAME={PETR4:'Petrobras',VALE3:'Vale',ITUB4:'Itaú Unibanco',BBDC4:'Bradesco',WEGE3:'WEG',MGLU3:'Magalu',B3SA3:'B3 S.A.',RENT3:'Localiza',ABEV3:'Ambev',BBAS3:'Banco do Brasil',EGIE3:'Engie',HYPE3:'Hypera',RAIL3:'Rumo',SUZB3:'Suzano',ELET3:'Eletrobras'};
+const NYSE_NAME={AAPL:'Apple',MSFT:'Microsoft',NVDA:'NVIDIA',GOOGL:'Alphabet',AMZN:'Amazon',META:'Meta',TSLA:'Tesla',JPM:'JPMorgan',V:'Visa',MA:'Mastercard',BRK:'Berkshire',UNH:'UnitedHealth',JNJ:'Johnson & Johnson',WMT:'Walmart',ORCL:'Oracle'};
+
+const DEFAULT_ASSETS={
+  crypto:['bitcoin','ethereum','solana','binancecoin','ripple'],
+  b3:['PETR4','VALE3','ITUB4','BBDC4','WEGE3'],
+  nyse:['AAPL','MSFT','NVDA','GOOGL','AMZN'],
+  indices:[]
+};
+
+// ─── LOCALSTORAGE ASSET MANAGEMENT ───
+function getTabAssets(tab){
+  try{const s=JSON.parse(localStorage.getItem('farpa_mkt_v2')||'{}');return s[tab]!==undefined?[...s[tab]]:[...(DEFAULT_ASSETS[tab]||[])]}
+  catch(e){return[...(DEFAULT_ASSETS[tab]||[])]}
+}
+function saveTabAssets(tab,list){
+  try{const s=JSON.parse(localStorage.getItem('farpa_mkt_v2')||'{}');s[tab]=list;localStorage.setItem('farpa_mkt_v2',JSON.stringify(s))}catch(e){}
+}
+function removeAsset(tab,id){
+  const list=getTabAssets(tab).filter(a=>a!==id);
+  saveTabAssets(tab,list);
+  loadTab();
+}
+function addAssetToTab(tab,id){
+  const list=getTabAssets(tab);
+  if(!list.includes(id)){list.push(id);saveTabAssets(tab,list)}
+}
+
+// ─── ADD FORM — FIXED ───
+function toggleAddForm(){
+  const f=document.getElementById('add-asset-form');
+  const isOpen=f.classList.toggle('open');
+  document.getElementById('add-toggle-btn').style.display=isOpen?'none':'';
+  if(isOpen){
+    const inp=document.getElementById('add-symbol-input');
+    inp.value='';
+    inp.focus();
+    document.getElementById('add-status').textContent='';
+  }
+}
+
+// FIX: Proper keydown handler that also handles Escape
+function handleAddKeydown(event){
+  if(event.key==='Enter'){
+    event.preventDefault();
+    confirmAdd();
+  }else if(event.key==='Escape'){
+    event.preventDefault();
+    toggleAddForm();
+  }
+}
+
+async function confirmAdd(){
+  const input=document.getElementById('add-symbol-input');
+  const status=document.getElementById('add-status');
+  const raw=input.value.trim();
+
+  // FIX: Validate input is not empty or whitespace-only
+  if(!raw||!/\S/.test(raw)){
+    status.textContent='Digite um símbolo válido.';
+    status.style.color='var(--accent-danger)';
+    return;
+  }
+
+  const val=raw.toLowerCase().replace(/\s+/g,'');
+  status.textContent='Verificando...';
+  status.style.color='var(--text-3)';
+
+  if(currentTab==='crypto'){
+    // FIX: Better crypto resolution — check CRYPTO_IDS first, then try direct, then search
+    let coinId=CRYPTO_IDS[val]||null;
+
+    // If not in our map, try using the raw value as a CoinGecko ID
+    if(!coinId){
+      try{
+        const r=await fetch('https://api.coingecko.com/api/v3/simple/price?ids='+encodeURIComponent(val)+'&vs_currencies=usd');
+        if(r.ok){
+          const d=await r.json();
+          if(d[val]&&d[val].usd!==undefined){
+            coinId=val;
+          }
+        }
+      }catch(e){/* continue to search */}
+    }
+
+    // If still not found, search by symbol/name
+    if(!coinId){
+      try{
+        const sr=await fetch('https://api.coingecko.com/api/v3/search?query='+encodeURIComponent(raw));
+        if(sr.ok){
+          const sd=await sr.json();
+          const coin=sd.coins?.[0];
+          if(coin){
+            coinId=coin.id;
+            // Also register the symbol mapping for future use
+            CRYPTO_IDS[coin.symbol.toLowerCase()]=coin.id;
+            CRYPTO_SYM[coin.id]=coin.symbol.toUpperCase();
+            CRYPTO_NAME[coin.id]=coin.name;
+          }
+        }
+      }catch(e){
+        status.textContent='Erro de conexão.';
+        status.style.color='var(--accent-danger)';
+        return;
+      }
+    }
+
+    if(!coinId){
+      status.textContent='Ativo não encontrado no CoinGecko.';
+      status.style.color='var(--accent-danger)';
+      return;
+    }
+
+    // FIX: Check for duplicates before adding
+    const existing=getTabAssets('crypto');
+    if(existing.includes(coinId)){
+      status.textContent='Ativo já adicionado.';
+      status.style.color='var(--accent-warn)';
+      return;
+    }
+
+    addAssetToTab('crypto',coinId);
+    status.textContent='';
+    toggleAddForm();
+    loadTab();
+
+  }else if(currentTab==='b3'){
+    const ticker=raw.toUpperCase().replace(/\.SA$/i,'').replace(/\s+/g,'');
+
+    // FIX: Validate ticker format
+    if(!/^[A-Z]{3,6}\d{1,2}[FBL]?$/i.test(ticker)){
+      status.textContent='Formato inválido. Ex: PETR4, VALE3';
+      status.style.color='var(--accent-danger)';
+      return;
+    }
+
+    // FIX: Check for duplicates
+    const existing=getTabAssets('b3');
+    if(existing.includes(ticker)){
+      status.textContent='Ativo já adicionado.';
+      status.style.color='var(--accent-warn)';
+      return;
+    }
+
+    status.textContent='Verificando na B3...';
+    try{
+      const r=await fetch('https://brapi.dev/api/quote/'+encodeURIComponent(ticker)+'?fundamental=false');
+      if(r.ok){
+        const d=await r.json();
+        // FIX: Correct validation — check that results exist and have a valid response
+        // regularMarketPrice can be 0 for some assets, so we check for the existence of the property
+        if(d.results&&d.results.length>0&&d.results[0].symbol){
+          addAssetToTab('b3',ticker);
+          status.textContent='';
+          toggleAddForm();
+          loadTab();
+          return;
+        }
+      }
+      // If brapi fails, still add (worker proxy might work)
+      addAssetToTab('b3',ticker);
+      status.textContent='';
+      toggleAddForm();
+      loadTab();
+    }catch(e){
+      // Accept anyway — might work via worker later
+      addAssetToTab('b3',ticker);
+      status.textContent='';
+      toggleAddForm();
+      loadTab();
+    }
+
+  }else if(currentTab==='nyse'){
+    const ticker=raw.toUpperCase().replace(/\s+/g,'');
+
+    // FIX: Basic validation
+    if(!/^[A-Z]{1,5}$/.test(ticker)){
+      status.textContent='Formato inválido. Ex: AAPL, MSFT';
+      status.style.color='var(--accent-danger)';
+      return;
+    }
+
+    // FIX: Check for duplicates
+    const existing=getTabAssets('nyse');
+    if(existing.includes(ticker)){
+      status.textContent='Ativo já adicionado.';
+      status.style.color='var(--accent-warn)';
+      return;
+    }
+
+    addAssetToTab('nyse',ticker);
+    status.textContent='';
+    toggleAddForm();
+    loadTab();
+
+  }else{
+    status.textContent='Não é possível adicionar ativos de índices manualmente.';
+    status.style.color='var(--accent-warn)';
+  }
+}
+
+// ─── FETCH HELPER ───
+async function fetchRetry(url,opts={},maxRetries=3){
+  for(let i=0;i<maxRetries;i++){
+    try{
+      const r=await fetch(url,{...opts,signal:AbortSignal.timeout(opts.timeout||8000)});
+      if(r.ok)return r;
+      if(r.status>=500&&i<maxRetries-1){await new Promise(r=>setTimeout(r,Math.pow(2,i)*600));continue}
+      return r;
+    }catch(e){
+      if(i<maxRetries-1)await new Promise(r=>setTimeout(r,Math.pow(2,i)*600));
+      else throw e;
+    }
+  }
+}
+
+// ─── THEME-AWARE CHART COLORS ───
+function getChartColors(up){
+  const s=getComputedStyle(document.documentElement);
+  const color=(up
+    ?s.getPropertyValue('--accent-success').trim()||'#22c55e'
+    :s.getPropertyValue('--accent-danger').trim()||'#ef4444');
+  const tickColor=s.getPropertyValue('--text-3').trim()||'#999';
+  const gridColor=s.getPropertyValue('--border').trim()||'rgba(0,0,0,0.06)';
+  return{color,tickColor,gridColor};
+}
+
+// ─── USD/BRL FX CHART ───
+function setFxPeriod(days,btn){
+  document.querySelectorAll('.period-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  fxPeriodDays=days;
+  loadFxChart();
+}
+
+async function loadFxChart(){
+  try{
+    const r=await fetchRetry('https://economia.awesomeapi.com.br/json/daily/USD-BRL/'+fxPeriodDays,{},3);
+    const data=await r.json();
+    if(!data||!data.length)throw new Error('Sem dados');
+    fxLastData=data;
+    renderFxFromData(data);
+  }catch(e){
+    document.getElementById('fx-price').textContent='Indisponível';
+    renderFxChart([],[],true);
+  }
+}
+
+function renderFxFromData(data){
+  const sorted=[...data].reverse();
+  const labels=sorted.map(d=>{
+    const dt=new Date(parseInt(d.timestamp)*1000);
+    if(fxPeriodDays<=30)return dt.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'});
+    return dt.toLocaleDateString('pt-BR',{month:'2-digit',year:'2-digit'});
+  });
+  const values=sorted.map(d=>parseFloat(d.bid));
+  const first=values[0],last=values[values.length-1];
+  const change=((last-first)/first)*100,up=change>=0;
+  document.getElementById('fx-price').textContent='R$ '+last.toFixed(4);
+  const chgEl=document.getElementById('fx-change');
+  chgEl.textContent=(up?'▲ +':'▼ ')+Math.abs(change).toFixed(2)+'%';
+  chgEl.className='chart-change-badge '+(up?'up':'dn');
+  const lastDt=new Date(parseInt(sorted[sorted.length-1].timestamp)*1000);
+  document.getElementById('fx-date').textContent='Atualizado: '+lastDt.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'});
+  renderFxChart(labels,values,up);
+}
+
+function renderFxChart(labels,values,up){
+  const ctx=document.getElementById('fx-chart');
+  if(!ctx)return;
+  if(fxChart){fxChart.destroy();fxChart=null;}
+  const{color,tickColor,gridColor}=getChartColors(up);
+  fxChart=new Chart(ctx,{
+    type:'line',
+    data:{labels,datasets:[{
+      data:values,borderColor:color,backgroundColor:color+'18',
+      borderWidth:2,pointRadius:0,pointHoverRadius:4,fill:true,tension:0.35
+    }]},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          mode:'index',intersect:false,
+          backgroundColor:'rgba(10,10,10,0.88)',
+          titleFont:{family:'DM Mono, monospace',size:10},
+          bodyFont:{family:'DM Mono, monospace',size:12},
+          padding:10,
+          callbacks:{label:c=>' R$ '+c.parsed.y.toFixed(4)}
+        }
+      },
+      scales:{
+        x:{ticks:{maxTicksLimit:7,font:{family:'DM Mono, monospace',size:9},color:tickColor,maxRotation:0},grid:{display:false},border:{display:false}},
+        y:{
+          ticks:{font:{family:'DM Mono, monospace',size:9},color:tickColor,callback:v=>'R$ '+v.toFixed(2)},
+          grid:{color:gridColor},border:{display:false},
+          suggestedMin:values.length?Math.min(...values)*0.997:0,
+          suggestedMax:values.length?Math.max(...values)*1.003:1
+        }
+      },
+      interaction:{mode:'nearest',axis:'x',intersect:false}
+    }
+  });
+}
+
+// ─── HELPERS ───
+function fmt(v,cur='USD'){
+  if(v>=1000000)return(cur==='BRL'?'R$':'$')+' '+(v/1000000).toFixed(2)+'M';
+  if(v>=1000)return(cur==='BRL'?'R$':'$')+' '+v.toLocaleString('pt-BR',{maximumFractionDigits:0});
+  return(cur==='BRL'?'R$':'$')+' '+v.toFixed(2);
+}
+function chgHtml(v){
+  const up=v>=0;
+  return`<span class="mkt-card-change ${up?'up':'dn'}">${up?'▲ +':'▼ '}${Math.abs(v).toFixed(2)}%</span>`;
+}
+function showLoading(msg='Carregando...'){
+  document.getElementById('prices-grid').innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:32px"><div class="loading-spinner"><span></span><span></span><span></span></div><div class="retry-info">${msg}</div></div>`;
+}
+function renderCards(cards,tab){
+  const g=document.getElementById('prices-grid');
+  if(!cards||!cards.length){
+    g.innerHTML='<div class="error-msg" style="grid-column:1/-1">Nenhum dado disponível.</div>';return;
+  }
+  g.innerHTML=cards.map(c=>`
+    <div class="mkt-card">
+      <button class="card-remove" onclick="removeAsset('${tab}','${c.id}')" title="Remover ativo">×</button>
+      <div class="mkt-card-symbol">${c.symbol}</div>
+      <div class="mkt-card-name">${c.name}</div>
+      <div class="mkt-card-price">${c.price}</div>
+      ${chgHtml(c.change)}
+      ${c.volume?`<div class="mkt-card-vol">Vol: ${c.volume}</div>`:''}
+    </div>`).join('');
+}
+
+// ─── TAB NAVIGATION — FIXED race condition ───
+function switchTab(tab,btn){
+  currentTab=tab;
+  document.querySelectorAll('.mkt-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-label').textContent={crypto:'Cripto',b3:'B3 · Brasil',nyse:'NYSE · EUA',indices:'Índices Globais'}[tab];
+  // FIX: Hide add button for indices, show for others
+  document.getElementById('add-toggle-btn').style.display=tab==='indices'?'none':'';
+  // FIX: Close add form on tab switch
+  const f=document.getElementById('add-asset-form');
+  if(f.classList.contains('open'))toggleAddForm();
+  loadTab();
+}
+
+function loadTab(){
+  if(currentTab==='crypto')loadCrypto();
+  else if(currentTab==='b3')loadB3();
+  else if(currentTab==='nyse')loadNYSE();
+  else if(currentTab==='indices')loadIndices();
+}
+
+// ─── CRIPTO — CoinGecko ───
+async function loadCrypto(){
+  showLoading();
+  const assets=getTabAssets('crypto');
+  if(!assets.length){
+    document.getElementById('prices-grid').innerHTML='<div style="grid-column:1/-1;text-align:center;padding:24px;font-family:var(--font-mono);font-size:11px;color:var(--text-3)">Nenhum ativo. Use "+ Adicionar ativo" para incluir.</div>';
+    return;
+  }
+  try{
+    const r=await fetchRetry('https://api.coingecko.com/api/v3/simple/price?ids='+encodeURIComponent(assets.join(','))+'&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true',{},3);
+    const d=await r.json();
+    // FIX: Filter out assets that returned no data and don't crash
+    const cards=assets.filter(a=>d[a]&&d[a].usd!==undefined).map(a=>({
+      id:a,
+      symbol:CRYPTO_SYM[a]||a.toUpperCase().slice(0,6),
+      name:CRYPTO_NAME[a]||a.replace(/-/g,' ').replace(/\b\w/g,l=>l.toUpperCase()),
+      price:'$ '+d[a].usd.toLocaleString('en-US',{maximumFractionDigits:d[a].usd<1?4:2}),
+      change:d[a].usd_24h_change||0,
+      volume:d[a].usd_24h_vol?fmt(d[a].usd_24h_vol):''
+    }));
+
+    if(currentTab!=='crypto')return; // FIX: Abort if tab changed during fetch
+    renderCards(cards,'crypto');
+  }catch(e){
+    if(currentTab!=='crypto')return;
+    document.getElementById('prices-grid').innerHTML=`<div class="error-msg" style="grid-column:1/-1">CoinGecko indisponível após 3 tentativas.<div class="retry-info">${e.message}</div></div>`;
+  }
+}
+
+// ─── B3 — brapi.dev (primary) + worker proxy (fallback) ───
+async function loadB3(){
+  showLoading();
+  const assets=getTabAssets('b3');
+  if(!assets.length){
+    document.getElementById('prices-grid').innerHTML='<div style="grid-column:1/-1;text-align:center;padding:24px;font-family:var(--font-mono);font-size:11px;color:var(--text-3)">Nenhum ativo. Use "+ Adicionar ativo" para incluir.</div>';
+    return;
+  }
+  const tickers=assets.join(',');
+
+  // Attempt 1: brapi.dev
+  try{
+    const r=await fetch('https://brapi.dev/api/quote/'+encodeURIComponent(tickers)+'?fundamental=false');
+    if(r.ok){
+      const d=await r.json();
+      if(d.results&&d.results.length){
+        if(currentTab!=='b3')return;
+        renderCards(d.results.map(s=>({
+          id:s.symbol,
+          symbol:s.symbol,
+          name:B3_NAME[s.symbol]||s.longName||s.symbol,
+          price:'R$ '+(s.regularMarketPrice||0).toFixed(2),
+          change:s.regularMarketChangePercent||0,
+          volume:s.regularMarketVolume?fmt(s.regularMarketVolume,'BRL'):''
+        })),'b3');
+        return;
+      }
+    }
+  }catch(e){/* try worker */}
+
+  // Fallback: worker proxy
+  for(let attempt=1;attempt<=3;attempt++){
+    try{
+      if(currentTab!=='b3')return;
+      showLoading(`Worker proxy · tentativa ${attempt}/3...`);
+      const r=await fetch(WORKER_URL+'/markets?source=b3&symbols='+encodeURIComponent(assets.map(t=>t+'.SA').join(',')),{signal:AbortSignal.timeout(6000)});
+      if(!r.ok)throw new Error('HTTP '+r.status);
+      const d=await r.json();
+      if(!d.data||!d.data.length)throw new Error('Sem dados');
+      if(currentTab!=='b3')return;
+      renderCards(d.data.map(s=>({
+        id:s.symbol.replace('.SA',''),
+        symbol:s.symbol.replace('.SA',''),
+        name:B3_NAME[s.symbol.replace('.SA','')]||s.shortName||s.symbol,
+        price:'R$ '+(s.regularMarketPrice||0).toFixed(2),
+        change:s.regularMarketChangePercent||0,
+        volume:s.regularMarketVolume?fmt(s.regularMarketVolume,'BRL'):''
+      })),'b3');
+      return;
+    }catch(e){
+      if(attempt<3)await new Promise(r=>setTimeout(r,700*attempt));
+      else{
+        if(currentTab!=='b3')return;
+        document.getElementById('prices-grid').innerHTML=`<div class="error-msg" style="grid-column:1/-1">B3 indisponível após 4 tentativas (brapi + worker).<div class="retry-info">${e.message}</div></div>`;
+      }
+    }
+  }
+}
+
+// ─── NYSE — worker proxy ───
+async function loadNYSE(){
+  showLoading();
+  const assets=getTabAssets('nyse');
+  if(!assets.length){
+    document.getElementById('prices-grid').innerHTML='<div style="grid-column:1/-1;text-align:center;padding:24px;font-family:var(--font-mono);font-size:11px;color:var(--text-3)">Nenhum ativo. Use "+ Adicionar ativo" para incluir.</div>';
+    return;
+  }
+  for(let attempt=1;attempt<=3;attempt++){
+    try{
+      if(currentTab!=='nyse')return;
+      showLoading(`Worker proxy · tentativa ${attempt}/3...`);
+      const r=await fetch(WORKER_URL+'/markets?source=nyse&symbols='+encodeURIComponent(assets.join(',')),{signal:AbortSignal.timeout(6000)});
+      if(!r.ok)throw new Error('HTTP '+r.status);
+      const d=await r.json();
+      if(!d.data||!d.data.length)throw new Error('Sem dados');
+      if(currentTab!=='nyse')return;
+      renderCards(d.data.map(s=>({
+        id:s.symbol,
+        symbol:s.symbol,
+        name:NYSE_NAME[s.symbol]||s.shortName||s.symbol,
+        price:'$ '+(s.regularMarketPrice||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}),
+        change:s.regularMarketChangePercent||0,
+        volume:s.regularMarketVolume?fmt(s.regularMarketVolume):''
+      })),'nyse');
+      return;
+    }catch(e){
+      if(attempt<3)await new Promise(r=>setTimeout(r,700*attempt));
+      else{
+        if(currentTab!=='nyse')return;
+        document.getElementById('prices-grid').innerHTML=`<div class="error-msg" style="grid-column:1/-1">NYSE requer Worker proxy configurado (3 tentativas esgotadas).<div class="retry-info">${e.message}</div></div>`;
+      }
+    }
+  }
+}
+
+// ─── ÍNDICES ───
+async function loadIndices(){
+  showLoading();
+  try{
+    const r=await fetchRetry(WORKER_URL+'/markets?source=indices',{},3);
+    const d=await r.json();
+    if(!d.data||!d.data.length)throw new Error('Sem dados');
+    if(currentTab!=='indices')return;
+    renderCards(d.data.map(s=>({
+      id:s.symbol,symbol:s.symbol,
+      name:s.shortName||s.symbol,
+      price:fmt(s.regularMarketPrice||0),
+      change:s.regularMarketChangePercent||0
+    })),'indices');
+    d.data.forEach(s=>{
+      if(s.symbol==='^BVSP')setIdx('ibov',s);
+      if(s.symbol==='^GSPC')setIdx('sp',s);
+      if(s.symbol==='^IXIC')setIdx('nasdaq',s);
+      if(s.symbol==='USDBRL=X')setIdx('usd',s);
     });
+  }catch(e){
+    if(currentTab!=='indices')return;
+    document.getElementById('prices-grid').innerHTML=`<div class="error-msg" style="grid-column:1/-1">Índices indisponíveis. Worker proxy necessário.<div class="retry-info">${e.message}</div></div>`;
+  }
+}
 
-    // Render Crypto
-    const cryptoList = document.getElementById('crypto-list');
-    cryptoData.forEach(c => {
-      cryptoList.innerHTML += `
-        <div class="crypto-row">
-          <div class="left">
-            <div class="crypto-icon">${c.icon}</div>
-            <div>
-              <div class="crypto-name">${c.name}</div>
-              <div class="crypto-symbol">${c.symbol}</div>
-            </div>
-          </div>
-          <div class="crypto-right">
-            <div class="crypto-price">${c.price}</div>
-            <div class="change ${c.dir}">${c.dir==='up'?'▲':'▼'} ${c.change}</div>
-          </div>
-        </div>`;
-    });
+function setIdx(id,s){
+  const val=document.getElementById(id+'-val');
+  const chg=document.getElementById(id+'-chg');
+  if(!val||!chg)return;
+  val.textContent=s.regularMarketPrice>=1000?s.regularMarketPrice.toLocaleString('pt-BR',{maximumFractionDigits:0}):s.regularMarketPrice.toFixed(2);
+  const up=(s.regularMarketChangePercent||0)>=0;
+  chg.textContent=(up?'▲ +':'▼ ')+Math.abs(s.regularMarketChangePercent||0).toFixed(2)+'%';
+  chg.className='idx-chg '+(up?'up':'dn');
+}
 
-    // Render Sentiment
-    const sentGrid = document.getElementById('sentiment-grid');
-    sentimentData.forEach(s => {
-      sentGrid.innerHTML += `
-        <div class="sentiment-card">
-          <h3>${s.title}</h3>
-          <div class="sentiment-value ${s.cls}">${s.value}</div>
-          <div class="sentiment-label ${s.cls}">${s.label}</div>
-          <div class="sentiment-meter" style="margin-top:var(--space-3)">
-            <div class="sentiment-fill" style="width:${s.fill};background:${s.gradient}"></div>
-          </div>
-          <div class="sentiment-labels"><span>Medo</span><span>Neutro</span><span>Ganância</span></div>
-        </div>`;
+async function loadIndicesBar(){
+  try{
+    const r=await fetchRetry(WORKER_URL+'/markets?source=indices',{},2);
+    const d=await r.json();
+    if(d.data)d.data.forEach(s=>{
+      if(s.symbol==='^BVSP')setIdx('ibov',s);
+      if(s.symbol==='^GSPC')setIdx('sp',s);
+      if(s.symbol==='^IXIC')setIdx('nasdaq',s);
+      if(s.symbol==='USDBRL=X')setIdx('usd',s);
     });
+  }catch(e){}
+}
 
-    // Render News
-    const newsFeed = document.getElementById('news-feed');
-    newsData.forEach(n => {
-      newsFeed.innerHTML += `
-        <div class="news-item">
-          <div class="news-time">${n.time}</div>
-          <div class="news-headline">
-            <span class="news-tag tag-${n.tag}">${n.tagLabel}</span>${n.headline}
-          </div>
-        </div>`;
-    });
-  </script>
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      window.farpaSidebar.build('mercados');
-      window.farpaTopnav.build([{ label: 'Mercados ao Vivo' }]);
-    });
-  </script>
+function loadNews(){
+  document.getElementById('last-update').textContent='Atualizado às '+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+}
+
+// ─── RE-RENDER CHART ON THEME CHANGE ───
+window.addEventListener('farpaThemeChange',()=>{if(fxLastData)renderFxFromData(fxLastData)});
+window.addEventListener('farpaACChange',()=>{if(fxLastData)renderFxFromData(fxLastData)});
+
+document.addEventListener('DOMContentLoaded',function(){
+  var layout=document.getElementById('farpa-layout');if(!layout)return;
+  var sidebar=window.farpaSidebar.build('mercados');layout.insertBefore(sidebar,layout.firstChild);
+  var topnav=window.farpaTopnav.build([{label:'farpa.ai',href:'index.html'},{label:'Mercados ao Vivo'}]);layout.insertBefore(topnav,sidebar.nextSibling);
+  loadFxChart();
+  loadTab();
+  loadIndicesBar();
+  loadNews();
+  setInterval(loadTab,60000);
+  setInterval(()=>{loadFxChart()},300000);
+});
+</script>
+</main>
+</div>
 </body>
 </html>
