@@ -18,7 +18,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-financial@0.2.1/dist/chartjs-chart-financial.min.js" onerror="console.warn('Financial chart plugin unavailable — line fallback active');window._noFinancial=true"></script>
 <style>
 /* ═══════════════════════════════════════════════════════
-   TRADER SIM v3.0.0 — farpa.ai Terminal Dark Theme
+   TRADER SIM v3.1.0 — farpa.ai Terminal Dark Theme
    Override site theme: .trader-app is always terminal-dark
 ═══════════════════════════════════════════════════════ */
 /* ── Dark Terminal Vars (scoped to .trader-app) ── */
@@ -566,6 +566,25 @@
   background: transparent; color: var(--ts-t3); cursor: pointer;
 }
 
+/* ── Signal Score Meter ── */
+.ts-signal-cell { min-width: 110px; }
+.ts-signal-bar-wrap { width: 100%; height: 4px; background: var(--ts-bg5); border-radius: 2px; margin: 3px 0; overflow: hidden; }
+.ts-signal-bar { height: 100%; border-radius: 2px; background: var(--ts-green); transition: width .5s ease, background .5s ease; }
+.ts-signal-score { font-family: var(--ts-mono); font-size: 14px; font-weight: 800; }
+
+/* ── Price Flash Animation ── */
+@keyframes tsFlashGreen { 0%{color:var(--ts-green)} 70%{color:var(--ts-green)} 100%{color:var(--ts-t1)} }
+@keyframes tsFlashRed   { 0%{color:var(--ts-red)}   70%{color:var(--ts-red)}   100%{color:var(--ts-t1)} }
+.ts-price-up { animation: tsFlashGreen .7s ease-out forwards; }
+.ts-price-dn { animation: tsFlashRed   .7s ease-out forwards; }
+@keyframes tsBalFlash { 0%{opacity:1} 30%{opacity:.35} 65%{opacity:1} }
+.ts-bal-flash { animation: tsBalFlash .5s ease-out; }
+
+/* ── Portfolio Allocation Donut ── */
+.ts-alloc-section { padding: 8px 12px 12px; border-top: 1px solid var(--ts-bdr); flex-shrink: 0; }
+.ts-alloc-title { font-family: var(--ts-mono); font-size: 8px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--ts-t3); margin-bottom: 6px; }
+.ts-alloc-chart-wrap { height: 130px; position: relative; }
+
 /* ── Responsive ── */
 @media (max-width: 1100px) {
   .trader-app { grid-template-columns: 56px 1fr 280px; }
@@ -653,6 +672,14 @@
             <div class="ts-stat-lbl">Max DD</div>
             <div class="ts-stat-val" style="color:var(--ts-red)" id="s-dd">0.00%</div>
           </div>
+          <div class="ts-stat">
+            <div class="ts-stat-lbl">Sharpe</div>
+            <div class="ts-stat-val" style="color:var(--ts-cyan)" id="s-sharpe">—</div>
+          </div>
+          <div class="ts-stat">
+            <div class="ts-stat-lbl">Prof. Factor</div>
+            <div class="ts-stat-val" style="color:var(--ts-purple)" id="s-pf">—</div>
+          </div>
         </div>
 
         <!-- Chart Area -->
@@ -687,6 +714,12 @@
             <canvas id="ts-price-chart"></canvas>
           </div>
           <div class="ts-ind-strip">
+            <div class="ts-ind-cell ts-signal-cell">
+              <div class="ts-ind-name">SINAL</div>
+              <div class="ts-signal-score" id="i-signal-score">—</div>
+              <div class="ts-signal-bar-wrap"><div class="ts-signal-bar" id="i-signal-bar" style="width:50%;background:var(--ts-t4)"></div></div>
+              <div class="ts-ind-sig sig-neutral" id="i-signal-text">Aguardando</div>
+            </div>
             <div class="ts-ind-cell">
               <div class="ts-ind-name">RSI (14)</div>
               <div class="ts-ind-val" id="i-rsi">—</div>
@@ -831,6 +864,10 @@
               <div class="ts-eq-stat"><div class="ts-eq-stat-lbl">Max DD</div><div class="ts-eq-stat-val" style="color:var(--ts-red)" id="eq-dd">0.00%</div></div>
               <div class="ts-eq-stat"><div class="ts-eq-stat-lbl">Profit Factor</div><div class="ts-eq-stat-val" id="eq-pf">—</div></div>
             </div>
+            <div class="ts-alloc-section">
+              <div class="ts-alloc-title">Alocação do Portfólio</div>
+              <div class="ts-alloc-chart-wrap"><canvas id="ts-alloc-chart"></canvas></div>
+            </div>
           </div>
         </div>
 
@@ -884,12 +921,13 @@
   <kbd>B</kbd> Comprar &nbsp;<kbd>S</kbd> Vender &nbsp;<kbd>1-8</kbd> Ativo<br>
   <kbd>D</kbd> Operar &nbsp;<kbd>O</kbd> Book &nbsp;<kbd>H</kbd> Journal &nbsp;<kbd>E</kbd> Equity &nbsp;<kbd>F</kbd> Fórum
 </div>
-<div class="ts-version">v3.0.0</div>
+<div class="ts-version">v3.1.0</div>
 
 <script>
 /* ═══════════════════════════════════════════════════════════
-   TRADER SIM v3.0.0 — farpa.ai Engine
+   TRADER SIM v3.1.0 — farpa.ai Engine
    Multi-market · Multi-chart · Gamification · Community
+   feat: BB overlay · signal score · alloc donut · price flash · sharpe/pf
 ═══════════════════════════════════════════════════════════ */
 'use strict';
 
@@ -988,6 +1026,7 @@ let S = {
 };
 
 let chartInst = null;
+let eqAllocInst = null;
 let eqChartInst = null;
 
 /* ── Persistence ── */
@@ -1279,7 +1318,14 @@ function tsBuildChart({ closes, ohlcData }, asset, ct, days) {
   }
 
   // ── Line / Area / Bar ──
-  const pts = closes.map((p, i) => ({ x: Date.now() - (closes.length - 1 - i) * 864e5 / Math.max(closes.length - 1, 1) * days, y: p }));
+  const tStep = days * 864e5 / Math.max(closes.length - 1, 1);
+  const pts = closes.map((p, i) => ({ x: Date.now() - (closes.length - 1 - i) * tStep, y: p }));
+
+  // Bollinger Bands overlay (line + area only)
+  const bb = (ct === 'line' || ct === 'area') ? tsCalcBB(closes) : null;
+  const bbPtsUpper  = bb ? bb.upper.map((v, i) => ({ x: pts[i + bb.offset].x, y: v })) : [];
+  const bbPtsMiddle = bb ? bb.middle.map((v, i) => ({ x: pts[i + bb.offset].x, y: v })) : [];
+  const bbPtsLower  = bb ? bb.lower.map((v, i) => ({ x: pts[i + bb.offset].x, y: v })) : [];
 
   if (ct === 'bar') {
     chartInst = new Chart(ctx, {
@@ -1300,6 +1346,12 @@ function tsBuildChart({ closes, ohlcData }, asset, ct, days) {
   g.addColorStop(0, col + '40');
   g.addColorStop(1, 'transparent');
 
+  const bbDatasets = bb ? [
+    { data: bbPtsUpper,  borderColor: 'rgba(255,214,0,.35)', borderWidth: 1, borderDash: [3,3], pointRadius: 0, tension: .3, fill: false, label: 'BB Upper'  },
+    { data: bbPtsMiddle, borderColor: 'rgba(255,255,255,.15)', borderWidth: 1, borderDash: [4,4], pointRadius: 0, tension: .3, fill: false, label: 'BB Mid'    },
+    { data: bbPtsLower,  borderColor: 'rgba(255,214,0,.35)', borderWidth: 1, borderDash: [3,3], pointRadius: 0, tension: .3, fill: false, label: 'BB Lower'  },
+  ] : [];
+
   chartInst = new Chart(ctx, {
     type: 'line',
     data: { datasets: [{
@@ -1311,7 +1363,7 @@ function tsBuildChart({ closes, ohlcData }, asset, ct, days) {
       tension: .3,
       fill: ct === 'area',
       backgroundColor: ct === 'area' ? g : 'transparent',
-    }]},
+    }, ...bbDatasets]},
     options: {
       responsive: true, maintainAspectRatio: false, animation: { duration: 300 },
       plugins: { legend: { display: false }, tooltip: { ...tooltipOpts, callbacks: { label: c => fU(c.parsed.y) } } },
@@ -1322,12 +1374,23 @@ function tsBuildChart({ closes, ohlcData }, asset, ct, days) {
 }
 
 /* ── Topbar Update ── */
+let _lastTopbarPrice = 0;
 function tsUpdateTopbar() {
   const a = tsCurAsset();
   const p = S.prices[a.id];
   if (!p) return;
   const price = p.price, chg = p.change24h || 0, up = chg >= 0;
-  sv('tb-price', fU(price));
+  const priceEl = document.getElementById('tb-price');
+  if (priceEl) {
+    const prev = _lastTopbarPrice;
+    priceEl.textContent = fU(price);
+    if (prev && price !== prev) {
+      priceEl.classList.remove('ts-price-up', 'ts-price-dn');
+      void priceEl.offsetWidth; // reflow to restart animation
+      priceEl.classList.add(price > prev ? 'ts-price-up' : 'ts-price-dn');
+    }
+    _lastTopbarPrice = price;
+  }
   const pill = document.getElementById('tb-change');
   pill.textContent = (up ? '▲ +' : '▼ ') + Math.abs(chg).toFixed(2) + '%';
   pill.className = 'ts-chg ' + (up ? 'up' : 'dn');
@@ -1376,6 +1439,44 @@ function tsComputeIndicators(closes) {
   const tp = (late5 - early5) / early5 * 100;
   tsSetInd('i-trend', (tp >= 0 ? '↑ ' : '↓ ') + Math.abs(tp).toFixed(2) + '%', tp > 0 ? 'var(--ts-green)' : 'var(--ts-red)');
   tsSetSig('i-trend-s', tp > 0 ? 'Tendência ↑' : 'Tendência ↓', tp > 0 ? 'sig-buy' : 'sig-sell');
+
+  // Composite Signal Score (0–100)
+  let score = 50;
+  score += rsi > 70 ? -20 : rsi < 30 ? 20 : 0;      // RSI ±20
+  score += lp > ema20 ? 20 : -20;                     // EMA ±20
+  score += macd > 0 ? 20 : -20;                       // MACD ±20
+  score += vol < 2 ? 10 : vol > 5 ? -10 : 0;          // Volatility ±10
+  score += tp > 0 ? 20 : -20;                          // Trend ±20
+  score = Math.max(0, Math.min(100, score));
+  const scoreEl  = document.getElementById('i-signal-score');
+  const barEl    = document.getElementById('i-signal-bar');
+  const textEl   = document.getElementById('i-signal-text');
+  if (scoreEl && barEl && textEl) {
+    const isBuy  = score >= 60, isSell = score <= 40;
+    const barCol = isBuy ? 'var(--ts-green)' : isSell ? 'var(--ts-red)' : 'var(--ts-yellow)';
+    const label  = isBuy ? 'COMPRAR ▲' : isSell ? 'VENDER ▼' : 'NEUTRO —';
+    const cls    = isBuy ? 'sig-buy' : isSell ? 'sig-sell' : 'sig-neutral';
+    scoreEl.textContent = score;
+    scoreEl.style.color = barCol;
+    barEl.style.width      = score + '%';
+    barEl.style.background = barCol;
+    textEl.textContent  = label;
+    textEl.className    = 'ts-ind-sig ' + cls;
+  }
+}
+
+function tsCalcBB(closes, period = 20, mult = 2) {
+  if (closes.length < period) return null;
+  const upper = [], middle = [], lower = [];
+  for (let i = period - 1; i < closes.length; i++) {
+    const slice = closes.slice(i - period + 1, i + 1);
+    const sma = slice.reduce((a, b) => a + b, 0) / period;
+    const std = Math.sqrt(slice.reduce((a, v) => a + Math.pow(v - sma, 2), 0) / period);
+    upper.push(sma + mult * std);
+    middle.push(sma);
+    lower.push(sma - mult * std);
+  }
+  return { upper, middle, lower, offset: period - 1 };
 }
 
 function tsCalcEMA(data, period) {
@@ -1550,13 +1651,23 @@ function tsCalcInv() {
   return v;
 }
 
+let _lastPnl = 0;
 function tsRefreshAll() {
   const inv = tsCalcInv(), total = S.cash + inv;
   const pnl = total - INIT_CASH, pct = pnl / INIT_CASH * 100;
   sv('s-cash', fU(S.cash));
   sv('s-inv', fU(inv));
   const pnlEl = document.getElementById('s-pnl');
-  if (pnlEl) { pnlEl.textContent = (pnl >= 0 ? '+' : '') + fU(pnl); pnlEl.style.color = pnl >= 0 ? 'var(--ts-green)' : 'var(--ts-red)'; }
+  if (pnlEl) {
+    pnlEl.textContent = (pnl >= 0 ? '+' : '') + fU(pnl);
+    pnlEl.style.color = pnl >= 0 ? 'var(--ts-green)' : 'var(--ts-red)';
+    if (pnl !== _lastPnl) {
+      pnlEl.classList.remove('ts-bal-flash');
+      void pnlEl.offsetWidth;
+      pnlEl.classList.add('ts-bal-flash');
+      _lastPnl = pnl;
+    }
+  }
   sv('s-pct', fP(pct));
   sv('s-trades', S.totalTrades);
   sv('s-wr', 'Win: ' + (S.totalTrades > 0 ? (S.wins / S.totalTrades * 100).toFixed(0) + '%' : '--'));
@@ -1641,7 +1752,39 @@ function tsRenderEquity() {
   const retEl = document.getElementById('eq-ret');
   if (retEl) { retEl.textContent = fP(ret); retEl.style.color = up ? 'var(--ts-green)' : 'var(--ts-red)'; }
   sv('eq-dd', S.maxDD.toFixed(2) + '%');
-  sv('eq-pf', S.grossLoss > 0 ? (S.grossProfit / S.grossLoss).toFixed(2) : '—');
+  const pfVal = S.grossLoss > 0 ? (S.grossProfit / S.grossLoss).toFixed(2) : '—';
+  sv('eq-pf', pfVal);
+  sv('s-pf', pfVal);
+
+  // Portfolio Allocation Donut
+  const allocCtx = document.getElementById('ts-alloc-chart');
+  if (allocCtx) {
+    if (eqAllocInst) { eqAllocInst.destroy(); eqAllocInst = null; }
+    const allocLabels = ['Cash'];
+    const allocData   = [S.cash];
+    const allocColors = ['rgba(68,138,255,.7)'];
+    Object.entries(S.positions).forEach(([id, pos]) => {
+      const price = S.prices[id]?.price || pos.avg;
+      const val = pos.qty * price;
+      if (val > 0) {
+        allocLabels.push(pos.sym);
+        allocData.push(val);
+        allocColors.push(pos.color || '#00e676');
+      }
+    });
+    eqAllocInst = new Chart(allocCtx, {
+      type: 'doughnut',
+      data: { labels: allocLabels, datasets: [{ data: allocData, backgroundColor: allocColors, borderColor: '#08080c', borderWidth: 2, hoverOffset: 4 }] },
+      options: {
+        responsive: true, maintainAspectRatio: false, animation: { duration: 400 },
+        cutout: '65%',
+        plugins: {
+          legend: { display: true, position: 'right', labels: { color: '#9898a8', font: { family: 'JetBrains Mono', size: 9 }, boxWidth: 10, padding: 8 } },
+          tooltip: { backgroundColor: 'rgba(13,13,18,.95)', borderColor: 'rgba(255,255,255,.08)', borderWidth: 1, bodyColor: '#eeeef2', bodyFont: { family: 'JetBrains Mono', size: 10 }, callbacks: { label: c => ` ${c.label}: $${c.parsed.toLocaleString('en-US', {maximumFractionDigits:0})}` } }
+        }
+      }
+    });
+  }
 
   if (S.equityCurve.length > 2) {
     const returns = [];
@@ -1649,7 +1792,9 @@ function tsRenderEquity() {
       returns.push((S.equityCurve[i].v - S.equityCurve[i-1].v) / S.equityCurve[i-1].v);
     const avgR = returns.reduce((a, b) => a + b, 0) / returns.length;
     const stdR = Math.sqrt(returns.reduce((a, r) => a + Math.pow(r - avgR, 2), 0) / returns.length);
-    sv('eq-sharpe', stdR > 0 ? (avgR / stdR * Math.sqrt(252)).toFixed(2) : '—');
+    const sharpeVal = stdR > 0 ? (avgR / stdR * Math.sqrt(252)).toFixed(2) : '—';
+    sv('eq-sharpe', sharpeVal);
+    sv('s-sharpe', sharpeVal);
   }
 }
 
