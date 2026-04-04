@@ -1,5 +1,5 @@
-<!-- farpa.ai · mercados.html · v3.0.0 · 2026-03-30 -->
-<!-- redesign v2.3.0 → v3.0.0: 3 temas Robinhood/Bloomberg/Dark · Binance WebSocket · chart type+period · news real · Fear&Greed -->
+<!-- farpa.ai · mercados.html · v3.1.0 · 2026-03-30 -->
+<!-- v3.0.0 → v3.1.0: fix B3 (Yahoo .SA primário), sessão de mercado, sparklines, day hi/lo, clocks, Gold/Oil/VIX/DXY, FX grid, detalhe de ativo, volume no gráfico -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -15,671 +15,268 @@
 <script src="theme-engine.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-chart-financial@0.2.1/dist/chartjs-chart-financial.min.js" onerror="window._noFinancial=true;console.warn('Financial plugin indisponível — fallback para linha')"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-chart-financial@0.2.1/dist/chartjs-chart-financial.min.js" onerror="window._noFinancial=true"></script>
 <style>
-/* ═══════════════════════════════════════════════════
-   MERCADOS v3.0 · 3 TEMAS: ROBINHOOD · BLOOMBERG · DARK
-   ═══════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════
+   MERCADOS v3.1 · ROBINHOOD · TERMINAL · DARK
+   ═══════════════════════════════════════════ */
 
 /* ── ROBINHOOD (padrão) ── */
-#farpa-main[data-mkt-theme="robinhood"] {
-  --m-bg:   #f5f6fa; --m-bg2: #ffffff; --m-bg3: #eef0f6;
-  --m-t1:   #0f0f1a; --m-t2:  #4a4a6a; --m-t3: #9898b8;
-  --m-bdr:  #e2e4ef; --m-bdr2:#cacde0;
-  --m-grn:  #00c805; --m-red: #ff5000;
-  --m-acc:  #00c805; --m-acc2:#0082fa;
-  --m-shad: 0 1px 3px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.04);
-  --m-r:    14px;    --m-r2:  8px;
-  --m-font: 'Space Grotesk',sans-serif;
-  --m-mono: 'DM Mono',monospace;
-  background:#f5f6fa; color:#0f0f1a;
+#farpa-main[data-mkt-theme="robinhood"]{
+  --m-bg:#f5f6fa;--m-bg2:#ffffff;--m-bg3:#eef0f6;--m-bg4:#e6e8f2;
+  --m-t1:#0f0f1a;--m-t2:#4a4a6a;--m-t3:#9898b8;--m-t4:#c8c8d8;
+  --m-bdr:#e2e4ef;--m-bdr2:#cacde0;
+  --m-grn:#00c805;--m-red:#ff3b30;
+  --m-acc:#00c805;--m-acc2:#0082fa;
+  --m-shad:0 1px 3px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.04);
+  --m-r:14px;--m-r2:8px;
+  --m-font:'Space Grotesk',sans-serif;--m-mono:'DM Mono',monospace;
+  background:#f5f6fa;color:#0f0f1a;
 }
-/* ── BLOOMBERG ── */
-#farpa-main[data-mkt-theme="bloomberg"] {
-  --m-bg:   #000000; --m-bg2: #080808; --m-bg3: #111111;
-  --m-t1:   #ff8c00; --m-t2:  #cc9944; --m-t3: #664400;
-  --m-bdr:  #1a1400; --m-bdr2:#2a2200;
-  --m-grn:  #00ff41; --m-red: #ff0033;
-  --m-acc:  #ff8c00; --m-acc2:#00aaff;
-  --m-shad: none;
-  --m-r:    0px;     --m-r2:  0px;
-  --m-font: 'DM Mono',monospace;
-  --m-mono: 'DM Mono',monospace;
-  background:#000000; color:#ff8c00;
+/* ── TERMINAL ── */
+#farpa-main[data-mkt-theme="bloomberg"]{
+  --m-bg:#000000;--m-bg2:#080808;--m-bg3:#111111;--m-bg4:#181800;
+  --m-t1:#ff8c00;--m-t2:#cc9944;--m-t3:#886622;--m-t4:#3a2800;
+  --m-bdr:#1a1400;--m-bdr2:#2a2200;
+  --m-grn:#00ff41;--m-red:#ff0033;
+  --m-acc:#ff8c00;--m-acc2:#00aaff;
+  --m-shad:none;--m-r:0px;--m-r2:0px;
+  --m-font:'DM Mono',monospace;--m-mono:'DM Mono',monospace;
+  background:#000000;color:#ff8c00;
 }
-/* ── FARPA DARK ── */
-#farpa-main[data-mkt-theme="dark"] {
-  --m-bg:   #0a0a0a; --m-bg2: #111111; --m-bg3: #161616;
-  --m-t1:   #eeeeee; --m-t2:  #888888; --m-t3: #444444;
-  --m-bdr:  rgba(255,255,255,.07); --m-bdr2:rgba(255,255,255,.13);
-  --m-grn:  #00ff88; --m-red: #ff4444;
-  --m-acc:  #00ff88; --m-acc2:#00e5ff;
-  --m-shad: none;
-  --m-r:    12px;    --m-r2:  7px;
-  --m-font: 'Space Grotesk',sans-serif;
-  --m-mono: 'DM Mono',monospace;
-  background:#0a0a0a; color:#eeeeee;
+/* ── DARK ── */
+#farpa-main[data-mkt-theme="dark"]{
+  --m-bg:#0a0a0a;--m-bg2:#111111;--m-bg3:#161616;--m-bg4:#1c1c1c;
+  --m-t1:#eeeeee;--m-t2:#888888;--m-t3:#444444;--m-t4:#2a2a2a;
+  --m-bdr:rgba(255,255,255,.07);--m-bdr2:rgba(255,255,255,.13);
+  --m-grn:#00ff88;--m-red:#ff4444;
+  --m-acc:#00ff88;--m-acc2:#00e5ff;
+  --m-shad:none;--m-r:12px;--m-r2:7px;
+  --m-font:'Space Grotesk',sans-serif;--m-mono:'DM Mono',monospace;
+  background:#0a0a0a;color:#eeeeee;
 }
+#farpa-main[data-mkt-theme]{transition:background .3s,color .3s;min-height:100vh;}
 
-/* ── Content shell ── */
-#farpa-main[data-mkt-theme] {
-  transition: background .3s, color .3s;
-  min-height: 100vh;
-}
-.mkt-page {
-  max-width: 1140px;
-  margin: 0 auto;
-  padding: 0 28px 100px;
-  font-family: var(--m-font);
-}
+/* ── Page ── */
+.mkt-page{max-width:1200px;margin:0 auto;padding:0 28px 100px;font-family:var(--m-font);}
 
 /* ── Header ── */
-.mkt-header {
-  padding: 32px 0 20px;
-  border-bottom: 1px solid var(--m-bdr);
-  margin-bottom: 20px;
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 14px;
-}
-.mkt-header-left {}
-.mkt-eyebrow {
-  font-family: var(--m-mono);
-  font-size: 10px;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: var(--m-acc);
-  margin-bottom: 6px;
-  display: flex;
-  align-items: center;
-  gap: 7px;
-}
-.live-dot {
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: var(--m-acc);
-  animation: ldot 2s ease-in-out infinite;
-  flex-shrink: 0;
-}
-@keyframes ldot { 0%,100%{opacity:1} 50%{opacity:.2} }
-.mkt-title {
-  font-size: clamp(22px,3.5vw,36px);
-  font-weight: 900;
-  letter-spacing: -.04em;
-  color: var(--m-t1);
-  margin: 0 0 4px;
-  line-height: 1.05;
-}
-.mkt-title span { color: var(--m-acc); }
-.mkt-sub {
-  font-family: var(--m-mono);
-  font-size: 12px;
-  color: var(--m-t3);
-}
+.mkt-header{padding:28px 0 18px;border-bottom:1px solid var(--m-bdr);margin-bottom:18px;display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+.mkt-eyebrow{font-family:var(--m-mono);font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--m-acc);margin-bottom:5px;display:flex;align-items:center;gap:7px;}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--m-acc);animation:ldot 2s ease-in-out infinite;flex-shrink:0;}
+@keyframes ldot{0%,100%{opacity:1}50%{opacity:.2}}
+.mkt-title{font-size:clamp(20px,3.2vw,34px);font-weight:900;letter-spacing:-.04em;color:var(--m-t1);margin:0 0 3px;line-height:1.05;}
+.mkt-title span{color:var(--m-acc);}
+.mkt-sub{font-family:var(--m-mono);font-size:11px;color:var(--m-t3);}
+.header-right{display:flex;flex-direction:column;align-items:flex-end;gap:8px;}
 
 /* ── Theme switcher ── */
-.theme-switcher {
-  display: flex;
-  gap: 4px;
-  align-items: center;
-  flex-shrink: 0;
-}
-.theme-btn {
-  font-family: var(--m-mono);
-  font-size: 10px;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  padding: 6px 12px;
-  border-radius: var(--m-r2);
-  border: 1px solid var(--m-bdr2);
-  background: transparent;
-  cursor: pointer;
-  color: var(--m-t3);
-  transition: all .15s;
-}
-.theme-btn:hover { border-color: var(--m-acc); color: var(--m-acc); }
-.theme-btn.active { background: var(--m-acc); color: #000; border-color: var(--m-acc); font-weight: 700; }
-[data-mkt-theme="bloomberg"] .theme-btn.active { color: #000; }
+.theme-switcher{display:flex;gap:4px;align-items:center;}
+.theme-btn{font-family:var(--m-mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;padding:6px 12px;border-radius:var(--m-r2);border:1px solid var(--m-bdr2);background:transparent;cursor:pointer;color:var(--m-t3);transition:all .15s;}
+.theme-btn:hover{border-color:var(--m-acc);color:var(--m-acc);}
+.theme-btn.active{background:var(--m-acc);color:#000;border-color:var(--m-acc);font-weight:700;}
 
-/* ── Bloomberg ticker tape ── */
-.bb-tape {
-  display: none;
-  background: #0a0a00;
-  border-top: 1px solid #2a2200;
-  border-bottom: 1px solid #2a2200;
-  overflow: hidden;
-  white-space: nowrap;
-  padding: 6px 0;
-  margin-bottom: 16px;
-}
-[data-mkt-theme="bloomberg"] .bb-tape { display: block; }
-.bb-tape-track {
-  display: inline-flex;
-  gap: 40px;
-  animation: bbscroll 30s linear infinite;
-}
-@keyframes bbscroll { from{transform:translateX(0)} to{transform:translateX(-50%)} }
-.bb-item {
-  font-family: var(--m-mono);
-  font-size: 11px;
-  display: inline-flex;
-  gap: 8px;
-  align-items: center;
-}
-.bb-sym { color: #ff8c00; font-weight: 700; }
-.bb-val { color: #ccaa77; }
-.bb-chg-up { color: #00ff41; }
-.bb-chg-dn { color: #ff0033; }
+/* ── Market Clocks ── */
+.market-clocks{display:flex;gap:10px;flex-wrap:wrap;}
+.mclock{font-family:var(--m-mono);font-size:10px;color:var(--m-t3);display:flex;align-items:center;gap:5px;}
+.mclock-name{letter-spacing:1px;text-transform:uppercase;font-size:9px;}
+.mclock-time{color:var(--m-t1);font-weight:600;}
+.session-badge{font-family:var(--m-mono);font-size:8px;letter-spacing:1px;text-transform:uppercase;padding:2px 5px;border-radius:3px;font-weight:700;}
+.session-open{background:rgba(0,200,5,.15);color:var(--m-grn);}
+.session-closed{background:var(--m-bg4);color:var(--m-t3);}
+.session-pre{background:rgba(255,171,0,.15);color:#ffab00;}
 
-/* ── Indices bar ── */
-.idx-bar {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 24px;
-  flex-wrap: wrap;
-}
-.idx-chip {
-  flex: 1;
-  min-width: 120px;
-  background: var(--m-bg2);
-  border: 1px solid var(--m-bdr);
-  border-radius: var(--m-r);
-  padding: 12px 14px;
-  cursor: default;
-  box-shadow: var(--m-shad);
-  transition: border-color .15s;
-}
-.idx-chip:hover { border-color: var(--m-bdr2); }
-.idx-name {
-  font-family: var(--m-mono);
-  font-size: 9px;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  color: var(--m-t3);
-  margin-bottom: 4px;
-}
-.idx-val {
-  font-family: var(--m-mono);
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--m-t1);
-  line-height: 1;
-}
-.idx-chg {
-  font-family: var(--m-mono);
-  font-size: 11px;
-  padding: 2px 7px;
-  border-radius: 20px;
-  margin-top: 5px;
-  display: inline-block;
-}
-.up  { background: rgba(0,200,5,.12); color: var(--m-grn); }
-.dn  { background: rgba(255,80,0,.10); color: var(--m-red); }
-.nt  { background: var(--m-bg3); color: var(--m-t3); }
+/* ── Ticker tape (Terminal theme) ── */
+.bb-tape{display:none;background:#0a0a00;border-top:1px solid #2a2200;border-bottom:1px solid #2a2200;overflow:hidden;white-space:nowrap;padding:5px 0;margin-bottom:14px;}
+[data-mkt-theme="bloomberg"] .bb-tape{display:block;}
+.bb-tape-track{display:inline-flex;gap:40px;animation:bbscroll 35s linear infinite;}
+@keyframes bbscroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.bb-item{font-family:var(--m-mono);font-size:11px;display:inline-flex;gap:7px;align-items:center;}
+.bb-sym{color:#ff8c00;font-weight:700;}
+.bb-val{color:#ccaa77;}
+.bb-up{color:#00ff41;}
+.bb-dn{color:#ff0033;}
+
+/* ── Top indices bar ── */
+.idx-bar{display:flex;gap:7px;margin-bottom:20px;flex-wrap:wrap;}
+.idx-chip{flex:1;min-width:110px;background:var(--m-bg2);border:1px solid var(--m-bdr);border-radius:var(--m-r);padding:11px 13px;cursor:pointer;box-shadow:var(--m-shad);transition:border-color .15s,transform .1s;}
+.idx-chip:hover{border-color:var(--m-bdr2);transform:translateY(-1px);}
+.idx-chip.clickable:hover{border-color:var(--m-acc);}
+.idx-name{font-family:var(--m-mono);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--m-t3);margin-bottom:3px;}
+.idx-val{font-family:var(--m-mono);font-size:17px;font-weight:700;color:var(--m-t1);line-height:1.1;}
+.idx-chg{font-family:var(--m-mono);font-size:10px;padding:2px 6px;border-radius:20px;margin-top:4px;display:inline-block;}
+.up{background:rgba(0,200,5,.12);color:var(--m-grn);}
+.dn{background:rgba(255,59,48,.10);color:var(--m-red);}
+.nt{background:var(--m-bg3);color:var(--m-t3);}
+[data-mkt-theme="bloomberg"] .up{background:rgba(0,255,65,.12);}
+[data-mkt-theme="bloomberg"] .dn{background:rgba(255,0,51,.1);}
 
 /* ── Main chart ── */
-.chart-section {
-  background: var(--m-bg2);
-  border: 1px solid var(--m-bdr);
-  border-radius: var(--m-r);
-  padding: 22px;
-  margin-bottom: 28px;
-  box-shadow: var(--m-shad);
-}
-.chart-top {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-bottom: 16px;
-}
-.chart-asset-name {
-  font-family: var(--m-mono);
-  font-size: 9px;
-  letter-spacing: 2.5px;
-  text-transform: uppercase;
-  color: var(--m-t3);
-  margin-bottom: 3px;
-}
-.chart-price-big {
-  font-family: var(--m-mono);
-  font-size: 28px;
-  font-weight: 700;
-  color: var(--m-t1);
-  line-height: 1;
-}
-.chart-chg-badge {
-  font-family: var(--m-mono);
-  font-size: 12px;
-  padding: 3px 9px;
-  border-radius: 20px;
-  margin-left: 10px;
-}
-.chart-controls {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  align-items: flex-end;
-}
-.btn-group {
-  display: flex;
-  gap: 3px;
-  flex-wrap: wrap;
-}
-.ctrl-btn {
-  font-family: var(--m-mono);
-  font-size: 10px;
-  letter-spacing: 1px;
-  padding: 5px 11px;
-  border-radius: var(--m-r2);
-  border: 1px solid var(--m-bdr);
-  background: transparent;
-  cursor: pointer;
-  color: var(--m-t3);
-  transition: all .15s;
-  white-space: nowrap;
-}
-.ctrl-btn:hover { border-color: var(--m-acc); color: var(--m-acc); }
-.ctrl-btn.active { border-color: var(--m-acc); background: rgba(0,200,5,.08); color: var(--m-acc); }
-[data-mkt-theme="bloomberg"] .ctrl-btn.active { background: rgba(255,140,0,.12); }
-.chart-canvas-wrap { position: relative; height: 220px; }
+.chart-section{background:var(--m-bg2);border:1px solid var(--m-bdr);border-radius:var(--m-r);padding:20px;margin-bottom:24px;box-shadow:var(--m-shad);}
+.chart-top{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px;}
+.chart-asset-name{font-family:var(--m-mono);font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--m-t3);margin-bottom:3px;}
+.chart-price-big{font-family:var(--m-mono);font-size:26px;font-weight:700;color:var(--m-t1);line-height:1;}
+.chart-chg-badge{font-family:var(--m-mono);font-size:11px;padding:3px 9px;border-radius:20px;margin-left:9px;}
+.chart-controls{display:flex;flex-direction:column;gap:5px;align-items:flex-end;}
+.btn-group{display:flex;gap:3px;flex-wrap:wrap;}
+.ctrl-btn{font-family:var(--m-mono);font-size:10px;letter-spacing:1px;padding:5px 10px;border-radius:var(--m-r2);border:1px solid var(--m-bdr);background:transparent;cursor:pointer;color:var(--m-t3);transition:all .15s;white-space:nowrap;}
+.ctrl-btn:hover{border-color:var(--m-acc);color:var(--m-acc);}
+.ctrl-btn.active{border-color:var(--m-acc);background:rgba(0,200,5,.08);color:var(--m-acc);}
+[data-mkt-theme="bloomberg"] .ctrl-btn.active{background:rgba(255,140,0,.12);}
+[data-mkt-theme="dark"] .ctrl-btn.active{background:rgba(0,255,136,.08);}
+.chart-canvas-wrap{position:relative;height:220px;}
 
-/* ── Asset tabs ── */
-.mkt-tabs {
-  display: flex;
-  gap: 5px;
-  margin-bottom: 14px;
-  flex-wrap: wrap;
-}
-.mkt-tab {
-  font-family: var(--m-mono);
-  font-size: 11px;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  padding: 8px 16px;
-  border-radius: 20px;
-  border: 1px solid var(--m-bdr2);
-  background: transparent;
-  cursor: pointer;
-  color: var(--m-t2);
-  transition: all .15s;
-  white-space: nowrap;
-}
-.mkt-tab:hover { border-color: var(--m-acc); color: var(--m-acc); }
-.mkt-tab.active { border-color: var(--m-acc); background: var(--m-bg2); color: var(--m-acc); font-weight: 700; }
-[data-mkt-theme="bloomberg"] .mkt-tab { border-radius: 0; border-color: #2a2200; }
-[data-mkt-theme="bloomberg"] .mkt-tab.active { background: #1a1000; }
+/* ── FX Grid ── */
+.fx-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:7px;margin-bottom:24px;}
+.fx-chip{background:var(--m-bg2);border:1px solid var(--m-bdr);border-radius:var(--m-r2);padding:10px 12px;box-shadow:var(--m-shad);}
+.fx-pair{font-family:var(--m-mono);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--m-t3);margin-bottom:3px;}
+.fx-rate{font-family:var(--m-mono);font-size:16px;font-weight:700;color:var(--m-t1);}
+.fx-chg{font-family:var(--m-mono);font-size:10px;margin-top:2px;}
 
-/* ── Asset cards grid ── */
-.mkt-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(185px,1fr));
-  gap: 10px;
-  margin-bottom: 12px;
-}
-[data-mkt-theme="bloomberg"] .mkt-grid {
-  grid-template-columns: 1fr;
-  gap: 1px;
-  background: var(--m-bdr);
-}
-.mkt-card {
-  background: var(--m-bg2);
-  border: 1px solid var(--m-bdr);
-  border-radius: var(--m-r);
-  padding: 16px;
-  cursor: pointer;
-  transition: border-color .15s, transform .15s, box-shadow .15s;
-  position: relative;
-  overflow: hidden;
-  box-shadow: var(--m-shad);
-}
-.mkt-card:hover {
-  border-color: var(--m-bdr2);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 20px rgba(0,0,0,.08);
-}
-.mkt-card.selected {
-  border-color: var(--m-acc);
-  box-shadow: 0 0 0 1px var(--m-acc);
-}
-[data-mkt-theme="bloomberg"] .mkt-card {
-  border: none;
-  border-radius: 0;
-  border-bottom: 1px solid #1a1400;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 10px 14px;
-  transform: none !important;
-}
-[data-mkt-theme="bloomberg"] .mkt-card:hover { background: #0d0d00; }
+/* ── Tabs ── */
+.mkt-tabs{display:flex;gap:5px;margin-bottom:12px;flex-wrap:wrap;}
+.mkt-tab{font-family:var(--m-mono);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;padding:8px 16px;border-radius:20px;border:1px solid var(--m-bdr2);background:transparent;cursor:pointer;color:var(--m-t2);transition:all .15s;white-space:nowrap;}
+.mkt-tab:hover{border-color:var(--m-acc);color:var(--m-acc);}
+.mkt-tab.active{border-color:var(--m-acc);background:var(--m-bg2);color:var(--m-acc);font-weight:700;}
+[data-mkt-theme="bloomberg"] .mkt-tab{border-radius:0;border-color:#2a2200;}
+[data-mkt-theme="bloomberg"] .mkt-tab.active{background:#1a1000;}
 
-/* Bloomberg card layout */
-[data-mkt-theme="bloomberg"] .card-body { display: flex; align-items: center; gap: 16px; flex: 1; }
-[data-mkt-theme="bloomberg"] .card-sim-btn { margin-left: auto; }
+/* ── Asset cards ── */
+.mkt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:10px;margin-bottom:10px;}
+[data-mkt-theme="bloomberg"] .mkt-grid{grid-template-columns:1fr;gap:0;background:var(--m-bdr);}
+.mkt-card{background:var(--m-bg2);border:1px solid var(--m-bdr);border-radius:var(--m-r);padding:15px;cursor:pointer;transition:border-color .15s,transform .12s,box-shadow .12s;position:relative;overflow:hidden;box-shadow:var(--m-shad);}
+.mkt-card:hover{border-color:var(--m-bdr2);transform:translateY(-2px);box-shadow:0 4px 20px rgba(0,0,0,.08);}
+.mkt-card.selected{border-color:var(--m-acc)!important;box-shadow:0 0 0 1px var(--m-acc);}
+[data-mkt-theme="bloomberg"] .mkt-card{border:none;border-radius:0;border-bottom:1px solid #1a1400;display:flex;align-items:center;gap:14px;padding:9px 13px;transform:none!important;}
+[data-mkt-theme="bloomberg"] .mkt-card:hover{background:#0d0d00;}
+.card-remove{position:absolute;top:7px;right:7px;width:19px;height:19px;border-radius:50%;border:1px solid var(--m-bdr2);background:var(--m-bg3);color:var(--m-t3);font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .15s,background .15s;line-height:1;font-family:var(--m-mono);padding:0;}
+.mkt-card:hover .card-remove{opacity:1;}
+.card-remove:hover{background:var(--m-red)!important;color:#fff!important;border-color:var(--m-red)!important;}
+.mkt-card-sym{font-family:var(--m-mono);font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--m-acc);font-weight:700;margin-bottom:1px;}
+.mkt-card-name{font-family:var(--m-mono);font-size:9px;letter-spacing:.5px;color:var(--m-t3);margin-bottom:7px;}
+[data-mkt-theme="bloomberg"] .mkt-card-name{margin-bottom:0;min-width:120px;}
+.mkt-card-price{font-family:var(--m-mono);font-size:18px;font-weight:700;color:var(--m-t1);letter-spacing:-.5px;margin-bottom:4px;}
+[data-mkt-theme="bloomberg"] .mkt-card-price{font-size:14px;margin-bottom:0;min-width:110px;}
+.mkt-card-chg{display:inline-flex;align-items:center;gap:3px;font-family:var(--m-mono);font-size:11px;font-weight:500;padding:2px 7px;border-radius:20px;}
+[data-mkt-theme="bloomberg"] .mkt-card-chg{border-radius:0;}
+/* Day High / Low bar */
+.dayrange{margin-top:7px;}
+.dayrange-bar-wrap{display:flex;align-items:center;gap:5px;}
+.dayrange-bar-bg{flex:1;height:3px;background:var(--m-bg4);border-radius:2px;position:relative;overflow:hidden;}
+.dayrange-bar-fill{position:absolute;top:0;height:100%;background:var(--m-acc);border-radius:2px;}
+.dayrange-labels{display:flex;justify-content:space-between;font-family:var(--m-mono);font-size:8px;color:var(--m-t3);margin-top:2px;}
+/* Sparkline mini canvas */
+.card-sparkline{margin-top:6px;height:30px;width:100%;}
+[data-mkt-theme="bloomberg"] .card-sparkline{display:none;}
+/* Bid/Ask spread */
+.card-spread{font-family:var(--m-mono);font-size:9px;color:var(--m-t3);margin-top:4px;}
+/* Simulate button */
+.card-sim-btn{font-family:var(--m-mono);font-size:9px;letter-spacing:.5px;text-transform:uppercase;padding:3px 8px;border-radius:var(--m-r2);border:1px solid var(--m-bdr2);background:transparent;cursor:pointer;color:var(--m-t3);transition:all .15s;margin-top:7px;display:inline-block;text-decoration:none;}
+.card-sim-btn:hover{border-color:var(--m-acc2);color:var(--m-acc2);}
+[data-mkt-theme="bloomberg"] .card-sim-btn{margin-top:0;margin-left:auto;}
 
-.mkt-card-sym {
-  font-family: var(--m-mono);
-  font-size: 11px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--m-acc);
-  font-weight: 700;
-  margin-bottom: 1px;
-}
-.mkt-card-name {
-  font-family: var(--m-mono);
-  font-size: 9px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: var(--m-t3);
-  margin-bottom: 8px;
-}
-[data-mkt-theme="bloomberg"] .mkt-card-name { margin-bottom: 0; min-width: 120px; }
-.mkt-card-price {
-  font-family: var(--m-mono);
-  font-size: 19px;
-  font-weight: 700;
-  color: var(--m-t1);
-  letter-spacing: -.5px;
-  margin-bottom: 5px;
-}
-[data-mkt-theme="bloomberg"] .mkt-card-price { font-size: 15px; margin-bottom: 0; min-width: 110px; }
-.mkt-card-chg {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-family: var(--m-mono);
-  font-size: 11px;
-  font-weight: 500;
-  padding: 2px 8px;
-  border-radius: 20px;
-}
-[data-mkt-theme="bloomberg"] .mkt-card-chg { border-radius: 0; }
-.mkt-card-vol {
-  font-family: var(--m-mono);
-  font-size: 9px;
-  color: var(--m-t3);
-  margin-top: 5px;
-}
-.card-remove {
-  position: absolute; top: 7px; right: 7px;
-  width: 20px; height: 20px;
-  border-radius: 50%; border: 1px solid var(--m-bdr2);
-  background: var(--m-bg3); color: var(--m-t3);
-  font-size: 13px; cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  opacity: 0; transition: opacity .15s, background .15s;
-  line-height: 1; font-family: var(--m-mono); padding: 0;
-}
-.mkt-card:hover .card-remove { opacity: 1; }
-.card-remove:hover { background: var(--m-red) !important; color: #fff !important; border-color: var(--m-red) !important; }
-.card-sim-btn {
-  font-family: var(--m-mono);
-  font-size: 9px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  padding: 4px 9px;
-  border-radius: var(--m-r2);
-  border: 1px solid var(--m-bdr2);
-  background: transparent;
-  cursor: pointer;
-  color: var(--m-t3);
-  transition: all .15s;
-  margin-top: 8px;
-  display: inline-block;
-  text-decoration: none;
-}
-.card-sim-btn:hover { border-color: var(--m-acc2); color: var(--m-acc2); }
-[data-mkt-theme="bloomberg"] .card-sim-btn { margin-top: 0; }
+/* Flash */
+@keyframes flashUp{0%,100%{background:transparent}35%{background:rgba(0,200,5,.14)}}
+@keyframes flashDn{0%,100%{background:transparent}35%{background:rgba(255,59,48,.12)}}
+.flash-up{animation:flashUp .55s ease;}
+.flash-dn{animation:flashDn .55s ease;}
 
-/* Price flash animation */
-@keyframes flashUp { 0%,100%{background:transparent} 30%{background:rgba(0,200,5,.15)} }
-@keyframes flashDn { 0%,100%{background:transparent} 30%{background:rgba(255,80,0,.12)} }
-.flash-up { animation: flashUp .6s ease; }
-.flash-dn { animation: flashDn .6s ease; }
+/* ── Asset Detail Slide-in ── */
+.detail-overlay{position:fixed;inset:0;z-index:900;pointer-events:none;}
+.detail-overlay.open{pointer-events:all;}
+.detail-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.45);opacity:0;transition:opacity .25s;}
+.detail-overlay.open .detail-backdrop{opacity:1;}
+.detail-panel{position:absolute;top:0;right:0;bottom:0;width:340px;max-width:95vw;background:var(--m-bg2);border-left:1px solid var(--m-bdr);padding:24px 20px;overflow-y:auto;transform:translateX(100%);transition:transform .28s cubic-bezier(.4,0,.2,1);box-shadow:-8px 0 40px rgba(0,0,0,.18);}
+.detail-overlay.open .detail-panel{transform:translateX(0);}
+.detail-close{position:absolute;top:16px;right:16px;width:28px;height:28px;border-radius:50%;border:1px solid var(--m-bdr2);background:var(--m-bg3);color:var(--m-t2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .15s;}
+.detail-close:hover{background:var(--m-red);color:#fff;border-color:var(--m-red);}
+.detail-sym{font-family:var(--m-mono);font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--m-acc);margin-bottom:2px;}
+.detail-name{font-size:20px;font-weight:700;color:var(--m-t1);margin-bottom:4px;}
+.detail-price{font-family:var(--m-mono);font-size:28px;font-weight:700;color:var(--m-t1);margin-bottom:4px;}
+.detail-rows{display:flex;flex-direction:column;gap:0;margin-top:16px;}
+.detail-row{display:flex;justify-content:space-between;font-family:var(--m-mono);font-size:11px;padding:9px 0;border-bottom:1px solid var(--m-bdr);}
+.detail-row:last-child{border-bottom:none;}
+.dr-label{color:var(--m-t3);}
+.dr-val{color:var(--m-t1);font-weight:600;}
 
 /* ── Add asset ── */
-.add-bar {
-  margin-bottom: 28px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.add-toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: transparent;
-  border: 1px dashed var(--m-bdr2);
-  border-radius: var(--m-r2);
-  padding: 8px 14px;
-  font-family: var(--m-mono);
-  font-size: 10px;
-  letter-spacing: 1px;
-  cursor: pointer;
-  color: var(--m-t3);
-  transition: all .15s;
-}
-.add-toggle:hover { border-color: var(--m-acc); color: var(--m-acc); }
-.add-form {
-  display: none;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-  background: var(--m-bg2);
-  border: 1px solid var(--m-bdr);
-  border-radius: var(--m-r);
-  padding: 12px 16px;
-}
-.add-form.open { display: flex; }
-.add-input {
-  background: var(--m-bg3);
-  border: 1px solid var(--m-bdr2);
-  border-radius: var(--m-r2);
-  padding: 7px 12px;
-  font-family: var(--m-mono);
-  font-size: 12px;
-  color: var(--m-t1);
-  outline: none;
-  transition: border-color .15s;
-  min-width: 180px;
-}
-.add-input:focus { border-color: var(--m-acc); }
-.add-input::placeholder { color: var(--m-t3); }
-.add-ok {
-  background: var(--m-acc);
-  color: #000;
-  border: none;
-  border-radius: var(--m-r2);
-  padding: 7px 14px;
-  font-family: var(--m-mono);
-  font-size: 10px;
-  letter-spacing: 1px;
-  cursor: pointer;
-  font-weight: 700;
-  transition: opacity .15s;
-}
-.add-ok:hover { opacity: .85; }
-.add-cancel {
-  background: transparent;
-  border: 1px solid var(--m-bdr2);
-  border-radius: var(--m-r2);
-  padding: 7px 14px;
-  font-family: var(--m-mono);
-  font-size: 10px;
-  cursor: pointer;
-  color: var(--m-t3);
-  transition: all .15s;
-}
-.add-cancel:hover { border-color: var(--m-t3); }
-.add-status { font-family: var(--m-mono); font-size: 10px; color: var(--m-t3); }
+.add-bar{margin-bottom:24px;display:flex;flex-direction:column;gap:7px;}
+.add-toggle{display:inline-flex;align-items:center;gap:6px;background:transparent;border:1px dashed var(--m-bdr2);border-radius:var(--m-r2);padding:7px 13px;font-family:var(--m-mono);font-size:10px;letter-spacing:1px;cursor:pointer;color:var(--m-t3);transition:all .15s;}
+.add-toggle:hover{border-color:var(--m-acc);color:var(--m-acc);}
+.add-form{display:none;align-items:center;gap:8px;flex-wrap:wrap;background:var(--m-bg2);border:1px solid var(--m-bdr);border-radius:var(--m-r);padding:11px 15px;}
+.add-form.open{display:flex;}
+.add-input{background:var(--m-bg3);border:1px solid var(--m-bdr2);border-radius:var(--m-r2);padding:7px 11px;font-family:var(--m-mono);font-size:12px;color:var(--m-t1);outline:none;transition:border-color .15s;min-width:180px;}
+.add-input:focus{border-color:var(--m-acc);}
+.add-input::placeholder{color:var(--m-t3);}
+.add-ok{background:var(--m-acc);color:#000;border:none;border-radius:var(--m-r2);padding:7px 14px;font-family:var(--m-mono);font-size:10px;letter-spacing:1px;cursor:pointer;font-weight:700;transition:opacity .15s;}
+.add-ok:hover{opacity:.85;}
+.add-cancel{background:transparent;border:1px solid var(--m-bdr2);border-radius:var(--m-r2);padding:7px 13px;font-family:var(--m-mono);font-size:10px;cursor:pointer;color:var(--m-t3);transition:all .15s;}
+.add-cancel:hover{border-color:var(--m-t3);}
+.add-status{font-family:var(--m-mono);font-size:10px;color:var(--m-t3);}
 
-/* ── Section labels ── */
-.sec-label {
-  font-family: var(--m-mono);
-  font-size: 9px;
-  letter-spacing: 2.5px;
-  text-transform: uppercase;
-  color: var(--m-t3);
-  margin: 28px 0 12px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.sec-label::after { content: ''; flex: 1; height: 1px; background: var(--m-bdr); }
+/* ── Section label ── */
+.sec-label{font-family:var(--m-mono);font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--m-t3);margin:24px 0 11px;display:flex;align-items:center;gap:10px;}
+.sec-label::after{content:'';flex:1;height:1px;background:var(--m-bdr);}
 
 /* ── Fear & Greed + Sentiment ── */
-.fg-sent-row {
-  display: grid;
-  grid-template-columns: 260px 1fr;
-  gap: 14px;
-  margin-bottom: 28px;
-}
-@media(max-width:680px){ .fg-sent-row { grid-template-columns: 1fr; } }
-.fg-card, .sent-card {
-  background: var(--m-bg2);
-  border: 1px solid var(--m-bdr);
-  border-radius: var(--m-r);
-  padding: 20px;
-  box-shadow: var(--m-shad);
-}
-.fg-title, .sent-title {
-  font-family: var(--m-mono);
-  font-size: 9px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--m-t3);
-  margin-bottom: 14px;
-}
-/* SVG gauge */
-.fg-gauge-wrap { display: flex; flex-direction: column; align-items: center; }
-#fg-svg { width: 140px; height: 80px; }
-.fg-score {
-  font-family: var(--m-mono);
-  font-size: 32px;
-  font-weight: 700;
-  color: var(--m-t1);
-  text-align: center;
-  line-height: 1;
-  margin-top: 4px;
-}
-.fg-label {
-  font-family: var(--m-mono);
-  font-size: 11px;
-  text-align: center;
-  margin-top: 3px;
-  font-weight: 700;
-}
-.fg-updated { font-family: var(--m-mono); font-size: 9px; color: var(--m-t3); text-align: center; margin-top: 8px; }
-
-.sent-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; }
-.sent-item {}
-.sent-mkt { font-family: var(--m-mono); font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--m-t3); margin-bottom: 4px; }
-.sent-label { font-size: 17px; font-weight: 900; margin-bottom: 6px; }
-.sent-bar { display: flex; height: 5px; border-radius: 3px; overflow: hidden; gap: 1px; margin-bottom: 3px; }
-.s-bull { background: var(--m-grn); }
-.s-neut { background: var(--m-bg3); }
-.s-bear { background: var(--m-red); }
-.sent-nums { display: flex; justify-content: space-between; font-family: var(--m-mono); font-size: 9px; color: var(--m-t3); }
+.fg-sent-row{display:grid;grid-template-columns:250px 1fr;gap:12px;margin-bottom:24px;}
+@media(max-width:680px){.fg-sent-row{grid-template-columns:1fr;}}
+.fg-card,.sent-card{background:var(--m-bg2);border:1px solid var(--m-bdr);border-radius:var(--m-r);padding:18px;box-shadow:var(--m-shad);}
+.fg-title,.sent-title{font-family:var(--m-mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--m-t3);margin-bottom:12px;}
+.fg-gauge-wrap{display:flex;flex-direction:column;align-items:center;}
+#fg-svg{width:130px;height:75px;}
+.fg-score{font-family:var(--m-mono);font-size:30px;font-weight:700;color:var(--m-t1);text-align:center;line-height:1;margin-top:4px;}
+.fg-label{font-family:var(--m-mono);font-size:11px;text-align:center;margin-top:2px;font-weight:700;}
+.fg-updated{font-family:var(--m-mono);font-size:9px;color:var(--m-t3);text-align:center;margin-top:6px;}
+.sent-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.sent-mkt{font-family:var(--m-mono);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--m-t3);margin-bottom:4px;}
+.sent-lbl{font-size:16px;font-weight:900;margin-bottom:5px;}
+.sent-bar{display:flex;height:4px;border-radius:3px;overflow:hidden;gap:1px;margin-bottom:3px;}
+.s-bull{background:var(--m-grn);}
+.s-neut{background:var(--m-bg3);}
+.s-bear{background:var(--m-red);}
+.sent-nums{display:flex;justify-content:space-between;font-family:var(--m-mono);font-size:9px;color:var(--m-t3);}
 
 /* ── News ── */
-.news-toolbar {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 14px;
-  flex-wrap: wrap;
-}
-.refresh-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: transparent;
-  border: 1px solid var(--m-bdr2);
-  border-radius: var(--m-r2);
-  padding: 7px 12px;
-  font-family: var(--m-mono);
-  font-size: 10px;
-  letter-spacing: 1px;
-  cursor: pointer;
-  color: var(--m-t2);
-  transition: all .15s;
-}
-.refresh-btn:hover { border-color: var(--m-acc); color: var(--m-acc); }
-.refresh-btn svg { width: 12px; height: 12px; }
-.news-ts { font-family: var(--m-mono); font-size: 10px; color: var(--m-t3); margin-left: auto; }
-.news-feed { display: flex; flex-direction: column; gap: 8px; margin-bottom: 28px; }
-.news-item {
-  background: var(--m-bg2);
-  border: 1px solid var(--m-bdr);
-  border-radius: var(--m-r);
-  padding: 14px 16px;
-  display: flex;
-  gap: 12px;
-  align-items: flex-start;
-  transition: border-color .15s;
-  text-decoration: none;
-  cursor: pointer;
-  box-shadow: var(--m-shad);
-}
-.news-item:hover { border-color: var(--m-bdr2); }
-[data-mkt-theme="bloomberg"] .news-item { border-radius: 0; border-color: transparent; border-bottom: 1px solid #1a1400; }
-.news-tag {
-  font-family: var(--m-mono);
-  font-size: 9px;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  padding: 2px 7px;
-  border-radius: 20px;
-  border: 1px solid;
-  white-space: nowrap;
-  flex-shrink: 0;
-  margin-top: 2px;
-}
-[data-mkt-theme="bloomberg"] .news-tag { border-radius: 0; }
-.tag-cripto { color: var(--m-acc); border-color: var(--m-acc); background: transparent; opacity: .8; }
-.tag-macro  { color: var(--m-acc2); border-color: var(--m-acc2); background: transparent; opacity: .8; }
-.tag-b3     { color: #a78bfa; border-color: #a78bfa; background: transparent; opacity: .8; }
-.tag-urgente{ color: var(--m-red); border-color: var(--m-red); background: transparent; opacity: .8; }
-.news-headline { font-size: 13px; font-weight: 700; line-height: 1.4; color: var(--m-t1); margin-bottom: 4px; }
-.news-meta { font-family: var(--m-mono); font-size: 10px; color: var(--m-t3); display: flex; gap: 12px; flex-wrap: wrap; }
+.news-toolbar{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap;}
+.refresh-btn{display:inline-flex;align-items:center;gap:6px;background:transparent;border:1px solid var(--m-bdr2);border-radius:var(--m-r2);padding:6px 12px;font-family:var(--m-mono);font-size:10px;letter-spacing:1px;cursor:pointer;color:var(--m-t2);transition:all .15s;}
+.refresh-btn:hover{border-color:var(--m-acc);color:var(--m-acc);}
+.refresh-btn svg{width:12px;height:12px;}
+.news-ts{font-family:var(--m-mono);font-size:10px;color:var(--m-t3);margin-left:auto;}
+.news-feed{display:flex;flex-direction:column;gap:7px;margin-bottom:24px;}
+.news-item{background:var(--m-bg2);border:1px solid var(--m-bdr);border-radius:var(--m-r);padding:13px 15px;display:flex;gap:11px;align-items:flex-start;transition:border-color .15s;text-decoration:none;cursor:pointer;box-shadow:var(--m-shad);}
+.news-item:hover{border-color:var(--m-bdr2);}
+[data-mkt-theme="bloomberg"] .news-item{border-radius:0;border-color:transparent;border-bottom:1px solid #1a1400;}
+.news-tag{font-family:var(--m-mono);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;padding:2px 6px;border-radius:20px;border:1px solid;white-space:nowrap;flex-shrink:0;margin-top:2px;}
+[data-mkt-theme="bloomberg"] .news-tag{border-radius:0;}
+.tag-cripto{color:var(--m-acc);border-color:var(--m-acc);background:transparent;}
+.tag-macro{color:var(--m-acc2);border-color:var(--m-acc2);background:transparent;}
+.tag-b3{color:#a78bfa;border-color:#a78bfa;background:transparent;}
+.tag-urgente{color:var(--m-red);border-color:var(--m-red);background:transparent;}
+.news-headline{font-size:13px;font-weight:700;line-height:1.4;color:var(--m-t1);margin-bottom:3px;}
+.news-meta{font-family:var(--m-mono);font-size:10px;color:var(--m-t3);display:flex;gap:11px;flex-wrap:wrap;}
 
-/* ── Loading & Errors ── */
-.loading-spin { display: inline-flex; gap: 3px; align-items: center; }
-.loading-spin span { width: 5px; height: 5px; border-radius: 50%; background: var(--m-acc); animation: ld .9s ease-in-out infinite; }
+/* ── Loading / Error ── */
+.loading-spin{display:inline-flex;gap:3px;align-items:center;}
+.loading-spin span{width:5px;height:5px;border-radius:50%;background:var(--m-acc);animation:ld .9s ease-in-out infinite;}
 .loading-spin span:nth-child(2){animation-delay:.18s}
 .loading-spin span:nth-child(3){animation-delay:.36s}
 @keyframes ld{0%,80%,100%{transform:scale(.6);opacity:.3}40%{transform:scale(1);opacity:1}}
-.load-wrap { grid-column:1/-1; text-align:center; padding:32px; }
-.load-msg { font-family:var(--m-mono); font-size:11px; color:var(--m-t3); margin-top:10px; }
-.err-msg {
-  grid-column: 1/-1;
-  font-family: var(--m-mono);
-  font-size: 11px;
-  color: var(--m-red);
-  padding: 14px;
-  text-align: center;
-  background: rgba(255,80,0,.05);
-  border-radius: var(--m-r2);
-  border: 1px solid rgba(255,80,0,.15);
-}
-.err-detail { font-size: 9px; color: var(--m-t3); margin-top: 4px; }
+.load-wrap{grid-column:1/-1;text-align:center;padding:28px;}
+.load-msg{font-family:var(--m-mono);font-size:11px;color:var(--m-t3);margin-top:8px;}
+.err-msg{grid-column:1/-1;font-family:var(--m-mono);font-size:11px;color:var(--m-red);padding:13px;text-align:center;background:rgba(255,59,48,.05);border-radius:var(--m-r2);border:1px solid rgba(255,59,48,.15);}
+.err-detail{font-size:9px;color:var(--m-t3);margin-top:4px;}
 
-/* ── Version badge ── */
-.ver { position:fixed;bottom:10px;left:16px;font-family:var(--m-mono);font-size:9px;color:var(--m-t3);letter-spacing:1px;z-index:100;pointer-events:none; }
+.ver{position:fixed;bottom:10px;left:16px;font-family:var(--m-mono);font-size:9px;color:var(--m-t3);letter-spacing:1px;z-index:100;pointer-events:none;}
 
-/* ── Responsive ── */
 @media(max-width:640px){
-  .mkt-page { padding: 0 14px 60px; }
-  .mkt-grid { grid-template-columns: 1fr 1fr; }
-  .idx-bar { flex-direction: column; }
-  .chart-top { flex-direction: column; }
-  .chart-controls { align-items: flex-start; }
-  .sent-grid { grid-template-columns: 1fr; }
+  .mkt-page{padding:0 14px 60px;}
+  .mkt-grid{grid-template-columns:1fr 1fr;}
+  .idx-bar{flex-direction:column;}
+  .chart-top{flex-direction:column;}
+  .chart-controls{align-items:flex-start;}
+  .fx-grid{grid-template-columns:1fr 1fr;}
+  .detail-panel{width:100%;border-left:none;border-top:1px solid var(--m-bdr);}
 }
 </style>
 </head>
@@ -690,55 +287,68 @@
 
   <!-- HEADER -->
   <div class="mkt-header">
-    <div class="mkt-header-left">
+    <div>
       <div class="mkt-eyebrow"><span class="live-dot"></span>Dados ao vivo · Binance WS</div>
       <h1 class="mkt-title">Mercados &amp; <span>Sentimento</span></h1>
-      <p class="mkt-sub">B3 · NYSE · Cripto · Índices · IA</p>
+      <p class="mkt-sub">B3 · NYSE · Cripto · Índices · Câmbio</p>
     </div>
-    <div class="theme-switcher">
-      <button class="theme-btn active" onclick="setTheme('robinhood',this)">Robinhood</button>
-      <button class="theme-btn" onclick="setTheme('bloomberg',this)">Bloomberg</button>
-      <button class="theme-btn" onclick="setTheme('dark',this)">Dark</button>
+    <div class="header-right">
+      <div class="theme-switcher">
+        <button class="theme-btn active" onclick="setTheme('robinhood',this)">Light</button>
+        <button class="theme-btn" onclick="setTheme('bloomberg',this)">Terminal</button>
+        <button class="theme-btn" onclick="setTheme('dark',this)">Dark</button>
+      </div>
+      <div class="market-clocks" id="market-clocks">
+        <div class="mclock"><span class="mclock-name">B3</span><span class="mclock-time" id="clk-b3">—</span><span class="session-badge session-closed" id="ses-b3">—</span></div>
+        <div class="mclock"><span class="mclock-name">NYSE</span><span class="mclock-time" id="clk-nyse">—</span><span class="session-badge session-closed" id="ses-nyse">—</span></div>
+        <div class="mclock"><span class="mclock-name">Cripto</span><span class="mclock-time" id="clk-utc">—</span><span class="session-badge session-open" id="ses-crypto">24/7</span></div>
+      </div>
     </div>
   </div>
 
-  <!-- BLOOMBERG TICKER TAPE -->
-  <div class="bb-tape" id="bb-tape">
-    <div class="bb-tape-track" id="bb-tape-track">
-      <!-- populated by JS -->
-    </div>
-  </div>
+  <!-- TERMINAL TICKER TAPE -->
+  <div class="bb-tape"><div class="bb-tape-track" id="bb-tape-track"></div></div>
 
-  <!-- INDICES BAR -->
+  <!-- ÍNDICES GLOBAIS -->
   <div class="idx-bar">
-    <div class="idx-chip" id="idx-ibov">
+    <div class="idx-chip clickable" onclick="selectAsset('^BVSP','index',null,null,'^BVSP')">
       <div class="idx-name">IBOVESPA</div>
       <div class="idx-val" id="ibov-val">—</div>
       <div class="idx-chg nt" id="ibov-chg">—</div>
     </div>
-    <div class="idx-chip" id="idx-sp">
+    <div class="idx-chip clickable" onclick="selectAsset('S&P 500','index',null,null,'^GSPC')">
       <div class="idx-name">S&amp;P 500</div>
       <div class="idx-val" id="sp-val">—</div>
       <div class="idx-chg nt" id="sp-chg">—</div>
     </div>
-    <div class="idx-chip" id="idx-nasdaq">
+    <div class="idx-chip clickable" onclick="selectAsset('NASDAQ','index',null,null,'^IXIC')">
       <div class="idx-name">NASDAQ</div>
       <div class="idx-val" id="nasdaq-val">—</div>
       <div class="idx-chg nt" id="nasdaq-chg">—</div>
     </div>
-    <div class="idx-chip" id="idx-btc" onclick="selectAsset('BTC','crypto','BTCUSDT')">
+    <div class="idx-chip clickable" onclick="selectAsset('Gold','index',null,null,'GC=F')">
+      <div class="idx-name">Ouro (GC)</div>
+      <div class="idx-val" id="gold-val">—</div>
+      <div class="idx-chg nt" id="gold-chg">—</div>
+    </div>
+    <div class="idx-chip clickable" onclick="selectAsset('Oil WTI','index',null,null,'CL=F')">
+      <div class="idx-name">Petróleo WTI</div>
+      <div class="idx-val" id="oil-val">—</div>
+      <div class="idx-chg nt" id="oil-chg">—</div>
+    </div>
+    <div class="idx-chip" id="idx-vix">
+      <div class="idx-name">VIX</div>
+      <div class="idx-val" id="vix-val">—</div>
+      <div class="idx-chg nt" id="vix-chg">—</div>
+    </div>
+    <div class="idx-chip clickable" onclick="selectAsset('BTC/USD','crypto','BTCUSDT','bitcoin')">
       <div class="idx-name">BTC / USD</div>
       <div class="idx-val" id="btc-val">—</div>
       <div class="idx-chg nt" id="btc-chg">—</div>
     </div>
-    <div class="idx-chip" id="idx-fx" onclick="selectAsset('USD/BRL','fx',null)">
-      <div class="idx-name">USD / BRL</div>
-      <div class="idx-val" id="fx-val">—</div>
-      <div class="idx-chg nt" id="fx-chg">—</div>
-    </div>
   </div>
 
-  <!-- MAIN CHART -->
+  <!-- GRÁFICO PRINCIPAL -->
   <div class="chart-section">
     <div class="chart-top">
       <div>
@@ -747,7 +357,7 @@
           <span class="chart-price-big" id="chart-price">—</span>
           <span class="chart-chg-badge nt" id="chart-chg">—</span>
         </div>
-        <div style="font-family:var(--m-mono);font-size:9px;color:var(--m-t3);margin-top:4px" id="chart-ts">—</div>
+        <div style="font-family:var(--m-mono);font-size:9px;color:var(--m-t3);margin-top:3px" id="chart-ts">—</div>
       </div>
       <div class="chart-controls">
         <div class="btn-group" id="chart-type-btns">
@@ -768,7 +378,18 @@
     <div class="chart-canvas-wrap"><canvas id="main-chart"></canvas></div>
   </div>
 
-  <!-- ASSET TABS -->
+  <!-- CÂMBIO GRID -->
+  <div class="sec-label">Câmbio ao Vivo</div>
+  <div class="fx-grid">
+    <div class="fx-chip"><div class="fx-pair">USD / BRL</div><div class="fx-rate" id="fx-usdbrl">—</div><div class="fx-chg nt" id="fx-usdbrl-chg">—</div></div>
+    <div class="fx-chip"><div class="fx-pair">EUR / BRL</div><div class="fx-rate" id="fx-eurbrl">—</div><div class="fx-chg nt" id="fx-eurbrl-chg">—</div></div>
+    <div class="fx-chip"><div class="fx-pair">GBP / BRL</div><div class="fx-rate" id="fx-gbpbrl">—</div><div class="fx-chg nt" id="fx-gbpbrl-chg">—</div></div>
+    <div class="fx-chip"><div class="fx-pair">BTC / BRL</div><div class="fx-rate" id="fx-btcbrl">—</div><div class="fx-chg nt" id="fx-btcbrl-chg">—</div></div>
+    <div class="fx-chip"><div class="fx-pair">ARS / BRL</div><div class="fx-rate" id="fx-arsbrl">—</div><div class="fx-chg nt" id="fx-arsbrl-chg">—</div></div>
+    <div class="fx-chip"><div class="fx-pair">CNY / BRL</div><div class="fx-rate" id="fx-cnybrl">—</div><div class="fx-chg nt" id="fx-cnybrl-chg">—</div></div>
+  </div>
+
+  <!-- ABAS DE ATIVOS -->
   <div class="mkt-tabs">
     <button class="mkt-tab active" onclick="switchTab('crypto',this)">₿ Cripto</button>
     <button class="mkt-tab" onclick="switchTab('b3',this)">🇧🇷 B3</button>
@@ -776,7 +397,6 @@
     <button class="mkt-tab" onclick="switchTab('indices',this)">📊 Índices</button>
   </div>
 
-  <!-- ASSETS GRID -->
   <div class="sec-label">Ativos · <span id="tab-label">Cripto</span></div>
   <div class="mkt-grid" id="prices-grid">
     <div class="load-wrap"><div class="loading-spin"><span></span><span></span><span></span></div><div class="load-msg">Carregando cotações...</div></div>
@@ -797,18 +417,15 @@
     </div>
   </div>
 
-  <!-- FEAR & GREED + SENTIMENT -->
+  <!-- SENTIMENTO -->
   <div class="sec-label">Indicadores de Sentimento</div>
   <div class="fg-sent-row">
     <div class="fg-card">
-      <div class="fg-title">Fear &amp; Greed · Cripto</div>
+      <div class="fg-title">Índice Medo &amp; Ganância · Cripto</div>
       <div class="fg-gauge-wrap">
         <svg id="fg-svg" viewBox="0 0 140 80">
-          <!-- gauge arc background -->
           <path d="M10,70 A60,60 0 0,1 130,70" fill="none" stroke="#222" stroke-width="12" stroke-linecap="round"/>
-          <!-- gauge arc fill (updated by JS) -->
           <path id="fg-arc" d="M10,70 A60,60 0 0,1 130,70" fill="none" stroke="#888" stroke-width="12" stroke-linecap="round" stroke-dasharray="0 1000"/>
-          <!-- needle -->
           <line id="fg-needle" x1="70" y1="70" x2="70" y2="18" stroke="#fff" stroke-width="2" stroke-linecap="round" transform="rotate(0,70,70)"/>
           <circle cx="70" cy="70" r="4" fill="#fff"/>
         </svg>
@@ -820,44 +437,32 @@
     <div class="sent-card">
       <div class="sent-title">Sentimento por Mercado</div>
       <div class="sent-grid">
-        <div class="sent-item">
+        <div>
           <div class="sent-mkt">Cripto</div>
-          <div class="sent-label" id="sent-crypto-lbl" style="color:var(--m-grn)">—</div>
-          <div class="sent-bar">
-            <div class="s-bull" id="sent-crypto-bull" style="width:50%"></div>
-            <div class="s-neut" style="width:20%"></div>
-            <div class="s-bear" id="sent-crypto-bear" style="flex:1"></div>
-          </div>
+          <div class="sent-lbl" id="sent-crypto-lbl" style="color:var(--m-grn)">—</div>
+          <div class="sent-bar"><div class="s-bull" id="sent-crypto-bull" style="width:50%"></div><div class="s-neut" style="width:20%"></div><div class="s-bear" style="flex:1"></div></div>
           <div class="sent-nums"><span id="sent-crypto-b">—</span><span id="sent-crypto-r">—</span></div>
         </div>
-        <div class="sent-item">
+        <div>
           <div class="sent-mkt">B3</div>
-          <div class="sent-label" id="sent-b3-lbl" style="color:var(--m-t2)">Cautela</div>
-          <div class="sent-bar">
-            <div class="s-bull" style="width:28%"></div>
-            <div class="s-neut" style="width:35%"></div>
-            <div class="s-bear" style="flex:1"></div>
-          </div>
-          <div class="sent-nums"><span>28% bull</span><span>37% bear</span></div>
+          <div class="sent-lbl" id="sent-b3-lbl" style="color:var(--m-t2)">Cautela</div>
+          <div class="sent-bar"><div class="s-bull" style="width:28%"></div><div class="s-neut" style="width:35%"></div><div class="s-bear" style="flex:1"></div></div>
+          <div class="sent-nums"><span>28% alta</span><span>37% baixa</span></div>
         </div>
-        <div class="sent-item">
+        <div>
           <div class="sent-mkt">NYSE</div>
-          <div class="sent-label" id="sent-nyse-lbl" style="color:var(--m-grn)">Otimista</div>
-          <div class="sent-bar">
-            <div class="s-bull" style="width:62%"></div>
-            <div class="s-neut" style="width:22%"></div>
-            <div class="s-bear" style="flex:1"></div>
-          </div>
-          <div class="sent-nums"><span>62% bull</span><span>16% bear</span></div>
+          <div class="sent-lbl" id="sent-nyse-lbl" style="color:var(--m-grn)">Otimista</div>
+          <div class="sent-bar"><div class="s-bull" style="width:62%"></div><div class="s-neut" style="width:22%"></div><div class="s-bear" style="flex:1"></div></div>
+          <div class="sent-nums"><span>62% alta</span><span>16% baixa</span></div>
         </div>
       </div>
-      <div style="font-family:var(--m-mono);font-size:9px;color:var(--m-t3);border-top:1px solid var(--m-bdr);padding-top:10px;margin-top:16px">
+      <div style="font-family:var(--m-mono);font-size:9px;color:var(--m-t3);border-top:1px solid var(--m-bdr);padding-top:9px;margin-top:14px">
         Análise baseada em 1.200+ fontes · atualizado a cada 15min
       </div>
     </div>
   </div>
 
-  <!-- NEWS -->
+  <!-- NOTÍCIAS -->
   <div class="sec-label">Notícias com Impacto em Mercado</div>
   <div class="news-toolbar">
     <button class="refresh-btn" onclick="loadNews()">
@@ -867,31 +472,50 @@
     <span class="news-ts" id="news-ts">—</span>
   </div>
   <div class="news-feed" id="news-feed">
-    <div class="load-msg" style="text-align:center;padding:20px">Carregando notícias...</div>
+    <div class="load-msg" style="text-align:center;padding:16px">Carregando notícias...</div>
   </div>
 
 </div><!-- .mkt-page -->
-<div class="ver">v3.0.0</div>
+
+<!-- ASSET DETAIL OVERLAY -->
+<div class="detail-overlay" id="detail-overlay">
+  <div class="detail-backdrop" onclick="closeDetail()"></div>
+  <div class="detail-panel" id="detail-panel">
+    <button class="detail-close" onclick="closeDetail()">×</button>
+    <div class="detail-sym" id="d-sym">—</div>
+    <div class="detail-name" id="d-name">—</div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
+      <div class="detail-price" id="d-price">—</div>
+      <span class="idx-chg nt" id="d-chg">—</span>
+    </div>
+    <a id="d-sim-btn" href="#" class="card-sim-btn" style="margin-bottom:12px;display:inline-block">Simular no Trader Sim 3 →</a>
+    <div class="detail-rows" id="detail-rows"></div>
+  </div>
+</div>
+
+<div class="ver">v3.1.0</div>
 </main>
-</div><!-- #farpa-layout -->
+</div>
 
 <script>
-/* ═══════════════════════════════════════════════════
-   MERCADOS v3.0 — farpa.ai
-   ═══════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════
+   MERCADOS v3.1.0 — farpa.ai
+   ══════════════════════════════════════════ */
 
-// ─── STATE ───────────────────────────────────────────
-const WORKER = 'https://farpa-proxy.rfelipefernandes.workers.dev';
-let currentTab = 'crypto';
-let mainChart = null;
-let wsConn = null;
-let wsPingInterval = null;
-let chartType = 'line';   // line | area | candle
-let chartPeriod = '1M';   // 1D | 7D | 1M | 3M | 6M | 1A
-let selectedAsset = { label: 'USD/BRL', market: 'fx', binanceSymbol: null, symbol: 'fx' };
-let livePrices = {};      // binance symbol → {price, change, prevPrice}
+// ─── CONSTANTES ──────────────────────────
+const YAHOO_PROXY = 'https://api.allorigins.win/get?url=';
+const AWESOME_API = 'https://economia.awesomeapi.com.br';
+let currentTab    = 'crypto';
+let mainChart     = null;
+let wsConn        = null;
+let wsPingIv      = null;
+let chartType     = 'line';
+let chartPeriod   = '1M';
+let selectedAsset = { label:'USD/BRL', market:'fx', binanceSymbol:null, stockTicker:null };
+let livePrices    = {};
+let sparklineData = {}; // coinId/ticker → [7 prices]
 
-// ─── ASSET REGISTRIES ────────────────────────────────
+// ─── REGISTROS ───────────────────────────
 const CRYPTO_IDS = {
   btc:'bitcoin',eth:'ethereum',sol:'solana',bnb:'binancecoin',
   xrp:'ripple',ada:'cardano',dot:'polkadot',avax:'avalanche-2',
@@ -899,7 +523,7 @@ const CRYPTO_IDS = {
   atom:'cosmos',near:'near',matic:'matic-network',shib:'shiba-inu',
   trx:'tron',ton:'the-open-network',op:'optimism',arb:'arbitrum'
 };
-const COIN_TO_BINANCE = {
+const COIN_TO_BN = {
   bitcoin:'BTCUSDT',ethereum:'ETHUSDT',solana:'SOLUSDT',binancecoin:'BNBUSDT',
   ripple:'XRPUSDT',cardano:'ADAUSDT',polkadot:'DOTUSDT','avalanche-2':'AVAXUSDT',
   chainlink:'LINKUSDT',uniswap:'UNIUSDT',dogecoin:'DOGEUSDT',litecoin:'LTCUSDT',
@@ -924,958 +548,797 @@ const B3_NAME = {
   WEGE3:'WEG',MGLU3:'Magazine Luiza',B3SA3:'B3 S.A.',RENT3:'Localiza',
   ABEV3:'Ambev',BBAS3:'Banco do Brasil',EGIE3:'Engie',HYPE3:'Hypera',
   RAIL3:'Rumo',SUZB3:'Suzano',ELET3:'Eletrobras',RADL3:'Raia Drogasil',
-  SBSP3:'Sabesp',TAEE3:'Taesa',VIVT3:'Telefônica'
+  SBSP3:'Sabesp',TAEE3:'Taesa',VIVT3:'Telefônica',PRIO3:'PetroRio'
 };
 const NYSE_NAME = {
   AAPL:'Apple',MSFT:'Microsoft',NVDA:'NVIDIA',GOOGL:'Alphabet',AMZN:'Amazon',
   META:'Meta',TSLA:'Tesla',JPM:'JPMorgan',V:'Visa',MA:'Mastercard',
-  BRK:'Berkshire',UNH:'UnitedHealth',JNJ:'Johnson & Johnson',WMT:'Walmart',
-  ORCL:'Oracle',AMD:'AMD',INTC:'Intel',CRM:'Salesforce',NFLX:'Netflix'
+  UNH:'UnitedHealth',JNJ:'Johnson & Johnson',WMT:'Walmart',ORCL:'Oracle',
+  AMD:'AMD',INTC:'Intel',CRM:'Salesforce',NFLX:'Netflix',BRK_B:'Berkshire'
 };
 const DEFAULT_ASSETS = {
-  crypto: ['bitcoin','ethereum','solana','binancecoin','ripple'],
-  b3:     ['PETR4','VALE3','ITUB4','BBDC4','WEGE3'],
-  nyse:   ['AAPL','MSFT','NVDA','GOOGL','AMZN'],
+  crypto:['bitcoin','ethereum','solana','binancecoin','ripple'],
+  b3:    ['PETR4','VALE3','ITUB4','BBDC4','WEGE3'],
+  nyse:  ['AAPL','MSFT','NVDA','GOOGL','AMZN'],
   indices:[]
 };
 
-// ─── THEME MANAGEMENT ────────────────────────────────
-function setTheme(theme, btn) {
-  const main = document.getElementById('farpa-main');
-  main.setAttribute('data-mkt-theme', theme);
-  localStorage.setItem('farpa_mkt_theme', theme);
+// ─── TEMA ────────────────────────────────
+function setTheme(t, btn) {
+  document.getElementById('farpa-main').setAttribute('data-mkt-theme', t);
+  localStorage.setItem('farpa_mkt_theme', t);
   document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
   if (btn) btn.classList.add('active');
-  // re-render chart with new colors
   if (mainChart) renderMainChart();
 }
-
 function initTheme() {
   const saved = localStorage.getItem('farpa_mkt_theme') || 'robinhood';
   const btn = document.querySelector(`.theme-btn[onclick*="${saved}"]`);
   setTheme(saved, btn);
 }
-
-function getThemeColors() {
-  const main = document.getElementById('farpa-main');
-  const s = getComputedStyle(main);
+function tc() {
+  const s = getComputedStyle(document.getElementById('farpa-main'));
   return {
-    grn:  s.getPropertyValue('--m-grn').trim()  || '#00c805',
-    red:  s.getPropertyValue('--m-red').trim()  || '#ff5000',
-    t1:   s.getPropertyValue('--m-t1').trim()   || '#0f0f1a',
-    t2:   s.getPropertyValue('--m-t2').trim()   || '#4a4a6a',
-    t3:   s.getPropertyValue('--m-t3').trim()   || '#9898b8',
-    bdr:  s.getPropertyValue('--m-bdr').trim()  || '#e2e4ef',
-    acc:  s.getPropertyValue('--m-acc').trim()  || '#00c805',
+    grn: s.getPropertyValue('--m-grn').trim() || '#00c805',
+    red: s.getPropertyValue('--m-red').trim() || '#ff3b30',
+    t1:  s.getPropertyValue('--m-t1').trim()  || '#0f0f1a',
+    t3:  s.getPropertyValue('--m-t3').trim()  || '#9898b8',
+    bdr: s.getPropertyValue('--m-bdr').trim() || '#e2e4ef',
+    acc: s.getPropertyValue('--m-acc').trim() || '#00c805',
   };
 }
 
-// ─── LOCALSTORAGE ────────────────────────────────────
+// ─── RELÓGIO DE MERCADOS ──────────────────
+function tickClocks() {
+  const now = new Date();
+  // B3: BRT = UTC-3, sessão 10:00–17:55 (dom=0,sab=6)
+  const brtH = (now.getUTCHours() - 3 + 24) % 24;
+  const brtM = now.getUTCMinutes();
+  const brtMin = brtH * 60 + brtM;
+  const dow = now.getUTCDay(); // 0=sun
+  const brtDow = (dow === 0 && brtH < 0) ? 6 : dow; // approximate
+  const b3Open = brtDow >= 1 && brtDow <= 5 && brtMin >= 600 && brtMin < 1075; // 10:00-17:55
+  const b3Pre  = brtDow >= 1 && brtDow <= 5 && brtMin >= 555 && brtMin < 600;
+  document.getElementById('clk-b3').textContent =
+    String(brtH).padStart(2,'0') + ':' + String(brtM).padStart(2,'0') + ' BRT';
+  const sesBadge = document.getElementById('ses-b3');
+  sesBadge.textContent = b3Open ? 'Aberto' : b3Pre ? 'Pré' : 'Fechado';
+  sesBadge.className = 'session-badge ' + (b3Open ? 'session-open' : b3Pre ? 'session-pre' : 'session-closed');
+  // NYSE: ET = UTC-4 (EDT) ou UTC-5 (EST), 9:30-16:00
+  const etH = (now.getUTCHours() - 4 + 24) % 24; // assume EDT
+  const etM = now.getUTCMinutes();
+  const etMin = etH * 60 + etM;
+  const nyseOpen = brtDow >= 1 && brtDow <= 5 && etMin >= 570 && etMin < 960; // 9:30-16:00
+  const nysePre  = brtDow >= 1 && brtDow <= 5 && etMin >= 240 && etMin < 570;
+  document.getElementById('clk-nyse').textContent =
+    String(etH).padStart(2,'0') + ':' + String(etM).padStart(2,'0') + ' ET';
+  const sesNy = document.getElementById('ses-nyse');
+  sesNy.textContent = nyseOpen ? 'Aberto' : nysePre ? 'Pré' : 'Fechado';
+  sesNy.className = 'session-badge ' + (nyseOpen ? 'session-open' : nysePre ? 'session-pre' : 'session-closed');
+  // UTC
+  const utcH = now.getUTCHours(), utcMi = now.getUTCMinutes();
+  document.getElementById('clk-utc').textContent =
+    String(utcH).padStart(2,'0') + ':' + String(utcMi).padStart(2,'0') + ' UTC';
+}
+
+// ─── STORAGE ─────────────────────────────
 function getTabAssets(tab) {
-  try {
-    const s = JSON.parse(localStorage.getItem('farpa_mkt_v3') || '{}');
-    return s[tab] !== undefined ? [...s[tab]] : [...(DEFAULT_ASSETS[tab] || [])];
-  } catch(e) { return [...(DEFAULT_ASSETS[tab] || [])]; }
+  try { const s = JSON.parse(localStorage.getItem('farpa_mkt_v3') || '{}'); return s[tab] !== undefined ? [...s[tab]] : [...(DEFAULT_ASSETS[tab] || [])]; }
+  catch(e) { return [...(DEFAULT_ASSETS[tab] || [])]; }
 }
 function saveTabAssets(tab, list) {
-  try {
-    const s = JSON.parse(localStorage.getItem('farpa_mkt_v3') || '{}');
-    s[tab] = list;
-    localStorage.setItem('farpa_mkt_v3', JSON.stringify(s));
-  } catch(e) {}
+  try { const s = JSON.parse(localStorage.getItem('farpa_mkt_v3') || '{}'); s[tab] = list; localStorage.setItem('farpa_mkt_v3', JSON.stringify(s)); } catch(e) {}
 }
-function removeAsset(tab, id) {
-  saveTabAssets(tab, getTabAssets(tab).filter(a => a !== id));
-  loadTab();
-}
-function addAssetToTab(tab, id) {
-  const list = getTabAssets(tab);
-  if (!list.includes(id)) { list.push(id); saveTabAssets(tab, list); }
-}
+function removeAsset(tab, id) { saveTabAssets(tab, getTabAssets(tab).filter(a => a !== id)); loadTab(); }
+function addAssetToTab(tab, id) { const l = getTabAssets(tab); if (!l.includes(id)) { l.push(id); saveTabAssets(tab, l); } }
 
-// ─── BINANCE WEBSOCKET ───────────────────────────────
-function buildWsStreams(coinIds) {
-  return coinIds.map(id => {
-    const sym = COIN_TO_BINANCE[id];
-    return sym ? sym.toLowerCase() + '@ticker' : null;
-  }).filter(Boolean);
-}
-
-function connectBinanceWS(coinIds) {
-  if (wsConn) { wsConn.close(); wsConn = null; }
-  if (wsPingInterval) { clearInterval(wsPingInterval); wsPingInterval = null; }
-  const streams = buildWsStreams(coinIds);
-  if (!streams.length) return;
-  const url = 'wss://stream.binance.com:9443/stream?streams=' + streams.join('/');
-  try {
-    wsConn = new WebSocket(url);
-    wsConn.onmessage = (e) => {
-      try {
-        const msg = JSON.parse(e.data);
-        if (!msg.data) return;
-        const d = msg.data;
-        const sym = d.s; // e.g. BTCUSDT
-        const price = parseFloat(d.c);
-        const change = parseFloat(d.P);
-        const prev = livePrices[sym]?.price;
-        livePrices[sym] = { price, change, volume: parseFloat(d.v) };
-        updateCardLive(sym, price, change, prev);
-        // Update BTC index chip
-        if (sym === 'BTCUSDT') updateIdxChip('btc', '$ '+price.toLocaleString('en-US',{maximumFractionDigits:0}), change);
-      } catch(err) {}
-    };
-    wsConn.onclose = () => {
-      wsConn = null;
-      // Reconnect after 5s if still on crypto tab
-      setTimeout(() => { if (currentTab === 'crypto') connectBinanceWS(getTabAssets('crypto')); }, 5000);
-    };
-    // Keep-alive ping every 30s
-    wsPingInterval = setInterval(() => {
-      if (wsConn && wsConn.readyState === WebSocket.OPEN) wsConn.send(JSON.stringify({method:'ping'}));
-    }, 30000);
-  } catch(err) { console.warn('Binance WS failed, falling back to REST:', err); }
-}
-
-function updateCardLive(binanceSym, price, change, prevPrice) {
-  // Find card by data-binance attribute
-  const card = document.querySelector(`[data-binance="${binanceSym}"]`);
-  if (!card) return;
-  const priceEl = card.querySelector('.mkt-card-price');
-  const chgEl   = card.querySelector('.mkt-card-chg');
-  if (!priceEl || !chgEl) return;
-  const fmt = price >= 1000
-    ? '$ ' + price.toLocaleString('en-US', {maximumFractionDigits: 0})
-    : '$ ' + price.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: price < 0.01 ? 6 : 4});
-  priceEl.textContent = fmt;
-  const up = change >= 0;
-  chgEl.textContent = (up ? '▲ +' : '▼ ') + Math.abs(change).toFixed(2) + '%';
-  chgEl.className = 'mkt-card-chg ' + (up ? 'up' : 'dn');
-  // Flash
-  if (prevPrice !== undefined) {
-    card.classList.remove('flash-up', 'flash-dn');
-    void card.offsetWidth; // reflow
-    card.classList.add(price >= prevPrice ? 'flash-up' : 'flash-dn');
-  }
-  // Update chart price if this is selected
-  if (selectedAsset.binanceSymbol === binanceSym) {
-    document.getElementById('chart-price').textContent = fmt;
-    const chgBadge = document.getElementById('chart-chg');
-    chgBadge.textContent = (up ? '▲ +' : '▼ ') + Math.abs(change).toFixed(2) + '%';
-    chgBadge.className = 'chart-chg-badge ' + (up ? 'up' : 'dn');
-  }
-}
-
-// ─── FETCH HELPER ─────────────────────────────────────
+// ─── FETCH ───────────────────────────────
 async function fetchRetry(url, opts = {}, retries = 3) {
   for (let i = 0; i < retries; i++) {
     try {
       const r = await fetch(url, { ...opts, signal: AbortSignal.timeout(opts.timeout || 9000) });
       if (r.ok) return r;
-      if (r.status >= 500 && i < retries - 1) {
-        await new Promise(r => setTimeout(r, Math.pow(2, i) * 700));
-        continue;
-      }
+      if (r.status >= 500 && i < retries - 1) { await delay(Math.pow(2,i)*600); continue; }
       return r;
-    } catch(e) {
-      if (i < retries - 1) await new Promise(r => setTimeout(r, Math.pow(2, i) * 700));
-      else throw e;
-    }
+    } catch(e) { if (i < retries - 1) await delay(Math.pow(2,i)*600); else throw e; }
+  }
+}
+const delay = ms => new Promise(r => setTimeout(r, ms));
+
+// Yahoo via allorigins helper
+async function yahooQuote(symbols) {
+  const url = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${symbols}`;
+  const r = await fetchRetry(YAHOO_PROXY + encodeURIComponent(url), { timeout: 10000 }, 3);
+  const w = await r.json();
+  const d = JSON.parse(w.contents);
+  return d?.quoteResponse?.result || [];
+}
+async function yahooChart(ticker, range, interval) {
+  const url = `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?interval=${interval}&range=${range}`;
+  const r = await fetchRetry(YAHOO_PROXY + encodeURIComponent(url), { timeout: 10000 }, 3);
+  const w = await r.json();
+  const d = JSON.parse(w.contents);
+  return d?.chart?.result?.[0] || null;
+}
+
+// ─── BINANCE WS ──────────────────────────
+function connectBinanceWS(coinIds) {
+  if (wsConn) { wsConn.close(); wsConn = null; }
+  if (wsPingIv) { clearInterval(wsPingIv); wsPingIv = null; }
+  const streams = coinIds.map(id => COIN_TO_BN[id]).filter(Boolean).map(s => s.toLowerCase() + '@ticker');
+  if (!streams.length) return;
+  try {
+    wsConn = new WebSocket('wss://stream.binance.com:9443/stream?streams=' + streams.join('/'));
+    wsConn.onmessage = e => {
+      try {
+        const msg = JSON.parse(e.data);
+        if (!msg.data) return;
+        const d = msg.data;
+        const price = parseFloat(d.c), chg = parseFloat(d.P);
+        const prev = livePrices[d.s]?.price;
+        livePrices[d.s] = { price, change: chg, high: parseFloat(d.h), low: parseFloat(d.l), vol: parseFloat(d.v) };
+        updateCardLive(d.s, price, chg, prev);
+        if (d.s === 'BTCUSDT') {
+          updateIdxChip('btc', '$ '+fmtNum(price,0), chg);
+          const usdBrl = parseFloat(document.getElementById('fx-usdbrl').textContent.replace('R$ ','').replace(',','.')) || 5.8;
+          document.getElementById('fx-btcbrl').textContent = 'R$ '+fmtNum(price*usdBrl,0);
+        }
+      } catch(err) {}
+    };
+    wsConn.onclose = () => { wsConn = null; setTimeout(() => { if (currentTab==='crypto') connectBinanceWS(getTabAssets('crypto')); }, 5000); };
+    wsPingIv = setInterval(() => { if (wsConn?.readyState === 1) wsConn.send('{"method":"ping"}'); }, 30000);
+  } catch(e) { console.warn('WS unavailable:', e); }
+}
+
+function updateCardLive(bn, price, chg, prev) {
+  const card = document.querySelector(`[data-bn="${bn}"]`);
+  if (!card) return;
+  const pe = card.querySelector('.mkt-card-price');
+  const ce = card.querySelector('.mkt-card-chg');
+  if (!pe || !ce) return;
+  const fmt = price >= 1000 ? '$ '+fmtNum(price,0) : '$ '+price.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:price<0.01?6:4});
+  pe.textContent = fmt;
+  const up = chg >= 0;
+  ce.textContent = (up?'▲ +':'▼ ')+Math.abs(chg).toFixed(2)+'%';
+  ce.className = 'mkt-card-chg '+(up?'up':'dn');
+  if (prev !== undefined) { card.classList.remove('flash-up','flash-dn'); void card.offsetWidth; card.classList.add(price>=prev?'flash-up':'flash-dn'); }
+  // update chart if selected
+  if (selectedAsset.binanceSymbol === bn) {
+    document.getElementById('chart-price').textContent = fmt;
+    const b = document.getElementById('chart-chg');
+    b.textContent = (up?'▲ +':'▼ ')+Math.abs(chg).toFixed(2)+'%';
+    b.className = 'chart-chg-badge '+(up?'up':'dn');
+  }
+  // update day range bar
+  const h = livePrices[bn]?.high, l = livePrices[bn]?.low;
+  if (h && l) {
+    const bar = card.querySelector('.dayrange-bar-fill');
+    const pct = h > l ? ((price-l)/(h-l)*100) : 50;
+    if (bar) bar.style.width = pct+'%';
   }
 }
 
-// ─── CHART MANAGEMENT ────────────────────────────────
-function setChartType(type, btn) {
-  chartType = type;
+// ─── CHART ───────────────────────────────
+function setChartType(t, btn) {
+  chartType = t;
   document.querySelectorAll('#chart-type-btns .ctrl-btn').forEach(b => b.classList.remove('active'));
   if (btn) btn.classList.add('active');
   renderMainChart();
 }
-function setChartPeriod(period, btn) {
-  chartPeriod = period;
+function setChartPeriod(p, btn) {
+  chartPeriod = p;
   document.querySelectorAll('#chart-period-btns .ctrl-btn').forEach(b => b.classList.remove('active'));
   if (btn) btn.classList.add('active');
   loadChartData();
 }
-
 function selectAsset(label, market, binanceSymbol, coinGeckoId, stockTicker) {
   selectedAsset = { label, market, binanceSymbol, coinGeckoId, stockTicker };
   document.getElementById('chart-asset-name').textContent = label;
-  // Highlight selected card
   document.querySelectorAll('.mkt-card').forEach(c => c.classList.remove('selected'));
-  if (binanceSymbol) {
-    const card = document.querySelector(`[data-binance="${binanceSymbol}"]`);
-    if (card) card.classList.add('selected');
-  }
+  if (binanceSymbol) { const card = document.querySelector(`[data-bn="${binanceSymbol}"]`); if (card) card.classList.add('selected'); }
   loadChartData();
 }
-
 async function loadChartData() {
-  const { market, binanceSymbol, coinGeckoId, stockTicker } = selectedAsset;
+  const { market, binanceSymbol, stockTicker, coinGeckoId } = selectedAsset;
+  const periodMap = { '1D':'1d','7D':'5d','1M':'1mo','3M':'3mo','6M':'6mo','1A':'1y' };
+  const range = periodMap[chartPeriod] || '1mo';
   try {
-    if (market === 'fx') await loadFxChartData();
-    else if (market === 'crypto' && binanceSymbol) await loadBinanceKlines(binanceSymbol);
-    else if (market === 'b3' && stockTicker) await loadBrapiChart(stockTicker);
-    else if (market === 'nyse' && stockTicker) await loadYahooChart(stockTicker);
-    else await loadFxChartData();
-  } catch(e) {
-    console.warn('Chart load failed:', e);
-  }
+    if (market === 'fx') { await loadFxChart(); return; }
+    if (market === 'crypto' && binanceSymbol) { await loadBinanceKlines(binanceSymbol); return; }
+    // B3, NYSE, index → Yahoo
+    if (stockTicker) {
+      const yahooTicker = market === 'b3' ? stockTicker + '.SA' : stockTicker;
+      const res = await yahooChart(yahooTicker, range, '1d');
+      if (!res) throw new Error('no result');
+      const ts = res.timestamp, q = res.indicators.quote[0];
+      const closes = q.close.map(v => v||0), opens = q.open.map(v=>v||0), highs = q.high.map(v=>v||0), lows = q.low.map(v=>v||0);
+      const labels = ts.map(t => new Date(t*1000).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'}));
+      const last = closes[closes.length-1], first = closes[0];
+      const chg = ((last-first)/first)*100, up = chg >= 0;
+      const pfx = market === 'b3' ? 'R$ ' : '$ ';
+      document.getElementById('chart-price').textContent = pfx + (market==='b3' ? last.toFixed(2) : last.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}));
+      const b = document.getElementById('chart-chg'); b.textContent=(up?'▲ +':'▼ ')+Math.abs(chg).toFixed(2)+'%'; b.className='chart-chg-badge '+(up?'up':'dn');
+      document.getElementById('chart-ts').textContent = `Yahoo Finance · ${yahooTicker} · ${new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}`;
+      renderMainChart(labels, closes, opens, highs, lows, up, q.volume);
+    }
+  } catch(e) { console.warn('Chart failed:', e); loadFxChart(); }
 }
-
-// FX chart from AwesomeAPI
-async function loadFxChartData() {
-  const days = { '1D':1,'7D':7,'1M':30,'3M':90,'6M':180,'1A':365 }[chartPeriod] || 30;
+async function loadBinanceKlines(bn) {
+  const imap = {'1D':['1m',720],'7D':['1h',168],'1M':['1d',30],'3M':['1d',90],'6M':['1d',180],'1A':['1d',365]};
+  const [iv, limit] = imap[chartPeriod] || ['1d',30];
   try {
-    const r = await fetchRetry(`https://economia.awesomeapi.com.br/json/daily/USD-BRL/${days}`, {}, 3);
+    const r = await fetchRetry(`https://api.binance.com/api/v3/klines?symbol=${bn}&interval=${iv}&limit=${limit}`,{},3);
+    const data = await r.json();
+    if (!Array.isArray(data)) throw new Error('bad');
+    const labels = data.map(d => { const dt = new Date(d[0]); return iv==='1d' ? dt.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'}) : dt.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}); });
+    const o=data.map(d=>parseFloat(d[1])), h=data.map(d=>parseFloat(d[2])), l=data.map(d=>parseFloat(d[3])), c=data.map(d=>parseFloat(d[4])), v=data.map(d=>parseFloat(d[5]));
+    const last=c[c.length-1], first=c[0], chg=((last-first)/first)*100, up=chg>=0;
+    const fmt = last>=1000 ? '$ '+fmtNum(last,0) : '$ '+last.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:4});
+    document.getElementById('chart-price').textContent = fmt;
+    const b = document.getElementById('chart-chg'); b.textContent=(up?'▲ +':'▼ ')+Math.abs(chg).toFixed(2)+'%'; b.className='chart-chg-badge '+(up?'up':'dn');
+    document.getElementById('chart-ts').textContent = `Binance · ${bn} · ao vivo`;
+    renderMainChart(labels, c, o, h, l, up, v);
+  } catch(e) { console.warn('Binance klines failed:', e); await loadFxChart(); }
+}
+async function loadFxChart() {
+  const days = {'1D':1,'7D':7,'1M':30,'3M':90,'6M':180,'1A':365}[chartPeriod] || 30;
+  try {
+    const r = await fetchRetry(`${AWESOME_API}/json/daily/USD-BRL/${days}`,{},3);
     const data = await r.json();
     if (!data?.length) throw new Error('no data');
     const sorted = [...data].reverse();
-    const labels = sorted.map(d => {
-      const dt = new Date(parseInt(d.timestamp) * 1000);
-      return days <= 30
-        ? dt.toLocaleDateString('pt-BR', {day:'2-digit',month:'2-digit'})
-        : dt.toLocaleDateString('pt-BR', {month:'2-digit',year:'2-digit'});
-    });
+    const labels = sorted.map(d => new Date(parseInt(d.timestamp)*1000).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'}));
     const closes = sorted.map(d => parseFloat(d.bid));
     const opens  = sorted.map(d => parseFloat(d.ask));
     const highs  = sorted.map(d => parseFloat(d.high));
     const lows   = sorted.map(d => parseFloat(d.low));
-    const last = closes[closes.length - 1];
-    const first = closes[0];
-    const chg = ((last - first) / first) * 100;
-    const up = chg >= 0;
-    document.getElementById('chart-price').textContent = 'R$ ' + last.toFixed(4);
-    const badge = document.getElementById('chart-chg');
-    badge.textContent = (up?'▲ +':'▼ ') + Math.abs(chg).toFixed(2) + '%';
-    badge.className = 'chart-chg-badge ' + (up?'up':'dn');
-    document.getElementById('chart-ts').textContent = 'AwesomeAPI · ' + new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
-    // FX in index chip too
-    updateIdxChip('fx', 'R$ '+last.toFixed(4), chg);
+    const last=closes[closes.length-1], first=closes[0], chg=((last-first)/first)*100, up=chg>=0;
+    document.getElementById('chart-price').textContent = 'R$ '+last.toFixed(4);
+    const b = document.getElementById('chart-chg'); b.textContent=(up?'▲ +':'▼ ')+Math.abs(chg).toFixed(2)+'%'; b.className='chart-chg-badge '+(up?'up':'dn');
+    document.getElementById('chart-ts').textContent = `AwesomeAPI · USD/BRL · ${new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}`;
     renderMainChart(labels, closes, opens, highs, lows, up);
-  } catch(e) {
-    console.warn('FX chart failed:', e);
-  }
+  } catch(e) { console.warn('FX chart failed:', e); }
 }
 
-// Binance klines
-async function loadBinanceKlines(binanceSym) {
-  const periodMap = { '1D':['1m',480],'7D':['1h',168],'1M':['1d',30],'3M':['1d',90],'6M':['1d',180],'1A':['1d',365] };
-  const [interval, limit] = periodMap[chartPeriod] || ['1d',30];
-  try {
-    const r = await fetchRetry(`https://api.binance.com/api/v3/klines?symbol=${binanceSym}&interval=${interval}&limit=${limit}`, {}, 3);
-    const data = await r.json();
-    if (!data?.length) throw new Error('no klines');
-    const labels = data.map(d => {
-      const dt = new Date(d[0]);
-      return interval === '1d'
-        ? dt.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})
-        : dt.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
-    });
-    const opens  = data.map(d => parseFloat(d[1]));
-    const highs  = data.map(d => parseFloat(d[2]));
-    const lows   = data.map(d => parseFloat(d[3]));
-    const closes = data.map(d => parseFloat(d[4]));
-    const last = closes[closes.length - 1];
-    const first = closes[0];
-    const chg = ((last - first) / first) * 100;
-    const up = chg >= 0;
-    const fmtPrice = last >= 1000
-      ? '$ ' + last.toLocaleString('en-US',{maximumFractionDigits:0})
-      : '$ ' + last.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:4});
-    document.getElementById('chart-price').textContent = fmtPrice;
-    const badge = document.getElementById('chart-chg');
-    badge.textContent = (up?'▲ +':'▼ ') + Math.abs(chg).toFixed(2) + '%';
-    badge.className = 'chart-chg-badge ' + (up?'up':'dn');
-    document.getElementById('chart-ts').textContent = `Binance · ${binanceSym} · ${new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}`;
-    renderMainChart(labels, closes, opens, highs, lows, up);
-  } catch(e) {
-    console.warn('Binance klines failed:', e);
-    await loadFxChartData();
-  }
-}
-
-// Brapi historical for B3
-async function loadBrapiChart(ticker) {
-  const rangeMap = { '1D':'1d','7D':'5d','1M':'1mo','3M':'3mo','6M':'6mo','1A':'1y' };
-  const range = rangeMap[chartPeriod] || '1mo';
-  try {
-    const r = await fetchRetry(`https://brapi.dev/api/quote/${ticker}?interval=1d&range=${range}&fundamental=false`, {}, 3);
-    const d = await r.json();
-    const hist = d?.results?.[0]?.historicalDataPrice;
-    if (!hist?.length) throw new Error('no hist');
-    const labels = hist.map(h => new Date(h.date * 1000).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'}));
-    const closes = hist.map(h => h.close);
-    const opens  = hist.map(h => h.open);
-    const highs  = hist.map(h => h.high);
-    const lows   = hist.map(h => h.low);
-    const last = closes[closes.length - 1];
-    const chg = ((last - closes[0]) / closes[0]) * 100;
-    const up = chg >= 0;
-    document.getElementById('chart-price').textContent = 'R$ ' + last.toFixed(2);
-    const badge = document.getElementById('chart-chg');
-    badge.textContent = (up?'▲ +':'▼ ') + Math.abs(chg).toFixed(2) + '%';
-    badge.className = 'chart-chg-badge ' + (up?'up':'dn');
-    document.getElementById('chart-ts').textContent = `brapi.dev · ${ticker} · ${new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}`;
-    renderMainChart(labels, closes, opens, highs, lows, up);
-  } catch(e) {
-    console.warn('Brapi chart failed:', e);
-    await loadFxChartData();
-  }
-}
-
-// Yahoo Finance via allorigins proxy for NYSE
-async function loadYahooChart(ticker) {
-  const rangeMap = { '1D':'1d','7D':'5d','1M':'1mo','3M':'3mo','6M':'6mo','1A':'1y' };
-  const range = rangeMap[chartPeriod] || '1mo';
-  try {
-    const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?interval=1d&range=${range}`;
-    const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(yahooUrl)}`;
-    const r = await fetchRetry(proxyUrl, {}, 3);
-    const wrapper = await r.json();
-    const data = JSON.parse(wrapper.contents);
-    const result = data?.chart?.result?.[0];
-    if (!result) throw new Error('no result');
-    const ts = result.timestamp;
-    const q  = result.indicators.quote[0];
-    const closes = q.close.map(v => v || 0);
-    const opens  = q.open.map(v => v || 0);
-    const highs  = q.high.map(v => v || 0);
-    const lows   = q.low.map(v => v || 0);
-    const labels = ts.map(t => new Date(t*1000).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'}));
-    const last = closes[closes.length - 1];
-    const chg = ((last - closes[0]) / closes[0]) * 100;
-    const up = chg >= 0;
-    document.getElementById('chart-price').textContent = '$ ' + last.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
-    const badge = document.getElementById('chart-chg');
-    badge.textContent = (up?'▲ +':'▼ ') + Math.abs(chg).toFixed(2) + '%';
-    badge.className = 'chart-chg-badge ' + (up?'up':'dn');
-    document.getElementById('chart-ts').textContent = `Yahoo Finance · ${ticker} · ${new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}`;
-    renderMainChart(labels, closes, opens, highs, lows, up);
-  } catch(e) {
-    console.warn('Yahoo chart failed:', e);
-    await loadFxChartData();
-  }
-}
-
-// ─── CHART RENDER ─────────────────────────────────────
-function renderMainChart(labels = [], closes = [], opens = [], highs = [], lows = [], up = true) {
+function renderMainChart(labels=[], closes=[], opens=[], highs=[], lows=[], up=true, volumes=[]) {
   const ctx = document.getElementById('main-chart');
   if (!ctx) return;
   if (mainChart) { mainChart.destroy(); mainChart = null; }
-  const c = getThemeColors();
-  const color = up ? c.grn : c.red;
-
-  // Candle chart
-  if (chartType === 'candle' && !window._noFinancial && opens.length) {
-    const ohlcData = labels.map((l, i) => ({
-      x: i,
-      o: opens[i], h: highs[i], l: lows[i], c: closes[i]
-    }));
+  const c = tc(), color = up ? c.grn : c.red;
+  if (chartType==='candle' && !window._noFinancial && opens.length) {
+    const ohlc = labels.map((l,i) => ({x:i,o:opens[i],h:highs[i],l:lows[i],c:closes[i]}));
     mainChart = new Chart(ctx, {
-      type: 'candlestick',
-      data: {
-        datasets: [{
-          label: selectedAsset.label,
-          data: ohlcData,
-          color: { up: c.grn, down: c.red, unchanged: c.t3 },
-          borderColor: { up: c.grn, down: c.red, unchanged: c.t3 }
-        }]
-      },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            backgroundColor: 'rgba(0,0,0,.85)',
-            titleFont: { family: 'DM Mono, monospace', size: 10 },
-            bodyFont: { family: 'DM Mono, monospace', size: 11 },
-            padding: 10
-          }
-        },
-        scales: {
-          x: {
-            type: 'category', labels,
-            ticks: { maxTicksLimit: 8, font: { family: 'DM Mono, monospace', size: 9 }, color: c.t3, maxRotation: 0 },
-            grid: { display: false }, border: { display: false }
-          },
-          y: {
-            ticks: { font: { family: 'DM Mono, monospace', size: 9 }, color: c.t3, maxTicksLimit: 6 },
-            grid: { color: c.bdr }, border: { display: false }
-          }
-        }
-      }
+      type:'candlestick',
+      data:{ datasets:[{ label:'', data:ohlc, color:{up:c.grn,down:c.red,unchanged:c.t3}, borderColor:{up:c.grn,down:c.red,unchanged:c.t3} }] },
+      options:{ responsive:true,maintainAspectRatio:false, plugins:{legend:{display:false},tooltip:{backgroundColor:'rgba(0,0,0,.88)',titleFont:{family:'DM Mono',size:10},bodyFont:{family:'DM Mono',size:11},padding:10}}, scales:{ x:{type:'category',labels,ticks:{maxTicksLimit:8,font:{family:'DM Mono',size:9},color:c.t3,maxRotation:0},grid:{display:false},border:{display:false}}, y:{ticks:{font:{family:'DM Mono',size:9},color:c.t3,maxTicksLimit:6},grid:{color:c.bdr},border:{display:false}} } }
     });
     return;
   }
-
-  // Line / Area chart
-  const isFill = (chartType === 'area');
+  // Line / Area + optional volume bars
+  const datasets = [{
+    data:closes, borderColor:color,
+    backgroundColor: chartType==='area' ? color+'22' : 'transparent',
+    borderWidth:2, pointRadius:closes.length>60?0:2, pointHoverRadius:4,
+    fill:chartType==='area', tension:0.3, yAxisID:'y'
+  }];
+  const scales = {
+    x:{ticks:{maxTicksLimit:8,font:{family:'DM Mono',size:9},color:c.t3,maxRotation:0},grid:{display:false},border:{display:false}},
+    y:{ticks:{font:{family:'DM Mono',size:9},color:c.t3,maxTicksLimit:6},grid:{color:c.bdr},border:{display:false},suggestedMin:closes.length?Math.min(...closes)*.997:0,suggestedMax:closes.length?Math.max(...closes)*1.003:1}
+  };
+  if (volumes?.length) {
+    datasets.push({ type:'bar', data:volumes, backgroundColor:color+'28', borderColor:'transparent', borderRadius:1, yAxisID:'vol' });
+    scales.vol = { position:'right', ticks:{display:false}, grid:{display:false}, border:{display:false}, max:Math.max(...volumes)*5 };
+  }
   mainChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels,
-      datasets: [{
-        data: closes,
-        borderColor: color,
-        backgroundColor: isFill ? color + '22' : 'transparent',
-        borderWidth: 2,
-        pointRadius: closes.length > 60 ? 0 : 2,
-        pointHoverRadius: 4,
-        fill: isFill,
-        tension: 0.3
-      }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          mode: 'index', intersect: false,
-          backgroundColor: 'rgba(0,0,0,.85)',
-          titleFont: { family: 'DM Mono, monospace', size: 10 },
-          bodyFont: { family: 'DM Mono, monospace', size: 12 },
-          padding: 10
-        }
-      },
-      scales: {
-        x: { ticks: { maxTicksLimit: 8, font: { family: 'DM Mono, monospace', size: 9 }, color: c.t3, maxRotation: 0 }, grid: { display: false }, border: { display: false } },
-        y: {
-          ticks: { font: { family: 'DM Mono, monospace', size: 9 }, color: c.t3, maxTicksLimit: 6 },
-          grid: { color: c.bdr }, border: { display: false },
-          suggestedMin: closes.length ? Math.min(...closes) * 0.997 : 0,
-          suggestedMax: closes.length ? Math.max(...closes) * 1.003 : 1
-        }
-      },
-      interaction: { mode: 'nearest', axis: 'x', intersect: false }
-    }
+    type:'line', data:{labels, datasets},
+    options:{ responsive:true,maintainAspectRatio:false, plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false,backgroundColor:'rgba(0,0,0,.88)',titleFont:{family:'DM Mono',size:10},bodyFont:{family:'DM Mono',size:12},padding:10}}, scales, interaction:{mode:'nearest',axis:'x',intersect:false} }
   });
 }
 
-// ─── INDEX CHIP UPDATER ──────────────────────────────
-function updateIdxChip(id, val, chgPct) {
-  const valEl = document.getElementById(`${id}-val`);
-  const chgEl = document.getElementById(`${id}-chg`);
-  if (!valEl || !chgEl) return;
-  valEl.textContent = val;
+// ─── ÍNDICE CHIP ─────────────────────────
+function setIdx(id, val, chgPct) {
+  const ve = document.getElementById(id+'-val'), ce = document.getElementById(id+'-chg');
+  if (!ve||!ce) return;
+  ve.textContent = val;
   const up = chgPct >= 0;
-  chgEl.textContent = (up?'▲ +':'▼ ') + Math.abs(chgPct).toFixed(2) + '%';
-  chgEl.className = 'idx-chg ' + (up?'up':'dn');
+  ce.textContent = (up?'▲ +':'▼ ')+Math.abs(chgPct).toFixed(2)+'%';
+  ce.className = 'idx-chg '+(up?'up':'dn');
+}
+function updateIdxChip(id, val, chgPct) { setIdx(id, val, chgPct); }
+
+// ─── LOAD ÍNDICES GLOBAIS (Yahoo) ─────────
+async function loadGlobalIndices() {
+  try {
+    const symbols = ['^BVSP','^GSPC','^IXIC','GC=F','CL=F','^VIX'];
+    const quotes = await yahooQuote(symbols.join(','));
+    quotes.forEach(q => {
+      const p = q.regularMarketPrice, chg = q.regularMarketChangePercent || 0;
+      if (q.symbol==='^BVSP')  setIdx('ibov', fmtNum(p,0), chg);
+      if (q.symbol==='^GSPC')  setIdx('sp',   fmtNum(p,2,'en'), chg);
+      if (q.symbol==='^IXIC')  setIdx('nasdaq',fmtNum(p,0,'en'), chg);
+      if (q.symbol==='GC=F')   setIdx('gold', '$ '+fmtNum(p,2,'en'), chg);
+      if (q.symbol==='CL=F')   setIdx('oil',  '$ '+fmtNum(p,2,'en'), chg);
+      if (q.symbol==='^VIX')   setIdx('vix',  p.toFixed(2), chg);
+    });
+    // Bloomberg tape
+    const tape = quotes.map(q => ({ sym: q.symbol.replace('^','').replace('=F',''), val: q.regularMarketPrice?.toFixed(2)||'—', change: q.regularMarketChangePercent||0 }));
+    buildBBTape(tape);
+  } catch(e) { console.warn('Global indices failed:', e); }
 }
 
-// ─── LOAD CRIPTO (Binance REST + WS) ─────────────────
+// ─── CÂMBIO GRID ─────────────────────────
+async function loadFxGrid() {
+  try {
+    const r = await fetchRetry(`${AWESOME_API}/json/last/USD-BRL,EUR-BRL,GBP-BRL,ARS-BRL,CNY-BRL`,{},3);
+    const d = await r.json();
+    const pairs = [
+      ['USDBRL','usdbrl','R$ '], ['EURBRL','eurbrl','R$ '],
+      ['GBPBRL','gbpbrl','R$ '], ['ARSBRL','arsbrl','R$ '],
+      ['CNYBRL','cnybrl','R$ ']
+    ];
+    pairs.forEach(([key,id,pfx]) => {
+      const v = d[key];
+      if (!v) return;
+      const bid = parseFloat(v.bid), chg = parseFloat(v.pctChange);
+      document.getElementById('fx-'+id).textContent = pfx+bid.toFixed(4);
+      const ce = document.getElementById('fx-'+id+'-chg');
+      const up = chg >= 0;
+      ce.textContent = (up?'▲ +':'▼ ')+Math.abs(chg).toFixed(2)+'%';
+      ce.className = 'fx-chg '+(up?'up':'dn');
+      if (id==='usdbrl') setIdx('btc', document.getElementById('btc-val').textContent, 0);
+    });
+  } catch(e) { console.warn('FX grid failed:', e); }
+}
+
+// ─── LOAD CRIPTO ─────────────────────────
 async function loadCrypto() {
   showLoading();
   const assets = getTabAssets('crypto');
   if (!assets.length) { showEmpty(); return; }
-  // Connect WebSocket for live updates
   connectBinanceWS(assets);
-  // Initial prices from Binance REST (fastest, no rate limit)
+  // Binance REST
   try {
-    const syms = assets.map(id => COIN_TO_BINANCE[id]).filter(Boolean);
-    const r = await fetchRetry('https://api.binance.com/api/v3/ticker/24hr?symbols=' +
-      encodeURIComponent(JSON.stringify(syms)), {}, 3);
+    const syms = assets.map(id=>COIN_TO_BN[id]).filter(Boolean);
+    const r = await fetchRetry('https://api.binance.com/api/v3/ticker/24hr?symbols='+encodeURIComponent(JSON.stringify(syms)),{},3);
     const data = await r.json();
-    if (!Array.isArray(data)) throw new Error('bad response');
-    const bySymbol = {};
-    data.forEach(d => { bySymbol[d.symbol] = d; });
+    if (!Array.isArray(data)) throw new Error('bad');
+    const byS = {};
+    data.forEach(d => { byS[d.symbol]=d; });
     const cards = assets.map(id => {
-      const bn = COIN_TO_BINANCE[id];
-      const d = bySymbol[bn] || {};
-      const price = parseFloat(d.lastPrice || 0);
-      const change = parseFloat(d.priceChangePercent || 0);
-      livePrices[bn] = { price, change };
-      return {
-        id, symbol: COIN_SYM[id] || id.toUpperCase().slice(0,5),
-        name: COIN_NAME[id] || id, market: 'crypto',
-        binanceSymbol: bn,
-        price: price >= 1000
-          ? '$ '+price.toLocaleString('en-US',{maximumFractionDigits:0})
-          : '$ '+price.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:price<0.01?6:4}),
-        change, volume: parseFloat(d.volume||0) * price
+      const bn = COIN_TO_BN[id], d = byS[bn]||{};
+      const price=parseFloat(d.lastPrice||0), chg=parseFloat(d.priceChangePercent||0);
+      const high=parseFloat(d.highPrice||0), low=parseFloat(d.lowPrice||0);
+      livePrices[bn]={price,change:chg,high,low,vol:parseFloat(d.volume||0)*price};
+      return { id, symbol:COIN_SYM[id]||id.toUpperCase().slice(0,5), name:COIN_NAME[id]||id,
+        market:'crypto', binanceSym:bn, coinId:id,
+        price: price>=1000?'$ '+fmtNum(price,0):'$ '+price.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:price<0.01?6:4}),
+        priceRaw:price, change:chg, high, low, vol:parseFloat(d.volume||0)*price,
+        mktCap: null
       };
     });
-    if (currentTab !== 'crypto') return;
-    renderCards(cards, 'crypto');
-    // Update BTC index chip
-    const btcD = bySymbol['BTCUSDT'];
-    if (btcD) updateIdxChip('btc', '$ '+parseFloat(btcD.lastPrice).toLocaleString('en-US',{maximumFractionDigits:0}), parseFloat(btcD.priceChangePercent));
+    if (currentTab!=='crypto') return;
+    renderCards(cards,'crypto');
+    loadSparklines(assets.filter(id=>COIN_TO_BN[id]).slice(0,6));
+    if (byS['BTCUSDT']) setIdx('btc','$ '+fmtNum(parseFloat(byS['BTCUSDT'].lastPrice),0), parseFloat(byS['BTCUSDT'].priceChangePercent));
     return;
-  } catch(e) { console.warn('Binance REST failed, trying CoinGecko:', e); }
-
-  // Fallback: CoinGecko
+  } catch(e) { console.warn('Binance REST failed:', e); }
+  // Fallback CoinGecko
   try {
-    const r = await fetchRetry(
-      `https://api.coingecko.com/api/v3/simple/price?ids=${encodeURIComponent(assets.join(','))}&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true`,
-      {}, 3);
+    const r = await fetchRetry(`https://api.coingecko.com/api/v3/simple/price?ids=${encodeURIComponent(assets.join(','))}&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true&include_24hr_high_low=true`,{},3);
     const d = await r.json();
-    const cards = assets.filter(a => d[a]?.usd !== undefined).map(id => ({
-      id, symbol: COIN_SYM[id] || id.toUpperCase().slice(0,5),
-      name: COIN_NAME[id] || id, market: 'crypto',
-      binanceSymbol: COIN_TO_BINANCE[id],
-      price: '$ ' + d[id].usd.toLocaleString('en-US',{maximumFractionDigits: d[id].usd<1?4:2}),
-      change: d[id].usd_24h_change || 0,
-      volume: d[id].usd_24h_vol || 0
+    const cards = assets.filter(a=>d[a]?.usd!==undefined).map(id=>({
+      id, symbol:COIN_SYM[id]||id.toUpperCase().slice(0,5), name:COIN_NAME[id]||id,
+      market:'crypto', binanceSym:COIN_TO_BN[id], coinId:id,
+      price:'$ '+d[id].usd.toLocaleString('en-US',{maximumFractionDigits:d[id].usd<1?4:2}),
+      priceRaw:d[id].usd, change:d[id].usd_24h_change||0,
+      vol:d[id].usd_24h_vol||0, high:0, low:0
     }));
-    if (currentTab !== 'crypto') return;
-    renderCards(cards, 'crypto');
+    if (currentTab!=='crypto') return;
+    renderCards(cards,'crypto');
   } catch(e) {
-    if (currentTab !== 'crypto') return;
-    showError('Cotações cripto indisponíveis após 2 tentativas (Binance + CoinGecko).', e.message);
+    if (currentTab!=='crypto') return;
+    showError('Cotações cripto indisponíveis (Binance + CoinGecko esgotados).', e.message);
   }
 }
 
-// ─── LOAD B3 ─────────────────────────────────────────
+// Sparklines via Binance klines (7 pontos diários)
+async function loadSparklines(coinIds) {
+  for (const id of coinIds) {
+    const bn = COIN_TO_BN[id]; if (!bn) continue;
+    try {
+      const r = await fetch(`https://api.binance.com/api/v3/klines?symbol=${bn}&interval=1d&limit=7`);
+      const data = await r.json();
+      if (!Array.isArray(data)) continue;
+      const prices = data.map(d => parseFloat(d[4]));
+      drawSparkline(bn, prices);
+    } catch(e) {}
+  }
+}
+function drawSparkline(bn, prices) {
+  const canvas = document.querySelector(`[data-bn="${bn}"] .card-sparkline`);
+  if (!canvas || !(canvas instanceof HTMLCanvasElement)) return;
+  const ctx = canvas.getContext('2d');
+  const w = canvas.offsetWidth || 160, h = 30;
+  canvas.width = w; canvas.height = h;
+  ctx.clearRect(0,0,w,h);
+  if (!prices.length) return;
+  const min=Math.min(...prices), max=Math.max(...prices), range=max-min||1;
+  const up = prices[prices.length-1] >= prices[0];
+  const col = tc()[up?'grn':'red'];
+  ctx.strokeStyle = col; ctx.lineWidth = 1.5; ctx.lineJoin='round';
+  ctx.beginPath();
+  prices.forEach((p,i) => {
+    const x = (i/(prices.length-1))*w;
+    const y = h - ((p-min)/range)*(h-4)-2;
+    i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+  });
+  ctx.stroke();
+  // fill
+  ctx.lineTo(w,h); ctx.lineTo(0,h); ctx.closePath();
+  ctx.fillStyle = col+'22'; ctx.fill();
+}
+
+// ─── LOAD B3 (Yahoo .SA primário) ─────────
 async function loadB3() {
   showLoading();
   const assets = getTabAssets('b3');
   if (!assets.length) { showEmpty(); return; }
-  // Attempt 1: brapi.dev
+  // Tentativa 1: Yahoo Finance via allorigins (sufixo .SA)
   try {
-    const r = await fetchRetry(`https://brapi.dev/api/quote/${assets.join(',')}?fundamental=false`, {}, 3);
-    if (r.ok) {
+    const ySymbols = assets.map(t => t+'.SA').join(',');
+    const quotes = await yahooQuote(ySymbols);
+    if (quotes?.length) {
+      if (currentTab!=='b3') return;
+      renderCards(quotes.map(s => ({
+        id: s.symbol.replace('.SA',''), symbol: s.symbol.replace('.SA',''),
+        name: B3_NAME[s.symbol.replace('.SA','')] || s.shortName || s.symbol,
+        market:'b3', stockTicker: s.symbol.replace('.SA',''),
+        price: 'R$ '+(s.regularMarketPrice||0).toFixed(2),
+        priceRaw: s.regularMarketPrice||0,
+        change: s.regularMarketChangePercent||0,
+        high: s.regularMarketDayHigh||0, low: s.regularMarketDayLow||0,
+        vol: s.regularMarketVolume||0,
+        yearHigh: s.fiftyTwoWeekHigh, yearLow: s.fiftyTwoWeekLow,
+        mktCap: s.marketCap
+      })), 'b3');
+      return;
+    }
+  } catch(e) { console.warn('Yahoo B3 failed, trying brapi:', e); }
+  // Tentativa 2: brapi.dev
+  try {
+    const r = await fetchRetry(`https://brapi.dev/api/quote/${assets.join(',')}?fundamental=false`,{timeout:8000},3);
+    if (r?.ok) {
       const d = await r.json();
       if (d.results?.length) {
-        if (currentTab !== 'b3') return;
-        renderCards(d.results.map(s => ({
-          id: s.symbol, symbol: s.symbol,
-          name: B3_NAME[s.symbol] || s.longName || s.symbol,
-          market: 'b3', stockTicker: s.symbol,
-          price: 'R$ ' + (s.regularMarketPrice || 0).toFixed(2),
-          change: s.regularMarketChangePercent || 0,
-          volume: s.regularMarketVolume || 0
-        })), 'b3');
+        if (currentTab!=='b3') return;
+        renderCards(d.results.map(s=>({
+          id:s.symbol, symbol:s.symbol,
+          name:B3_NAME[s.symbol]||s.longName||s.symbol,
+          market:'b3', stockTicker:s.symbol,
+          price:'R$ '+(s.regularMarketPrice||0).toFixed(2),
+          priceRaw:s.regularMarketPrice||0,
+          change:s.regularMarketChangePercent||0,
+          high:s.regularMarketDayHigh||0, low:s.regularMarketDayLow||0,
+          vol:s.regularMarketVolume||0
+        })),'b3');
         return;
       }
     }
-  } catch(e) { console.warn('brapi failed, trying worker:', e); }
-  // Fallback: worker proxy
-  for (let i = 1; i <= 3; i++) {
-    try {
-      if (currentTab !== 'b3') return;
-      const r = await fetchRetry(`${WORKER}/markets?source=b3&symbols=${encodeURIComponent(assets.map(t=>t+'.SA').join(','))}`, {timeout:7000}, 1);
-      if (!r.ok) throw new Error('HTTP '+r.status);
-      const d = await r.json();
-      if (!d.data?.length) throw new Error('no data');
-      if (currentTab !== 'b3') return;
-      renderCards(d.data.map(s => ({
-        id: s.symbol.replace('.SA',''), symbol: s.symbol.replace('.SA',''),
-        name: B3_NAME[s.symbol.replace('.SA','')] || s.shortName || s.symbol,
-        market: 'b3', stockTicker: s.symbol.replace('.SA',''),
-        price: 'R$ ' + (s.regularMarketPrice || 0).toFixed(2),
-        change: s.regularMarketChangePercent || 0,
-        volume: s.regularMarketVolume || 0
-      })), 'b3');
-      return;
-    } catch(e) {
-      if (i === 3) showError('B3 indisponível (brapi.dev + worker esgotados).', e.message);
-      else await new Promise(r => setTimeout(r, 800 * i));
-    }
-  }
+  } catch(e) { console.warn('brapi failed:', e); }
+  if (currentTab!=='b3') return;
+  showError('Cotações B3 indisponíveis. Mercado pode estar fechado ou a API de dados está inacessível no momento.', 'Tente novamente em alguns minutos.');
 }
 
-// ─── LOAD NYSE ────────────────────────────────────────
+// ─── LOAD NYSE ────────────────────────────
 async function loadNYSE() {
   showLoading();
   const assets = getTabAssets('nyse');
   if (!assets.length) { showEmpty(); return; }
-  // Attempt 1: Worker proxy
   try {
-    const r = await fetchRetry(`${WORKER}/markets?source=nyse&symbols=${encodeURIComponent(assets.join(','))}`, {timeout:7000}, 2);
-    if (r.ok) {
-      const d = await r.json();
-      if (d.data?.length) {
-        if (currentTab !== 'nyse') return;
-        renderCards(d.data.map(s => ({
-          id: s.symbol, symbol: s.symbol,
-          name: NYSE_NAME[s.symbol] || s.shortName || s.symbol,
-          market: 'nyse', stockTicker: s.symbol,
-          price: '$ ' + (s.regularMarketPrice || 0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}),
-          change: s.regularMarketChangePercent || 0,
-          volume: s.regularMarketVolume || 0
-        })), 'nyse');
-        return;
-      }
+    const quotes = await yahooQuote(assets.join(','));
+    if (quotes?.length) {
+      if (currentTab!=='nyse') return;
+      renderCards(quotes.map(s=>({
+        id:s.symbol, symbol:s.symbol,
+        name:NYSE_NAME[s.symbol]||s.shortName||s.symbol,
+        market:'nyse', stockTicker:s.symbol,
+        price:'$ '+(s.regularMarketPrice||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}),
+        priceRaw:s.regularMarketPrice||0,
+        change:s.regularMarketChangePercent||0,
+        high:s.regularMarketDayHigh||0, low:s.regularMarketDayLow||0,
+        vol:s.regularMarketVolume||0,
+        yearHigh:s.fiftyTwoWeekHigh, yearLow:s.fiftyTwoWeekLow,
+        mktCap:s.marketCap
+      })),'nyse');
+      return;
     }
-  } catch(e) { console.warn('Worker NYSE failed, trying Yahoo allorigins:', e); }
-  // Fallback: Yahoo via allorigins
-  try {
-    const yahooUrl = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${assets.join(',')}`;
-    const r = await fetchRetry(`https://api.allorigins.win/get?url=${encodeURIComponent(yahooUrl)}`, {timeout:10000}, 2);
-    const wrapper = await r.json();
-    const data = JSON.parse(wrapper.contents);
-    const quotes = data?.quoteResponse?.result;
-    if (!quotes?.length) throw new Error('no quotes');
-    if (currentTab !== 'nyse') return;
-    renderCards(quotes.map(s => ({
-      id: s.symbol, symbol: s.symbol,
-      name: NYSE_NAME[s.symbol] || s.shortName || s.symbol,
-      market: 'nyse', stockTicker: s.symbol,
-      price: '$ ' + (s.regularMarketPrice || 0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}),
-      change: s.regularMarketChangePercent || 0,
-      volume: s.regularMarketVolume || 0
-    })), 'nyse');
-  } catch(e) {
-    if (currentTab !== 'nyse') return;
-    showError('NYSE indisponível (worker + Yahoo esgotados).', e.message);
-  }
+  } catch(e) { console.warn('Yahoo NYSE failed:', e); }
+  if (currentTab!=='nyse') return;
+  showError('Cotações NYSE indisponíveis. Mercado pode estar fechado ou a API de dados está inacessível.', 'Tente novamente em alguns minutos.');
 }
 
-// ─── LOAD INDICES ─────────────────────────────────────
-async function loadIndices() {
+// ─── LOAD ÍNDICES (tab) ───────────────────
+async function loadIndicesTab() {
   showLoading();
-  // Try AwesomeAPI for USD/BRL + worker for indices
   try {
-    const r = await fetchRetry(`${WORKER}/markets?source=indices`, {}, 3);
-    const d = await r.json();
-    if (d.data?.length) {
-      if (currentTab !== 'indices') return;
-      renderCards(d.data.map(s => ({
-        id: s.symbol, symbol: s.symbol,
-        name: s.shortName || s.symbol, market: 'indices',
-        price: (s.regularMarketPrice || 0) >= 1000
-          ? s.regularMarketPrice.toLocaleString('pt-BR',{maximumFractionDigits:0})
-          : (s.regularMarketPrice || 0).toFixed(2),
-        change: s.regularMarketChangePercent || 0
-      })), 'indices');
-      d.data.forEach(s => {
-        if (s.symbol==='^BVSP')   updateIdxChip('ibov', s.regularMarketPrice.toLocaleString('pt-BR',{maximumFractionDigits:0}), s.regularMarketChangePercent);
-        if (s.symbol==='^GSPC')   updateIdxChip('sp',   s.regularMarketPrice.toLocaleString('en-US',{maximumFractionDigits:2}), s.regularMarketChangePercent);
-        if (s.symbol==='^IXIC')   updateIdxChip('nasdaq', s.regularMarketPrice.toLocaleString('en-US',{maximumFractionDigits:0}), s.regularMarketChangePercent);
-        if (s.symbol==='USDBRL=X') updateIdxChip('fx', 'R$ '+s.regularMarketPrice.toFixed(4), s.regularMarketChangePercent);
-      });
-    }
+    const syms = ['^BVSP','^GSPC','^IXIC','^DJI','GC=F','CL=F','^VIX','^TNX','^FTSE','^N225'];
+    const quotes = await yahooQuote(syms.join(','));
+    if (!quotes?.length) throw new Error('no data');
+    if (currentTab!=='indices') return;
+    renderCards(quotes.map(s=>({
+      id:s.symbol, symbol:s.symbol.replace('^','').replace('=F','').replace('=X',''),
+      name:s.shortName||s.symbol,
+      market:'indices', stockTicker:s.symbol,
+      price:(s.regularMarketPrice||0)>=100?fmtNum(s.regularMarketPrice,0,'en'):(s.regularMarketPrice||0).toFixed(2),
+      priceRaw:s.regularMarketPrice||0,
+      change:s.regularMarketChangePercent||0,
+      high:s.regularMarketDayHigh||0, low:s.regularMarketDayLow||0, vol:0
+    })),'indices');
+    quotes.forEach(s=>{
+      if(s.symbol==='^BVSP')  setIdx('ibov',fmtNum(s.regularMarketPrice,0),s.regularMarketChangePercent);
+      if(s.symbol==='^GSPC')  setIdx('sp',fmtNum(s.regularMarketPrice,2,'en'),s.regularMarketChangePercent);
+      if(s.symbol==='^IXIC')  setIdx('nasdaq',fmtNum(s.regularMarketPrice,0,'en'),s.regularMarketChangePercent);
+      if(s.symbol==='GC=F')   setIdx('gold','$ '+fmtNum(s.regularMarketPrice,2,'en'),s.regularMarketChangePercent);
+      if(s.symbol==='CL=F')   setIdx('oil','$ '+fmtNum(s.regularMarketPrice,2,'en'),s.regularMarketChangePercent);
+      if(s.symbol==='^VIX')   setIdx('vix',s.regularMarketPrice.toFixed(2),s.regularMarketChangePercent);
+    });
   } catch(e) {
-    showError('Índices indisponíveis. Worker proxy necessário.', e.message);
+    if (currentTab!=='indices') return;
+    showError('Índices indisponíveis.', e.message);
   }
 }
 
-// Load FX for index bar separately (no worker needed)
-async function loadFxIndex() {
-  try {
-    const r = await fetchRetry('https://economia.awesomeapi.com.br/json/last/USD-BRL', {}, 3);
-    const d = await r.json();
-    const fx = d?.USDBRL;
-    if (fx) updateIdxChip('fx', 'R$ '+parseFloat(fx.bid).toFixed(4), parseFloat(fx.pctChange));
-  } catch(e) {}
-}
-
-// ─── RENDER CARDS ─────────────────────────────────────
-function fmtVol(v, brl) {
-  if (!v) return '';
-  const prefix = brl ? 'R$ ' : '$ ';
-  if (v >= 1e9) return prefix + (v/1e9).toFixed(1) + 'B';
-  if (v >= 1e6) return prefix + (v/1e6).toFixed(1) + 'M';
-  if (v >= 1e3) return prefix + (v/1e3).toFixed(0) + 'K';
-  return prefix + v.toFixed(0);
-}
-
+// ─── RENDER CARDS ────────────────────────
 function renderCards(cards, tab) {
   const g = document.getElementById('prices-grid');
-  if (!cards?.length) { g.innerHTML = '<div class="err-msg">Nenhum dado disponível.</div>'; return; }
+  if (!cards?.length) { g.innerHTML='<div class="err-msg">Nenhum dado disponível.</div>'; return; }
   g.innerHTML = cards.map(c => {
     const up = c.change >= 0;
-    const chgHtml = `<span class="mkt-card-chg ${up?'up':'dn'}">${up?'▲ +':'▼ '}${Math.abs(c.change).toFixed(2)}%</span>`;
-    const bn = c.binanceSymbol || '';
-    const simHref = `trader-sim-3.html?symbol=${encodeURIComponent(c.symbol)}&market=${c.market}&name=${encodeURIComponent(c.name)}&price=${encodeURIComponent(c.price)}`;
-    const selectFn = c.market === 'crypto'
-      ? `selectAsset('${c.symbol}','crypto','${bn}','${c.id}')`
-      : c.market === 'b3'
-        ? `selectAsset('${c.symbol}','b3',null,null,'${c.stockTicker||c.id}')`
-        : c.market === 'nyse'
-          ? `selectAsset('${c.symbol}','nyse',null,null,'${c.stockTicker||c.id}')`
-          : '';
-    return `
-    <div class="mkt-card" ${bn ? `data-binance="${bn}"` : ''} onclick="${selectFn}">
+    const chgH = `<span class="mkt-card-chg ${up?'up':'dn'}">${up?'▲ +':'▼ '}${Math.abs(c.change).toFixed(2)}%</span>`;
+    const bn = c.binanceSym || '';
+    // Day range bar
+    const rangeH = (c.high && c.low && c.priceRaw) ? `
+      <div class="dayrange">
+        <div class="dayrange-bar-wrap">
+          <span style="font-family:var(--m-mono);font-size:8px;color:var(--m-t3)">${c.low.toFixed(c.low>10?2:4)}</span>
+          <div class="dayrange-bar-bg"><div class="dayrange-bar-fill" style="width:${c.high>c.low?((c.priceRaw-c.low)/(c.high-c.low)*100).toFixed(1):50}%"></div></div>
+          <span style="font-family:var(--m-mono);font-size:8px;color:var(--m-t3)">${c.high.toFixed(c.high>10?2:4)}</span>
+        </div>
+      </div>` : '';
+    // Sparkline (cripto only, canvas drawn after render)
+    const sparkH = tab==='crypto' && bn ? `<canvas class="card-sparkline" data-bn="${bn}"></canvas>` : '';
+    const simHref = `trader-sim-3.html?symbol=${encodeURIComponent(c.symbol)}&market=${c.market}&name=${encodeURIComponent(c.name)}&price=${encodeURIComponent(c.priceRaw||'')}`;
+    const selectFn = c.market==='crypto'
+      ? `selectAsset('${c.symbol}','crypto','${bn}','${c.id||''}')`
+      : `selectAsset('${c.symbol}','${c.market}',null,null,'${c.stockTicker||c.id}')`;
+    const detailFn = `openDetail(event,${JSON.stringify({sym:c.symbol,name:c.name,price:c.price,change:c.change,high:c.high,low:c.low,vol:c.vol,mktCap:c.mktCap,yearHigh:c.yearHigh,yearLow:c.yearLow,market:c.market,stockTicker:c.stockTicker,binanceSym:c.binanceSym||'',id:c.id||''}).replace(/"/g,"'")})`;
+    return `<div class="mkt-card" ${bn?`data-bn="${bn}"`:'data-ticker="'+c.id+'"'} onclick="${selectFn}">
       <button class="card-remove" onclick="event.stopPropagation();removeAsset('${tab}','${c.id}')" title="Remover">×</button>
       <div class="mkt-card-sym">${c.symbol}</div>
       <div class="mkt-card-name">${c.name}</div>
       <div class="mkt-card-price">${c.price}</div>
-      ${chgHtml}
-      ${c.volume ? `<div class="mkt-card-vol">Vol: ${fmtVol(c.volume, tab==='b3')}</div>` : ''}
-      <a class="card-sim-btn" href="${simHref}" onclick="event.stopPropagation()">Simular →</a>
+      ${chgH}
+      ${rangeH}
+      ${sparkH}
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:5px">
+        <a class="card-sim-btn" href="${simHref}" onclick="event.stopPropagation()">Simular →</a>
+        <button class="card-sim-btn" style="border:none;cursor:pointer" onclick="event.stopPropagation();${detailFn}">Detalhes</button>
+      </div>
     </div>`;
   }).join('');
+  // Draw sparklines after DOM update
+  if (tab==='crypto') {
+    requestAnimationFrame(() => {
+      cards.forEach(c => { if (c.binanceSym && livePrices[c.binanceSym]) {
+        // re-attempt sparkline draw if already loaded
+        const canvas = document.querySelector(`[data-bn="${c.binanceSym}"] .card-sparkline`);
+        if (canvas) { /* will be drawn by loadSparklines */ }
+      }});
+    });
+  }
 }
 
-function showLoading(msg = 'Carregando cotações...') {
-  document.getElementById('prices-grid').innerHTML =
-    `<div class="load-wrap"><div class="loading-spin"><span></span><span></span><span></span></div><div class="load-msg">${msg}</div></div>`;
-}
-function showEmpty() {
-  document.getElementById('prices-grid').innerHTML =
-    `<div class="load-wrap"><div class="load-msg">Nenhum ativo. Use "+ Adicionar ativo" para incluir.</div></div>`;
-}
-function showError(msg, detail) {
-  document.getElementById('prices-grid').innerHTML =
-    `<div class="err-msg">${msg}${detail?`<div class="err-detail">${detail}</div>`:''}</div>`;
-}
+function showLoading(msg='Carregando cotações...') { document.getElementById('prices-grid').innerHTML=`<div class="load-wrap"><div class="loading-spin"><span></span><span></span><span></span></div><div class="load-msg">${msg}</div></div>`; }
+function showEmpty() { document.getElementById('prices-grid').innerHTML=`<div class="load-wrap"><div class="load-msg">Nenhum ativo. Use "+ Adicionar ativo".</div></div>`; }
+function showError(msg,detail) { document.getElementById('prices-grid').innerHTML=`<div class="err-msg">${msg}${detail?`<div class="err-detail">${detail}</div>`:''}</div>`; }
 
-// ─── TAB NAVIGATION ───────────────────────────────────
+// ─── DETALHE DO ATIVO ─────────────────────
+function openDetail(e, c) {
+  e.stopPropagation();
+  document.getElementById('d-sym').textContent  = c.sym;
+  document.getElementById('d-name').textContent = c.name;
+  document.getElementById('d-price').textContent = c.price;
+  const db = document.getElementById('d-chg');
+  const up = c.change>=0;
+  db.textContent = (up?'▲ +':'▼ ')+Math.abs(c.change).toFixed(2)+'%';
+  db.className = 'idx-chg '+(up?'up':'dn');
+  const simHref = `trader-sim-3.html?symbol=${encodeURIComponent(c.sym)}&market=${c.market}&name=${encodeURIComponent(c.name)}`;
+  document.getElementById('d-sim-btn').href = simHref;
+  const rows = [
+    ['Máxima do Dia', c.high ? (c.market==='b3'?'R$ ':'$ ')+parseFloat(c.high).toFixed(2) : '—'],
+    ['Mínima do Dia', c.low  ? (c.market==='b3'?'R$ ':'$ ')+parseFloat(c.low).toFixed(2)  : '—'],
+    ['52 sem · Máx', c.yearHigh ? (c.market==='b3'?'R$ ':'$ ')+parseFloat(c.yearHigh).toFixed(2) : '—'],
+    ['52 sem · Mín', c.yearLow  ? (c.market==='b3'?'R$ ':'$ ')+parseFloat(c.yearLow).toFixed(2)  : '—'],
+    ['Volume (24h)', c.vol ? fmtVol(c.vol, c.market==='b3') : '—'],
+    ['Capitalização', c.mktCap ? fmtVol(c.mktCap, c.market==='b3') : '—'],
+    ['Mercado', c.market==='crypto'?'Criptomoeda':c.market==='b3'?'B3 — Bolsa do Brasil':c.market==='nyse'?'NYSE — New York':'Índice'],
+    ['Símbolo', c.sym + (c.market==='b3'?' (.SA)':'')]
+  ];
+  document.getElementById('detail-rows').innerHTML = rows.map(([l,v])=>`<div class="detail-row"><span class="dr-label">${l}</span><span class="dr-val">${v}</span></div>`).join('');
+  document.getElementById('detail-overlay').classList.add('open');
+}
+function closeDetail() { document.getElementById('detail-overlay').classList.remove('open'); }
+
+// ─── NAVEGAÇÃO DE ABAS ────────────────────
 function switchTab(tab, btn) {
   currentTab = tab;
-  document.querySelectorAll('.mkt-tab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.mkt-tab').forEach(b=>b.classList.remove('active'));
   if (btn) btn.classList.add('active');
   document.getElementById('tab-label').textContent = {crypto:'Cripto',b3:'B3 · Brasil',nyse:'NYSE · EUA',indices:'Índices Globais'}[tab];
-  document.getElementById('add-bar').style.display = tab === 'indices' ? 'none' : '';
-  // Close add form on tab switch
+  document.getElementById('add-bar').style.display = tab==='indices'?'none':'';
   document.getElementById('add-form').classList.remove('open');
-  document.getElementById('add-toggle').style.display = '';
-  // Disconnect WS when leaving crypto
-  if (tab !== 'crypto' && wsConn) { wsConn.close(); wsConn = null; }
+  document.getElementById('add-toggle').style.display='';
+  if (tab!=='crypto' && wsConn) { wsConn.close(); wsConn=null; }
   loadTab();
 }
 function loadTab() {
-  if (currentTab === 'crypto') loadCrypto();
-  else if (currentTab === 'b3') loadB3();
-  else if (currentTab === 'nyse') loadNYSE();
-  else loadIndices();
+  if (currentTab==='crypto')  loadCrypto();
+  else if (currentTab==='b3') loadB3();
+  else if (currentTab==='nyse') loadNYSE();
+  else loadIndicesTab();
 }
 
-// ─── ADD ASSET ────────────────────────────────────────
+// ─── ADD ATIVO ───────────────────────────
 function toggleAddForm() {
   const f = document.getElementById('add-form');
   const open = f.classList.toggle('open');
-  document.getElementById('add-toggle').style.display = open ? 'none' : '';
-  if (open) {
-    const inp = document.getElementById('add-input');
-    inp.value = '';
-    inp.focus();
-    document.getElementById('add-status').textContent = '';
-  }
+  document.getElementById('add-toggle').style.display = open?'none':'';
+  if (open) { const inp=document.getElementById('add-input'); inp.value=''; inp.focus(); document.getElementById('add-status').textContent=''; }
 }
-
+function setStatus(msg, color) {
+  const el=document.getElementById('add-status');
+  el.textContent=msg;
+  el.style.color=color==='red'?'var(--m-red)':color==='warn'?'#f59e0b':'var(--m-t3)';
+}
 async function confirmAdd() {
-  const inp    = document.getElementById('add-input');
-  const status = document.getElementById('add-status');
-  const raw    = inp.value.trim();
-  if (!raw) { setStatus('Digite um símbolo válido.', 'red'); return; }
-
-  function setStatus(msg, color) {
-    status.textContent = msg;
-    status.style.color = color === 'red' ? 'var(--m-red)' : color === 'warn' ? '#f59e0b' : 'var(--m-t3)';
-  }
-
-  setStatus('Verificando...', 'neutral');
-
-  if (currentTab === 'crypto') {
-    const val = raw.toLowerCase().replace(/\s+/g,'');
-    let coinId = CRYPTO_IDS[val] || null;
+  const raw = document.getElementById('add-input').value.trim();
+  if (!raw) { setStatus('Digite um símbolo válido.','red'); return; }
+  setStatus('Verificando...','neutral');
+  if (currentTab==='crypto') {
+    const val=raw.toLowerCase().replace(/\s+/g,'');
+    let coinId=CRYPTO_IDS[val]||null;
     if (!coinId) {
-      try {
-        const r = await fetch('https://api.coingecko.com/api/v3/simple/price?ids='+encodeURIComponent(val)+'&vs_currencies=usd');
-        if (r.ok) { const d = await r.json(); if (d[val]?.usd !== undefined) coinId = val; }
-      } catch(e) {}
+      try { const r=await fetch('https://api.coingecko.com/api/v3/simple/price?ids='+encodeURIComponent(val)+'&vs_currencies=usd'); if(r.ok){const d=await r.json();if(d[val]?.usd!==undefined)coinId=val;} } catch(e){}
     }
     if (!coinId) {
       try {
-        const r = await fetch('https://api.coingecko.com/api/v3/search?query='+encodeURIComponent(raw));
-        if (r.ok) {
-          const d = await r.json();
-          const coin = d.coins?.[0];
-          if (coin) {
-            coinId = coin.id;
-            CRYPTO_IDS[coin.symbol.toLowerCase()] = coin.id;
-            COIN_SYM[coin.id]  = coin.symbol.toUpperCase();
-            COIN_NAME[coin.id] = coin.name;
-          }
-        }
-      } catch(e) { setStatus('Erro de conexão.', 'red'); return; }
+        const r=await fetch('https://api.coingecko.com/api/v3/search?query='+encodeURIComponent(raw));
+        if(r.ok){const d=await r.json();const coin=d.coins?.[0];if(coin){coinId=coin.id;CRYPTO_IDS[coin.symbol.toLowerCase()]=coin.id;COIN_SYM[coin.id]=coin.symbol.toUpperCase();COIN_NAME[coin.id]=coin.name;}}
+      } catch(e){setStatus('Erro de conexão.','red');return;}
     }
-    if (!coinId) { setStatus('Ativo não encontrado.', 'red'); return; }
-    if (getTabAssets('crypto').includes(coinId)) { setStatus('Ativo já adicionado.', 'warn'); return; }
-    addAssetToTab('crypto', coinId);
-    toggleAddForm();
-    loadTab();
-
-  } else if (currentTab === 'b3') {
-    const ticker = raw.toUpperCase().replace(/\.SA$/i,'').replace(/\s+/g,'');
-    if (!/^[A-Z]{3,6}\d{1,2}[FBL]?$/i.test(ticker)) { setStatus('Formato inválido. Ex: PETR4', 'red'); return; }
-    if (getTabAssets('b3').includes(ticker)) { setStatus('Ativo já adicionado.', 'warn'); return; }
+    if (!coinId) { setStatus('Ativo não encontrado.','red'); return; }
+    if (getTabAssets('crypto').includes(coinId)) { setStatus('Já adicionado.','warn'); return; }
+    addAssetToTab('crypto',coinId); toggleAddForm(); loadTab();
+  } else if (currentTab==='b3') {
+    const ticker=raw.toUpperCase().replace(/\.SA$/i,'').replace(/\s+/g,'');
+    if (!/^[A-Z]{3,6}\d{1,2}[FBL]?$/i.test(ticker)) { setStatus('Formato inválido. Ex: PETR4','red'); return; }
+    if (getTabAssets('b3').includes(ticker)) { setStatus('Já adicionado.','warn'); return; }
+    // Validar via Yahoo
     try {
-      const r = await fetch('https://brapi.dev/api/quote/'+encodeURIComponent(ticker)+'?fundamental=false');
-      if (r.ok) {
-        const d = await r.json();
-        if (!d.results?.[0]?.symbol) { setStatus('Ticker não encontrado na B3.', 'red'); return; }
-      }
+      const quotes = await yahooQuote(ticker+'.SA');
+      if (!quotes?.[0]?.regularMarketPrice) { setStatus('Ticker não encontrado na B3.','red'); return; }
     } catch(e) {}
-    addAssetToTab('b3', ticker);
-    toggleAddForm();
-    loadTab();
-
-  } else if (currentTab === 'nyse') {
-    const ticker = raw.toUpperCase().replace(/\s+/g,'');
-    if (!/^[A-Z.\-]{1,7}$/.test(ticker)) { setStatus('Formato inválido. Ex: AAPL', 'red'); return; }
-    if (getTabAssets('nyse').includes(ticker)) { setStatus('Ativo já adicionado.', 'warn'); return; }
-    addAssetToTab('nyse', ticker);
-    toggleAddForm();
-    loadTab();
-  } else {
-    setStatus('Não é possível adicionar índices manualmente.', 'warn');
-  }
+    addAssetToTab('b3',ticker); toggleAddForm(); loadTab();
+  } else if (currentTab==='nyse') {
+    const ticker=raw.toUpperCase().replace(/\s+/g,'');
+    if (!/^[A-Z.\-]{1,7}$/.test(ticker)) { setStatus('Formato inválido. Ex: AAPL','red'); return; }
+    if (getTabAssets('nyse').includes(ticker)) { setStatus('Já adicionado.','warn'); return; }
+    addAssetToTab('nyse',ticker); toggleAddForm(); loadTab();
+  } else { setStatus('Índices não podem ser adicionados manualmente.','warn'); }
 }
 
-// ─── FEAR & GREED ─────────────────────────────────────
+// ─── FEAR & GREED ────────────────────────
 async function loadFearGreed() {
   try {
-    const r = await fetchRetry('https://api.alternative.me/fng/?limit=1', {}, 3);
+    const r = await fetchRetry('https://api.alternative.me/fng/?limit=1',{},3);
     const d = await r.json();
-    const item = d?.data?.[0];
-    if (!item) throw new Error('no data');
-    const score = parseInt(item.value);
-    const label = item.value_classification;
+    const item = d?.data?.[0]; if (!item) throw new Error('no data');
+    const score = parseInt(item.value), label = item.value_classification;
     document.getElementById('fg-score').textContent = score;
-    const el = document.getElementById('fg-lbl');
-    el.textContent = label;
-    // Color based on score
-    const col = score < 25 ? '#ef4444' : score < 45 ? '#f97316' : score < 55 ? '#eab308' : score < 75 ? '#84cc16' : '#22c55e';
+    const el = document.getElementById('fg-lbl'); el.textContent = label;
+    const col = score<25?'#ef4444':score<45?'#f97316':score<55?'#eab308':score<75?'#84cc16':'#22c55e';
     el.style.color = col;
-    // Update SVG gauge
-    const arc = document.getElementById('fg-arc');
-    const needle = document.getElementById('fg-needle');
-    // Arc: total length ≈ 188px (half circle r=60, π*60)
-    const total = Math.PI * 60;
-    const filled = (score / 100) * total;
-    arc.setAttribute('stroke-dasharray', `${filled} ${total - filled}`);
-    arc.setAttribute('stroke', col);
-    // Needle: rotate from -90° (0) to +90° (100)
-    const angle = -90 + (score / 100) * 180;
-    needle.setAttribute('transform', `rotate(${angle},70,70)`);
-    document.getElementById('fg-updated').textContent = 'Atualizado: ' + new Date(item.timestamp * 1000).toLocaleDateString('pt-BR');
-    // Update sentiment cripto
-    const bullPct = Math.round(score * 0.7 + 10);
-    const bearPct = Math.round((100 - score) * 0.5 + 5);
-    document.getElementById('sent-crypto-bull').style.width = bullPct + '%';
-    document.getElementById('sent-crypto-bear').style.width = bearPct + '%';
-    document.getElementById('sent-crypto-b').textContent = bullPct + '% bull';
-    document.getElementById('sent-crypto-r').textContent = bearPct + '% bear';
-    document.getElementById('sent-crypto-lbl').textContent = score < 40 ? 'Medo' : score < 60 ? 'Neutro' : 'Ganância';
-    document.getElementById('sent-crypto-lbl').style.color = col;
-  } catch(e) {
-    document.getElementById('fg-lbl').textContent = 'Indisponível';
-    document.getElementById('fg-score').textContent = '—';
-  }
+    const total=Math.PI*60, filled=(score/100)*total;
+    document.getElementById('fg-arc').setAttribute('stroke-dasharray',`${filled} ${total-filled}`);
+    document.getElementById('fg-arc').setAttribute('stroke',col);
+    document.getElementById('fg-needle').setAttribute('transform',`rotate(${-90+(score/100)*180},70,70)`);
+    document.getElementById('fg-updated').textContent = 'Atualizado: '+new Date(item.timestamp*1000).toLocaleDateString('pt-BR');
+    const bull=Math.round(score*.7+10), bear=Math.round((100-score)*.5+5);
+    document.getElementById('sent-crypto-bull').style.width=bull+'%';
+    document.getElementById('sent-crypto-b').textContent=bull+'% alta';
+    document.getElementById('sent-crypto-r').textContent=bear+'% baixa';
+    document.getElementById('sent-crypto-lbl').textContent=score<40?'Medo':score<60?'Neutro':'Ganância';
+    document.getElementById('sent-crypto-lbl').style.color=col;
+  } catch(e) { document.getElementById('fg-lbl').textContent='Indisponível'; document.getElementById('fg-score').textContent='—'; }
 }
 
-// ─── NEWS ─────────────────────────────────────────────
+// ─── NOTÍCIAS ────────────────────────────
 async function loadNews() {
-  const feed = document.getElementById('news-feed');
-  const ts   = document.getElementById('news-ts');
-  feed.innerHTML = '<div class="load-msg" style="text-align:center;padding:16px">Carregando notícias...</div>';
-  let allNews = [];
-
-  // Source 1: CryptoCompare (crypto news, free, no key, no CORS)
+  const feed=document.getElementById('news-feed'), ts=document.getElementById('news-ts');
+  feed.innerHTML='<div class="load-msg" style="text-align:center;padding:14px">Carregando...</div>';
+  let news=[];
   try {
-    const r = await fetchRetry('https://min-api.cryptocompare.com/data/v2/news/?lang=EN&sortOrder=latest&limit=6', {timeout:8000}, 2);
-    const d = await r.json();
-    if (d.Data?.length) {
-      allNews.push(...d.Data.slice(0,6).map(n => ({
-        tag: 'cripto',
-        title: n.title,
-        source: n.source_info?.name || 'CryptoCompare',
-        time: timeAgo(n.published_on * 1000),
-        url: n.url
-      })));
-    }
-  } catch(e) { console.warn('CryptoCompare news failed:', e); }
-
-  // Source 2: GNews (general finance, free tier, no key needed via allorigins)
+    const r=await fetchRetry('https://min-api.cryptocompare.com/data/v2/news/?lang=EN&sortOrder=latest&limit=6',{timeout:8000},2);
+    const d=await r.json();
+    if(d.Data?.length) news.push(...d.Data.slice(0,6).map(n=>({tag:'cripto',title:n.title,source:n.source_info?.name||'CryptoCompare',time:timeAgo(n.published_on*1000),url:n.url})));
+  } catch(e){}
   try {
-    const gnewsUrl = 'https://gnews.io/api/v4/search?q=mercado+financeiro&lang=pt&max=5&token=free';
-    // Use rss2json for InfoMoney RSS
-    const rss = 'https://www.infomoney.com.br/feed/';
-    const r = await fetchRetry(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rss)}&count=5`, {timeout:8000}, 2);
-    const d = await r.json();
-    if (d.items?.length) {
-      allNews.push(...d.items.slice(0,5).map(n => ({
-        tag: guessTag(n.title),
-        title: n.title,
-        source: 'InfoMoney',
-        time: timeAgo(new Date(n.pubDate).getTime()),
-        url: n.link
-      })));
-    }
-  } catch(e) { console.warn('InfoMoney RSS failed:', e); }
-
-  // Fallback static if both fail
-  if (!allNews.length) {
-    allNews = [
-      { tag:'macro', title:'Mercados aguardam decisão do Fed sobre taxas de juros', source:'farpa.ai', time:'Agora', url:'#' },
-      { tag:'cripto', title:'Bitcoin consolida acima de US$ 80k com volume institucional elevado', source:'farpa.ai', time:'15 min', url:'#' },
-      { tag:'b3', title:'IBOVESPA opera com volatilidade moderada em sessão com poucos eventos macro', source:'farpa.ai', time:'1h', url:'#' },
-    ];
-  }
-
-  // Deduplicate & render
-  const seen = new Set();
-  const unique = allNews.filter(n => { if (seen.has(n.title)) return false; seen.add(n.title); return true; });
-  feed.innerHTML = unique.map(n => `
-    <a class="news-item" href="${n.url || '#'}" target="_blank" rel="noopener">
-      <span class="news-tag tag-${n.tag}">${n.tag.toUpperCase()}</span>
-      <div>
-        <div class="news-headline">${escHtml(n.title)}</div>
-        <div class="news-meta"><span>${escHtml(n.source)}</span><span>${n.time}</span></div>
-      </div>
-    </a>`).join('');
-  ts.textContent = 'Atualizado às ' + new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+    const rss='https://www.infomoney.com.br/feed/';
+    const r=await fetchRetry(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rss)}&count=5`,{timeout:8000},2);
+    const d=await r.json();
+    if(d.items?.length) news.push(...d.items.slice(0,5).map(n=>({tag:guessTag(n.title),title:n.title,source:'InfoMoney',time:timeAgo(new Date(n.pubDate).getTime()),url:n.link})));
+  } catch(e){}
+  if (!news.length) news=[
+    {tag:'macro',title:'Mercados aguardam divulgação de dados macroeconômicos globais',source:'farpa.ai',time:'Agora',url:'#'},
+    {tag:'cripto',title:'Bitcoin mantém suporte com volume institucional acima da média',source:'farpa.ai',time:'15 min',url:'#'},
+    {tag:'b3',title:'IBOVESPA opera em faixa de consolidação com atenção ao câmbio',source:'farpa.ai',time:'1h',url:'#'},
+  ];
+  const seen=new Set();
+  const unique=news.filter(n=>{if(seen.has(n.title))return false;seen.add(n.title);return true;});
+  feed.innerHTML=unique.map(n=>`<a class="news-item" href="${n.url||'#'}" target="_blank" rel="noopener"><span class="news-tag tag-${n.tag}">${n.tag.toUpperCase()}</span><div><div class="news-headline">${esc(n.title)}</div><div class="news-meta"><span>${esc(n.source)}</span><span>${n.time}</span></div></div></a>`).join('');
+  ts.textContent='Atualizado às '+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
 }
 
-function guessTag(title) {
-  const t = title.toLowerCase();
-  if (t.includes('bitcoin')||t.includes('cripto')||t.includes('btc')||t.includes('eth')) return 'cripto';
-  if (t.includes('bovespa')||t.includes('ibov')||t.includes('b3')||t.includes('petrobras')||t.includes('vale')) return 'b3';
-  if (t.includes('urgente')||t.includes('breaking')||t.includes('alerta')) return 'urgente';
-  return 'macro';
-}
-function timeAgo(ts) {
-  const diff = (Date.now() - ts) / 1000;
-  if (diff < 60) return 'Agora';
-  if (diff < 3600) return Math.round(diff/60) + ' min';
-  if (diff < 86400) return Math.round(diff/3600) + 'h';
-  return Math.round(diff/86400) + 'd';
-}
-function escHtml(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
-// ─── BLOOMBERG TICKER TAPE ────────────────────────────
-function updateBBTape(indexData) {
-  const track = document.getElementById('bb-tape-track');
+// ─── BLOOMBERG TAPE ──────────────────────
+function buildBBTape(items) {
+  const track=document.getElementById('bb-tape-track');
   if (!track) return;
-  const items = indexData.map(d => {
-    const up = d.change >= 0;
-    return `<span class="bb-item"><span class="bb-sym">${d.sym}</span><span class="bb-val">${d.val}</span><span class="${up?'bb-chg-up':'bb-chg-dn'}">${up?'▲+':'▼'}${Math.abs(d.change).toFixed(2)}%</span></span>`;
-  }).join('');
-  // Duplicate for seamless scroll
-  track.innerHTML = items + items;
+  const h=items.map(d=>`<span class="bb-item"><span class="bb-sym">${d.sym}</span><span class="bb-val">${d.val}</span><span class="${d.change>=0?'bb-up':'bb-dn'}">${d.change>=0?'▲+':'▼'}${Math.abs(d.change).toFixed(2)}%</span></span>`).join('');
+  track.innerHTML=h+h;
 }
 
-// ─── INIT ─────────────────────────────────────────────
+// ─── HELPERS ─────────────────────────────
+function fmtNum(v, dec=2, locale='pt-BR') { return v.toLocaleString(locale==='en'?'en-US':'pt-BR',{maximumFractionDigits:dec,minimumFractionDigits:dec}); }
+function fmtVol(v, brl=false) {
+  if (!v) return '—';
+  const p=brl?'R$ ':'$ ';
+  if (v>=1e12) return p+(v/1e12).toFixed(2)+'T';
+  if (v>=1e9)  return p+(v/1e9).toFixed(2)+'B';
+  if (v>=1e6)  return p+(v/1e6).toFixed(2)+'M';
+  if (v>=1e3)  return p+(v/1e3).toFixed(1)+'K';
+  return p+v.toFixed(0);
+}
+function guessTag(t) { t=t.toLowerCase(); if(t.includes('bitcoin')||t.includes('cripto')||t.includes('btc'))return'cripto'; if(t.includes('ibov')||t.includes('b3')||t.includes('petrobras'))return'b3'; if(t.includes('urgente')||t.includes('alerta'))return'urgente'; return'macro'; }
+function timeAgo(ts) { const d=(Date.now()-ts)/1000; if(d<60)return'Agora'; if(d<3600)return Math.round(d/60)+'min'; if(d<86400)return Math.round(d/3600)+'h'; return Math.round(d/86400)+'d'; }
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+// ─── INIT ────────────────────────────────
 document.addEventListener('DOMContentLoaded', function() {
-  // Build farpa layout
-  const layout = document.getElementById('farpa-layout');
+  const layout=document.getElementById('farpa-layout');
   if (!layout) return;
-  const sidebar = window.farpaSidebar.build('mercados');
-  layout.insertBefore(sidebar, layout.firstChild);
-  const topnav = window.farpaTopnav.build([{label:'farpa.ai',href:'index.html'},{label:'Mercados ao Vivo'}]);
-  layout.insertBefore(topnav, sidebar.nextSibling);
+  const sidebar=window.farpaSidebar.build('mercados');
+  layout.insertBefore(sidebar,layout.firstChild);
+  const topnav=window.farpaTopnav.build([{label:'farpa.ai',href:'index.html'},{label:'Mercados ao Vivo'}]);
+  layout.insertBefore(topnav,sidebar.nextSibling);
 
-  // Init theme
   initTheme();
+  tickClocks();
+  setInterval(tickClocks, 30000);
 
-  // Load initial data
-  loadFxIndex();
+  // Dados iniciais
+  loadGlobalIndices();
+  loadFxGrid();
   loadFearGreed();
   loadNews();
   loadTab();
-  loadChartData(); // USD/BRL default chart
+  loadFxChart(); // chart default USD/BRL
 
-  // Auto-refresh every 60s for tab data, 5min for FX+news
-  setInterval(() => { loadTab(); loadFxIndex(); }, 60000);
-  setInterval(() => { loadChartData(); loadFearGreed(); loadNews(); }, 300000);
+  // Refresh automático
+  setInterval(()=>{ loadTab(); loadGlobalIndices(); loadFxGrid(); }, 60000);
+  setInterval(()=>{ loadFearGreed(); loadNews(); }, 300000);
 
-  // Re-render chart on farpa theme change
-  window.addEventListener('farpaThemeChange', () => { if (mainChart) renderMainChart(); });
-  window.addEventListener('farpaACChange',    () => { if (mainChart) renderMainChart(); });
+  window.addEventListener('farpaThemeChange',()=>{ if(mainChart) renderMainChart(); });
+  window.addEventListener('farpaACChange',()=>{ if(mainChart) renderMainChart(); });
 });
 </script>
 </main>
