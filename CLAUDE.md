@@ -170,3 +170,6 @@ FINALIZAR
 ---
 
 *farpa.ai · CLAUDE.md · v2.0 · 2026*
+
+## HISTÓRICO DE FALHAS DE CI
+- `2026-04-18T21:38:36Z` — run #88 — commit `4cac54f` — [ver log](https://github.com/rff82/AI/actions/runs/24614458707)
