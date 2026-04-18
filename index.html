@@ -75,6 +75,19 @@
   <span class="ticker-item"><span class="ticker-dot">▸</span>INTELIGÊNCIA ARTIFICIAL</span><span class="ticker-item"><span class="ticker-dot">▸</span>POLÍTICA ECONÔMICA</span><span class="ticker-item"><span class="ticker-dot">▸</span>MERCADOS GLOBAIS</span><span class="ticker-item"><span class="ticker-dot">▸</span>GEOPOLÍTICA</span><span class="ticker-item"><span class="ticker-dot">▸</span>STARTUPS & VENTURE</span><span class="ticker-item"><span class="ticker-dot">▸</span>ENERGIA & CLIMA</span><span class="ticker-item"><span class="ticker-dot">▸</span>REGULAÇÃO & COMPLIANCE</span><span class="ticker-item"><span class="ticker-dot">▸</span>SAÚDE & BIOTECH</span>
 </div></div>
 
+<section class="product-carousel-section" aria-label="Produtos do ecossistema farpa">
+  <div class="container">
+    <div class="section-header reveal" style="margin-bottom:28px">
+      <div class="section-eyebrow">Ecossistema farpa</div>
+      <h2 class="section-title">Um farpa para cada decisão.</h2>
+      <p class="section-sub">Produtos independentes conectados por infraestrutura e design system compartilhados — em expansão contínua.</p>
+    </div>
+  </div>
+  <div class="product-carousel">
+    <div class="product-carousel-track" id="carousel-track" role="list"></div>
+  </div>
+</section>
+
 <section class="journey-section" id="journey"><div class="container">
   <div class="section-header reveal"><div class="section-eyebrow">Jornada simplificada</div><h2 class="section-title">Entenda o valor em menos de 1 minuto.</h2><p class="section-sub">Três etapas simples — escolha seu foco, receba sinais priorizados e avance sem fricção.</p></div>
   <div class="journey-grid">
@@ -193,6 +206,41 @@
 
 </main></div>
 <script src="main.js"></script>
+<script>
+(function(){
+  const track = document.getElementById('carousel-track');
+  if(!track) return;
+  fetch('/data/products.json',{cache:'no-cache'}).then(r=>r.json()).then(products=>{
+    if(!Array.isArray(products)||!products.length){track.closest('.product-carousel-section').style.display='none';return;}
+    const statusLabel = {building:'Em construção',planned:'Planejado',ideation:'Em breve',live:'Ao vivo'};
+    const render = p => {
+      const isIdeation = p.status === 'ideation';
+      const tag = isIdeation ? 'div' : 'a';
+      const attrs = isIdeation
+        ? `class="product-card product-card--soon" role="listitem" aria-label="${p.name} — em breve"`
+        : `class="product-card" role="listitem" href="${p.url}" target="_blank" rel="noopener"`;
+      const badge = (p.status && p.status !== 'building')
+        ? `<span class="product-card-badge product-card-badge--${p.status}">${statusLabel[p.status]||p.status}</span>`
+        : '';
+      return `<${tag} ${attrs} style="--logo-mark-bg:${p.accent};">
+        <div class="product-card-mark" aria-hidden="true">${p.initial}</div>
+        <div class="product-card-body">
+          <div class="product-card-name">${p.name}</div>
+          <div class="product-card-domain">${p.domain}</div>
+          <div class="product-card-tagline">${p.tagline}</div>
+          ${badge}
+        </div>
+      </${tag}>`;
+    };
+    // Duplica para loop sem costura (marquee infinite)
+    const duplicated = [...products, ...products];
+    track.innerHTML = duplicated.map(render).join('');
+  }).catch(err=>{
+    console.warn('[carousel] falha ao carregar products.json', err);
+    track.closest('.product-carousel-section').style.display='none';
+  });
+})();
+</script>
 <script>
 const I18N={pt:{hero_line1:'A notícia',hero_line2:'que importa.',hero_line3:'Sem o ruído.',hero_sub:'O farpa.ai transforma notícias complexas em sinais simples para quem decide rápido.',hero_cta_main:'Cadastrar agora'},en:{hero_line1:'The news',hero_line2:'that matters.',hero_line3:'Without the noise.',hero_sub:'farpa.ai turns complex news into simple signals for fast decisions.',hero_cta_main:'Sign up now'}};
 let currentLang=localStorage.getItem('farpa_lang')||'pt';
